@@ -1,0 +1,28 @@
+PRD (Product Requirements Document): Analista Pro
+1. Visión del Producto
+Convertirse en la herramienta gratuita de referencia para el análisis estadístico y táctico de fútbol, combinando la profundidad del Big Data con una interfaz intuitiva que permita identificar ventajas competitivas (value bets o chollos Fantasy) en segundos.
+2. Público Objetivo (User Personas)
+* El Apostador Inteligente ("Value Hunter"): No apuesta por impulso. Busca discrepancias entre lo que dicen las casas de apuestas (cuotas) y lo que dicen las matemáticas (xG, tiros, rachas). Necesita comparar equipos rápidamente.
+* El Manager de Fantasy (Biwenger, Sorare, Marca): Busca identificar tendencias antes que el resto. Necesita saber qué jugador está tirando más a puerta aunque aún no haya marcado, o quién está cometiendo menos faltas.
+* El "Nerd" del Fútbol: Aficionados, periodistas o creadores de contenido que necesitan datos duros y rápidos para respaldar sus debates o análisis previos a un partido.
+3. Casos de Uso Principales
+* Comparativa H2H Quirúrgica: Enfrentar a dos equipos (Local vs. Visitante) y ver de un vistazo quién llega mejor basándose en métricas subyacentes reales (tiros a puerta, córners, presión), no solo en la tabla de clasificación.
+* Scouting de Jugadores: Entrar a la plantilla de un equipo específico y aislar a los líderes en métricas concretas (el que más tira, el que más asiste, el más amonestado).
+* Detección de Valor en Cuotas (Visión Futura): Observar un partido en directo o pre-partido, ver la probabilidad matemática de victoria generada por la app y contrastarla automáticamente con las cuotas de Bet365 u otras casas para encontrar la apuesta rentable.
+4. Requisitos Funcionales y Roadmap
+Fase 1: El MVP Actual (Análisis Estático Avanzado)
+* Cobertura total de la temporada actual (1ª y 2ª División).
+* Panel comparativo de equipos con selección dinámica de número de partidos (últimos 5, 10, etc.).
+* Fichas individuales de equipos con promedios de rendimiento.
+* Buscador de jugadores con desglose de estadísticas por partido (minutos, goles, tiros, faltas, tarjetas).
+* Historial de enfrentamientos directos desde años anteriores.
+Fase 2: Expansión a Tiempo Real (El siguiente gran paso)
+* Realidad del mercado: Para lograr un "100% tiempo real", el sistema deberá transicionar de extraer datos gratuitos (que tienen retraso) a consumir webhooks de una API deportiva profesional.
+* Live Match Tracker: Calendario de la jornada con el marcador en directo y estadísticas actualizándose minuto a minuto.
+* Integración de Cuotas (Odds API): Un módulo que rastree las cuotas de pre-partido y en directo de las principales casas de apuestas y las coloque al lado de las probabilidades estadísticas calculadas por la app.
+* Alertas de Valor (Push/Visuales): Indicadores visuales que se iluminen cuando la cuota de una casa de apuestas es superior a la probabilidad real que calcula el algoritmo de Analista Pro.
+5. Requisitos No Funcionales
+* Rendimiento: La carga de datos al cambiar de un equipo a otro debe ser prácticamente instantánea para no interrumpir el flujo de análisis del usuario.
+* Usabilidad (UX/UI): Modo oscuro obligatorio. Uso de una jerarquía visual clara donde los datos más importantes (goles, tiros) destaquen sobre las métricas secundarias. Ausencia total de publicidad intrusiva (banners flotantes o pop-ups).
+* Fiabilidad: Los datos deben estar normalizados (sin nombres de equipos duplicados o mal escritos) y libres de registros fantasma que inflen las estadísticas individuales de los jugadores.
+
