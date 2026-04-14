@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Datos generados (no versionar CSVs grandes, solo el README de datos)
+datos/*.csv
+datos/.last_update.json
+!datos/.gitkeep
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Archivos obsoletos (reemplazados por nueva arquitectura)
+app.py
+app_new.py
+data_processor.py
+data_updater.py
+player_engine.py
+news_engine.py
