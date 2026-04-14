@@ -42,11 +42,9 @@ function buildH2HHTML(team1, team2, data) {
   const s = data.summary;
   return `
   <!-- Title -->
-  <div class="card" style="margin-bottom:20px;text-align:center;">
-    <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px;">
-      ${team1} <span style="color:var(--muted)">vs</span> ${team2}
-    </div>
-    <div style="color:var(--muted);font-size:.78rem;">${s.total} enfrentamientos en la base de datos</div>
+  <div class="match-header" style="margin-bottom:24px;">
+    <div class="teams">${team1} <span class="vs">vs</span> ${team2}</div>
+    <div class="subtitle">${s.total} enfrentamientos en la base de datos</div>
   </div>
 
   <!-- Summary boxes -->

@@ -56,11 +56,9 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
 
   return `
   <!-- Match header -->
-  <div class="card" style="margin-bottom:20px;text-align:center;">
-    <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px;">
-      ${home} <span style="color:var(--muted);font-weight:400">vs</span> ${away}
-    </div>
-    <div style="color:var(--muted);font-size:.78rem;">Análisis basado en últimas jornadas · forma casa/visitante</div>
+  <div class="match-header" style="margin-bottom:24px;">
+    <div class="teams">${home} <span class="vs">vs</span> ${away}</div>
+    <div class="subtitle">Análisis basado en últimas jornadas · forma casa/visitante</div>
   </div>
 
   <div class="grid-2" style="margin-bottom:20px;">

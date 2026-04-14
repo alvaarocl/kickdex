@@ -100,13 +100,9 @@ function buildValorHTML(home, away, probs, markets) {
 
   return `
   <!-- Header -->
-  <div class="card" style="margin-bottom:20px;text-align:center;">
-    <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px;">
-      ${home} <span style="color:var(--muted)">vs</span> ${away}
-    </div>
-    <div style="color:var(--muted);font-size:.78rem;">
-      λ local: ${fmt(probs.lambda_h)} · λ visitante: ${fmt(probs.lambda_a)}
-    </div>
+  <div class="match-header" style="margin-bottom:24px;">
+    <div class="teams">${home} <span class="vs">vs</span> ${away}</div>
+    <div class="subtitle">lambda local: ${fmt(probs.lambda_h)} · lambda visitante: ${fmt(probs.lambda_a)}</div>
   </div>
 
   <!-- Probability reference -->
