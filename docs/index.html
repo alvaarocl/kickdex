@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analista Pro — Fútbol Big Data</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/app.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────── -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo">⚽ Analista<span>Pro</span></div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span class="season-badge" id="seasonBadge">2025/26</span>
+        <span class="meta-info" id="metaInfo">Cargando datos...</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── Navigation tabs ─────────────────────────────────────────────── -->
+<nav class="tabs-nav" id="mainTabs">
+  <button class="tab-btn active" data-tab="comparador">🔍 Comparador</button>
+  <button class="tab-btn" data-tab="h2h">⚔️ H2H</button>
+  <button class="tab-btn" data-tab="jugadores">👤 Jugadores</button>
+  <button class="tab-btn" data-tab="valor">💎 Value Bets</button>
+</nav>
+
+<!-- ── Main content ────────────────────────────────────────────────── -->
+<main class="container">
+
+  <!-- COMPARADOR -->
+  <section class="tab-panel active" id="tab-comparador">
+    <div class="controls">
+      <div class="field">
+        <label>Equipo Local</label>
+        <select id="cmp-home"><option value="">— Selecciona —</option></select>
+      </div>
+      <div class="field">
+        <label>Equipo Visitante</label>
+        <select id="cmp-away"><option value="">— Selecciona —</option></select>
+      </div>
+      <div class="field" style="max-width:120px;">
+        <label>Ventana</label>
+        <select id="cmp-window">
+          <option value="6">6 partidos</option>
+          <option value="10" selected>10 partidos</option>
+          <option value="20">20 partidos</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="cmp-run">Analizar</button>
+    </div>
+
+    <div id="cmp-result" class="state-box">
+      <div class="icon">🔍</div>
+      <p>Selecciona dos equipos y pulsa Analizar</p>
+    </div>
+  </section>
+
+  <!-- H2H -->
+  <section class="tab-panel" id="tab-h2h">
+    <div class="controls">
+      <div class="field">
+        <label>Equipo 1</label>
+        <select id="h2h-t1"><option value="">— Selecciona —</option></select>
+      </div>
+      <div class="field">
+        <label>Equipo 2</label>
+        <select id="h2h-t2"><option value="">— Selecciona —</option></select>
+      </div>
+      <button class="btn btn-primary" id="h2h-run">Ver H2H</button>
+    </div>
+    <div id="h2h-result" class="state-box">
+      <div class="icon">⚔️</div>
+      <p>Selecciona dos equipos para ver su historial</p>
+    </div>
+  </section>
+
+  <!-- JUGADORES -->
+  <section class="tab-panel" id="tab-jugadores">
+    <div class="controls">
+      <div class="field">
+        <label>Equipo</label>
+        <select id="jug-team"><option value="">— Selecciona —</option></select>
+      </div>
+      <div class="field">
+        <label>Jugador</label>
+        <select id="jug-player"><option value="">— Todos —</option></select>
+      </div>
+      <button class="btn btn-primary" id="jug-run">Ver Stats</button>
+    </div>
+    <div id="jug-result" class="state-box">
+      <div class="icon">👤</div>
+      <p>Selecciona un equipo para ver estadísticas de jugadores</p>
+    </div>
+  </section>
+
+  <!-- VALUE BETS -->
+  <section class="tab-panel" id="tab-valor">
+    <div class="sub-tabs">
+      <button class="sub-btn active" data-sub="manual">Calculadora</button>
+      <button class="sub-btn" data-sub="patterns">Patrones históricos</button>
+    </div>
+
+    <div class="sub-panel active" id="sub-manual">
+      <div class="controls">
+        <div class="field">
+          <label>Equipo Local</label>
+          <select id="val-home"><option value="">— Selecciona —</option></select>
+        </div>
+        <div class="field">
+          <label>Equipo Visitante</label>
+          <select id="val-away"><option value="">— Selecciona —</option></select>
+        </div>
+      </div>
+      <div class="controls" style="margin-top:-10px;">
+        <div class="field"><label>Cuota 1 (Local)</label><input type="number" id="val-o1" placeholder="2.10" step="0.01" min="1.01"></div>
+        <div class="field"><label>Cuota X (Empate)</label><input type="number" id="val-ox" placeholder="3.40" step="0.01" min="1.01"></div>
+        <div class="field"><label>Cuota 2 (Visitante)</label><input type="number" id="val-o2" placeholder="3.20" step="0.01" min="1.01"></div>
+        <div class="field"><label>Cuota +2.5</label><input type="number" id="val-ov" placeholder="1.90" step="0.01" min="1.01"></div>
+        <button class="btn btn-primary" id="val-run">Calcular valor</button>
+      </div>
+      <div id="val-result" class="state-box">
+        <div class="icon">💎</div>
+        <p>Selecciona equipos e introduce las cuotas de tu casa de apuestas</p>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="sub-patterns">
+      <div id="patterns-result" class="state-box">
+        <div class="icon">📊</div>
+        <p>Cargando patrones históricos...</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ──────────────────────────────────────────────────────── -->
+<div class="container">
+  <div class="disclaimer">
+    ⚠️ <b>Aviso:</b> Esta herramienta es solo informativa. No constituye asesoramiento de apuestas.
+    El juego puede crear adicción — juega con responsabilidad. Datos: football-data.co.uk.
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/comparador.js"></script>
+<script src="js/h2h.js"></script>
+<script src="js/jugadores.js"></script>
+<script src="js/valor.js"></script>
+</body>
+</html>
