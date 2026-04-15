@@ -1,4 +1,4 @@
-# 📋 PRD - Analista Pro
+# 📋 PRD - KICKDEX
 ## Product Requirements Document
 
 **Versión:** 1.0  
@@ -471,7 +471,7 @@ Opcionales (si no existen, se crean con NaN):
 ### Disclaimer
 La plataforma debe mostrar claramente:
 - "Las apuestas conllevan riesgo. Juega responsablemente."
-- "Analista Pro proporciona análisis histórico, no garantías de futuro."
+- "KICKDEX proporciona análisis histórico, no garantías de futuro."
 - "No somos asesores financieros. Haz tus propias investigaciones."
 
 ---
@@ -501,7 +501,7 @@ La plataforma debe mostrar claramente:
 ## 📞 Contacto y Escalación
 
 - **Product Owner:** [Tu nombre]
-- **Slack Channel:** #analista-pro
+- **Slack Channel:** #kickdex
 - **Issues/Bugs:** GitHub Issues
 - **Retrospective:** Bi-weekly (Jueves 4pm CET)
 
@@ -525,7 +525,7 @@ La plataforma debe mostrar claramente:
 ### C. Casos de Uso Expandidos
 
 #### Caso 1: Usuario "Value Hunter" busca apuesta
-1. Entra a Analista Pro
+1. Entra a KICKDEX
 2. Ve calendario de hoy (Real Madrid vs Barcelona)
 3. Clica en el partido
 4. Ve fichas de ambos equipos (H2H, forma reciente)
@@ -537,7 +537,7 @@ La plataforma debe mostrar claramente:
 
 #### Caso 2: Manager de Fantasy busca diferencial
 1. Abre Fantasy League
-2. Entra a Analista Pro → Buscador de Jugadores
+2. Entra a KICKDEX → Buscador de Jugadores
 3. Filtra: "Delanteros Centro, últimos 5 partidos"
 4. Ordena por "Tiros a Puerta" descendente
 5. Ve jugador emergente con promedio alto pero bajo precio de fantasy

@@ -1,4 +1,4 @@
-PRD (Product Requirements Document): Analista Pro
+PRD (Product Requirements Document): KICKDEX
 1. Visión del Producto
 Convertirse en la herramienta gratuita de referencia para el análisis estadístico y táctico de fútbol, combinando la profundidad del Big Data con una interfaz intuitiva que permita identificar ventajas competitivas (value bets o chollos Fantasy) en segundos.
 2. Público Objetivo (User Personas)
@@ -20,7 +20,7 @@ Fase 2: Expansión a Tiempo Real (El siguiente gran paso)
 * Realidad del mercado: Para lograr un "100% tiempo real", el sistema deberá transicionar de extraer datos gratuitos (que tienen retraso) a consumir webhooks de una API deportiva profesional.
 * Live Match Tracker: Calendario de la jornada con el marcador en directo y estadísticas actualizándose minuto a minuto.
 * Integración de Cuotas (Odds API): Un módulo que rastree las cuotas de pre-partido y en directo de las principales casas de apuestas y las coloque al lado de las probabilidades estadísticas calculadas por la app.
-* Alertas de Valor (Push/Visuales): Indicadores visuales que se iluminen cuando la cuota de una casa de apuestas es superior a la probabilidad real que calcula el algoritmo de Analista Pro.
+* Alertas de Valor (Push/Visuales): Indicadores visuales que se iluminen cuando la cuota de una casa de apuestas es superior a la probabilidad real que calcula el algoritmo de KICKDEX.
 5. Requisitos No Funcionales
 * Rendimiento: La carga de datos al cambiar de un equipo a otro debe ser prácticamente instantánea para no interrumpir el flujo de análisis del usuario.
 * Usabilidad (UX/UI): Modo oscuro obligatorio. Uso de una jerarquía visual clara donde los datos más importantes (goles, tiros) destaquen sobre las métricas secundarias. Ausencia total de publicidad intrusiva (banners flotantes o pop-ups).

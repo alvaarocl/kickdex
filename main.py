@@ -1,5 +1,5 @@
 """
-Analista Pro — Punto de entrada único.
+KICKDEX — Punto de entrada único.
 Ejecutar con: streamlit run main.py
 """
 
@@ -8,8 +8,8 @@ import streamlit as st
 
 # ── Configuración de página (DEBE ser la primera llamada Streamlit) ──────────
 st.set_page_config(
-    page_title="Analista Pro",
-    page_icon="⚽",
+    page_title="KICKDEX — The Football Data Terminal",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -55,7 +55,7 @@ def _load_data():
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 def _render_sidebar(df):
     with st.sidebar:
-        st.markdown("## ⚽ Analista Pro")
+        st.markdown("## KICKDEX")
         st.caption("Herramienta gratuita de Big Data futbolístico")
         st.divider()
 
@@ -80,7 +80,7 @@ def _render_sidebar(df):
 
         st.markdown(
             '<div style="color:#8b9ab0;font-size:0.7rem;margin-top:20px;">'
-            'Analista Pro · Uso educativo<br>'
+            'KICKDEX · Uso educativo<br>'
             'Datos: football-data.co.uk<br>'
             '<a href="https://alvarocarpintero.com" style="color:#00d4aa;">alvarocarpintero.com</a>'
             '</div>',
@@ -113,7 +113,7 @@ def main():
     col_title, col_season = st.columns([3, 1])
     with col_title:
         st.markdown(
-            '<h1 style="margin-bottom:0;color:#e8eaf6;">⚽ Analista Pro</h1>'
+            '<h1 style="margin-bottom:0;color:#e8eaf6;">KICKDEX</h1>'
             '<p style="color:#8b9ab0;margin-top:2px;font-size:0.9rem;">'
             'Big Data · Value Bets · Player Scouting · 100% Gratuito</p>',
             unsafe_allow_html=True,

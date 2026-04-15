@@ -1,6 +1,6 @@
 /**
  * app.js — Core: data loading, tab management, shared utilities
- * Analista Pro — GitHub Pages static frontend
+ * KICKDEX — GitHub Pages static frontend
  */
 
 "use strict";

@@ -1,14 +1,12 @@
-# ⚽ Analista Pro
+# KICKDEX — The Football Data Terminal
 
-**Herramienta gratuita de Big Data futbolístico** — alternativa a ValueStats.com.
+**Terminal gratuito de estadísticas de fútbol.** Comparador de equipos, H2H histórico, scouting de jugadores y detección de value bets para La Liga y Segunda División.
 
-Cruza estadísticas avanzadas con cuotas históricas de Bet365 para identificar Value Bets, analizar jugadores para Fantasy y comparar equipos con datos reales desde 2004.
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template)
+Free, independent, math-first.
 
 ---
 
-## 🚀 Arranque Rápido
+## Arranque rápido (backend Streamlit)
 
 ```bash
 pip install -r requirements.txt
@@ -17,15 +15,22 @@ streamlit run main.py
 
 La app se abre en `http://localhost:8501`
 
+**Frontend estático:** abre `docs/index.html` directamente en el navegador, o despliega via GitHub Pages.
+
 ---
 
-## 📁 Estructura
+## Estructura
 
 ```
-analista-pro/
-├── main.py                  ← Punto de entrada único
+kickdex/
+├── docs/                    ← Frontend estático (GitHub Pages)
+│   ├── index.html           ← App principal
+│   ├── css/app.css          ← Sistema de diseño KICKDEX
+│   ├── js/                  ← Módulos JS (comparador, h2h, jugadores, valor)
+│   └── data/                ← JSON endpoints (generados por scripts/build_data.py)
+├── main.py                  ← Punto de entrada Streamlit
 ├── app/
-│   ├── config.py            ← Configuración centralizada (temporada, ligas)
+│   ├── config.py            ← Configuración centralizada (temporada, ligas, colores)
 │   ├── data/
 │   │   ├── loader.py        ← Carga y normalización de CSVs
 │   │   └── updater.py       ← Descarga automática desde football-data.co.uk
@@ -33,33 +38,35 @@ analista-pro/
 │   │   ├── metrics.py       ← Rolling metrics, forma reciente, H2H
 │   │   ├── probability.py   ← Modelo Poisson para probabilidades
 │   │   ├── smart_alerts.py  ← Generador de tendencias en lenguaje natural
-│   │   └── value_detector.py← Detección de Value Bets con EV real
+│   │   └── value_detector.py← Detección de value bets con EV real
 │   └── ui/
-│       ├── styles.py        ← CSS modo oscuro
+│       ├── styles.py        ← CSS modo oscuro Streamlit
 │       ├── comparador.py    ← Tab: comparativa de partido
 │       ├── h2h.py           ← Tab: historial H2H
 │       ├── jugadores.py     ← Tab: player scouting
 │       └── valor.py         ← Tab: value detection
+├── scripts/build_data.py    ← Pipeline: CSV → JSON para el frontend
 ├── tests/                   ← Tests unitarios (pytest)
-├── datos/                   ← CSVs (descargados automáticamente)
-└── .streamlit/config.toml   ← Tema oscuro
+├── datos/                   ← CSVs históricos (descargados automáticamente)
+├── REBRANDING.md            ← Estudio de marca completo
+└── .streamlit/config.toml  ← Tema oscuro Streamlit
 ```
 
 ---
 
-## 🔧 Cambiar de Temporada
+## Cambiar de temporada
 
 En `app/config.py`:
 
 ```python
-CURRENT_SEASON_CODE = "2627"      # Nuevo código de temporada
-CURRENT_SEASON_START = "2026-08-01"  # Fecha de inicio
+CURRENT_SEASON_CODE = "2627"
+CURRENT_SEASON_START = "2026-08-01"
 CURRENT_SEASON_LABEL = "2026/27"
 ```
 
 ---
 
-## 🧪 Tests
+## Tests
 
 ```bash
 pytest tests/ -v
@@ -67,24 +74,13 @@ pytest tests/ -v
 
 ---
 
-## 🌐 Deploy (Railway + Dominio Custom)
-
-1. Fork este repo en GitHub
-2. Ve a [railway.app](https://railway.app) → New Project → Deploy from GitHub
-3. Selecciona este repo
-4. Railway detecta `railway.json` automáticamente
-5. **Dominio custom:** Settings → Custom Domain → `analista.alvarocarpintero.com`
-6. Añade en tu DNS (alvarocarpintero.com): `CNAME analista → tu-app.railway.app`
-
----
-
-## 📊 Fuentes de Datos
+## Fuentes de datos
 
 - **Resultados históricos:** [football-data.co.uk](https://www.football-data.co.uk) (gratuito, SP1 + SP2 desde 2004)
 - **Stats de jugadores:** FBref via [soccerdata](https://github.com/probberechts/soccerdata)
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
-Las apuestas conllevan riesgo. Analista Pro proporciona análisis histórico, no garantías de resultados futuros. Si el juego te causa problemas, llama al **900 200 225** (gratuito, 24h).
+Las apuestas conllevan riesgo. KICKDEX proporciona análisis histórico, no garantías de resultados futuros. Si el juego te causa problemas, llama al **900 200 225** (gratuito, 24h).

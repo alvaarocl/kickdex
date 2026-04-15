@@ -1,4 +1,4 @@
-# 🗺️ PLAN DE DESARROLLO — Analista Pro
+# 🗺️ PLAN DE DESARROLLO — KICKDEX
 ## Plan Técnico Estructurado
 
 **Fecha:** Abril 2026  
@@ -53,7 +53,7 @@ AÑADIR:     Capa de servicios, config centralizada, tests, Smart Alerts engine
 ### Nueva Estructura de Carpetas
 
 ```
-analista-pro/
+kickdex/
 │
 ├── 📁 app/                     ← Módulos de la aplicación
 │   ├── __init__.py
@@ -335,7 +335,7 @@ def test_btts_alert_strength():
 ```python
 # main.py - Configuración visual
 st.set_page_config(
-    page_title="Analista Pro",
+    page_title="KICKDEX",
     layout="wide",
     page_icon="⚽",
     initial_sidebar_state="collapsed"  # Priorizar contenido

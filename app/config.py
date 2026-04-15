@@ -1,5 +1,5 @@
 """
-Configuración centralizada de Analista Pro.
+Configuración centralizada de KICKDEX.
 Un único lugar para cambiar temporadas, ligas y parámetros globales.
 """
 
@@ -104,15 +104,19 @@ TEAM_ALIASES: dict[str, str] = {
 }
 
 # ── Colores UI ────────────────────────────────────────────────────────────────
-COLOR_VALUE_GREEN = "#00d4aa"
-COLOR_VALUE_RED = "#ff4b4b"
-COLOR_NEUTRAL = "#8b9ab0"
-COLOR_BG_CARD = "#1a1f2e"
-COLOR_BG_APP = "#0e1117"
+COLOR_VALUE_GREEN = "#2EE6A6"   # Turf
+COLOR_VALUE_RED = "#FF5A6E"     # Red Card
+COLOR_NEUTRAL = "#8A94AB"       # Concrete
+COLOR_BG_CARD = "#0B0F1A"       # Midnight
+COLOR_BG_APP = "#05070D"        # Pitch Black
+
+# ── App identity ──────────────────────────────────────────────────────────────
+APP_NAME = "KICKDEX"
+APP_TAGLINE = "The football data terminal."
 
 # ── Disclaimer ────────────────────────────────────────────────────────────────
 DISCLAIMER = (
-    "⚠️ Las apuestas conllevan riesgo. Juega responsablemente. "
-    "Analista Pro proporciona análisis histórico, no garantías de resultados futuros. "
+    "Las apuestas conllevan riesgo. Juega responsablemente. "
+    "KICKDEX proporciona análisis histórico, no garantías de resultados futuros. "
     "Si el juego te causa problemas, llama al 900 200 225 (gratuito, 24h)."
 )

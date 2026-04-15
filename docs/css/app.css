@@ -1,21 +1,21 @@
 /* ============================================================
-   Analista Pro — Premium Sports Analytics UI
+   KICKDEX — Football Data Terminal
    Style: OLED Dark · Glassmorphism · Data-Dense Dashboard
    Typography: JetBrains Mono (data) · IBM Plex Sans (UI)
-   Colors: Emerald brand · Gold value accents
+   Colors: Turf brand · Edge Gold value accents
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   /* ── Backgrounds ──────────────────────────────────── */
-  --bg:        #020409;
-  --bg1:       #04060e;
-  --bg2:       #070c18;
-  --bg3:       #0c1322;
-  --bg4:       #101b30;
-  --glass:     rgba(8, 13, 26, 0.72);
-  --glass2:    rgba(12, 19, 34, 0.65);
+  --bg:        #05070D;   /* Pitch Black */
+  --bg1:       #0B0F1A;   /* Midnight */
+  --bg2:       #111728;   /* Graphite */
+  --bg3:       #1A2236;
+  --bg4:       #1E2A40;
+  --glass:     rgba(11, 15, 26, 0.72);
+  --glass2:    rgba(17, 23, 40, 0.65);
 
   /* ── Borders ──────────────────────────────────────── */
   --border:    rgba(255, 255, 255, 0.055);
@@ -23,39 +23,39 @@
   --border3:   rgba(255, 255, 255, 0.18);
 
   /* ── Text ─────────────────────────────────────────── */
-  --text:      #dde4f5;
-  --text2:     #b0bdd8;
-  --muted:     #546080;
-  --muted2:    #7b8caa;
+  --text:      #F1F5FB;   /* Stadium White */
+  --text2:     #C8D4E8;
+  --muted:     #8A94AB;   /* Concrete */
+  --muted2:    #6B7A97;
 
-  /* ── Brand: Emerald ───────────────────────────────── */
-  --brand:     #00d4aa;
-  --brand2:    #22d3ee;
-  --brand-soft:rgba(0, 212, 170, 0.10);
-  --brand-glow:rgba(0, 212, 170, 0.40);
+  /* ── Brand: Turf ──────────────────────────────────── */
+  --brand:     #2EE6A6;   /* Turf */
+  --brand2:    #5BD6FF;   /* Signal Blue */
+  --brand-soft:rgba(46, 230, 166, 0.10);
+  --brand-glow:rgba(46, 230, 166, 0.40);
 
-  /* ── Gold: Value Bets ─────────────────────────────── */
-  --gold:      #f59e0b;
-  --gold2:     #fbbf24;
-  --gold-soft: rgba(245, 158, 11, 0.12);
-  --gold-glow: rgba(245, 158, 11, 0.45);
+  /* ── Gold: Edge Gold ──────────────────────────────── */
+  --gold:      #F5B93C;   /* Edge Gold */
+  --gold2:     #FBBF24;
+  --gold-soft: rgba(245, 185, 60, 0.12);
+  --gold-glow: rgba(245, 185, 60, 0.45);
 
   /* ── Semantic colors ──────────────────────────────── */
-  --green:     #00d4aa;
-  --green2:    #22d3ee;
-  --yellow:    #f59e0b;
-  --red:       #f43f5e;
+  --green:     #2EE6A6;   /* Turf */
+  --green2:    #5BD6FF;   /* Signal Blue */
+  --yellow:    #F5B93C;   /* Edge Gold */
+  --red:       #FF5A6E;   /* Red Card */
   --purple:    #a78bfa;
   --orange:    #fb923c;
-  --blue:      #38bdf8;
+  --blue:      #5BD6FF;
 
   /* ── Gradients ────────────────────────────────────── */
-  --grad-brand:  linear-gradient(135deg, #00d4aa 0%, #22d3ee 100%);
-  --grad-gold:   linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-  --grad-card:   linear-gradient(160deg, rgba(12,19,36,.85) 0%, rgba(4,6,14,.92) 100%);
+  --grad-brand:  linear-gradient(135deg, #2EE6A6 0%, #5BD6FF 100%);
+  --grad-gold:   linear-gradient(135deg, #F5B93C 0%, #FBBF24 100%);
+  --grad-card:   linear-gradient(160deg, rgba(17,23,40,.85) 0%, rgba(11,15,26,.92) 100%);
   --grad-glow:
-    radial-gradient(800px 450px at 3% -8%, rgba(0,212,170,.11) 0%, transparent 55%),
-    radial-gradient(650px 380px at 97% 3%, rgba(34,211,238,.07) 0%, transparent 55%),
+    radial-gradient(800px 450px at 3% -8%, rgba(46,230,166,.11) 0%, transparent 55%),
+    radial-gradient(650px 380px at 97% 3%, rgba(91,214,255,.07) 0%, transparent 55%),
     radial-gradient(500px 280px at 50% 105%, rgba(124,58,237,.07) 0%, transparent 60%);
 
   /* ── Radii ────────────────────────────────────────── */
@@ -66,8 +66,8 @@
   /* ── Shadows ──────────────────────────────────────── */
   --shadow:       0 24px 64px -16px rgba(0,0,0,.85), 0 4px 16px rgba(0,0,0,.4);
   --shadow-sm:    0 4px 20px rgba(0,0,0,.5);
-  --shadow-brand: 0 8px 36px -8px rgba(0,212,170,.55);
-  --shadow-gold:  0 8px 36px -8px rgba(245,158,11,.55);
+  --shadow-brand: 0 8px 36px -8px rgba(46,230,166,.55);
+  --shadow-gold:  0 8px 36px -8px rgba(245,185,60,.55);
 
   /* ── Typography ───────────────────────────────────── */
   --font-ui:   'IBM Plex Sans', 'Inter', system-ui, sans-serif;
@@ -172,12 +172,29 @@ header {
   pointer-events: none;
 }
 .logo-icon svg { position: relative; z-index: 1; color: #021a12; }
-.logo-text { display: flex; align-items: baseline; gap: 2px; }
-.logo-text span {
-  background: var(--grad-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.logo-text { display: flex; align-items: baseline; gap: 1px; letter-spacing: -.3px; }
+.logo-text .brand-cursor {
+  font-family: var(--font-data);
+  font-weight: 700;
+  color: var(--brand);
+  position: relative;
+}
+.logo-text .brand-cursor::after {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  right: 0;
+  width: 6px;
+  height: 2px;
+  background: var(--brand);
+  animation: cursor-blink 600ms step-end 2;
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-text .brand-cursor::after { animation: none; }
 }
 
 .season-badge {

@@ -1,4 +1,4 @@
-Contexto General del Proyecto: Estamos desarrollando "Analista Pro", una plataforma web de Big Data de fútbol diseñada para ser la alternativa 100% gratuita, moderna y en tiempo real a plataformas de pago como ValueStats.com.
+Contexto General del Proyecto: Estamos desarrollando "KICKDEX", una plataforma web de Big Data de fútbol diseñada para ser la alternativa 100% gratuita, moderna y en tiempo real a plataformas de pago como ValueStats.com.
 Nuestro objetivo no es solo mostrar datos históricos estáticos, sino crear un "radar de apuestas y rendimiento" que cruce estadísticas avanzadas con cuotas de casas de apuestas en tiempo real y datos de partidos en vivo, permitiendo a los usuarios encontrar "Value Bets" (apuestas de valor) y oportunidades en Fantasy Football sin pagar suscripciones premium.
 
 ?? 1. Análisis de la Competencia (Benchmark: Value Stats)
@@ -8,7 +8,7 @@ Para entender lo que estamos construyendo, hemos analizado el núcleo de valuesta
 3. Live Match Tracker (Directo): Siguen los partidos en vivo, actualizando el rendimiento ofensivo/defensivo de los equipos y las estadísticas individuales de los jugadores (faltas, tarjetas, sustituciones, goles) al minuto.
 4. Base de Datos Global: Cubren desde las grandes ligas europeas (Premier, La Liga, Champions League) hasta ligas menores y competiciones sudamericanas, listando máximos goleadores y próximos partidos.
 
-?? 2. PRD (Product Requirements Document) de "Analista Pro"
+?? 2. PRD (Product Requirements Document) de "KICKDEX"
 A continuación, se detallan los requisitos funcionales de nuestra plataforma para alcanzar y superar este estándar.
 Pila Funcional A: Pre-Match & Predictive Analytics (Análisis Previo)
 * Fichas de Partido (Match Hub): Vista detallada de un encuentro futuro. Debe incluir el historial H2H (Head-to-Head), estado de forma reciente (W-D-L), y métricas avanzadas promedio (Goles Esperados - xG, Tiros a puerta, Posesión).
@@ -24,5 +24,5 @@ Pila Funcional C: Live Match Center (El Partido en Directo)
 Pila Funcional D: Experiencia de Usuario (UX/UI)
 * Filosofía "Zero Friction": La web es 100% gratuita. No hay muros de pago, registros obligatorios ni anuncios tipo banner molestos.
 * Diseño Pro-Analista: Modo oscuro por defecto. Tablas de alta densidad de datos (estilo Excel moderno) ordenables por cualquier columna. Uso de semáforo de colores (Verde/Rojo) para identificar fortalezas y debilidades de un vistazo rápido.
-Instrucción Final para la IA: Entendido este contexto de que somos una plataforma gratuita de Big Data deportivo y apuestas de valor en tiempo real, quiero que tus próximas respuestas, sugerencias lógicas de bases de datos, APIs o arquitecturas estén 100% alineadas con el objetivo de construir "Analista Pro" bajo estos estándares.
+Instrucción Final para la IA: Entendido este contexto de que somos una plataforma gratuita de Big Data deportivo y apuestas de valor en tiempo real, quiero que tus próximas respuestas, sugerencias lógicas de bases de datos, APIs o arquitecturas estén 100% alineadas con el objetivo de construir "KICKDEX" bajo estos estándares.
 

@@ -22,7 +22,7 @@ from app.config import (
 
 logger = logging.getLogger(__name__)
 
-_HEADERS = {"User-Agent": "Mozilla/5.0 (Analista Pro / educational use)"}
+_HEADERS = {"User-Agent": "Mozilla/5.0 (KICKDEX / educational use)"}
 _LAST_UPDATE_FILE = ".last_update.json"
 
 

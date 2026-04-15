@@ -1,4 +1,4 @@
-"""CSS global de Analista Pro — modo oscuro, estética pro-analista."""
+"""CSS global de KICKDEX — modo oscuro, estética terminal de fútbol."""
 
 CUSTOM_CSS = """
 <style>
