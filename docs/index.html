@@ -4,152 +4,290 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Analista Pro — Fútbol Big Data</title>
+  <meta name="description" content="Plataforma gratuita de Big Data de fútbol. Estadísticas avanzadas, Value Bets y análisis predictivo." />
+
+  <!-- Fonts: IBM Plex Sans (UI) + JetBrains Mono (data) + Space Grotesk (display) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="css/app.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
 
-<!-- ── Header ──────────────────────────────────────────────────────── -->
+<!-- ── Header ────────────────────────────────────────────── -->
 <header>
   <div class="container">
     <div class="header-inner">
-      <div class="logo"><div class="icon">⚽</div> Analista<span>Pro</span></div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+
+      <a class="logo" href="#" aria-label="Analista Pro — inicio">
+        <div class="logo-icon" aria-hidden="true">
+          <!-- Ball / data icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20A14.5 14.5 0 0 0 12 2z"/>
+            <path d="M2 12h20"/>
+          </svg>
+        </div>
+        <div class="logo-text">Analista<span>Pro</span></div>
+      </a>
+
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <span class="season-badge" id="seasonBadge">2025/26</span>
-        <span class="meta-info" id="metaInfo">Cargando datos...</span>
+        <span class="meta-info" id="metaInfo">
+          <span class="spinner"></span>Cargando datos...
+        </span>
       </div>
+
     </div>
   </div>
 </header>
 
-<!-- ── Navigation tabs ─────────────────────────────────────────────── -->
-<nav class="tabs-nav" id="mainTabs">
-  <button class="tab-btn active" data-tab="comparador">🔍 Comparador</button>
-  <button class="tab-btn" data-tab="h2h">⚔️ H2H</button>
-  <button class="tab-btn" data-tab="jugadores">👤 Jugadores</button>
-  <button class="tab-btn" data-tab="valor">💎 Value Bets</button>
+<!-- ── Navigation tabs ───────────────────────────────────── -->
+<nav class="tabs-nav" id="mainTabs" role="tablist" aria-label="Navegación principal">
+
+  <button class="tab-btn active" data-tab="comparador" role="tab" aria-selected="true" aria-controls="tab-comparador">
+    <!-- Search icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    Comparador
+  </button>
+
+  <button class="tab-btn" data-tab="h2h" role="tab" aria-selected="false" aria-controls="tab-h2h">
+    <!-- Git compare / H2H icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
+      <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
+    </svg>
+    H2H
+  </button>
+
+  <button class="tab-btn" data-tab="jugadores" role="tab" aria-selected="false" aria-controls="tab-jugadores">
+    <!-- User icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    Jugadores
+  </button>
+
+  <button class="tab-btn" data-tab="valor" role="tab" aria-selected="false" aria-controls="tab-valor">
+    <!-- TrendingUp / Value icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+      <polyline points="16 7 22 7 22 13"/>
+    </svg>
+    Value Bets
+  </button>
+
 </nav>
 
-<!-- ── Main content ────────────────────────────────────────────────── -->
-<main class="container">
+<!-- ── Main content ──────────────────────────────────────── -->
+<main class="container" role="main">
 
-  <!-- COMPARADOR -->
-  <section class="tab-panel active" id="tab-comparador">
+  <!-- ── COMPARADOR ─────────────────────────────────── -->
+  <section class="tab-panel active" id="tab-comparador" role="tabpanel" aria-labelledby="tab-btn-comparador">
+
     <div class="controls">
       <div class="field">
-        <label>Equipo Local</label>
-        <select id="cmp-home"><option value="">— Selecciona —</option></select>
+        <label for="cmp-home">Equipo Local</label>
+        <select id="cmp-home" aria-label="Seleccionar equipo local">
+          <option value="">— Selecciona equipo —</option>
+        </select>
       </div>
       <div class="field">
-        <label>Equipo Visitante</label>
-        <select id="cmp-away"><option value="">— Selecciona —</option></select>
+        <label for="cmp-away">Equipo Visitante</label>
+        <select id="cmp-away" aria-label="Seleccionar equipo visitante">
+          <option value="">— Selecciona equipo —</option>
+        </select>
       </div>
-      <div class="field" style="max-width:120px;">
-        <label>Ventana</label>
+      <div class="field" style="max-width:130px;">
+        <label for="cmp-window">Ventana</label>
         <select id="cmp-window">
           <option value="6">6 partidos</option>
           <option value="10" selected>10 partidos</option>
           <option value="20">20 partidos</option>
         </select>
       </div>
-      <button class="btn btn-primary" id="cmp-run">Analizar</button>
+      <button class="btn btn-primary" id="cmp-run">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        Analizar
+      </button>
     </div>
 
     <div id="cmp-result" class="state-box">
-      <div class="icon">🔍</div>
-      <p>Selecciona dos equipos y pulsa Analizar</p>
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </div>
+      <p>Selecciona dos equipos y pulsa <strong>Analizar</strong></p>
     </div>
+
   </section>
 
-  <!-- H2H -->
-  <section class="tab-panel" id="tab-h2h">
+  <!-- ── H2H ────────────────────────────────────────── -->
+  <section class="tab-panel" id="tab-h2h" role="tabpanel">
+
     <div class="controls">
       <div class="field">
-        <label>Equipo 1</label>
-        <select id="h2h-t1"><option value="">— Selecciona —</option></select>
+        <label for="h2h-t1">Equipo 1</label>
+        <select id="h2h-t1"><option value="">— Selecciona equipo —</option></select>
       </div>
       <div class="field">
-        <label>Equipo 2</label>
-        <select id="h2h-t2"><option value="">— Selecciona —</option></select>
+        <label for="h2h-t2">Equipo 2</label>
+        <select id="h2h-t2"><option value="">— Selecciona equipo —</option></select>
       </div>
-      <button class="btn btn-primary" id="h2h-run">Ver H2H</button>
+      <button class="btn btn-primary" id="h2h-run">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
+          <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
+        </svg>
+        Ver H2H
+      </button>
     </div>
+
     <div id="h2h-result" class="state-box">
-      <div class="icon">⚔️</div>
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4">
+          <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
+          <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
+        </svg>
+      </div>
       <p>Selecciona dos equipos para ver su historial</p>
     </div>
+
   </section>
 
-  <!-- JUGADORES -->
-  <section class="tab-panel" id="tab-jugadores">
+  <!-- ── JUGADORES ──────────────────────────────────── -->
+  <section class="tab-panel" id="tab-jugadores" role="tabpanel">
+
     <div class="controls">
       <div class="field">
-        <label>Equipo</label>
-        <select id="jug-team"><option value="">— Selecciona —</option></select>
+        <label for="jug-team">Equipo</label>
+        <select id="jug-team"><option value="">— Selecciona equipo —</option></select>
       </div>
       <div class="field">
-        <label>Jugador</label>
+        <label for="jug-player">Jugador</label>
         <select id="jug-player"><option value="">— Todos —</option></select>
       </div>
-      <button class="btn btn-primary" id="jug-run">Ver Stats</button>
+      <button class="btn btn-primary" id="jug-run">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Ver Stats
+      </button>
     </div>
+
     <div id="jug-result" class="state-box">
-      <div class="icon">👤</div>
-      <p>Selecciona un equipo para ver estadísticas de jugadores</p>
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <p>Selecciona un equipo para ver las estadísticas de sus jugadores</p>
     </div>
+
   </section>
 
-  <!-- VALUE BETS -->
-  <section class="tab-panel" id="tab-valor">
-    <div class="sub-tabs">
-      <button class="sub-btn active" data-sub="manual">Calculadora</button>
-      <button class="sub-btn" data-sub="patterns">Patrones históricos</button>
+  <!-- ── VALUE BETS ─────────────────────────────────── -->
+  <section class="tab-panel" id="tab-valor" role="tabpanel">
+
+    <div class="sub-tabs" role="tablist" aria-label="Value Bets sub-navegación">
+      <button class="sub-btn active" data-sub="manual" role="tab" aria-selected="true">
+        Calculadora EV
+      </button>
+      <button class="sub-btn" data-sub="patterns" role="tab" aria-selected="false">
+        Patrones históricos
+      </button>
     </div>
 
+    <!-- Sub-panel: calculadora -->
     <div class="sub-panel active" id="sub-manual">
       <div class="controls">
         <div class="field">
-          <label>Equipo Local</label>
-          <select id="val-home"><option value="">— Selecciona —</option></select>
+          <label for="val-home">Equipo Local</label>
+          <select id="val-home"><option value="">— Selecciona equipo —</option></select>
         </div>
         <div class="field">
-          <label>Equipo Visitante</label>
-          <select id="val-away"><option value="">— Selecciona —</option></select>
+          <label for="val-away">Equipo Visitante</label>
+          <select id="val-away"><option value="">— Selecciona equipo —</option></select>
         </div>
       </div>
-      <div class="controls" style="margin-top:-10px;">
-        <div class="field"><label>Cuota 1 (Local)</label><input type="number" id="val-o1" placeholder="2.10" step="0.01" min="1.01"></div>
-        <div class="field"><label>Cuota X (Empate)</label><input type="number" id="val-ox" placeholder="3.40" step="0.01" min="1.01"></div>
-        <div class="field"><label>Cuota 2 (Visitante)</label><input type="number" id="val-o2" placeholder="3.20" step="0.01" min="1.01"></div>
-        <div class="field"><label>Cuota +2.5</label><input type="number" id="val-ov" placeholder="1.90" step="0.01" min="1.01"></div>
-        <button class="btn btn-primary" id="val-run">Calcular valor</button>
+      <div class="controls" style="margin-top:-18px;">
+        <div class="field">
+          <label for="val-o1">Cuota 1 — Local</label>
+          <input type="number" id="val-o1" placeholder="2.10" step="0.01" min="1.01" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="val-ox">Cuota X — Empate</label>
+          <input type="number" id="val-ox" placeholder="3.40" step="0.01" min="1.01" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="val-o2">Cuota 2 — Visitante</label>
+          <input type="number" id="val-o2" placeholder="3.20" step="0.01" min="1.01" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="val-ov">Cuota Over 2.5</label>
+          <input type="number" id="val-ov" placeholder="1.90" step="0.01" min="1.01" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="val-ob">Cuota BTTS</label>
+          <input type="number" id="val-ob" placeholder="1.75" step="0.01" min="1.01" inputmode="decimal">
+        </div>
+        <button class="btn btn-primary" id="val-run">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+          Calcular valor
+        </button>
       </div>
       <div id="val-result" class="state-box">
-        <div class="icon">💎</div>
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+        </div>
         <p>Selecciona equipos e introduce las cuotas de tu casa de apuestas</p>
       </div>
     </div>
 
+    <!-- Sub-panel: patrones -->
     <div class="sub-panel" id="sub-patterns">
       <div id="patterns-result" class="state-box">
-        <div class="icon">📊</div>
-        <p>Cargando patrones históricos...</p>
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6"  y1="20" x2="6"  y2="14"/>
+          </svg>
+        </div>
+        <p><span class="spinner"></span>Cargando patrones históricos...</p>
       </div>
     </div>
+
   </section>
 
 </main>
 
-<!-- ── Footer ──────────────────────────────────────────────────────── -->
-<div class="container">
-  <div class="disclaimer">
-    ⚠️ <b>Aviso:</b> Esta herramienta es solo informativa. No constituye asesoramiento de apuestas.
-    El juego puede crear adicción — juega con responsabilidad. Datos: football-data.co.uk.
+<!-- ── Footer ────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="disclaimer">
+      <strong>Aviso legal:</strong> Esta herramienta es exclusivamente informativa y no constituye asesoramiento de apuestas.
+      Las probabilidades son estimaciones matemáticas basadas en datos históricos. El juego puede crear adicción — juega con responsabilidad.
+      Datos: <a href="https://www.football-data.co.uk" target="_blank" rel="noopener">football-data.co.uk</a>.
+    </div>
   </div>
-</div>
+</footer>
 
 <script src="js/app.js"></script>
 <script src="js/comparador.js"></script>

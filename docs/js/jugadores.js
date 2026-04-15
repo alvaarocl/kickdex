@@ -51,7 +51,10 @@ function runJugadores() {
       return;
     }
     box.innerHTML = buildPlayerDetail(team, player, detail);
-    setTimeout(() => drawPlayerSparklines(player, detail), 50);
+    setTimeout(() => {
+      drawPlayerSparklines(player, detail);
+      initAllTables(box);
+    }, 50);
   } else {
     // All players summary
     const players = APP.players[team];
@@ -60,16 +63,33 @@ function runJugadores() {
       return;
     }
     box.innerHTML = buildTeamPlayersHTML(team, players);
-    setTimeout(() => drawTeamSparklines(team), 50);
+    setTimeout(() => {
+      drawTeamSparklines(team);
+      initAllTables(box);
+      // Wire row clicks to open player detail
+      box.querySelectorAll("#playersTable tbody tr").forEach(row => {
+        row.style.cursor = "pointer";
+        row.addEventListener("click", () => {
+          const playerName = row.cells[0]?.querySelector("b")?.textContent;
+          if (!playerName) return;
+          const sel = document.getElementById("jug-player");
+          if (sel) {
+            sel.value = playerName;
+            runJugadores();
+          }
+        });
+      });
+    }, 50);
   }
 }
 
 // ── Team overview ──────────────────────────────────────────────────────────
 
 function buildTeamPlayersHTML(team, players) {
+  const svgUser = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
   return `
   <div class="section-title" style="margin-bottom:16px;">
-    👤 ${team} — ${players.length} jugadores (temporada actual)
+    ${svgUser} ${team} <small>${players.length} jugadores · temporada actual</small>
   </div>
   <div class="table-wrap">
     <table id="playersTable">
@@ -128,9 +148,13 @@ function drawTeamSparklines(team) {
 
 function buildPlayerDetail(team, player, detail) {
   const avg = aggregatePlayerStats(detail);
+  const svgUser = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  const svgGls  = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 2a14.5 14.5 0 0 0 0 20A14.5 14.5 0 0 0 12 2z"/><path d="M2 12h20"/></svg>`;
+  const svgShot = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
+  const svgList = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`;
   return `
   <div class="card" style="margin-bottom:20px;">
-    <div class="section-title">👤 ${player} <small>${team}</small></div>
+    <div class="section-title">${svgUser} ${player} <small>${team}</small></div>
     <div class="grid-4" style="margin-bottom:16px;">
       ${miniCard("Disparos/p",   fmt(avg.sh, 1), "var(--blue)")}
       ${miniCard("SoT/p",        fmt(avg.sot, 1), "var(--green)")}
@@ -148,17 +172,17 @@ function buildPlayerDetail(team, player, detail) {
   <!-- Sparkline charts -->
   <div class="grid-2" style="margin-bottom:20px;">
     <div class="chart-box">
-      <div class="section-title">⚽ Goles por partido</div>
+      <div class="section-title">${svgGls} Goles por partido</div>
       <canvas id="sparkGls" height="120"></canvas>
     </div>
     <div class="chart-box">
-      <div class="section-title">🎯 Disparos a puerta</div>
+      <div class="section-title">${svgShot} Disparos a puerta</div>
       <canvas id="sparkSot" height="120"></canvas>
     </div>
   </div>
 
   <!-- Per-game table -->
-  <div class="section-title">📋 Detalle por partido (últimos ${detail.length})</div>
+  <div class="section-title">${svgList} Detalle por partido <small>últimos ${detail.length}</small></div>
   <div class="table-wrap">
     <table>
       <thead>
@@ -274,7 +298,7 @@ function aggregatePlayerStats(detail) {
 
 function miniCard(label, value, color) {
   return `
-  <div class="card" style="text-align:center;padding:12px;">
+  <div class="card" style="text-align:center;padding:14px 10px;">
     <div class="card-title">${label}</div>
     <div class="card-value" style="color:${color}">${value}</div>
   </div>`;

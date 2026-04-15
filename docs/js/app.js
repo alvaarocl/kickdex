@@ -27,15 +27,19 @@ async function fetchJSON(file) {
 }
 
 async function loadAllData() {
+  // Show loading state
+  const metaEl = document.getElementById("metaInfo");
+  metaEl.innerHTML = `<span class="spinner"></span> Cargando datos...`;
+
   try {
     const [meta, teams, teamStats, h2h, players, playersDetail, valuePatterns] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
       fetchJSON("h2h.json"),
-      fetchJSON("players.json"),
-      fetchJSON("players_detail.json"),
-      fetchJSON("value_patterns.json"),
+      fetchJSON("players.json").catch(() => ({})),
+      fetchJSON("players_detail.json").catch(() => ({})),
+      fetchJSON("value_patterns.json").catch(() => []),
     ]);
 
     APP.meta           = meta;
@@ -56,8 +60,8 @@ async function loadAllData() {
 
   } catch (err) {
     console.error("Error loading data:", err);
-    document.getElementById("metaInfo").textContent = "Error al cargar datos";
-    document.getElementById("metaInfo").style.color = "var(--red)";
+    metaEl.textContent = "Error al cargar datos";
+    metaEl.style.color = "var(--red)";
   }
 }
 
@@ -290,6 +294,71 @@ function generateAlerts(homeStats, awayStats, h2hSummary) {
   const order = { HIGH: 0, MEDIUM: 1, LOW: 2 };
   alerts.sort((a, b) => order[a.strength] - order[b.strength]);
   return alerts.slice(0, 8);
+}
+
+// ── Table sorting ──────────────────────────────────────────────────────────
+
+/**
+ * Wire up click-to-sort on all <th> inside a given table element.
+ * Sorts rows by the clicked column; toggles asc/desc on repeat clicks.
+ */
+function initTableSort(tableEl) {
+  if (!tableEl) return;
+  const headers = tableEl.querySelectorAll("thead th");
+  let lastCol = -1, ascending = true;
+
+  headers.forEach((th, col) => {
+    // Add sort icon if not present
+    if (!th.querySelector(".sort-icon")) {
+      const icon = document.createElement("span");
+      icon.className = "sort-icon";
+      icon.textContent = "⇅";
+      th.appendChild(icon);
+    }
+
+    th.addEventListener("click", () => {
+      if (lastCol === col) {
+        ascending = !ascending;
+      } else {
+        ascending = true;
+        lastCol = col;
+      }
+
+      headers.forEach(h => {
+        h.classList.remove("sorted");
+        const ic = h.querySelector(".sort-icon");
+        if (ic) ic.textContent = "⇅";
+      });
+      th.classList.add("sorted");
+      const ic = th.querySelector(".sort-icon");
+      if (ic) ic.textContent = ascending ? "↑" : "↓";
+
+      const tbody = tableEl.querySelector("tbody");
+      if (!tbody) return;
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+
+      rows.sort((a, b) => {
+        const aCell = a.cells[col];
+        const bCell = b.cells[col];
+        if (!aCell || !bCell) return 0;
+        const aText = aCell.textContent.trim().replace(/[%+]/g, "");
+        const bText = bCell.textContent.trim().replace(/[%+]/g, "");
+        const aNum  = parseFloat(aText);
+        const bNum  = parseFloat(bText);
+        const cmp   = isNaN(aNum) || isNaN(bNum)
+          ? aText.localeCompare(bText, "es")
+          : aNum - bNum;
+        return ascending ? cmp : -cmp;
+      });
+
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  });
+}
+
+/** Call after any dynamic table is inserted into DOM */
+function initAllTables(container) {
+  (container || document).querySelectorAll("table").forEach(t => initTableSort(t));
 }
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────

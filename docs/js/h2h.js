@@ -35,16 +35,23 @@ function runH2H() {
   const team2 = data.team2;
 
   box.innerHTML = buildH2HHTML(team1, team2, data);
-  setTimeout(() => drawH2HChart(team1, team2, data.matches), 50);
+  setTimeout(() => {
+    drawH2HChart(team1, team2, data.matches);
+    initAllTables(box);
+  }, 50);
 }
 
 function buildH2HHTML(team1, team2, data) {
   const s = data.summary;
+  const svgGoals = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 2a14.5 14.5 0 0 0 0 20A14.5 14.5 0 0 0 12 2z"/><path d="M2 12h20"/></svg>`;
+  const svgStats = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`;
+  const svgList  = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`;
+
   return `
   <!-- Title -->
   <div class="match-header" style="margin-bottom:24px;">
-    <div class="teams">${team1} <span class="vs">vs</span> ${team2}</div>
-    <div class="subtitle">${s.total} enfrentamientos en la base de datos</div>
+    <div class="teams">${team1} <span class="vs">VS</span> ${team2}</div>
+    <div class="subtitle">${s.total} enfrentamientos históricos en la base de datos</div>
   </div>
 
   <!-- Summary boxes -->
@@ -78,17 +85,17 @@ function buildH2HHTML(team1, team2, data) {
   <!-- Chart + table grid -->
   <div class="grid-2" style="margin-bottom:20px;">
     <div class="chart-box">
-      <div class="section-title">⚽ Goles por partido</div>
+      <div class="section-title">${svgGoals} Goles por partido</div>
       <canvas id="h2hGoalsChart" height="220"></canvas>
     </div>
     <div class="card">
-      <div class="section-title">📊 Estadísticas detalladas</div>
+      <div class="section-title">${svgStats} Estadísticas detalladas</div>
       ${buildH2HDetailStats(team1, team2, data.matches)}
     </div>
   </div>
 
   <!-- Full match table -->
-  <div class="section-title">📋 Historial completo</div>
+  <div class="section-title">${svgList} Historial completo</div>
   <div class="table-wrap">
     ${buildH2HTable(team1, team2, data.matches)}
   </div>

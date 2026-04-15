@@ -1,1 +1,4587 @@
-{"Alaves":[{"player":"Lucas Boyé","sh":2.5,"sot":0.7,"gls":0.3,"ast":0.0,"fls":2.2,"crdy":0.2},{"player":"Toni Martínez","sh":1.7,"sot":0.3,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.0},{"player":"Abde Rebbach","sh":1.6,"sot":0.3,"gls":0.0,"ast":0.0,"fls":1.7,"crdy":0.3},{"player":"Pablo Ibáñez","sh":1.5,"sot":0.4,"gls":0.1,"ast":0.0,"fls":1.3,"crdy":0.1},{"player":"Diego Morcillo","sh":1.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Antonio Blanco","sh":0.9,"sot":0.3,"gls":0.0,"ast":0.1,"fls":1.5,"crdy":0.3},{"player":"Carles Aleñá","sh":0.9,"sot":0.2,"gls":0.0,"ast":0.2,"fls":0.6,"crdy":0.1},{"player":"Facundo Garcés","sh":0.83,"sot":0.5,"gls":0.0,"ast":0.0,"fls":1.17,"crdy":0.33},{"player":"Nahuel Tenaglia","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.1},{"player":"Youssef Lekhedim","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.2,"crdy":0.2},{"player":"Mariano","sh":0.56,"sot":0.33,"gls":0.0,"ast":0.0,"fls":1.44,"crdy":0.11},{"player":"Denis Suárez","sh":0.4,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.3},{"player":"Jonny Castro","sh":0.4,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.2},{"player":"Calebe","sh":0.3,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.3,"crdy":0.2},{"player":"Jon Guridi","sh":0.3,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Victor Parada","sh":0.3,"sot":0.1,"gls":0.0,"ast":0.1,"fls":1.2,"crdy":0.4},{"player":"Carlos Benavídez","sh":0.25,"sot":0.25,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Carlos Vicente","sh":0.2,"sot":0.1,"gls":0.2,"ast":0.0,"fls":0.5,"crdy":0.1},{"player":"Jon Pacheco","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.2},{"player":"Ander Guevara","sh":0.1,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.7,"crdy":0.2},{"player":"Aitor Mañas","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Antonio Sivera","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.1,"crdy":0.0},{"player":"Lander Pinillos","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Moussa Diarra","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.33,"crdy":0.33}],"Ath Madrid":[{"player":"Alexander Sørloth","sh":1.9,"sot":0.9,"gls":0.2,"ast":0.0,"fls":0.6,"crdy":0.1},{"player":"Julián Álvarez","sh":1.6,"sot":0.7,"gls":0.1,"ast":0.2,"fls":0.8,"crdy":0.1},{"player":"Antoine Griezmann","sh":1.5,"sot":0.8,"gls":0.5,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Nicolás González","sh":1.4,"sot":0.8,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.1},{"player":"Alex Baena","sh":1.0,"sot":0.5,"gls":0.2,"ast":0.1,"fls":1.4,"crdy":0.2},{"player":"José María Giménez","sh":1.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.29,"crdy":0.29},{"player":"Giuliano Simeone","sh":0.9,"sot":0.4,"gls":0.1,"ast":0.2,"fls":0.8,"crdy":0.0},{"player":"Pablo Barrios","sh":0.9,"sot":0.3,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.0},{"player":"Thiago Almada","sh":0.9,"sot":0.6,"gls":0.2,"ast":0.1,"fls":0.3,"crdy":0.1},{"player":"Conor Gallagher","sh":0.8,"sot":0.4,"gls":0.1,"ast":0.0,"fls":0.7,"crdy":0.1},{"player":"Giacomo Raspadori","sh":0.6,"sot":0.3,"gls":0.0,"ast":0.1,"fls":0.2,"crdy":0.0},{"player":"Koke","sh":0.6,"sot":0.2,"gls":0.2,"ast":0.1,"fls":0.5,"crdy":0.2},{"player":"Dávid Hancko","sh":0.4,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.6,"crdy":0.0},{"player":"Marcos Llorente","sh":0.4,"sot":0.3,"gls":0.0,"ast":0.2,"fls":0.7,"crdy":0.2},{"player":"Matteo Ruggeri","sh":0.3,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.9,"crdy":0.1},{"player":"Robin Le Normand","sh":0.3,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.7,"crdy":0.1},{"player":"Johnny Cardoso","sh":0.25,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.25,"crdy":0.5},{"player":"Clément Lenglet","sh":0.22,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.56,"crdy":0.33},{"player":"Nahuel Molina","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.7,"crdy":0.1},{"player":"Marc Pubill","sh":0.17,"sot":0.17,"gls":0.0,"ast":0.17,"fls":0.83,"crdy":0.17},{"player":"Jan Oblak","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Javi Galán","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Juan Musso","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":1.0}],"Athletic Club":[{"player":"Gorka Guruzeta","sh":2.3,"sot":0.5,"gls":0.1,"ast":0.0,"fls":0.9,"crdy":0.1},{"player":"Iñaki Williams","sh":2.0,"sot":0.8,"gls":0.1,"ast":0.0,"fls":0.9,"crdy":0.1},{"player":"Oihan Sancet","sh":2.0,"sot":0.5,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.1},{"player":"Álex Berenguer","sh":1.6,"sot":1.1,"gls":0.2,"ast":0.2,"fls":1.0,"crdy":0.1},{"player":"Nico Williams","sh":1.4,"sot":0.5,"gls":0.2,"ast":0.1,"fls":0.8,"crdy":0.1},{"player":"Mikel Jauregizar","sh":1.1,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.2},{"player":"Selton Sánchez","sh":1.0,"sot":0.25,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Maroan Sannadi","sh":0.88,"sot":0.5,"gls":0.12,"ast":0.0,"fls":0.88,"crdy":0.25},{"player":"Nicolás Serrano","sh":0.86,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.57,"crdy":0.0},{"player":"Roberto Navarro","sh":0.8,"sot":0.3,"gls":0.2,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Yuri Berchiche","sh":0.8,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.2},{"player":"Unai Gómez","sh":0.7,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"Aitor Paredes","sh":0.6,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.6,"crdy":0.1},{"player":"Daniel Vivian","sh":0.6,"sot":0.3,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.4},{"player":"Alejandro Rego","sh":0.5,"sot":0.2,"gls":0.1,"ast":0.0,"fls":1.3,"crdy":0.2},{"player":"Beñat Prados","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":2.5,"crdy":0.5},{"player":"Iñigo Lekue","sh":0.5,"sot":0.17,"gls":0.0,"ast":0.0,"fls":0.83,"crdy":0.17},{"player":"Urko Izeta","sh":0.5,"sot":0.17,"gls":0.0,"ast":0.0,"fls":0.33,"crdy":0.17},{"player":"Aymeric Laporte","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.1,"fls":0.3,"crdy":0.2},{"player":"Iñigo Ruiz de Galarreta","sh":0.4,"sot":0.0,"gls":0.0,"ast":0.0,"fls":2.2,"crdy":0.7},{"player":"Andoni Gorosabel","sh":0.25,"sot":0.12,"gls":0.0,"ast":0.12,"fls":0.38,"crdy":0.25},{"player":"Mikel Vesga","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Jesús Areso","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.9,"crdy":0.1},{"player":"Adama Boiro","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Unai Simón","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0}],"Barcelona":[{"player":"Lamine Yamal","sh":4.0,"sot":1.2,"gls":0.5,"ast":0.4,"fls":0.6,"crdy":0.0},{"player":"Marcus Rashford","sh":3.5,"sot":1.0,"gls":0.2,"ast":0.3,"fls":0.2,"crdy":0.2},{"player":"Raphinha","sh":3.1,"sot":0.7,"gls":0.6,"ast":0.3,"fls":0.5,"crdy":0.1},{"player":"Fermin López","sh":2.7,"sot":1.2,"gls":0.4,"ast":0.2,"fls":1.0,"crdy":0.1},{"player":"Robert Lewandowski","sh":2.7,"sot":1.2,"gls":0.6,"ast":0.1,"fls":0.7,"crdy":0.1},{"player":"Dani Olmo","sh":2.2,"sot":0.6,"gls":0.4,"ast":0.2,"fls":0.8,"crdy":0.0},{"player":"Ferrán Torres","sh":1.8,"sot":1.3,"gls":0.7,"ast":0.0,"fls":0.6,"crdy":0.2},{"player":"Roony Bardghji","sh":1.33,"sot":0.89,"gls":0.11,"ast":0.11,"fls":0.11,"crdy":0.0},{"player":"Pedri","sh":0.7,"sot":0.4,"gls":0.1,"ast":0.5,"fls":0.5,"crdy":0.2},{"player":"Alejandro Balde","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.2,"fls":0.6,"crdy":0.1},{"player":"Eric García","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.3,"crdy":0.1},{"player":"Marc Casado","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.3,"crdy":0.0},{"player":"Pau Cubarsí","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.1},{"player":"Ronald Araújo","sh":0.5,"sot":0.4,"gls":0.2,"ast":0.0,"fls":1.0,"crdy":0.2},{"player":"Frenkie de Jong","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.3,"fls":0.3,"crdy":0.3},{"player":"Jules Koundé","sh":0.3,"sot":0.1,"gls":0.0,"ast":0.1,"fls":0.7,"crdy":0.1},{"player":"Marc Bernal","sh":0.14,"sot":0.0,"gls":0.0,"ast":0.14,"fls":0.43,"crdy":0.14},{"player":"Andreas Christensen","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.3,"crdy":0.1},{"player":"Gerard Martín","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.3,"crdy":0.2},{"player":"Gavi","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.5,"fls":1.0,"crdy":0.0},{"player":"Joan García","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.1},{"player":"Jofre Torrents","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Pedro Fernandez","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.25,"crdy":0.0},{"player":"Toni Fernández","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Wojciech Szczęsny","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0}],"Betis":[{"player":"Antony","sh":3.1,"sot":1.2,"gls":0.5,"ast":0.2,"fls":0.6,"crdy":0.1},{"player":"Abde Ezzalzouli","sh":2.8,"sot":0.9,"gls":0.3,"ast":0.2,"fls":1.1,"crdy":0.1},{"player":"Cucho","sh":2.6,"sot":0.8,"gls":0.4,"ast":0.2,"fls":0.9,"crdy":0.1},{"player":"Isco","sh":2.0,"sot":0.0,"gls":0.0,"ast":1.0,"fls":0.0,"crdy":0.0},{"player":"Pablo Fornals","sh":1.6,"sot":0.6,"gls":0.2,"ast":0.3,"fls":1.0,"crdy":0.1},{"player":"Giovani Lo Celso","sh":1.4,"sot":0.4,"gls":0.0,"ast":0.1,"fls":0.3,"crdy":0.2},{"player":"Pablo Garcia","sh":1.0,"sot":0.4,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.1},{"player":"Aitor Ruibal","sh":0.9,"sot":0.4,"gls":0.2,"ast":0.0,"fls":0.5,"crdy":0.2},{"player":"Rodrigo Riquelme","sh":0.9,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"Nelson Deossa","sh":0.67,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.44,"crdy":0.22},{"player":"Natan","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.1},{"player":"Valentín Gómez","sh":0.6,"sot":0.2,"gls":0.1,"ast":0.0,"fls":1.1,"crdy":0.3},{"player":"Cédric Bakambu","sh":0.57,"sot":0.29,"gls":0.14,"ast":0.0,"fls":0.43,"crdy":0.0},{"player":"Junior Firpo","sh":0.57,"sot":0.0,"gls":0.0,"ast":0.14,"fls":0.71,"crdy":0.29},{"player":"Sofyan Amrabat","sh":0.5,"sot":0.12,"gls":0.0,"ast":0.0,"fls":1.25,"crdy":0.38},{"player":"Marc Roca","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.1,"fls":1.5,"crdy":0.1},{"player":"Diego Llorente","sh":0.33,"sot":0.33,"gls":0.33,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Marc Bartra","sh":0.3,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.2},{"player":"Ricardo Rodríguez","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.2,"crdy":0.0},{"player":"Sergi Altimira","sh":0.2,"sot":0.1,"gls":0.1,"ast":0.1,"fls":0.6,"crdy":0.2},{"player":"Ezequiel Ávila","sh":0.17,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.33,"crdy":0.17},{"player":"Héctor Bellerín","sh":0.1,"sot":0.1,"gls":0.0,"ast":0.2,"fls":0.7,"crdy":0.1},{"player":"Daniel Guerrero","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Pau López","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.14},{"player":"Álvaro Vallés","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Ángel Ortíz","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.25,"crdy":0.0}],"Celta":[{"player":"Borja Iglesias","sh":1.6,"sot":0.7,"gls":0.2,"ast":0.2,"fls":1.7,"crdy":0.3},{"player":"Damián Rodríguez","sh":1.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.5},{"player":"Bryan Zaragoza","sh":1.4,"sot":0.5,"gls":0.0,"ast":0.1,"fls":0.3,"crdy":0.0},{"player":"Ferran Jutglà","sh":1.1,"sot":0.6,"gls":0.2,"ast":0.1,"fls":0.4,"crdy":0.3},{"player":"Pablo Durán","sh":1.1,"sot":0.5,"gls":0.2,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Williot Swedberg","sh":0.8,"sot":0.4,"gls":0.3,"ast":0.0,"fls":1.4,"crdy":0.1},{"player":"Jones El-Abdellaoui","sh":0.78,"sot":0.22,"gls":0.11,"ast":0.0,"fls":0.11,"crdy":0.0},{"player":"Miguel Román","sh":0.78,"sot":0.11,"gls":0.11,"ast":0.0,"fls":1.67,"crdy":0.33},{"player":"Fran Beltrán","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Marcos Alonso","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.1},{"player":"Sergio Carreira","sh":0.6,"sot":0.1,"gls":0.1,"ast":0.1,"fls":0.9,"crdy":0.1},{"player":"Iago Aspas","sh":0.4,"sot":0.3,"gls":0.2,"ast":0.2,"fls":0.1,"crdy":0.1},{"player":"Javier Rueda Garcia","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.3,"fls":1.5,"crdy":0.3},{"player":"Ilaix Moriba","sh":0.3,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.2},{"player":"Javi Rodríguez","sh":0.3,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.1},{"player":"Mihailo Ristić","sh":0.25,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Manu Fernández","sh":0.22,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.78,"crdy":0.22},{"player":"Hugo Sotelo","sh":0.2,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.0},{"player":"Óscar Mingueza","sh":0.2,"sot":0.1,"gls":0.1,"ast":0.2,"fls":0.3,"crdy":0.1},{"player":"Carlos Dominguez","sh":0.17,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.17},{"player":"Hugo Álvarez","sh":0.11,"sot":0.11,"gls":0.11,"ast":0.0,"fls":0.56,"crdy":0.0},{"player":"Carl Starfelt","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.3},{"player":"Ionuț Radu","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Joseph Aidoo","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Yoel Lago","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.5}],"Elche":[{"player":"Rafa Mir","sh":3.4,"sot":1.6,"gls":0.3,"ast":0.0,"fls":1.4,"crdy":0.1},{"player":"Álvaro Rodríguez","sh":2.4,"sot":0.9,"gls":0.3,"ast":0.2,"fls":0.9,"crdy":0.0},{"player":"André Silva","sh":1.8,"sot":0.6,"gls":0.2,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Héctor Fort","sh":1.11,"sot":0.44,"gls":0.11,"ast":0.22,"fls":0.44,"crdy":0.0},{"player":"Ali Houary","sh":1.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":3.5,"crdy":0.0},{"player":"Martim Neto","sh":0.9,"sot":0.3,"gls":0.1,"ast":0.2,"fls":1.1,"crdy":0.1},{"player":"Adrià Pedrosa","sh":0.8,"sot":0.1,"gls":0.1,"ast":0.0,"fls":1.0,"crdy":0.3},{"player":"Grady Diangana","sh":0.71,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.86,"crdy":0.14},{"player":"Germán Valera","sh":0.7,"sot":0.3,"gls":0.2,"ast":0.2,"fls":1.2,"crdy":0.1},{"player":"Rodrigo Mendoza","sh":0.7,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.9,"crdy":0.2},{"player":"Aleix Febas","sh":0.6,"sot":0.5,"gls":0.1,"ast":0.0,"fls":0.9,"crdy":0.2},{"player":"Mourad El Ghezouani","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Yago Santiago","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.25,"crdy":0.0},{"player":"David Affengruber","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.3},{"player":"John Donald","sh":0.4,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.1},{"player":"Josan","sh":0.33,"sot":0.11,"gls":0.0,"ast":0.22,"fls":0.44,"crdy":0.22},{"player":"Víctor Chust","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.3,"crdy":0.5},{"player":"Marc Aguado","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.1},{"player":"Pedro Bigas","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.8,"crdy":0.1},{"player":"Álvaro Núñez","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.2,"fls":1.0,"crdy":0.1},{"player":"Adam Boayar","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Bambo Diaby","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Federico Redondo","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.25,"crdy":0.0},{"player":"Iñaki Peña","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Jairo Izquierdo","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Léo Pétrot","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Matías Dituro","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.17}],"Espanol":[{"player":"Pere Milla","sh":2.3,"sot":1.0,"gls":0.3,"ast":0.0,"fls":0.9,"crdy":0.4},{"player":"Roberto Férnandez","sh":2.3,"sot":0.6,"gls":0.3,"ast":0.0,"fls":1.6,"crdy":0.1},{"player":"Javi Puado","sh":1.62,"sot":0.75,"gls":0.25,"ast":0.0,"fls":1.12,"crdy":0.25},{"player":"Kiké","sh":1.5,"sot":0.8,"gls":0.2,"ast":0.0,"fls":0.9,"crdy":0.0},{"player":"Tyrhys Dolan","sh":1.2,"sot":0.5,"gls":0.0,"ast":0.2,"fls":1.4,"crdy":0.3},{"player":"Carlos Romero","sh":1.1,"sot":0.3,"gls":0.2,"ast":0.1,"fls":1.6,"crdy":0.1},{"player":"Edu Expósito","sh":0.9,"sot":0.3,"gls":0.0,"ast":0.3,"fls":0.3,"crdy":0.1},{"player":"Leandro Cabrera","sh":0.9,"sot":0.4,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.1},{"player":"Pol Lozano","sh":0.6,"sot":0.2,"gls":0.1,"ast":0.0,"fls":1.7,"crdy":0.3},{"player":"Antoniu","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.67,"crdy":0.0},{"player":"Charles Pickel","sh":0.5,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.1},{"player":"Fernando Calero","sh":0.5,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"Urko González","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.1,"fls":1.4,"crdy":0.3},{"player":"Clemens Riedel","sh":0.38,"sot":0.12,"gls":0.0,"ast":0.12,"fls":0.5,"crdy":0.25},{"player":"Luca Koleosho","sh":0.33,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Jofre","sh":0.2,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Ramón Terrats","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.3,"crdy":0.0},{"player":"Miguel Ángel Rubio","sh":0.17,"sot":0.17,"gls":0.17,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Rubén","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"José Salinas","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.75,"crdy":0.12},{"player":"Marko Dmitrović","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Omar El Hilali","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.1,"fls":1.4,"crdy":0.2}],"Getafe":[{"player":"Christantus Uche","sh":2.0,"sot":0.33,"gls":0.33,"ast":0.33,"fls":3.33,"crdy":0.33},{"player":"Mauro Arambarri","sh":1.8,"sot":0.4,"gls":0.1,"ast":0.0,"fls":1.7,"crdy":0.2},{"player":"Adrián Liso","sh":1.0,"sot":0.2,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.1},{"player":"Borja Mayoral","sh":1.0,"sot":0.5,"gls":0.3,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Álex Sancris","sh":1.0,"sot":0.4,"gls":0.0,"ast":0.1,"fls":1.0,"crdy":0.3},{"player":"Javier Muñoz","sh":0.88,"sot":0.25,"gls":0.0,"ast":0.0,"fls":0.25,"crdy":0.0},{"player":"Iglesias","sh":0.8,"sot":0.0,"gls":0.0,"ast":0.0,"fls":2.0,"crdy":0.1},{"player":"Luis Milla","sh":0.8,"sot":0.1,"gls":0.0,"ast":0.2,"fls":1.1,"crdy":0.3},{"player":"Mario Martín","sh":0.7,"sot":0.3,"gls":0.1,"ast":0.0,"fls":1.7,"crdy":0.4},{"player":"Abdel Abqar","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.1,"fls":0.9,"crdy":0.5},{"player":"Allan Nyom","sh":0.5,"sot":0.17,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.5},{"player":"Coba da Costa","sh":0.5,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.1},{"player":"Diego Rico","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.2},{"player":"Domingos Duarte","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.2,"crdy":0.3},{"player":"Davinchi","sh":0.43,"sot":0.14,"gls":0.0,"ast":0.0,"fls":2.0,"crdy":0.14},{"player":"Djené","sh":0.4,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.2},{"player":"Abu Kamara","sh":0.33,"sot":0.11,"gls":0.0,"ast":0.0,"fls":0.22,"crdy":0.11},{"player":"Kiko Femenía","sh":0.3,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.8,"crdy":0.2},{"player":"Juanmi","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"Alex Sola","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"David Soria","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Hugo Solozabal","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Ismael Bekhoucha","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.33,"fls":1.67,"crdy":0.33},{"player":"Yvan Neyou","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.4}],"Girona":[{"player":"Azzedine Ounahi","sh":2.0,"sot":0.7,"gls":0.3,"ast":0.1,"fls":0.9,"crdy":0.5},{"player":"Bryan Gil","sh":1.2,"sot":0.1,"gls":0.0,"ast":0.2,"fls":1.1,"crdy":0.3},{"player":"Viktor Tsyhankov","sh":1.1,"sot":0.8,"gls":0.3,"ast":0.1,"fls":0.3,"crdy":0.0},{"player":"Dawda Camara","sh":1.0,"sot":0.5,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Donny van de Beek","sh":1.0,"sot":0.5,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Joel Roca","sh":1.0,"sot":0.4,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Portu","sh":0.9,"sot":0.5,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.2},{"player":"Vladyslav Vanat","sh":0.9,"sot":0.6,"gls":0.2,"ast":0.0,"fls":1.2,"crdy":0.1},{"player":"Axel Witsel","sh":0.8,"sot":0.2,"gls":0.1,"ast":0.0,"fls":1.1,"crdy":0.0},{"player":"Thomas Lemar","sh":0.62,"sot":0.12,"gls":0.0,"ast":0.12,"fls":0.25,"crdy":0.12},{"player":"Yaser Asprilla","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.9,"crdy":0.0},{"player":"Arnau Martinez","sh":0.5,"sot":0.1,"gls":0.1,"ast":0.1,"fls":0.5,"crdy":0.3},{"player":"Ladislav Krejčí","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.5},{"player":"Yangel Herrera","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Álex Moreno","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.1,"fls":1.1,"crdy":0.1},{"player":"Alejandro Francés","sh":0.38,"sot":0.25,"gls":0.0,"ast":0.0,"fls":0.62,"crdy":0.12},{"player":"David López","sh":0.33,"sot":0.33,"gls":0.0,"ast":0.0,"fls":0.33,"crdy":0.0},{"player":"Jhon Solis","sh":0.3,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Cristhian Stuani","sh":0.22,"sot":0.11,"gls":0.33,"ast":0.0,"fls":0.44,"crdy":0.22},{"player":"Iván Martín","sh":0.2,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.3},{"player":"Vitor Reis","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.3},{"player":"Daley Blind","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.1},{"player":"Hugo Rincón","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.1},{"player":"Abel Ruiz","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.67,"crdy":0.0},{"player":"Bojan Miovski","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Juan Arango","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":1.0},{"player":"Lancinet Kourouma","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Paulo Gazzaniga","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.2},{"player":"Vladyslav Krapyvtsov","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0}],"Levante":[{"player":"Karl Etta Eyong","sh":2.2,"sot":1.0,"gls":0.3,"ast":0.0,"fls":1.1,"crdy":0.2},{"player":"Iván Romero","sh":2.0,"sot":0.6,"gls":0.3,"ast":0.0,"fls":1.4,"crdy":0.2},{"player":"Pablo Martínez","sh":1.4,"sot":0.3,"gls":0.0,"ast":0.1,"fls":1.2,"crdy":0.2},{"player":"Carlos Álvarez","sh":1.1,"sot":0.3,"gls":0.1,"ast":0.0,"fls":0.5,"crdy":0.1},{"player":"Goduine Koyalipou","sh":1.0,"sot":0.4,"gls":0.1,"ast":0.0,"fls":0.2,"crdy":0.1},{"player":"Kareem Tunde","sh":1.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Brugui","sh":0.8,"sot":0.2,"gls":0.0,"ast":0.1,"fls":0.4,"crdy":0.1},{"player":"Kervin Arriaga","sh":0.6,"sot":0.3,"gls":0.1,"ast":0.0,"fls":1.4,"crdy":0.4},{"player":"Manu Sánchez","sh":0.6,"sot":0.2,"gls":0.1,"ast":0.1,"fls":0.8,"crdy":0.2},{"player":"José Luis Morales","sh":0.5,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.1,"crdy":0.0},{"player":"Olasagasti","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.6,"crdy":0.1},{"player":"Adrián de la Fuente","sh":0.4,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.5,"crdy":0.2},{"player":"Jeremy Toljan","sh":0.4,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.2},{"player":"Matias Moreno","sh":0.4,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.2},{"player":"Oriol Rey","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.2},{"player":"Víctor García","sh":0.4,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Alan Matturro","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Carlos Espí","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"Iker Losada","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Unai Elgezabal","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.2},{"player":"Diego Pampín","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.67,"crdy":0.33},{"player":"Jorge Cabello","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.2},{"player":"Mathew Ryan","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Pablo Cuñat","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Sergio Lozano","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Unai Vencedor Paris","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":2.2,"crdy":0.2}],"Mallorca":[{"player":"Vedat Muriqi","sh":2.2,"sot":1.1,"gls":0.5,"ast":0.0,"fls":0.7,"crdy":0.1},{"player":"Jan Virgili","sh":1.6,"sot":0.6,"gls":0.0,"ast":0.4,"fls":0.3,"crdy":0.0},{"player":"Mateo Joseph","sh":1.3,"sot":0.5,"gls":0.2,"ast":0.1,"fls":0.9,"crdy":0.2},{"player":"Sergi Darder","sh":1.2,"sot":0.4,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.2},{"player":"Samu Costa","sh":1.1,"sot":0.3,"gls":0.3,"ast":0.0,"fls":1.9,"crdy":0.6},{"player":"Takuma Asano","sh":0.7,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.5,"crdy":0.1},{"player":"Johan Mojica","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.3,"fls":1.0,"crdy":0.2},{"player":"Dani Rodríguez","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Marc Domenech","sh":0.43,"sot":0.0,"gls":0.0,"ast":0.14,"fls":0.43,"crdy":0.0},{"player":"Antonio Raillo","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.1,"fls":1.2,"crdy":0.2},{"player":"Mateu Morey","sh":0.4,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.1},{"player":"Manu Morlanes","sh":0.3,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.1},{"player":"Martin Valjent","sh":0.3,"sot":0.2,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.1},{"player":"Abdón Prats","sh":0.29,"sot":0.14,"gls":0.0,"ast":0.0,"fls":0.29,"crdy":0.0},{"player":"Javier Llabrés","sh":0.29,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.29,"crdy":0.0},{"player":"Antonio Sánchez","sh":0.2,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.3},{"player":"Marash Kumbulla","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Pablo Torre","sh":0.2,"sot":0.1,"gls":0.0,"ast":0.1,"fls":0.7,"crdy":0.0},{"player":"Omar Mascarell","sh":0.1,"sot":0.1,"gls":0.1,"ast":0.1,"fls":0.7,"crdy":0.2},{"player":"Pablo Maffeo","sh":0.1,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.2},{"player":"David López","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Jan Salas","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Leo Román","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.2},{"player":"Lucas Bergström","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.2},{"player":"Toni Lato","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0}],"Osasuna":[{"player":"Ante Budimir","sh":2.7,"sot":1.0,"gls":0.4,"ast":0.0,"fls":1.1,"crdy":0.0},{"player":"Víctor Muñoz","sh":1.8,"sot":0.7,"gls":0.1,"ast":0.1,"fls":1.3,"crdy":0.1},{"player":"Aimar Oroz","sh":1.2,"sot":0.2,"gls":0.0,"ast":0.2,"fls":0.7,"crdy":0.3},{"player":"Raúl","sh":1.2,"sot":0.7,"gls":0.2,"ast":0.0,"fls":0.3,"crdy":0.1},{"player":"Abel Bretones","sh":0.9,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.7,"crdy":0.4},{"player":"Rubén García","sh":0.9,"sot":0.3,"gls":0.1,"ast":0.4,"fls":0.8,"crdy":0.1},{"player":"Catena","sh":0.8,"sot":0.2,"gls":0.2,"ast":0.0,"fls":1.8,"crdy":0.5},{"player":"Jon Moncayola","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.1,"fls":1.2,"crdy":0.2},{"player":"Moi Gómez","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.2,"crdy":0.1},{"player":"Lucas Torró","sh":0.5,"sot":0.2,"gls":0.0,"ast":0.1,"fls":0.5,"crdy":0.1},{"player":"Iker Benito","sh":0.4,"sot":0.2,"gls":0.2,"ast":0.0,"fls":0.6,"crdy":0.2},{"player":"Sheraldo Becker","sh":0.33,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.44,"crdy":0.0},{"player":"Valentin Rosier","sh":0.3,"sot":0.0,"gls":0.0,"ast":0.1,"fls":0.9,"crdy":0.3},{"player":"Enzo Boyomo","sh":0.2,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.9,"crdy":0.3},{"player":"Jorge Herrando","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.9,"crdy":0.0},{"player":"Asier Osambela","sh":0.17,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.0},{"player":"Iker Muñoz","sh":0.17,"sot":0.17,"gls":0.0,"ast":0.0,"fls":1.33,"crdy":0.33},{"player":"Juan Cruz Armada","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.3,"crdy":0.0},{"player":"Kike Barja","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.3,"crdy":0.1},{"player":"Iñigo Arguibide","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Sergio Herrera","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.1}],"Oviedo":[{"player":"Ilyas Chaira","sh":1.6,"sot":0.6,"gls":0.0,"ast":0.0,"fls":1.6,"crdy":0.0},{"player":"Salomón Rondón","sh":1.3,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.4,"crdy":0.1},{"player":"Federico Viñas","sh":1.2,"sot":0.3,"gls":0.1,"ast":0.0,"fls":1.6,"crdy":0.1},{"player":"Haissem Hassan","sh":1.0,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Lucas Ahijado","sh":0.71,"sot":0.14,"gls":0.0,"ast":0.14,"fls":0.57,"crdy":0.29},{"player":"Álex Forés","sh":0.7,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.1,"crdy":0.0},{"player":"David Carmo","sh":0.6,"sot":0.3,"gls":0.1,"ast":0.0,"fls":1.1,"crdy":0.6},{"player":"Josip Brekalo","sh":0.6,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.1},{"player":"Nacho Vidal","sh":0.6,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.2},{"player":"Santiago Colombatto","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.1,"fls":2.1,"crdy":0.4},{"player":"Eric Bailly","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.25},{"player":"Leander Dendoncker","sh":0.5,"sot":0.2,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.0},{"player":"Pablo Agudín","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.25,"crdy":0.0},{"player":"Santi Cazorla","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"Ovie Ejaria","sh":0.43,"sot":0.14,"gls":0.0,"ast":0.0,"fls":0.43,"crdy":0.14},{"player":"Kwasi Sibo","sh":0.38,"sot":0.12,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Alberto Reina","sh":0.3,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.1},{"player":"Luka Ilić","sh":0.3,"sot":0.3,"gls":0.1,"ast":0.0,"fls":1.2,"crdy":0.3},{"player":"Rahim Bonkano","sh":0.1,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Aarón Escandell","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.1},{"player":"Borja Sánchez Laborde","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Dani Calvo","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.67,"crdy":0.22},{"player":"David Costas","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Javi López","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.67,"crdy":0.0},{"player":"Marco Esteban","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Oier Luengo","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Omar Falah","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0}],"Real Madrid":[{"player":"Kylian Mbappé","sh":4.4,"sot":2.0,"gls":0.9,"ast":0.2,"fls":0.5,"crdy":0.1},{"player":"Vinicius Júnior","sh":2.8,"sot":0.9,"gls":0.0,"ast":0.1,"fls":0.6,"crdy":0.2},{"player":"Jude Bellingham","sh":2.5,"sot":1.5,"gls":0.4,"ast":0.3,"fls":1.8,"crdy":0.1},{"player":"Federico Valverde","sh":1.9,"sot":0.4,"gls":0.0,"ast":0.1,"fls":0.5,"crdy":0.2},{"player":"Franco Mastantuono","sh":1.8,"sot":0.4,"gls":0.1,"ast":0.0,"fls":1.3,"crdy":0.3},{"player":"Arda Güler","sh":1.6,"sot":0.5,"gls":0.0,"ast":0.2,"fls":0.7,"crdy":0.0},{"player":"Rodrygo","sh":1.4,"sot":0.6,"gls":0.1,"ast":0.1,"fls":0.5,"crdy":0.3},{"player":"Éder Militão","sh":1.3,"sot":0.5,"gls":0.1,"ast":0.1,"fls":0.8,"crdy":0.1},{"player":"Aurélien Tchouaméni","sh":1.1,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.3,"crdy":0.3},{"player":"Dean Huijsen","sh":0.9,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.6,"crdy":0.2},{"player":"Raúl Asencio","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.2},{"player":"Antonio Rüdiger","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Brahim Díaz","sh":0.5,"sot":0.1,"gls":0.0,"ast":0.1,"fls":0.5,"crdy":0.1},{"player":"Eduardo Camavinga","sh":0.4,"sot":0.1,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.0},{"player":"Álvaro Carreras","sh":0.4,"sot":0.1,"gls":0.1,"ast":0.1,"fls":0.6,"crdy":0.2},{"player":"Trent Alexander-Arnold","sh":0.38,"sot":0.0,"gls":0.0,"ast":0.12,"fls":0.5,"crdy":0.0},{"player":"David Alaba","sh":0.33,"sot":0.33,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Fran Garcia","sh":0.33,"sot":0.17,"gls":0.0,"ast":0.0,"fls":0.67,"crdy":0.33},{"player":"Gonzalo García","sh":0.3,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.1,"crdy":0.0},{"player":"Dani Carvajal","sh":0.29,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.57,"crdy":0.0},{"player":"Dani Ceballos","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"David Jiménez","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Endrick","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Thibaut Courtois","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Victor Valdepeñas","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":3.0,"crdy":0.0}],"Sevilla":[{"player":"Adams Akor","sh":2.0,"sot":1.0,"gls":0.3,"ast":0.1,"fls":0.8,"crdy":0.1},{"player":"Ruben Vargas","sh":1.8,"sot":0.4,"gls":0.3,"ast":0.2,"fls":0.5,"crdy":0.1},{"player":"Isaac Romero","sh":1.7,"sot":0.7,"gls":0.3,"ast":0.0,"fls":1.5,"crdy":0.3},{"player":"Alfon","sh":1.1,"sot":0.7,"gls":0.1,"ast":0.0,"fls":0.3,"crdy":0.0},{"player":"Dodi Lukebakio","sh":1.0,"sot":0.5,"gls":0.5,"ast":0.0,"fls":1.5,"crdy":0.0},{"player":"Stanis Idumbo","sh":1.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Alexis Sánchez","sh":0.9,"sot":0.2,"gls":0.1,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Nemanja Gudelj","sh":0.9,"sot":0.2,"gls":0.1,"ast":0.0,"fls":1.2,"crdy":0.3},{"player":"Peque","sh":0.9,"sot":0.3,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.4},{"player":"Chidera Ejuke","sh":0.8,"sot":0.1,"gls":0.1,"ast":0.1,"fls":0.0,"crdy":0.0},{"player":"Marcão","sh":0.8,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.9,"crdy":0.5},{"player":"Joaquín Martínez Gauna","sh":0.67,"sot":0.33,"gls":0.0,"ast":0.33,"fls":0.0,"crdy":0.0},{"player":"Carmona","sh":0.6,"sot":0.1,"gls":0.1,"ast":0.2,"fls":2.0,"crdy":0.7},{"player":"Tanguy Nianzou","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.0,"fls":2.0,"crdy":0.8},{"player":"Castrin","sh":0.5,"sot":0.12,"gls":0.0,"ast":0.0,"fls":0.88,"crdy":0.38},{"player":"Djibril Sow","sh":0.5,"sot":0.1,"gls":0.1,"ast":0.0,"fls":1.8,"crdy":0.3},{"player":"Lucien Agoume","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.2,"fls":1.1,"crdy":0.5},{"player":"Miguel Ángel Sierra","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Juanlu Sánchez","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.0},{"player":"Kike Salas","sh":0.33,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Manu Bueno","sh":0.33,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Batista Mendy","sh":0.2,"sot":0.1,"gls":0.1,"ast":0.0,"fls":1.9,"crdy":0.1},{"player":"Adnan Januzaj","sh":0.12,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.62,"crdy":0.12},{"player":"Gabriel Suazo","sh":0.1,"sot":0.1,"gls":0.0,"ast":0.2,"fls":0.8,"crdy":0.3},{"player":"Adrià Pedrosa","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"César Azpilicueta","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.78,"crdy":0.33},{"player":"Fábio Cardoso","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":3.0,"crdy":0.0},{"player":"Joan Jordán","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Odysseas Vlachodimos","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Ramón Martínez","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Ørjan Nyland","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.25}],"Sociedad":[{"player":"Mikel Oyarzabal","sh":3.1,"sot":1.0,"gls":0.4,"ast":0.2,"fls":1.0,"crdy":0.1},{"player":"Gonçalo Guedes","sh":1.5,"sot":0.6,"gls":0.3,"ast":0.1,"fls":0.7,"crdy":0.0},{"player":"Brais Méndez","sh":1.3,"sot":0.6,"gls":0.2,"ast":0.1,"fls":1.9,"crdy":0.1},{"player":"Carlos Soler","sh":1.3,"sot":0.9,"gls":0.2,"ast":0.1,"fls":1.2,"crdy":0.1},{"player":"Takefusa Kubo","sh":1.3,"sot":0.5,"gls":0.1,"ast":0.1,"fls":0.1,"crdy":0.0},{"player":"Jon Karrikaburu","sh":1.0,"sot":0.33,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Lander Astiazaran","sh":1.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Orri Steinn Óskarsson","sh":1.0,"sot":0.67,"gls":0.33,"ast":0.0,"fls":0.33,"crdy":0.0},{"player":"Yangel Herrera","sh":1.0,"sot":0.5,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.5},{"player":"Álvaro Odriozola","sh":1.0,"sot":1.0,"gls":1.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Ander Barrenetxea","sh":0.8,"sot":0.4,"gls":0.2,"ast":0.2,"fls":1.4,"crdy":0.1},{"player":"Umar Sadiq","sh":0.8,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.2},{"player":"Jon Martin","sh":0.78,"sot":0.11,"gls":0.0,"ast":0.0,"fls":1.11,"crdy":0.33},{"player":"Beñat Turrientes","sh":0.75,"sot":0.12,"gls":0.0,"ast":0.0,"fls":1.25,"crdy":0.25},{"player":"Mikel Goti","sh":0.75,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.0},{"player":"Jon Aramburu","sh":0.7,"sot":0.2,"gls":0.0,"ast":0.0,"fls":2.1,"crdy":0.4},{"player":"Luka Sučić","sh":0.67,"sot":0.17,"gls":0.0,"ast":0.0,"fls":0.33,"crdy":0.0},{"player":"Duje Ćaleta-Car","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.2,"crdy":0.3},{"player":"Jon Gorrotxategi","sh":0.6,"sot":0.1,"gls":0.1,"ast":0.1,"fls":1.7,"crdy":0.4},{"player":"Arsen Zakharyan","sh":0.5,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.1},{"player":"Aihen Muñoz","sh":0.3,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.2,"crdy":0.0},{"player":"Pablo Marín","sh":0.3,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Sergio Gómez","sh":0.3,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.7,"crdy":0.1},{"player":"Aritz Elustondo","sh":0.25,"sot":0.12,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.0},{"player":"Igor Zubeldia","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.1,"fls":1.2,"crdy":0.4},{"player":"Arkaitz Mariezkurrena","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":2.0,"crdy":0.0},{"player":"Gorka Carrera","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Urko González","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Álex Remiro","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0}],"Valencia":[{"player":"Arnaut Danjuma","sh":1.9,"sot":0.7,"gls":0.1,"ast":0.1,"fls":0.7,"crdy":0.0},{"player":"Luis Rioja","sh":1.6,"sot":0.2,"gls":0.1,"ast":0.1,"fls":0.4,"crdy":0.1},{"player":"Lucas Beltrán","sh":1.5,"sot":0.5,"gls":0.1,"ast":0.0,"fls":0.7,"crdy":0.0},{"player":"Diego López","sh":1.4,"sot":0.3,"gls":0.2,"ast":0.0,"fls":0.9,"crdy":0.1},{"player":"Hugo Duro","sh":1.2,"sot":0.4,"gls":0.3,"ast":0.0,"fls":0.4,"crdy":0.3},{"player":"Largie Ramazani","sh":0.88,"sot":0.25,"gls":0.0,"ast":0.12,"fls":0.62,"crdy":0.0},{"player":"Javier Guerra","sh":0.8,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.9,"crdy":0.1},{"player":"José Luis García Vayá","sh":0.8,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.4,"crdy":0.1},{"player":"Copete","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.3},{"player":"José Luis Gayà","sh":0.6,"sot":0.0,"gls":0.0,"ast":0.1,"fls":1.0,"crdy":0.2},{"player":"Mouctar Diakhaby","sh":0.57,"sot":0.43,"gls":0.14,"ast":0.0,"fls":1.0,"crdy":0.43},{"player":"Domingos André Ribeiro Almeida","sh":0.5,"sot":0.1,"gls":0.0,"ast":0.1,"fls":0.7,"crdy":0.0},{"player":"Filip Ugrinic","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.25,"fls":0.5,"crdy":0.12},{"player":"Jesus Vazquez","sh":0.5,"sot":0.2,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"César Tárrega","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.0,"fls":1.5,"crdy":0.4},{"player":"Dani Raba","sh":0.4,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Dimitri Foulquier","sh":0.4,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.0},{"player":"Thierry Correia","sh":0.3,"sot":0.1,"gls":0.0,"ast":0.1,"fls":1.8,"crdy":0.3},{"player":"Baptiste Santamaria","sh":0.2,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.2},{"player":"Eray Cömert","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Julen Agirrezabala","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0}],"Vallecano":[{"player":"Isaac Palazón Camacho","sh":1.8,"sot":0.4,"gls":0.0,"ast":0.0,"fls":1.1,"crdy":0.3},{"player":"Álvaro García","sh":1.7,"sot":0.4,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.1},{"player":"Pedro Díaz","sh":1.6,"sot":0.3,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Andrei Ratiu","sh":1.3,"sot":0.4,"gls":0.0,"ast":0.1,"fls":0.6,"crdy":0.2},{"player":"Jorge de Frutos","sh":1.2,"sot":0.5,"gls":0.2,"ast":0.0,"fls":0.7,"crdy":0.1},{"player":"Alexandre Alemão","sh":1.0,"sot":0.5,"gls":0.1,"ast":0.0,"fls":1.0,"crdy":0.1},{"player":"Pelayo Fernandez","sh":1.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Unai López","sh":0.9,"sot":0.3,"gls":0.0,"ast":0.2,"fls":1.5,"crdy":0.4},{"player":"Florian Lejeune","sh":0.8,"sot":0.3,"gls":0.0,"ast":0.0,"fls":1.7,"crdy":0.2},{"player":"Gerard Gumbau","sh":0.7,"sot":0.3,"gls":0.0,"ast":0.1,"fls":1.3,"crdy":0.1},{"player":"Nobel Mendy","sh":0.67,"sot":0.11,"gls":0.11,"ast":0.0,"fls":1.56,"crdy":0.33},{"player":"Francisco Perez","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.1},{"player":"Pep Chavarría","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.2,"fls":1.1,"crdy":0.1},{"player":"Sergio Camello","sh":0.6,"sot":0.3,"gls":0.0,"ast":0.0,"fls":0.3,"crdy":0.1},{"player":"Pathé Ciss","sh":0.5,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.8,"crdy":0.2},{"player":"Randy Nteka","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.25,"crdy":0.0},{"player":"Óscar Valentín","sh":0.5,"sot":0.2,"gls":0.0,"ast":0.0,"fls":1.2,"crdy":0.1},{"player":"Alfonso Espino","sh":0.4,"sot":0.3,"gls":0.1,"ast":0.0,"fls":0.8,"crdy":0.0},{"player":"Iván Balliu","sh":0.25,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.62,"crdy":0.38},{"player":"Jozhua Vertrouwd","sh":0.25,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.0},{"player":"Óscar Trejo","sh":0.25,"sot":0.25,"gls":0.0,"ast":0.0,"fls":0.25,"crdy":0.25},{"player":"Luiz Felipe","sh":0.17,"sot":0.17,"gls":0.0,"ast":0.0,"fls":0.33,"crdy":0.17},{"player":"Augusto Batalla","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.2},{"player":"Samu Becerra","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.33,"crdy":0.0}],"Villarreal":[{"player":"Karl Etta Eyong","sh":2.33,"sot":1.0,"gls":0.33,"ast":0.67,"fls":1.0,"crdy":0.0},{"player":"Georges Mikautadze","sh":2.0,"sot":1.1,"gls":0.3,"ast":0.2,"fls":0.4,"crdy":0.0},{"player":"Alberto Moleiro","sh":1.7,"sot":1.2,"gls":0.6,"ast":0.2,"fls":1.3,"crdy":0.2},{"player":"Gerard Moreno","sh":1.57,"sot":0.71,"gls":0.57,"ast":0.0,"fls":0.71,"crdy":0.0},{"player":"Nicolas Pépé","sh":1.4,"sot":0.3,"gls":0.0,"ast":0.0,"fls":0.9,"crdy":0.2},{"player":"Pape Gueye","sh":1.2,"sot":0.3,"gls":0.1,"ast":0.1,"fls":1.1,"crdy":0.4},{"player":"Santi Comesaña","sh":1.2,"sot":0.4,"gls":0.2,"ast":0.2,"fls":1.5,"crdy":0.1},{"player":"Tani Oluwaseyi","sh":1.0,"sot":0.5,"gls":0.2,"ast":0.0,"fls":0.4,"crdy":0.0},{"player":"Yeremi Pino","sh":1.0,"sot":0.5,"gls":0.0,"ast":0.5,"fls":1.0,"crdy":0.0},{"player":"Tajon Buchanan","sh":0.7,"sot":0.4,"gls":0.2,"ast":0.0,"fls":0.8,"crdy":0.5},{"player":"Ayoze Pérez","sh":0.67,"sot":0.33,"gls":0.22,"ast":0.33,"fls":0.67,"crdy":0.11},{"player":"Ilias Akhomach","sh":0.67,"sot":0.22,"gls":0.0,"ast":0.0,"fls":1.0,"crdy":0.0},{"player":"Thomas Partey","sh":0.6,"sot":0.1,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.0},{"player":"Carlos Macià","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.5,"crdy":0.5},{"player":"Renato Veiga","sh":0.5,"sot":0.2,"gls":0.0,"ast":0.0,"fls":0.6,"crdy":0.0},{"player":"Santiago Mouriño","sh":0.5,"sot":0.0,"gls":0.0,"ast":0.1,"fls":2.0,"crdy":0.6},{"player":"Sergi Cardona","sh":0.5,"sot":0.3,"gls":0.0,"ast":0.1,"fls":1.1,"crdy":0.1},{"player":"Alfonso Pedraza","sh":0.4,"sot":0.0,"gls":0.0,"ast":0.2,"fls":1.1,"crdy":0.3},{"player":"Manor Solomon","sh":0.33,"sot":0.17,"gls":0.17,"ast":0.17,"fls":0.0,"crdy":0.0},{"player":"Juan Foyth","sh":0.22,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.67,"crdy":0.11},{"player":"Daniel Parejo","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.4,"crdy":0.2},{"player":"Rafa Marín","sh":0.2,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.7,"crdy":0.1},{"player":"Pau Navarro","sh":0.17,"sot":0.17,"gls":0.0,"ast":0.0,"fls":2.83,"crdy":0.33},{"player":"Adrià Altimira","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Arnau Tenas","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.0},{"player":"Luiz Lúcio Reis Júnior","sh":0.0,"sot":0.0,"gls":0.0,"ast":0.0,"fls":0.0,"crdy":0.2}]}
+{
+  "Alaves": [
+    {
+      "player": "Lucas BoyÃ©",
+      "sh": 2.5,
+      "sot": 0.7,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 2.2,
+      "crdy": 0.2
+    },
+    {
+      "player": "Toni MartÃ­nez",
+      "sh": 1.7,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.0
+    },
+    {
+      "player": "Abde Rebbach",
+      "sh": 1.6,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.7,
+      "crdy": 0.3
+    },
+    {
+      "player": "Pablo IbÃ¡Ã±ez",
+      "sh": 1.5,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Diego Morcillo",
+      "sh": 1.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Antonio Blanco",
+      "sh": 0.9,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.5,
+      "crdy": 0.3
+    },
+    {
+      "player": "Carles AleÃ±Ã¡",
+      "sh": 0.9,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Facundo GarcÃ©s",
+      "sh": 0.83,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.17,
+      "crdy": 0.33
+    },
+    {
+      "player": "Nahuel Tenaglia",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Youssef Lekhedim",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.2
+    },
+    {
+      "player": "Mariano",
+      "sh": 0.56,
+      "sot": 0.33,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.44,
+      "crdy": 0.11
+    },
+    {
+      "player": "Denis SuÃ¡rez",
+      "sh": 0.4,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.3
+    },
+    {
+      "player": "Jonny Castro",
+      "sh": 0.4,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "Calebe",
+      "sh": 0.3,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.2
+    },
+    {
+      "player": "Jon Guridi",
+      "sh": 0.3,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Victor Parada",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.2,
+      "crdy": 0.4
+    },
+    {
+      "player": "Carlos BenavÃ­dez",
+      "sh": 0.25,
+      "sot": 0.25,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Carlos Vicente",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Jon Pacheco",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Ander Guevara",
+      "sh": 0.1,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.2
+    },
+    {
+      "player": "Aitor MaÃ±as",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Antonio Sivera",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "Lander Pinillos",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Moussa Diarra",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.33,
+      "crdy": 0.33
+    }
+  ],
+  "Ath Madrid": [
+    {
+      "player": "Alexander SÃ¸rloth",
+      "sh": 1.9,
+      "sot": 0.9,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "JuliÃ¡n Ãlvarez",
+      "sh": 1.6,
+      "sot": 0.7,
+      "gls": 0.1,
+      "ast": 0.2,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Antoine Griezmann",
+      "sh": 1.5,
+      "sot": 0.8,
+      "gls": 0.5,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "NicolÃ¡s GonzÃ¡lez",
+      "sh": 1.4,
+      "sot": 0.8,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "Alex Baena",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 1.4,
+      "crdy": 0.2
+    },
+    {
+      "player": "JosÃ© MarÃ­a GimÃ©nez",
+      "sh": 1.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.29,
+      "crdy": 0.29
+    },
+    {
+      "player": "Giuliano Simeone",
+      "sh": 0.9,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.2,
+      "fls": 0.8,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pablo Barrios",
+      "sh": 0.9,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.0
+    },
+    {
+      "player": "Thiago Almada",
+      "sh": 0.9,
+      "sot": 0.6,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 0.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Conor Gallagher",
+      "sh": 0.8,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Giacomo Raspadori",
+      "sh": 0.6,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Koke",
+      "sh": 0.6,
+      "sot": 0.2,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 0.5,
+      "crdy": 0.2
+    },
+    {
+      "player": "DÃ¡vid Hancko",
+      "sh": 0.4,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Marcos Llorente",
+      "sh": 0.4,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 0.7,
+      "crdy": 0.2
+    },
+    {
+      "player": "Matteo Ruggeri",
+      "sh": 0.3,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Robin Le Normand",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Johnny Cardoso",
+      "sh": 0.25,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.25,
+      "crdy": 0.5
+    },
+    {
+      "player": "ClÃ©ment Lenglet",
+      "sh": 0.22,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.56,
+      "crdy": 0.33
+    },
+    {
+      "player": "Nahuel Molina",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Marc Pubill",
+      "sh": 0.17,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.17,
+      "fls": 0.83,
+      "crdy": 0.17
+    },
+    {
+      "player": "Jan Oblak",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Javi GalÃ¡n",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Juan Musso",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 1.0
+    }
+  ],
+  "Athletic Club": [
+    {
+      "player": "Gorka Guruzeta",
+      "sh": 2.3,
+      "sot": 0.5,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "IÃ±aki Williams",
+      "sh": 2.0,
+      "sot": 0.8,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Oihan Sancet",
+      "sh": 2.0,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "Ãlex Berenguer",
+      "sh": 1.6,
+      "sot": 1.1,
+      "gls": 0.2,
+      "ast": 0.2,
+      "fls": 1.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Nico Williams",
+      "sh": 1.4,
+      "sot": 0.5,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Mikel Jauregizar",
+      "sh": 1.1,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.2
+    },
+    {
+      "player": "Selton SÃ¡nchez",
+      "sh": 1.0,
+      "sot": 0.25,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Maroan Sannadi",
+      "sh": 0.88,
+      "sot": 0.5,
+      "gls": 0.12,
+      "ast": 0.0,
+      "fls": 0.88,
+      "crdy": 0.25
+    },
+    {
+      "player": "NicolÃ¡s Serrano",
+      "sh": 0.86,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.57,
+      "crdy": 0.0
+    },
+    {
+      "player": "Roberto Navarro",
+      "sh": 0.8,
+      "sot": 0.3,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Yuri Berchiche",
+      "sh": 0.8,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Unai GÃ³mez",
+      "sh": 0.7,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Aitor Paredes",
+      "sh": 0.6,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Daniel Vivian",
+      "sh": 0.6,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.4
+    },
+    {
+      "player": "Alejandro Rego",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.2
+    },
+    {
+      "player": "BeÃ±at Prados",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.5,
+      "crdy": 0.5
+    },
+    {
+      "player": "IÃ±igo Lekue",
+      "sh": 0.5,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.83,
+      "crdy": 0.17
+    },
+    {
+      "player": "Urko Izeta",
+      "sh": 0.5,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.33,
+      "crdy": 0.17
+    },
+    {
+      "player": "Aymeric Laporte",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.3,
+      "crdy": 0.2
+    },
+    {
+      "player": "IÃ±igo Ruiz de Galarreta",
+      "sh": 0.4,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.2,
+      "crdy": 0.7
+    },
+    {
+      "player": "Andoni Gorosabel",
+      "sh": 0.25,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.12,
+      "fls": 0.38,
+      "crdy": 0.25
+    },
+    {
+      "player": "Mikel Vesga",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "JesÃºs Areso",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Adama Boiro",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Unai SimÃ³n",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    }
+  ],
+  "Barcelona": [
+    {
+      "player": "Lamine Yamal",
+      "sh": 4.0,
+      "sot": 1.2,
+      "gls": 0.5,
+      "ast": 0.4,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Marcus Rashford",
+      "sh": 3.5,
+      "sot": 1.0,
+      "gls": 0.2,
+      "ast": 0.3,
+      "fls": 0.2,
+      "crdy": 0.2
+    },
+    {
+      "player": "Raphinha",
+      "sh": 3.1,
+      "sot": 0.7,
+      "gls": 0.6,
+      "ast": 0.3,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Fermin LÃ³pez",
+      "sh": 2.7,
+      "sot": 1.2,
+      "gls": 0.4,
+      "ast": 0.2,
+      "fls": 1.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Robert Lewandowski",
+      "sh": 2.7,
+      "sot": 1.2,
+      "gls": 0.6,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Dani Olmo",
+      "sh": 2.2,
+      "sot": 0.6,
+      "gls": 0.4,
+      "ast": 0.2,
+      "fls": 0.8,
+      "crdy": 0.0
+    },
+    {
+      "player": "FerrÃ¡n Torres",
+      "sh": 1.8,
+      "sot": 1.3,
+      "gls": 0.7,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Roony Bardghji",
+      "sh": 1.33,
+      "sot": 0.89,
+      "gls": 0.11,
+      "ast": 0.11,
+      "fls": 0.11,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pedri",
+      "sh": 0.7,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.5,
+      "fls": 0.5,
+      "crdy": 0.2
+    },
+    {
+      "player": "Alejandro Balde",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Eric GarcÃ­a",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Marc Casado",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pau CubarsÃ­",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Ronald AraÃºjo",
+      "sh": 0.5,
+      "sot": 0.4,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Frenkie de Jong",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.3,
+      "fls": 0.3,
+      "crdy": 0.3
+    },
+    {
+      "player": "Jules KoundÃ©",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Marc Bernal",
+      "sh": 0.14,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.14,
+      "fls": 0.43,
+      "crdy": 0.14
+    },
+    {
+      "player": "Andreas Christensen",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Gerard MartÃ­n",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.2
+    },
+    {
+      "player": "Gavi",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.5,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Joan GarcÃ­a",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Jofre Torrents",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pedro Fernandez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.25,
+      "crdy": 0.0
+    },
+    {
+      "player": "Toni FernÃ¡ndez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Wojciech SzczÄsny",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    }
+  ],
+  "Betis": [
+    {
+      "player": "Antony",
+      "sh": 3.1,
+      "sot": 1.2,
+      "gls": 0.5,
+      "ast": 0.2,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Abde Ezzalzouli",
+      "sh": 2.8,
+      "sot": 0.9,
+      "gls": 0.3,
+      "ast": 0.2,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "Cucho",
+      "sh": 2.6,
+      "sot": 0.8,
+      "gls": 0.4,
+      "ast": 0.2,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Isco",
+      "sh": 2.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 1.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pablo Fornals",
+      "sh": 1.6,
+      "sot": 0.6,
+      "gls": 0.2,
+      "ast": 0.3,
+      "fls": 1.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Giovani Lo Celso",
+      "sh": 1.4,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.3,
+      "crdy": 0.2
+    },
+    {
+      "player": "Pablo Garcia",
+      "sh": 1.0,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Aitor Ruibal",
+      "sh": 0.9,
+      "sot": 0.4,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.2
+    },
+    {
+      "player": "Rodrigo Riquelme",
+      "sh": 0.9,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Nelson Deossa",
+      "sh": 0.67,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.44,
+      "crdy": 0.22
+    },
+    {
+      "player": "Natan",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "ValentÃ­n GÃ³mez",
+      "sh": 0.6,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.3
+    },
+    {
+      "player": "CÃ©dric Bakambu",
+      "sh": 0.57,
+      "sot": 0.29,
+      "gls": 0.14,
+      "ast": 0.0,
+      "fls": 0.43,
+      "crdy": 0.0
+    },
+    {
+      "player": "Junior Firpo",
+      "sh": 0.57,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.14,
+      "fls": 0.71,
+      "crdy": 0.29
+    },
+    {
+      "player": "Sofyan Amrabat",
+      "sh": 0.5,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.25,
+      "crdy": 0.38
+    },
+    {
+      "player": "Marc Roca",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Diego Llorente",
+      "sh": 0.33,
+      "sot": 0.33,
+      "gls": 0.33,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Marc Bartra",
+      "sh": 0.3,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.2
+    },
+    {
+      "player": "Ricardo RodrÃ­guez",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Sergi Altimira",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Ezequiel Ãvila",
+      "sh": 0.17,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.33,
+      "crdy": 0.17
+    },
+    {
+      "player": "HÃ©ctor BellerÃ­n",
+      "sh": 0.1,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Daniel Guerrero",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pau LÃ³pez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.14
+    },
+    {
+      "player": "Ãlvaro VallÃ©s",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãngel OrtÃ­z",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.25,
+      "crdy": 0.0
+    }
+  ],
+  "Celta": [
+    {
+      "player": "Borja Iglesias",
+      "sh": 1.6,
+      "sot": 0.7,
+      "gls": 0.2,
+      "ast": 0.2,
+      "fls": 1.7,
+      "crdy": 0.3
+    },
+    {
+      "player": "DamiÃ¡n RodrÃ­guez",
+      "sh": 1.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.5
+    },
+    {
+      "player": "Bryan Zaragoza",
+      "sh": 1.4,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.3,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ferran JutglÃ ",
+      "sh": 1.1,
+      "sot": 0.6,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 0.4,
+      "crdy": 0.3
+    },
+    {
+      "player": "Pablo DurÃ¡n",
+      "sh": 1.1,
+      "sot": 0.5,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Williot Swedberg",
+      "sh": 0.8,
+      "sot": 0.4,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 1.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Jones El-Abdellaoui",
+      "sh": 0.78,
+      "sot": 0.22,
+      "gls": 0.11,
+      "ast": 0.0,
+      "fls": 0.11,
+      "crdy": 0.0
+    },
+    {
+      "player": "Miguel RomÃ¡n",
+      "sh": 0.78,
+      "sot": 0.11,
+      "gls": 0.11,
+      "ast": 0.0,
+      "fls": 1.67,
+      "crdy": 0.33
+    },
+    {
+      "player": "Fran BeltrÃ¡n",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Marcos Alonso",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Sergio Carreira",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Iago Aspas",
+      "sh": 0.4,
+      "sot": 0.3,
+      "gls": 0.2,
+      "ast": 0.2,
+      "fls": 0.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "Javier Rueda Garcia",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.3,
+      "fls": 1.5,
+      "crdy": 0.3
+    },
+    {
+      "player": "Ilaix Moriba",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Javi RodrÃ­guez",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Mihailo RistiÄ",
+      "sh": 0.25,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Manu FernÃ¡ndez",
+      "sh": 0.22,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.78,
+      "crdy": 0.22
+    },
+    {
+      "player": "Hugo Sotelo",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãscar Mingueza",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.2,
+      "fls": 0.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Carlos Dominguez",
+      "sh": 0.17,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.17
+    },
+    {
+      "player": "Hugo Ãlvarez",
+      "sh": 0.11,
+      "sot": 0.11,
+      "gls": 0.11,
+      "ast": 0.0,
+      "fls": 0.56,
+      "crdy": 0.0
+    },
+    {
+      "player": "Carl Starfelt",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.3
+    },
+    {
+      "player": "IonuÈ Radu",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Joseph Aidoo",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Yoel Lago",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.5
+    }
+  ],
+  "Elche": [
+    {
+      "player": "Rafa Mir",
+      "sh": 3.4,
+      "sot": 1.6,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 1.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Ãlvaro RodrÃ­guez",
+      "sh": 2.4,
+      "sot": 0.9,
+      "gls": 0.3,
+      "ast": 0.2,
+      "fls": 0.9,
+      "crdy": 0.0
+    },
+    {
+      "player": "AndrÃ© Silva",
+      "sh": 1.8,
+      "sot": 0.6,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "HÃ©ctor Fort",
+      "sh": 1.11,
+      "sot": 0.44,
+      "gls": 0.11,
+      "ast": 0.22,
+      "fls": 0.44,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ali Houary",
+      "sh": 1.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 3.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Martim Neto",
+      "sh": 0.9,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.2,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "AdriÃ  Pedrosa",
+      "sh": 0.8,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.3
+    },
+    {
+      "player": "Grady Diangana",
+      "sh": 0.71,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.86,
+      "crdy": 0.14
+    },
+    {
+      "player": "GermÃ¡n Valera",
+      "sh": 0.7,
+      "sot": 0.3,
+      "gls": 0.2,
+      "ast": 0.2,
+      "fls": 1.2,
+      "crdy": 0.1
+    },
+    {
+      "player": "Rodrigo Mendoza",
+      "sh": 0.7,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.2
+    },
+    {
+      "player": "Aleix Febas",
+      "sh": 0.6,
+      "sot": 0.5,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.2
+    },
+    {
+      "player": "Mourad El Ghezouani",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Yago Santiago",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.25,
+      "crdy": 0.0
+    },
+    {
+      "player": "David Affengruber",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.3
+    },
+    {
+      "player": "John Donald",
+      "sh": 0.4,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Josan",
+      "sh": 0.33,
+      "sot": 0.11,
+      "gls": 0.0,
+      "ast": 0.22,
+      "fls": 0.44,
+      "crdy": 0.22
+    },
+    {
+      "player": "VÃ­ctor Chust",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.5
+    },
+    {
+      "player": "Marc Aguado",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Pedro Bigas",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Ãlvaro NÃºÃ±ez",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Adam Boayar",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Bambo Diaby",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Federico Redondo",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.25,
+      "crdy": 0.0
+    },
+    {
+      "player": "IÃ±aki PeÃ±a",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Jairo Izquierdo",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "LÃ©o PÃ©trot",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "MatÃ­as Dituro",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.17
+    }
+  ],
+  "Espanol": [
+    {
+      "player": "Pere Milla",
+      "sh": 2.3,
+      "sot": 1.0,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.4
+    },
+    {
+      "player": "Roberto FÃ©rnandez",
+      "sh": 2.3,
+      "sot": 0.6,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 1.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Javi Puado",
+      "sh": 1.62,
+      "sot": 0.75,
+      "gls": 0.25,
+      "ast": 0.0,
+      "fls": 1.12,
+      "crdy": 0.25
+    },
+    {
+      "player": "KikÃ©",
+      "sh": 1.5,
+      "sot": 0.8,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.0
+    },
+    {
+      "player": "Tyrhys Dolan",
+      "sh": 1.2,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.4,
+      "crdy": 0.3
+    },
+    {
+      "player": "Carlos Romero",
+      "sh": 1.1,
+      "sot": 0.3,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 1.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Edu ExpÃ³sito",
+      "sh": 0.9,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.3,
+      "fls": 0.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Leandro Cabrera",
+      "sh": 0.9,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Pol Lozano",
+      "sh": 0.6,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.7,
+      "crdy": 0.3
+    },
+    {
+      "player": "Antoniu",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.67,
+      "crdy": 0.0
+    },
+    {
+      "player": "Charles Pickel",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Fernando Calero",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Urko GonzÃ¡lez",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.4,
+      "crdy": 0.3
+    },
+    {
+      "player": "Clemens Riedel",
+      "sh": 0.38,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.12,
+      "fls": 0.5,
+      "crdy": 0.25
+    },
+    {
+      "player": "Luca Koleosho",
+      "sh": 0.33,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Jofre",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "RamÃ³n Terrats",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.0
+    },
+    {
+      "player": "Miguel Ãngel Rubio",
+      "sh": 0.17,
+      "sot": 0.17,
+      "gls": 0.17,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "RubÃ©n",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "JosÃ© Salinas",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.75,
+      "crdy": 0.12
+    },
+    {
+      "player": "Marko DmitroviÄ",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Omar El Hilali",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.4,
+      "crdy": 0.2
+    }
+  ],
+  "Getafe": [
+    {
+      "player": "Christantus Uche",
+      "sh": 2.0,
+      "sot": 0.33,
+      "gls": 0.33,
+      "ast": 0.33,
+      "fls": 3.33,
+      "crdy": 0.33
+    },
+    {
+      "player": "Mauro Arambarri",
+      "sh": 1.8,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.7,
+      "crdy": 0.2
+    },
+    {
+      "player": "AdriÃ¡n Liso",
+      "sh": 1.0,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Borja Mayoral",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãlex Sancris",
+      "sh": 1.0,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.0,
+      "crdy": 0.3
+    },
+    {
+      "player": "Javier MuÃ±oz",
+      "sh": 0.88,
+      "sot": 0.25,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.25,
+      "crdy": 0.0
+    },
+    {
+      "player": "Iglesias",
+      "sh": 0.8,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Luis Milla",
+      "sh": 0.8,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.1,
+      "crdy": 0.3
+    },
+    {
+      "player": "Mario MartÃ­n",
+      "sh": 0.7,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.7,
+      "crdy": 0.4
+    },
+    {
+      "player": "Abdel Abqar",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.9,
+      "crdy": 0.5
+    },
+    {
+      "player": "Allan Nyom",
+      "sh": 0.5,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.5
+    },
+    {
+      "player": "Coba da Costa",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Diego Rico",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Domingos Duarte",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.3
+    },
+    {
+      "player": "Davinchi",
+      "sh": 0.43,
+      "sot": 0.14,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.0,
+      "crdy": 0.14
+    },
+    {
+      "player": "DjenÃ©",
+      "sh": 0.4,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Abu Kamara",
+      "sh": 0.33,
+      "sot": 0.11,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.22,
+      "crdy": 0.11
+    },
+    {
+      "player": "Kiko FemenÃ­a",
+      "sh": 0.3,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "Juanmi",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Alex Sola",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "David Soria",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Hugo Solozabal",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ismael Bekhoucha",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.33,
+      "fls": 1.67,
+      "crdy": 0.33
+    },
+    {
+      "player": "Yvan Neyou",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.4
+    }
+  ],
+  "Girona": [
+    {
+      "player": "Azzedine Ounahi",
+      "sh": 2.0,
+      "sot": 0.7,
+      "gls": 0.3,
+      "ast": 0.1,
+      "fls": 0.9,
+      "crdy": 0.5
+    },
+    {
+      "player": "Bryan Gil",
+      "sh": 1.2,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.1,
+      "crdy": 0.3
+    },
+    {
+      "player": "Viktor Tsyhankov",
+      "sh": 1.1,
+      "sot": 0.8,
+      "gls": 0.3,
+      "ast": 0.1,
+      "fls": 0.3,
+      "crdy": 0.0
+    },
+    {
+      "player": "Dawda Camara",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Donny van de Beek",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Joel Roca",
+      "sh": 1.0,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Portu",
+      "sh": 0.9,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Vladyslav Vanat",
+      "sh": 0.9,
+      "sot": 0.6,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.1
+    },
+    {
+      "player": "Axel Witsel",
+      "sh": 0.8,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "Thomas Lemar",
+      "sh": 0.62,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.12,
+      "fls": 0.25,
+      "crdy": 0.12
+    },
+    {
+      "player": "Yaser Asprilla",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.0
+    },
+    {
+      "player": "Arnau Martinez",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.5,
+      "crdy": 0.3
+    },
+    {
+      "player": "Ladislav KrejÄÃ­",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.5
+    },
+    {
+      "player": "Yangel Herrera",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãlex Moreno",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "Alejandro FrancÃ©s",
+      "sh": 0.38,
+      "sot": 0.25,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.62,
+      "crdy": 0.12
+    },
+    {
+      "player": "David LÃ³pez",
+      "sh": 0.33,
+      "sot": 0.33,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.33,
+      "crdy": 0.0
+    },
+    {
+      "player": "Jhon Solis",
+      "sh": 0.3,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Cristhian Stuani",
+      "sh": 0.22,
+      "sot": 0.11,
+      "gls": 0.33,
+      "ast": 0.0,
+      "fls": 0.44,
+      "crdy": 0.22
+    },
+    {
+      "player": "IvÃ¡n MartÃ­n",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.3
+    },
+    {
+      "player": "Vitor Reis",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.3
+    },
+    {
+      "player": "Daley Blind",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Hugo RincÃ³n",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Abel Ruiz",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.67,
+      "crdy": 0.0
+    },
+    {
+      "player": "Bojan Miovski",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Juan Arango",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 1.0
+    },
+    {
+      "player": "Lancinet Kourouma",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Paulo Gazzaniga",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Vladyslav Krapyvtsov",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    }
+  ],
+  "Levante": [
+    {
+      "player": "Karl Etta Eyong",
+      "sh": 2.2,
+      "sot": 1.0,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.2
+    },
+    {
+      "player": "IvÃ¡n Romero",
+      "sh": 2.0,
+      "sot": 0.6,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 1.4,
+      "crdy": 0.2
+    },
+    {
+      "player": "Pablo MartÃ­nez",
+      "sh": 1.4,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.2,
+      "crdy": 0.2
+    },
+    {
+      "player": "Carlos Ãlvarez",
+      "sh": 1.1,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Goduine Koyalipou",
+      "sh": 1.0,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.1
+    },
+    {
+      "player": "Kareem Tunde",
+      "sh": 1.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Brugui",
+      "sh": 0.8,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Kervin Arriaga",
+      "sh": 0.6,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.4,
+      "crdy": 0.4
+    },
+    {
+      "player": "Manu SÃ¡nchez",
+      "sh": 0.6,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "JosÃ© Luis Morales",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "Olasagasti",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "AdriÃ¡n de la Fuente",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.2
+    },
+    {
+      "player": "Jeremy Toljan",
+      "sh": 0.4,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Matias Moreno",
+      "sh": 0.4,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "Oriol Rey",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "VÃ­ctor GarcÃ­a",
+      "sh": 0.4,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Alan Matturro",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Carlos EspÃ­",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Iker Losada",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Unai Elgezabal",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.2
+    },
+    {
+      "player": "Diego PampÃ­n",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.67,
+      "crdy": 0.33
+    },
+    {
+      "player": "Jorge Cabello",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Mathew Ryan",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pablo CuÃ±at",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Sergio Lozano",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Unai Vencedor Paris",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.2,
+      "crdy": 0.2
+    }
+  ],
+  "Mallorca": [
+    {
+      "player": "Vedat Muriqi",
+      "sh": 2.2,
+      "sot": 1.1,
+      "gls": 0.5,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Jan Virgili",
+      "sh": 1.6,
+      "sot": 0.6,
+      "gls": 0.0,
+      "ast": 0.4,
+      "fls": 0.3,
+      "crdy": 0.0
+    },
+    {
+      "player": "Mateo Joseph",
+      "sh": 1.3,
+      "sot": 0.5,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 0.9,
+      "crdy": 0.2
+    },
+    {
+      "player": "Sergi Darder",
+      "sh": 1.2,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.2
+    },
+    {
+      "player": "Samu Costa",
+      "sh": 1.1,
+      "sot": 0.3,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 1.9,
+      "crdy": 0.6
+    },
+    {
+      "player": "Takuma Asano",
+      "sh": 0.7,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Johan Mojica",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.3,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Dani RodrÃ­guez",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Marc Domenech",
+      "sh": 0.43,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.14,
+      "fls": 0.43,
+      "crdy": 0.0
+    },
+    {
+      "player": "Antonio Raillo",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.2,
+      "crdy": 0.2
+    },
+    {
+      "player": "Mateu Morey",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Manu Morlanes",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Martin Valjent",
+      "sh": 0.3,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "AbdÃ³n Prats",
+      "sh": 0.29,
+      "sot": 0.14,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.29,
+      "crdy": 0.0
+    },
+    {
+      "player": "Javier LlabrÃ©s",
+      "sh": 0.29,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.29,
+      "crdy": 0.0
+    },
+    {
+      "player": "Antonio SÃ¡nchez",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.3
+    },
+    {
+      "player": "Marash Kumbulla",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pablo Torre",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Omar Mascarell",
+      "sh": 0.1,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.2
+    },
+    {
+      "player": "Pablo Maffeo",
+      "sh": 0.1,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "David LÃ³pez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Jan Salas",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Leo RomÃ¡n",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Lucas BergstrÃ¶m",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Toni Lato",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    }
+  ],
+  "Osasuna": [
+    {
+      "player": "Ante Budimir",
+      "sh": 2.7,
+      "sot": 1.0,
+      "gls": 0.4,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "VÃ­ctor MuÃ±oz",
+      "sh": 1.8,
+      "sot": 0.7,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 1.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Aimar Oroz",
+      "sh": 1.2,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 0.7,
+      "crdy": 0.3
+    },
+    {
+      "player": "RaÃºl",
+      "sh": 1.2,
+      "sot": 0.7,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Abel Bretones",
+      "sh": 0.9,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.4
+    },
+    {
+      "player": "RubÃ©n GarcÃ­a",
+      "sh": 0.9,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.4,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Catena",
+      "sh": 0.8,
+      "sot": 0.2,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 1.8,
+      "crdy": 0.5
+    },
+    {
+      "player": "Jon Moncayola",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.2,
+      "crdy": 0.2
+    },
+    {
+      "player": "Moi GÃ³mez",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.1
+    },
+    {
+      "player": "Lucas TorrÃ³",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Iker Benito",
+      "sh": 0.4,
+      "sot": 0.2,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Sheraldo Becker",
+      "sh": 0.33,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.44,
+      "crdy": 0.0
+    },
+    {
+      "player": "Valentin Rosier",
+      "sh": 0.3,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.9,
+      "crdy": 0.3
+    },
+    {
+      "player": "Enzo Boyomo",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.3
+    },
+    {
+      "player": "Jorge Herrando",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.0
+    },
+    {
+      "player": "Asier Osambela",
+      "sh": 0.17,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Iker MuÃ±oz",
+      "sh": 0.17,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.33,
+      "crdy": 0.33
+    },
+    {
+      "player": "Juan Cruz Armada",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.0
+    },
+    {
+      "player": "Kike Barja",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "IÃ±igo Arguibide",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Sergio Herrera",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.1
+    }
+  ],
+  "Oviedo": [
+    {
+      "player": "Ilyas Chaira",
+      "sh": 1.6,
+      "sot": 0.6,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "SalomÃ³n RondÃ³n",
+      "sh": 1.3,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Federico ViÃ±as",
+      "sh": 1.2,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Haissem Hassan",
+      "sh": 1.0,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Lucas Ahijado",
+      "sh": 0.71,
+      "sot": 0.14,
+      "gls": 0.0,
+      "ast": 0.14,
+      "fls": 0.57,
+      "crdy": 0.29
+    },
+    {
+      "player": "Ãlex ForÃ©s",
+      "sh": 0.7,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "David Carmo",
+      "sh": 0.6,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.6
+    },
+    {
+      "player": "Josip Brekalo",
+      "sh": 0.6,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Nacho Vidal",
+      "sh": 0.6,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.2
+    },
+    {
+      "player": "Santiago Colombatto",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 2.1,
+      "crdy": 0.4
+    },
+    {
+      "player": "Eric Bailly",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.25
+    },
+    {
+      "player": "Leander Dendoncker",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pablo AgudÃ­n",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.25,
+      "crdy": 0.0
+    },
+    {
+      "player": "Santi Cazorla",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ovie Ejaria",
+      "sh": 0.43,
+      "sot": 0.14,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.43,
+      "crdy": 0.14
+    },
+    {
+      "player": "Kwasi Sibo",
+      "sh": 0.38,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Alberto Reina",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.1
+    },
+    {
+      "player": "Luka IliÄ",
+      "sh": 0.3,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.3
+    },
+    {
+      "player": "Rahim Bonkano",
+      "sh": 0.1,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "AarÃ³n Escandell",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Borja SÃ¡nchez Laborde",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Dani Calvo",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.67,
+      "crdy": 0.22
+    },
+    {
+      "player": "David Costas",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Javi LÃ³pez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.67,
+      "crdy": 0.0
+    },
+    {
+      "player": "Marco Esteban",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Oier Luengo",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Omar Falah",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    }
+  ],
+  "Real Madrid": [
+    {
+      "player": "Kylian MbappÃ©",
+      "sh": 4.4,
+      "sot": 2.0,
+      "gls": 0.9,
+      "ast": 0.2,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Vinicius JÃºnior",
+      "sh": 2.8,
+      "sot": 0.9,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Jude Bellingham",
+      "sh": 2.5,
+      "sot": 1.5,
+      "gls": 0.4,
+      "ast": 0.3,
+      "fls": 1.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Federico Valverde",
+      "sh": 1.9,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.5,
+      "crdy": 0.2
+    },
+    {
+      "player": "Franco Mastantuono",
+      "sh": 1.8,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.3
+    },
+    {
+      "player": "Arda GÃ¼ler",
+      "sh": 1.6,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Rodrygo",
+      "sh": 1.4,
+      "sot": 0.6,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.5,
+      "crdy": 0.3
+    },
+    {
+      "player": "Ãder MilitÃ£o",
+      "sh": 1.3,
+      "sot": 0.5,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "AurÃ©lien TchouamÃ©ni",
+      "sh": 1.1,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.3,
+      "crdy": 0.3
+    },
+    {
+      "player": "Dean Huijsen",
+      "sh": 0.9,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "RaÃºl Asencio",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "Antonio RÃ¼diger",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Brahim DÃ­az",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Eduardo Camavinga",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãlvaro Carreras",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Trent Alexander-Arnold",
+      "sh": 0.38,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.12,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "David Alaba",
+      "sh": 0.33,
+      "sot": 0.33,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Fran Garcia",
+      "sh": 0.33,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.67,
+      "crdy": 0.33
+    },
+    {
+      "player": "Gonzalo GarcÃ­a",
+      "sh": 0.3,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "Dani Carvajal",
+      "sh": 0.29,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.57,
+      "crdy": 0.0
+    },
+    {
+      "player": "Dani Ceballos",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "David JimÃ©nez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Endrick",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Thibaut Courtois",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Victor ValdepeÃ±as",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 3.0,
+      "crdy": 0.0
+    }
+  ],
+  "Sevilla": [
+    {
+      "player": "Adams Akor",
+      "sh": 2.0,
+      "sot": 1.0,
+      "gls": 0.3,
+      "ast": 0.1,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Ruben Vargas",
+      "sh": 1.8,
+      "sot": 0.4,
+      "gls": 0.3,
+      "ast": 0.2,
+      "fls": 0.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Isaac Romero",
+      "sh": 1.7,
+      "sot": 0.7,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.3
+    },
+    {
+      "player": "Alfon",
+      "sh": 1.1,
+      "sot": 0.7,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.0
+    },
+    {
+      "player": "Dodi Lukebakio",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.5,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Stanis Idumbo",
+      "sh": 1.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Alexis SÃ¡nchez",
+      "sh": 0.9,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Nemanja Gudelj",
+      "sh": 0.9,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.3
+    },
+    {
+      "player": "Peque",
+      "sh": 0.9,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.4
+    },
+    {
+      "player": "Chidera Ejuke",
+      "sh": 0.8,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "MarcÃ£o",
+      "sh": 0.8,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.9,
+      "crdy": 0.5
+    },
+    {
+      "player": "JoaquÃ­n MartÃ­nez Gauna",
+      "sh": 0.67,
+      "sot": 0.33,
+      "gls": 0.0,
+      "ast": 0.33,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Carmona",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.2,
+      "fls": 2.0,
+      "crdy": 0.7
+    },
+    {
+      "player": "Tanguy Nianzou",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.0,
+      "crdy": 0.8
+    },
+    {
+      "player": "Castrin",
+      "sh": 0.5,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.88,
+      "crdy": 0.38
+    },
+    {
+      "player": "Djibril Sow",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.8,
+      "crdy": 0.3
+    },
+    {
+      "player": "Lucien Agoume",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.1,
+      "crdy": 0.5
+    },
+    {
+      "player": "Miguel Ãngel Sierra",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Juanlu SÃ¡nchez",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Kike Salas",
+      "sh": 0.33,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Manu Bueno",
+      "sh": 0.33,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Batista Mendy",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Adnan Januzaj",
+      "sh": 0.12,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.62,
+      "crdy": 0.12
+    },
+    {
+      "player": "Gabriel Suazo",
+      "sh": 0.1,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 0.8,
+      "crdy": 0.3
+    },
+    {
+      "player": "AdriÃ  Pedrosa",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "CÃ©sar Azpilicueta",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.78,
+      "crdy": 0.33
+    },
+    {
+      "player": "FÃ¡bio Cardoso",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 3.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Joan JordÃ¡n",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Odysseas Vlachodimos",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "RamÃ³n MartÃ­nez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãrjan Nyland",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.25
+    }
+  ],
+  "Sociedad": [
+    {
+      "player": "Mikel Oyarzabal",
+      "sh": 3.1,
+      "sot": 1.0,
+      "gls": 0.4,
+      "ast": 0.2,
+      "fls": 1.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "GonÃ§alo Guedes",
+      "sh": 1.5,
+      "sot": 0.6,
+      "gls": 0.3,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Brais MÃ©ndez",
+      "sh": 1.3,
+      "sot": 0.6,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 1.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Carlos Soler",
+      "sh": 1.3,
+      "sot": 0.9,
+      "gls": 0.2,
+      "ast": 0.1,
+      "fls": 1.2,
+      "crdy": 0.1
+    },
+    {
+      "player": "Takefusa Kubo",
+      "sh": 1.3,
+      "sot": 0.5,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.1,
+      "crdy": 0.0
+    },
+    {
+      "player": "Jon Karrikaburu",
+      "sh": 1.0,
+      "sot": 0.33,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Lander Astiazaran",
+      "sh": 1.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Orri Steinn Ãskarsson",
+      "sh": 1.0,
+      "sot": 0.67,
+      "gls": 0.33,
+      "ast": 0.0,
+      "fls": 0.33,
+      "crdy": 0.0
+    },
+    {
+      "player": "Yangel Herrera",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.5
+    },
+    {
+      "player": "Ãlvaro Odriozola",
+      "sh": 1.0,
+      "sot": 1.0,
+      "gls": 1.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ander Barrenetxea",
+      "sh": 0.8,
+      "sot": 0.4,
+      "gls": 0.2,
+      "ast": 0.2,
+      "fls": 1.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Umar Sadiq",
+      "sh": 0.8,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.2
+    },
+    {
+      "player": "Jon Martin",
+      "sh": 0.78,
+      "sot": 0.11,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.11,
+      "crdy": 0.33
+    },
+    {
+      "player": "BeÃ±at Turrientes",
+      "sh": 0.75,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.25,
+      "crdy": 0.25
+    },
+    {
+      "player": "Mikel Goti",
+      "sh": 0.75,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Jon Aramburu",
+      "sh": 0.7,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.1,
+      "crdy": 0.4
+    },
+    {
+      "player": "Luka SuÄiÄ",
+      "sh": 0.67,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.33,
+      "crdy": 0.0
+    },
+    {
+      "player": "Duje Äaleta-Car",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.3
+    },
+    {
+      "player": "Jon Gorrotxategi",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 1.7,
+      "crdy": 0.4
+    },
+    {
+      "player": "Arsen Zakharyan",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.1
+    },
+    {
+      "player": "Aihen MuÃ±oz",
+      "sh": 0.3,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.2,
+      "crdy": 0.0
+    },
+    {
+      "player": "Pablo MarÃ­n",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Sergio GÃ³mez",
+      "sh": 0.3,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Aritz Elustondo",
+      "sh": 0.25,
+      "sot": 0.12,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Igor Zubeldia",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.2,
+      "crdy": 0.4
+    },
+    {
+      "player": "Arkaitz Mariezkurrena",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Gorka Carrera",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Urko GonzÃ¡lez",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãlex Remiro",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    }
+  ],
+  "Valencia": [
+    {
+      "player": "Arnaut Danjuma",
+      "sh": 1.9,
+      "sot": 0.7,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Luis Rioja",
+      "sh": 1.6,
+      "sot": 0.2,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 0.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Lucas BeltrÃ¡n",
+      "sh": 1.5,
+      "sot": 0.5,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Diego LÃ³pez",
+      "sh": 1.4,
+      "sot": 0.3,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "Hugo Duro",
+      "sh": 1.2,
+      "sot": 0.4,
+      "gls": 0.3,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.3
+    },
+    {
+      "player": "Largie Ramazani",
+      "sh": 0.88,
+      "sot": 0.25,
+      "gls": 0.0,
+      "ast": 0.12,
+      "fls": 0.62,
+      "crdy": 0.0
+    },
+    {
+      "player": "Javier Guerra",
+      "sh": 0.8,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.1
+    },
+    {
+      "player": "JosÃ© Luis GarcÃ­a VayÃ¡",
+      "sh": 0.8,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.4,
+      "crdy": 0.1
+    },
+    {
+      "player": "Copete",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.3
+    },
+    {
+      "player": "JosÃ© Luis GayÃ ",
+      "sh": 0.6,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Mouctar Diakhaby",
+      "sh": 0.57,
+      "sot": 0.43,
+      "gls": 0.14,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.43
+    },
+    {
+      "player": "Domingos AndrÃ© Ribeiro Almeida",
+      "sh": 0.5,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Filip Ugrinic",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.25,
+      "fls": 0.5,
+      "crdy": 0.12
+    },
+    {
+      "player": "Jesus Vazquez",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "CÃ©sar TÃ¡rrega",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.5,
+      "crdy": 0.4
+    },
+    {
+      "player": "Dani Raba",
+      "sh": 0.4,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Dimitri Foulquier",
+      "sh": 0.4,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Thierry Correia",
+      "sh": 0.3,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.8,
+      "crdy": 0.3
+    },
+    {
+      "player": "Baptiste Santamaria",
+      "sh": 0.2,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "Eray CÃ¶mert",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Julen Agirrezabala",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    }
+  ],
+  "Vallecano": [
+    {
+      "player": "Isaac PalazÃ³n Camacho",
+      "sh": 1.8,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.1,
+      "crdy": 0.3
+    },
+    {
+      "player": "Ãlvaro GarcÃ­a",
+      "sh": 1.7,
+      "sot": 0.4,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Pedro DÃ­az",
+      "sh": 1.6,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Andrei Ratiu",
+      "sh": 1.3,
+      "sot": 0.4,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 0.6,
+      "crdy": 0.2
+    },
+    {
+      "player": "Jorge de Frutos",
+      "sh": 1.2,
+      "sot": 0.5,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Alexandre AlemÃ£o",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.1
+    },
+    {
+      "player": "Pelayo Fernandez",
+      "sh": 1.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Unai LÃ³pez",
+      "sh": 0.9,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.5,
+      "crdy": 0.4
+    },
+    {
+      "player": "Florian Lejeune",
+      "sh": 0.8,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.7,
+      "crdy": 0.2
+    },
+    {
+      "player": "Gerard Gumbau",
+      "sh": 0.7,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "Nobel Mendy",
+      "sh": 0.67,
+      "sot": 0.11,
+      "gls": 0.11,
+      "ast": 0.0,
+      "fls": 1.56,
+      "crdy": 0.33
+    },
+    {
+      "player": "Francisco Perez",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.1
+    },
+    {
+      "player": "Pep ChavarrÃ­a",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "Sergio Camello",
+      "sh": 0.6,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.3,
+      "crdy": 0.1
+    },
+    {
+      "player": "PathÃ© Ciss",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.2
+    },
+    {
+      "player": "Randy Nteka",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.25,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãscar ValentÃ­n",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.2,
+      "crdy": 0.1
+    },
+    {
+      "player": "Alfonso Espino",
+      "sh": 0.4,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.0
+    },
+    {
+      "player": "IvÃ¡n Balliu",
+      "sh": 0.25,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.62,
+      "crdy": 0.38
+    },
+    {
+      "player": "Jozhua Vertrouwd",
+      "sh": 0.25,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.0
+    },
+    {
+      "player": "Ãscar Trejo",
+      "sh": 0.25,
+      "sot": 0.25,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.25,
+      "crdy": 0.25
+    },
+    {
+      "player": "Luiz Felipe",
+      "sh": 0.17,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.33,
+      "crdy": 0.17
+    },
+    {
+      "player": "Augusto Batalla",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.2
+    },
+    {
+      "player": "Samu Becerra",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.33,
+      "crdy": 0.0
+    }
+  ],
+  "Villarreal": [
+    {
+      "player": "Karl Etta Eyong",
+      "sh": 2.33,
+      "sot": 1.0,
+      "gls": 0.33,
+      "ast": 0.67,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Georges Mikautadze",
+      "sh": 2.0,
+      "sot": 1.1,
+      "gls": 0.3,
+      "ast": 0.2,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Alberto Moleiro",
+      "sh": 1.7,
+      "sot": 1.2,
+      "gls": 0.6,
+      "ast": 0.2,
+      "fls": 1.3,
+      "crdy": 0.2
+    },
+    {
+      "player": "Gerard Moreno",
+      "sh": 1.57,
+      "sot": 0.71,
+      "gls": 0.57,
+      "ast": 0.0,
+      "fls": 0.71,
+      "crdy": 0.0
+    },
+    {
+      "player": "Nicolas PÃ©pÃ©",
+      "sh": 1.4,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.9,
+      "crdy": 0.2
+    },
+    {
+      "player": "Pape Gueye",
+      "sh": 1.2,
+      "sot": 0.3,
+      "gls": 0.1,
+      "ast": 0.1,
+      "fls": 1.1,
+      "crdy": 0.4
+    },
+    {
+      "player": "Santi ComesaÃ±a",
+      "sh": 1.2,
+      "sot": 0.4,
+      "gls": 0.2,
+      "ast": 0.2,
+      "fls": 1.5,
+      "crdy": 0.1
+    },
+    {
+      "player": "Tani Oluwaseyi",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.0
+    },
+    {
+      "player": "Yeremi Pino",
+      "sh": 1.0,
+      "sot": 0.5,
+      "gls": 0.0,
+      "ast": 0.5,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Tajon Buchanan",
+      "sh": 0.7,
+      "sot": 0.4,
+      "gls": 0.2,
+      "ast": 0.0,
+      "fls": 0.8,
+      "crdy": 0.5
+    },
+    {
+      "player": "Ayoze PÃ©rez",
+      "sh": 0.67,
+      "sot": 0.33,
+      "gls": 0.22,
+      "ast": 0.33,
+      "fls": 0.67,
+      "crdy": 0.11
+    },
+    {
+      "player": "Ilias Akhomach",
+      "sh": 0.67,
+      "sot": 0.22,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 1.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Thomas Partey",
+      "sh": 0.6,
+      "sot": 0.1,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.0
+    },
+    {
+      "player": "Carlos MaciÃ ",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.5,
+      "crdy": 0.5
+    },
+    {
+      "player": "Renato Veiga",
+      "sh": 0.5,
+      "sot": 0.2,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.6,
+      "crdy": 0.0
+    },
+    {
+      "player": "Santiago MouriÃ±o",
+      "sh": 0.5,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 2.0,
+      "crdy": 0.6
+    },
+    {
+      "player": "Sergi Cardona",
+      "sh": 0.5,
+      "sot": 0.3,
+      "gls": 0.0,
+      "ast": 0.1,
+      "fls": 1.1,
+      "crdy": 0.1
+    },
+    {
+      "player": "Alfonso Pedraza",
+      "sh": 0.4,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.2,
+      "fls": 1.1,
+      "crdy": 0.3
+    },
+    {
+      "player": "Manor Solomon",
+      "sh": 0.33,
+      "sot": 0.17,
+      "gls": 0.17,
+      "ast": 0.17,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Juan Foyth",
+      "sh": 0.22,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.67,
+      "crdy": 0.11
+    },
+    {
+      "player": "Daniel Parejo",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.4,
+      "crdy": 0.2
+    },
+    {
+      "player": "Rafa MarÃ­n",
+      "sh": 0.2,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.7,
+      "crdy": 0.1
+    },
+    {
+      "player": "Pau Navarro",
+      "sh": 0.17,
+      "sot": 0.17,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 2.83,
+      "crdy": 0.33
+    },
+    {
+      "player": "AdriÃ  Altimira",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Arnau Tenas",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.0
+    },
+    {
+      "player": "Luiz LÃºcio Reis JÃºnior",
+      "sh": 0.0,
+      "sot": 0.0,
+      "gls": 0.0,
+      "ast": 0.0,
+      "fls": 0.0,
+      "crdy": 0.2
+    }
+  ]
+}

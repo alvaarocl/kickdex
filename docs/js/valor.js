@@ -16,6 +16,7 @@ function runValor() {
   const ox   = parseFloat(document.getElementById("val-ox").value);
   const o2   = parseFloat(document.getElementById("val-o2").value);
   const ov   = parseFloat(document.getElementById("val-ov").value);
+  const ob   = parseFloat(document.getElementById("val-ob").value);
   const box  = document.getElementById("val-result");
 
   if (!home || !away) {
@@ -59,6 +60,9 @@ function runValor() {
   if (isValidOdds(ov)) {
     markets.push(evaluateMarket("Over 2.5 goles", probs.over25, ov, home, away));
   }
+  if (isValidOdds(ob)) {
+    markets.push(evaluateMarket("BTTS — Ambos marcan", probs.btts, ob, home, away));
+  }
 
   if (markets.length === 0) {
     box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Introduce al menos una cuota válida (> 1.00)</p></div>`;
@@ -97,62 +101,71 @@ function evaluateMarket(name, modelProb, odds, home, away) {
 
 function buildValorHTML(home, away, probs, markets) {
   const sorted = [...markets].sort((a, b) => b.ev - a.ev);
+  const valueMkts = sorted.filter(m => m.ev >= 0.03).length;
+
+  const svgProb   = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+  const svgTrend  = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
 
   return `
   <!-- Header -->
   <div class="match-header" style="margin-bottom:24px;">
-    <div class="teams">${home} <span class="vs">vs</span> ${away}</div>
-    <div class="subtitle">lambda local: ${fmt(probs.lambda_h)} · lambda visitante: ${fmt(probs.lambda_a)}</div>
+    <div class="teams">${home} <span class="vs">VS</span> ${away}</div>
+    <div class="subtitle">Poisson bivariante · λ local: ${fmt(probs.lambda_h)} · λ visitante: ${fmt(probs.lambda_a)}${valueMkts > 0 ? ` · <span style="color:var(--gold);font-weight:700;">${valueMkts} mercado${valueMkts > 1 ? "s" : ""} con valor</span>` : ""}</div>
   </div>
 
-  <!-- Probability reference -->
+  <!-- Probability KPI grid -->
   <div class="card" style="margin-bottom:20px;">
-    <div class="section-title">🎯 Probabilidades del modelo</div>
+    <div class="section-title">${svgProb} Probabilidades del modelo</div>
     <div class="grid-4">
-      ${smallStatCard("Victoria local",    pct(probs.home),    "var(--green)")}
-      ${smallStatCard("Empate",            pct(probs.draw),    "var(--yellow)")}
-      ${smallStatCard("Victoria visit.",   pct(probs.away),    "var(--red)")}
-      ${smallStatCard("Over 2.5",          pct(probs.over25),  "var(--blue)")}
+      ${smallStatCard("Victoria local",   pct(probs.home),    "var(--green)")}
+      ${smallStatCard("Empate",           pct(probs.draw),    "var(--yellow)")}
+      ${smallStatCard("Victoria visit.",  pct(probs.away),    "var(--red)")}
+      ${smallStatCard("Over 2.5",         pct(probs.over25),  "var(--blue)")}
+      ${smallStatCard("BTTS",             pct(probs.btts),    "var(--purple)")}
+      ${smallStatCard("λ Local",          fmt(probs.lambda_h),"var(--muted2)")}
+      ${smallStatCard("λ Visitante",      fmt(probs.lambda_a),"var(--muted2)")}
     </div>
   </div>
 
   <!-- Value markets -->
-  <div class="section-title">💎 Análisis de mercados</div>
+  <div class="section-title">${svgTrend} Análisis de mercados</div>
   <div style="margin-bottom:20px;">
     ${sorted.map(m => buildValueRow(m)).join("")}
   </div>
 
   <!-- Legend -->
-  <div class="card" style="font-size:.75rem;color:var(--muted);">
-    <b style="color:var(--text)">Cómo leer:</b>
-    EV = (probabilidad_modelo × cuota) – 1. Un EV ≥ 0.05 indica valor positivo esperado.
-    La probabilidad del modelo es una estimación basada en forma reciente y Poisson bivariante.
-    No constituye asesoramiento de apuestas.
+  <div class="card" style="font-size:.74rem;color:var(--muted);line-height:1.7;">
+    <span style="color:var(--text2);font-weight:600;">Cómo leer:</span>
+    EV = (probabilidad_modelo × cuota) &minus; 1. EV &ge; 0.05 indica valor positivo esperado.
+    Las probabilidades son estimaciones matemáticas · No constituye asesoramiento de apuestas.
   </div>`;
 }
 
 function buildValueRow(m) {
-  const evSign   = m.ev >= 0 ? "+" : "";
-  const evColor  = m.ev >= 0.03 ? "var(--green)" : m.ev <= -0.05 ? "var(--red)" : "var(--muted)";
-  const badge    = m.ev >= 0.03
-    ? `<span class="badge-value">VALUE ${(m.ev * 100).toFixed(1)}%</span>`
-    : m.ev <= -0.05
+  const evSign  = m.ev >= 0 ? "+" : "";
+  const isValue = m.ev >= 0.03;
+  const isOver  = m.ev <= -0.05;
+  const evColor = isValue ? "var(--gold)" : isOver ? "var(--red)" : "var(--muted2)";
+
+  const badge = isValue
+    ? `<span class="badge-value">VALUE +${(m.ev * 100).toFixed(1)}%</span>`
+    : isOver
     ? `<span class="badge-over">SIN VALOR</span>`
-    : `<span class="badge-fair">JUSTO</span>`;
+    : `<span class="badge-fair">CUOTA JUSTA</span>`;
 
   return `
   <div class="value-row ${m.cls}">
-    <div>
+    <div style="flex:1;min-width:0;">
       <div class="value-market">${m.name}</div>
       <div class="value-meta">
         <span>Prob. modelo: <b>${pct(m.modelProb)}</b></span>
         <span>Prob. implícita: <b>${pct(m.impliedProb)}</b></span>
         <span>Edge: <b style="color:${evColor}">${evSign}${(m.edge * 100).toFixed(1)}%</b></span>
-        <span>EV: <b style="color:${evColor}">${evSign}${(m.ev * 100).toFixed(1)}%</b></span>
+        <span>EV: <b style="color:${evColor};font-size:.88rem;">${evSign}${(m.ev * 100).toFixed(1)}%</b></span>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-      <span style="font-size:1.1rem;font-weight:800;color:var(--text);">${m.odds}</span>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px;margin-left:16px;flex-shrink:0;">
+      <span class="value-odds">${m.odds}</span>
       ${badge}
     </div>
   </div>`;
@@ -171,20 +184,22 @@ function renderPatterns() {
     return;
   }
 
+  const svgBar = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`;
+
   box.innerHTML = `
   <div class="section-title" style="margin-bottom:16px;">
-    📊 Patrones de valor histórico <small>${patterns.length} patrones detectados</small>
+    ${svgBar} Patrones de valor histórico <small>${patterns.length} patrones detectados</small>
   </div>
   <div class="table-wrap">
-    <table>
+    <table id="patternsTable">
       <thead>
         <tr>
-          <th>Equipo</th>
-          <th>Mercado</th>
-          <th>Precisión</th>
+          <th>Condición</th>
+          <th>Evento</th>
+          <th>Prob. real</th>
           <th>Muestras</th>
           <th>Cuota media</th>
-          <th>EV medio</th>
+          <th>EV</th>
         </tr>
       </thead>
       <tbody>
@@ -196,24 +211,32 @@ function renderPatterns() {
     Los patrones históricos se calculan sobre los últimos años de datos.
     El rendimiento pasado no garantiza resultados futuros.
   </div>`;
+  setTimeout(() => initAllTables(box), 50);
 }
 
 function buildPatternRow(p) {
-  const evVal  = p.ev_mean != null ? p.ev_mean : p.avg_ev;
-  const evDisp = evVal != null ? `${evVal >= 0 ? "+" : ""}${(evVal * 100).toFixed(1)}%` : "—";
-  const evColor = evVal >= 0.03 ? "var(--green)" : evVal <= -0.05 ? "var(--red)" : "var(--muted)";
+  // Support both Spanish keys (from build_data.py) and English keys
+  const evRaw  = p["EV"] ?? p.ev_mean ?? p.avg_ev;
+  const evDisp = evRaw != null
+    ? (p["EV %"] ?? `${evRaw >= 0 ? "+" : ""}${(evRaw * 100).toFixed(1)}%`)
+    : "—";
+  const evColor = (evRaw ?? 0) >= 0.03 ? "var(--green)" : (evRaw ?? 0) <= -0.05 ? "var(--red)" : "var(--muted)";
 
-  const acc   = p.accuracy != null ? pct(p.accuracy) : "—";
-  const n     = p.n_matches ?? p.samples ?? "—";
-  const odds  = p.avg_odds != null ? fmt(p.avg_odds) : "—";
+  const cond  = p["Condición"] || p.market || p.pattern || "—";
+  const event = p["Evento"]    || p.team   || p.HomeTeam || "—";
+  const n     = p["Partidos (n)"] ?? p.n_matches ?? p.samples ?? "—";
+  const aciertos = p["Aciertos"] != null ? p["Aciertos"] : null;
+  const probReal = p["Prob. Real"] ?? (aciertos != null && n ? `${((aciertos / n) * 100).toFixed(1)}%` : "—");
+  const odds  = p["Cuota Media"] ?? p.avg_odds;
+  const oddsDisp = odds != null ? fmt(odds) : "—";
 
   return `
   <tr>
-    <td><b>${p.team || p.HomeTeam || "—"}</b></td>
-    <td>${p.market || p.pattern || "—"}</td>
-    <td style="color:var(--green)">${acc}</td>
+    <td><b>${event}</b></td>
+    <td>${cond}</td>
+    <td style="color:var(--green)">${probReal}</td>
     <td class="muted">${n}</td>
-    <td class="muted">${odds}</td>
+    <td class="muted">${oddsDisp}</td>
     <td style="color:${evColor};font-weight:700">${evDisp}</td>
   </tr>`;
 }
@@ -222,8 +245,8 @@ function buildPatternRow(p) {
 
 function smallStatCard(label, value, color) {
   return `
-  <div class="card" style="text-align:center;padding:12px;">
+  <div class="card" style="text-align:center;padding:14px 10px;">
     <div class="card-title">${label}</div>
-    <div class="card-value" style="color:${color};font-size:1.2rem;">${value}</div>
+    <div class="card-value" style="color:${color};font-size:1.25rem;">${value}</div>
   </div>`;
 }
