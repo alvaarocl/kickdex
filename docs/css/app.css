@@ -1448,3 +1448,180 @@ tbody td b { font-family: var(--font-data); }
   .duel-val-home, .duel-val-away { font-size: .74rem; }
   .duel-label { font-size: .55rem; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   NUEVAS FEATURES: Landing · Lang toggle · Seg control · Inicio
+══════════════════════════════════════════════════════════ */
+
+/* ── Landing overlay ──────────────────────────────────────── */
+.landing-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  overflow-y: auto;
+  padding: 40px 20px;
+}
+.landing-inner {
+  max-width: 960px; width: 100%;
+  text-align: center;
+  padding: 20px 0 60px;
+}
+.landing-logo {
+  font-size: 5rem; font-weight: 900; letter-spacing: -2px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1; margin-bottom: 8px;
+}
+.landing-title {
+  font-size: 2rem; font-weight: 700; color: var(--text);
+  margin: 0 0 10px; letter-spacing: -.3px;
+}
+.landing-sub {
+  font-size: 1.05rem; color: var(--muted); margin-bottom: 42px;
+}
+.landing-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px; margin-bottom: 48px; text-align: left;
+}
+.landing-card {
+  background: var(--grad-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 18px;
+  transition: transform .18s, border-color .18s;
+}
+.landing-card:hover { transform: translateY(-3px); border-color: rgba(46,230,166,.35); }
+.landing-card h4 { color: var(--brand); font-size: 1rem; margin-bottom: 8px; font-weight: 700; }
+.landing-card p  { color: var(--muted); font-size: .85rem; line-height: 1.55; }
+.landing-cta {
+  background: var(--grad-brand); border: none; cursor: pointer;
+  color: #05070D; font-size: 1.25rem; font-weight: 900;
+  letter-spacing: .8px; padding: 20px 56px;
+  border-radius: 14px;
+  box-shadow: 0 8px 36px -4px var(--brand-glow);
+  transition: transform .15s, box-shadow .15s, filter .15s;
+  font-family: inherit;
+}
+.landing-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 48px -4px var(--brand-glow);
+  filter: brightness(1.08);
+}
+.landing-footer { margin-top: 28px; font-size: .78rem; color: var(--muted2); }
+
+/* ── Language toggle ──────────────────────────────────────── */
+.lang-btn {
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 8px;
+  padding: 5px 12px; font-size: .75rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s, border-color .15s;
+  font-family: inherit;
+}
+.lang-btn:hover { background: var(--bg3); border-color: var(--border3); }
+
+/* ── Segmented control ────────────────────────────────────── */
+.seg-control {
+  display: inline-flex; background: var(--bg2);
+  border: 1px solid var(--border2); border-radius: 10px;
+  padding: 3px; gap: 2px; flex-wrap: wrap;
+}
+.seg-btn {
+  background: transparent; border: none; cursor: pointer;
+  color: var(--muted); font-size: .78rem; font-weight: 600;
+  padding: 5px 14px; border-radius: 7px;
+  transition: background .15s, color .15s;
+  font-family: inherit;
+}
+.seg-btn.active {
+  background: var(--brand-soft); color: var(--brand);
+  box-shadow: 0 0 0 1px rgba(46,230,166,.25);
+}
+.seg-btn:hover:not(.active) { background: rgba(255,255,255,.05); color: var(--text2); }
+
+/* ── Section header ───────────────────────────────────────── */
+.section-h2 { font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.section-desc { font-size: .85rem; color: var(--muted); }
+
+/* ── Fixture cards (Inicio tab) ───────────────────────────── */
+.fx-section-title {
+  font-size: .7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--muted); margin: 20px 0 10px;
+}
+.fx-card {
+  background: var(--grad-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 8px;
+  transition: border-color .15s, transform .15s;
+}
+.fx-card:hover { border-color: rgba(46,230,166,.3); transform: translateY(-1px); }
+.fx-row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.fx-teams {
+  display: flex; align-items: center; gap: 10px;
+  flex: 1 1 240px; min-width: 200px;
+}
+.fx-team { font-weight: 700; font-size: .97rem; color: var(--text); }
+.fx-vs   { color: var(--muted); font-size: .9rem; padding: 0 4px; }
+.fx-score {
+  background: rgba(46,230,166,.15); color: var(--brand);
+  font-weight: 800; padding: 2px 10px; border-radius: 6px;
+  font-size: .95rem; font-family: 'JetBrains Mono', monospace;
+}
+.fx-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fx-league-badge {
+  font-size: .62rem; font-weight: 700; padding: 3px 9px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: .6px;
+}
+.fx-league-badge.sp1 { background: rgba(46,230,166,.12); color: var(--brand); }
+.fx-league-badge.sp2 { background: rgba(91,214,255,.12); color: var(--brand2); }
+.fx-date { color: var(--muted); font-size: .8rem; }
+.fx-odds {
+  display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+}
+.fx-odd {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 10px; font-size: .78rem;
+  font-family: 'JetBrains Mono', monospace; color: var(--muted);
+}
+.fx-odd b { color: var(--text2); }
+.fx-empty {
+  text-align: center; color: var(--muted);
+  background: var(--bg2); border: 1px dashed var(--border2);
+  border-radius: 12px; padding: 32px 20px;
+  font-size: .88rem; line-height: 1.6;
+}
+.fx-card-row {
+  display: flex; align-items: stretch; gap: 8px; margin-bottom: 8px;
+}
+.fx-analyze-btn {
+  background: var(--brand-soft); color: var(--brand);
+  border: 1px solid rgba(46,230,166,.25); border-radius: 10px;
+  padding: 0 14px; font-size: .78rem; font-weight: 700;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  transition: background .15s, border-color .15s;
+  font-family: inherit; align-self: stretch;
+  display: flex; align-items: center;
+}
+.fx-analyze-btn:hover { background: rgba(46,230,166,.2); border-color: rgba(46,230,166,.45); }
+
+/* ── Players comparison table ─────────────────────────────── */
+.players-comparison {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 18px; margin-top: 16px;
+}
+@media (max-width: 640px) { .players-comparison { grid-template-columns: 1fr; } }
+.players-col-title {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--brand); margin-bottom: 10px;
+}
+
+/* ── Fixture card layout helpers ──────────────────────────── */
+.fx-main { margin-top: 10px; }
+.fx-actions { margin-top: 10px; display: flex; justify-content: flex-end; }
+.fx-score { display: flex; align-items: center; gap: 4px; }
+.fx-score-win { color: var(--brand); font-weight: 900; }
+.fx-score-sep { color: var(--muted); }
+.fx-odd span { display: block; font-size: .65rem; color: var(--muted); margin-bottom: 1px; }
+.fx-odd strong { font-size: .82rem; color: var(--text2); }
+.mono { font-family: 'JetBrains Mono', monospace; }

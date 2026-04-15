@@ -41,7 +41,8 @@ function runComparador() {
   const probs      = calcProbabilities(homeData, awayData, h2hSummary);
   const alerts     = generateAlerts(homeData, awayData, h2hSummary);
 
-  box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary);
+  box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary)
+    + buildPlayerComparison(home, away);
 
   setTimeout(() => {
     drawRadar(home, away, homeData, awayData);
@@ -364,6 +365,66 @@ function drawRadar(home, away, homeData, awayData) {
       },
     },
   });
+}
+
+// ── Player comparison ─────────────────────────────────────
+
+function buildPlayerComparison(home, away) {
+  const homePlayers = (APP.players || {})[home] || [];
+  const awayPlayers = (APP.players || {})[away] || [];
+
+  const svgUsers = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+
+  if (!homePlayers.length && !awayPlayers.length) {
+    return `
+    <div class="card stagger-item" style="margin-bottom:20px;">
+      <div class="section-title">${svgUsers} ${t("cmp_players_title")}</div>
+      <p style="color:var(--muted);font-size:.85rem;">${t("cmp_players_none")}</p>
+    </div>`;
+  }
+
+  function playerTable(players, teamName) {
+    if (!players.length) {
+      return `<div class="players-col-title">${teamName}</div>
+              <p style="color:var(--muted);font-size:.82rem;">Sin datos</p>`;
+    }
+    const rows = players.slice(0, 8).map(p => `
+      <tr>
+        <td>${p.player}</td>
+        <td class="mono">${fmt(p.sh, 1)}</td>
+        <td class="mono">${fmt(p.sot, 1)}</td>
+        <td class="mono">${fmt(p.gls, 2)}</td>
+        <td class="mono">${fmt(p.ast, 2)}</td>
+        <td class="mono">${p.fls != null ? fmt(p.fls, 1) : "—"}</td>
+      </tr>`).join("");
+
+    return `
+    <div class="players-col-title">${teamName}</div>
+    <div class="table-wrap" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>${t("player")}</th>
+            <th title="${t("shots")}">${t("shots")}</th>
+            <th title="${t("shots_on")}">${t("shots_on")}</th>
+            <th title="${t("goals")}">${t("goals")}</th>
+            <th title="${t("assists")}">${t("assists")}</th>
+            <th>Faltas</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  return `
+  <div class="card stagger-item" style="margin-bottom:20px;">
+    <div class="section-title">${svgUsers} ${t("cmp_players_title")} <small>últimos 10 partidos / jugador</small></div>
+    <div class="players-comparison">
+      <div>${playerTable(homePlayers, home)}</div>
+      <div>${playerTable(awayPlayers, away)}</div>
+    </div>
+  </div>`;
 }
 
 // ── Legacy buildFormStats (kept for optional use) ─────────

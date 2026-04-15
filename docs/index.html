@@ -27,14 +27,50 @@
 <div class="bg-orb bg-orb-2"></div>
 <div class="bg-orb bg-orb-3"></div>
 
+<!-- ══════════════════════════════════════════════════
+     LANDING OVERLAY — se oculta con localStorage
+═══════════════════════════════════════════════════ -->
+<div id="landing-overlay" class="landing-overlay" style="display:none;">
+  <div class="landing-inner">
+
+    <div class="landing-logo">KICKDEX</div>
+    <h1 class="landing-title" data-i18n="landing_title">La terminal de datos del fútbol</h1>
+    <p class="landing-sub" data-i18n="landing_subtitle">22 años de historia. 15.000+ partidos. Análisis profesional 100% gratuito.</p>
+
+    <div class="landing-features">
+      <div class="landing-card">
+        <h4 data-i18n="landing_f1_title">📅 Calendario en Vivo</h4>
+        <p data-i18n="landing_f1_body">Partidos de hoy y próxima jornada de La Liga y Segunda, con cuotas Bet365.</p>
+      </div>
+      <div class="landing-card">
+        <h4 data-i18n="landing_f2_title">⚡ Análisis Pre-Partido</h4>
+        <p data-i18n="landing_f2_body">Forma reciente, H2H, Smart Alerts y probabilidades Poisson para cualquier partido.</p>
+      </div>
+      <div class="landing-card">
+        <h4 data-i18n="landing_f3_title">📚 Historial Completo</h4>
+        <p data-i18n="landing_f3_body">Todos los enfrentamientos directos desde 2004 con cuotas y división.</p>
+      </div>
+      <div class="landing-card">
+        <h4 data-i18n="landing_f4_title">⚽ Player Scouting</h4>
+        <p data-i18n="landing_f4_body">Estadísticas de cada jugador y buscador de oportunidades en player props.</p>
+      </div>
+    </div>
+
+    <button class="landing-cta" id="landing-start" data-i18n="landing_cta">
+      ⚡ EMPEZAR A ANALIZAR
+    </button>
+
+    <p class="landing-footer" data-i18n="landing_footer">Uso educativo · Datos: football-data.co.uk + FBref</p>
+  </div>
+</div>
+
 <!-- ── Header ────────────────────────────────────────────── -->
 <header>
   <div class="container">
     <div class="header-inner">
 
-      <a class="logo" href="#" aria-label="KICKDEX — inicio">
+      <a class="logo" href="#" aria-label="KICKDEX — inicio" onclick="document.getElementById('landing-overlay').style.display='flex';return false;">
         <div class="logo-icon" aria-hidden="true">
-          <!-- Terminal bracket icon -->
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="4 17 10 11 4 5"/>
             <line x1="12" y1="19" x2="20" y2="19"/>
@@ -48,6 +84,8 @@
         <span class="meta-info" id="metaInfo">
           <span class="spinner"></span>Cargando datos...
         </span>
+        <!-- Language toggle -->
+        <button class="lang-btn" id="langToggle" onclick="toggleLang()" title="Switch language">🇪🇸 ES</button>
       </div>
 
     </div>
@@ -57,39 +95,43 @@
 <!-- ── Navigation tabs ───────────────────────────────────── -->
 <nav class="tabs-nav" id="mainTabs" role="tablist" aria-label="Navegación principal">
 
-  <button class="tab-btn active" data-tab="comparador" role="tab" aria-selected="true" aria-controls="tab-comparador">
-    <!-- Search icon -->
+  <button class="tab-btn active" data-tab="inicio" role="tab" aria-selected="true" aria-controls="tab-inicio" data-i18n-tab="tab_inicio">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span data-i18n="tab_inicio">Inicio</span>
+  </button>
+
+  <button class="tab-btn" data-tab="comparador" role="tab" aria-selected="false" aria-controls="tab-comparador">
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
     </svg>
-    Comparador
+    <span data-i18n="tab_comparador">Comparador</span>
   </button>
 
   <button class="tab-btn" data-tab="h2h" role="tab" aria-selected="false" aria-controls="tab-h2h">
-    <!-- Git compare / H2H icon -->
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
       <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
     </svg>
-    H2H
+    <span data-i18n="tab_h2h">H2H</span>
   </button>
 
   <button class="tab-btn" data-tab="jugadores" role="tab" aria-selected="false" aria-controls="tab-jugadores">
-    <!-- User icon -->
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
       <circle cx="12" cy="7" r="4"/>
     </svg>
-    Jugadores
+    <span data-i18n="tab_jugadores">Jugadores</span>
   </button>
 
   <button class="tab-btn" data-tab="valor" role="tab" aria-selected="false" aria-controls="tab-valor">
-    <!-- TrendingUp / Value icon -->
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
       <polyline points="16 7 22 7 22 13"/>
     </svg>
-    Value Bets
+    <span data-i18n="tab_valor">Value Bets</span>
   </button>
 
 </nav>
@@ -97,24 +139,62 @@
 <!-- ── Main content ──────────────────────────────────────── -->
 <main class="container" role="main">
 
-  <!-- ── COMPARADOR ─────────────────────────────────── -->
-  <section class="tab-panel active" id="tab-comparador" role="tabpanel" aria-labelledby="tab-btn-comparador">
+  <!-- ── INICIO / CALENDARIO ────────────────────────── -->
+  <section class="tab-panel active" id="tab-inicio" role="tabpanel">
 
-    <div class="controls">
+    <div class="section-header" style="margin-bottom:16px;">
+      <h2 class="section-h2" data-i18n="inicio_title">Calendario y Partidos</h2>
+      <p class="section-desc" data-i18n="inicio_subtitle">Próximos partidos con cuotas Bet365. Pulsa «Analizar» para ver el análisis completo.</p>
+    </div>
+
+    <!-- Liga filter -->
+    <div class="controls" style="margin-bottom:18px;">
+      <div class="field" style="max-width:300px;">
+        <label data-i18n="inicio_filter">Filtrar por liga</label>
+        <div class="seg-control" id="inicioLeagueFilter">
+          <button class="seg-btn active" data-league="all" data-i18n="league_all">Todas</button>
+          <button class="seg-btn" data-league="SP1">La Liga</button>
+          <button class="seg-btn" data-league="SP2">Segunda</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="inicio-result">
+      <div class="state-box">
+        <div class="icon"><span class="spinner"></span></div>
+        <p data-i18n="loading">Cargando partidos...</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── COMPARADOR ─────────────────────────────────── -->
+  <section class="tab-panel" id="tab-comparador" role="tabpanel" aria-labelledby="tab-btn-comparador">
+
+    <div class="controls" style="flex-wrap:wrap;gap:14px 18px;">
+      <!-- Division filter -->
+      <div class="field" style="width:100%;padding-bottom:4px;">
+        <label data-i18n="cmp_league">Liga</label>
+        <div class="seg-control" id="cmpLeagueFilter">
+          <button class="seg-btn active" data-league="all" data-i18n="league_all">Todas</button>
+          <button class="seg-btn" data-league="SP1">La Liga</button>
+          <button class="seg-btn" data-league="SP2">Segunda</button>
+        </div>
+      </div>
       <div class="field">
-        <label for="cmp-home">Equipo Local</label>
+        <label for="cmp-home" data-i18n="cmp_home">Equipo Local</label>
         <select id="cmp-home" aria-label="Seleccionar equipo local">
           <option value="">— Selecciona equipo —</option>
         </select>
       </div>
       <div class="field">
-        <label for="cmp-away">Equipo Visitante</label>
+        <label for="cmp-away" data-i18n="cmp_away">Equipo Visitante</label>
         <select id="cmp-away" aria-label="Seleccionar equipo visitante">
           <option value="">— Selecciona equipo —</option>
         </select>
       </div>
       <div class="field" style="max-width:130px;">
-        <label for="cmp-window">Ventana</label>
+        <label for="cmp-window" data-i18n="cmp_last">Ventana</label>
         <select id="cmp-window">
           <option value="6">6 partidos</option>
           <option value="10" selected>10 partidos</option>
@@ -125,7 +205,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
-        Analizar
+        <span data-i18n="cmp_analyze">Analizar</span>
       </button>
     </div>
 
@@ -135,7 +215,7 @@
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
       </div>
-      <p>Selecciona dos equipos y pulsa <strong>Analizar</strong></p>
+      <p data-i18n="cmp_prompt">Selecciona dos equipos y pulsa <strong>Analizar</strong></p>
     </div>
 
   </section>
@@ -143,13 +223,22 @@
   <!-- ── H2H ────────────────────────────────────────── -->
   <section class="tab-panel" id="tab-h2h" role="tabpanel">
 
-    <div class="controls">
+    <div class="controls" style="flex-wrap:wrap;gap:14px 18px;">
+      <!-- Division filter -->
+      <div class="field" style="width:100%;padding-bottom:4px;">
+        <label data-i18n="cmp_league">Liga</label>
+        <div class="seg-control" id="h2hLeagueFilter">
+          <button class="seg-btn active" data-league="all" data-i18n="league_all">Todas</button>
+          <button class="seg-btn" data-league="SP1">La Liga</button>
+          <button class="seg-btn" data-league="SP2">Segunda</button>
+        </div>
+      </div>
       <div class="field">
-        <label for="h2h-t1">Equipo 1</label>
+        <label for="h2h-t1" data-i18n="h2h_team1">Equipo 1</label>
         <select id="h2h-t1"><option value="">— Selecciona equipo —</option></select>
       </div>
       <div class="field">
-        <label for="h2h-t2">Equipo 2</label>
+        <label for="h2h-t2" data-i18n="h2h_team2">Equipo 2</label>
         <select id="h2h-t2"><option value="">— Selecciona equipo —</option></select>
       </div>
       <button class="btn btn-primary" id="h2h-run">
@@ -157,7 +246,7 @@
           <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
           <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
         </svg>
-        Ver H2H
+        <span data-i18n="h2h_run">Ver H2H</span>
       </button>
     </div>
 
@@ -168,7 +257,7 @@
           <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
         </svg>
       </div>
-      <p>Selecciona dos equipos para ver su historial</p>
+      <p data-i18n="h2h_prompt">Selecciona dos equipos para ver su historial</p>
     </div>
 
   </section>
@@ -178,11 +267,11 @@
 
     <div class="controls">
       <div class="field">
-        <label for="jug-team">Equipo</label>
+        <label for="jug-team" data-i18n="jug_team">Equipo</label>
         <select id="jug-team"><option value="">— Selecciona equipo —</option></select>
       </div>
       <div class="field">
-        <label for="jug-player">Jugador</label>
+        <label for="jug-player" data-i18n="jug_player">Jugador</label>
         <select id="jug-player"><option value="">— Todos —</option></select>
       </div>
       <button class="btn btn-primary" id="jug-run">
@@ -190,7 +279,7 @@
           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
         </svg>
-        Ver Stats
+        <span data-i18n="jug_run">Ver Stats</span>
       </button>
     </div>
 
@@ -201,7 +290,7 @@
           <circle cx="12" cy="7" r="4"/>
         </svg>
       </div>
-      <p>Selecciona un equipo para ver las estadísticas de sus jugadores</p>
+      <p data-i18n="jug_prompt">Selecciona un equipo para ver las estadísticas de sus jugadores</p>
     </div>
 
   </section>
@@ -210,10 +299,10 @@
   <section class="tab-panel" id="tab-valor" role="tabpanel">
 
     <div class="sub-tabs" role="tablist" aria-label="Value Bets sub-navegación">
-      <button class="sub-btn active" data-sub="manual" role="tab" aria-selected="true">
+      <button class="sub-btn active" data-sub="manual" role="tab" aria-selected="true" data-i18n="val_sub_calc">
         Calculadora EV
       </button>
-      <button class="sub-btn" data-sub="patterns" role="tab" aria-selected="false">
+      <button class="sub-btn" data-sub="patterns" role="tab" aria-selected="false" data-i18n="val_sub_patterns">
         Patrones históricos
       </button>
     </div>
@@ -222,33 +311,33 @@
     <div class="sub-panel active" id="sub-manual">
       <div class="controls">
         <div class="field">
-          <label for="val-home">Equipo Local</label>
+          <label for="val-home" data-i18n="cmp_home">Equipo Local</label>
           <select id="val-home"><option value="">— Selecciona equipo —</option></select>
         </div>
         <div class="field">
-          <label for="val-away">Equipo Visitante</label>
+          <label for="val-away" data-i18n="cmp_away">Equipo Visitante</label>
           <select id="val-away"><option value="">— Selecciona equipo —</option></select>
         </div>
       </div>
       <div class="controls" style="margin-top:-18px;">
         <div class="field">
-          <label for="val-o1">Cuota 1 — Local</label>
+          <label for="val-o1" data-i18n="val_odd_home">Cuota 1 — Local</label>
           <input type="number" id="val-o1" placeholder="2.10" step="0.01" min="1.01" inputmode="decimal">
         </div>
         <div class="field">
-          <label for="val-ox">Cuota X — Empate</label>
+          <label for="val-ox" data-i18n="val_odd_draw">Cuota X — Empate</label>
           <input type="number" id="val-ox" placeholder="3.40" step="0.01" min="1.01" inputmode="decimal">
         </div>
         <div class="field">
-          <label for="val-o2">Cuota 2 — Visitante</label>
+          <label for="val-o2" data-i18n="val_odd_away">Cuota 2 — Visitante</label>
           <input type="number" id="val-o2" placeholder="3.20" step="0.01" min="1.01" inputmode="decimal">
         </div>
         <div class="field">
-          <label for="val-ov">Cuota Over 2.5</label>
+          <label for="val-ov" data-i18n="val_odd_over">Cuota Over 2.5</label>
           <input type="number" id="val-ov" placeholder="1.90" step="0.01" min="1.01" inputmode="decimal">
         </div>
         <div class="field">
-          <label for="val-ob">Cuota BTTS</label>
+          <label for="val-ob" data-i18n="val_odd_btts">Cuota BTTS</label>
           <input type="number" id="val-ob" placeholder="1.75" step="0.01" min="1.01" inputmode="decimal">
         </div>
         <button class="btn btn-primary" id="val-run">
@@ -256,7 +345,7 @@
             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
             <polyline points="16 7 22 7 22 13"/>
           </svg>
-          Calcular valor
+          <span data-i18n="val_run">Calcular valor</span>
         </button>
       </div>
       <div id="val-result" class="state-box">
@@ -266,7 +355,7 @@
             <polyline points="16 7 22 7 22 13"/>
           </svg>
         </div>
-        <p>Selecciona equipos e introduce las cuotas de tu casa de apuestas</p>
+        <p data-i18n="val_prompt">Selecciona equipos e introduce las cuotas de tu casa de apuestas</p>
       </div>
     </div>
 
@@ -293,8 +382,7 @@
   <div class="container">
     <div class="disclaimer">
       <strong>KICKDEX</strong> — Free, independent, math-first. &nbsp;·&nbsp;
-      Esta herramienta es exclusivamente informativa y no constituye asesoramiento de apuestas.
-      Las probabilidades son estimaciones matemáticas basadas en datos históricos. El juego puede crear adicción — juega con responsabilidad.
+      <span data-i18n="disclaimer">Esta herramienta es exclusivamente informativa y no constituye asesoramiento de apuestas. Las probabilidades son estimaciones matemáticas basadas en datos históricos. El juego puede crear adicción — juega con responsabilidad.</span>
       Datos: <a href="https://www.football-data.co.uk" target="_blank" rel="noopener">football-data.co.uk</a>.
     </div>
   </div>
@@ -306,5 +394,6 @@
 <script src="js/h2h.js"></script>
 <script src="js/jugadores.js"></script>
 <script src="js/valor.js"></script>
+<script src="js/inicio.js"></script>
 </body>
 </html>

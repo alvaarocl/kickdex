@@ -1,13 +1,143 @@
 /**
- * app.js — Core: data loading, tab management, shared utilities
+ * app.js — Core: data loading, tab management, i18n, landing, shared utilities
  * KICKDEX — GitHub Pages static frontend
  */
 
 "use strict";
 
+// ── i18n ───────────────────────────────────────────────────────────────────
+const I18N = {
+  es: {
+    tab_inicio: "Inicio", tab_comparador: "Comparador", tab_h2h: "H2H",
+    tab_jugadores: "Jugadores", tab_valor: "Value Bets",
+    league_all: "Todas", league_sp1: "La Liga", league_sp2: "Segunda",
+    inicio_title: "Calendario y Partidos",
+    inicio_subtitle: "Próximos partidos con cuotas Bet365. Pulsa «Analizar» para ver el análisis completo.",
+    inicio_filter: "Filtrar por liga",
+    inicio_upcoming: "Próxima jornada",
+    inicio_today: "Partidos de hoy",
+    inicio_recent: "Resultados recientes",
+    inicio_no_upcoming: "Aún no hay fixtures publicados para la próxima jornada. Football-data.co.uk los añade 2-3 días antes. Mientras, puedes analizar cualquier partido desde el Comparador.",
+    inicio_analyze: "Analizar",
+    loading: "Cargando partidos...",
+    cmp_league: "Liga", cmp_home: "Equipo Local", cmp_away: "Equipo Visitante",
+    cmp_last: "Ventana", cmp_analyze: "Analizar",
+    cmp_prompt: "Selecciona dos equipos y pulsa Analizar",
+    cmp_players_title: "Comparativa de Jugadores",
+    cmp_players_none: "Sin datos de jugadores para este partido",
+    h2h_team1: "Equipo 1", h2h_team2: "Equipo 2", h2h_run: "Ver H2H",
+    h2h_prompt: "Selecciona dos equipos para ver su historial",
+    jug_team: "Equipo", jug_player: "Jugador", jug_run: "Ver Stats",
+    jug_prompt: "Selecciona un equipo para ver las estadísticas de sus jugadores",
+    val_sub_calc: "Calculadora EV", val_sub_patterns: "Patrones históricos",
+    val_odd_home: "Cuota 1 — Local", val_odd_draw: "Cuota X — Empate",
+    val_odd_away: "Cuota 2 — Visitante", val_odd_over: "Cuota Over 2.5",
+    val_odd_btts: "Cuota BTTS", val_run: "Calcular valor",
+    val_prompt: "Selecciona equipos e introduce las cuotas de tu casa de apuestas",
+    landing_title: "La terminal de datos del fútbol",
+    landing_subtitle: "22 años de historia. 15.000+ partidos. Análisis profesional 100% gratuito.",
+    landing_cta: "⚡ EMPEZAR A ANALIZAR",
+    landing_f1_title: "📅 Calendario en Vivo",
+    landing_f1_body: "Partidos de hoy y próxima jornada de La Liga y Segunda, con cuotas Bet365.",
+    landing_f2_title: "⚡ Análisis Pre-Partido",
+    landing_f2_body: "Forma reciente, H2H, Smart Alerts y probabilidades Poisson para cualquier partido.",
+    landing_f3_title: "📚 Historial Completo",
+    landing_f3_body: "Todos los enfrentamientos directos desde 2004 con cuotas y división.",
+    landing_f4_title: "⚽ Player Scouting",
+    landing_f4_body: "Estadísticas de cada jugador y buscador de oportunidades en player props.",
+    landing_footer: "Uso educativo · Datos: football-data.co.uk + FBref",
+    disclaimer: "Esta herramienta es exclusivamente informativa y no constituye asesoramiento de apuestas. Las probabilidades son estimaciones matemáticas basadas en datos históricos. El juego puede crear adicción — juega con responsabilidad.",
+    odds: "Cuotas", home: "Local", draw: "Empate", away: "Visitante",
+    player: "Jugador", shots: "Tiros", shots_on: "A Puerta",
+    goals: "Goles", assists: "Asist.", matches: "PJ",
+  },
+  en: {
+    tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
+    tab_jugadores: "Players", tab_valor: "Value Bets",
+    league_all: "All", league_sp1: "La Liga", league_sp2: "Segunda",
+    inicio_title: "Calendar & Matches",
+    inicio_subtitle: "Upcoming matches with Bet365 odds. Click «Analyze» for the full breakdown.",
+    inicio_filter: "Filter by league",
+    inicio_upcoming: "Next matchday",
+    inicio_today: "Today's matches",
+    inicio_recent: "Recent results",
+    inicio_no_upcoming: "No fixtures published for the next matchday yet. Football-data.co.uk adds them 2-3 days before kick-off. In the meantime, analyze any match in the Match Analysis tab.",
+    inicio_analyze: "Analyze",
+    loading: "Loading matches...",
+    cmp_league: "League", cmp_home: "Home Team", cmp_away: "Away Team",
+    cmp_last: "Window", cmp_analyze: "Analyze",
+    cmp_prompt: "Select two teams and click Analyze",
+    cmp_players_title: "Player Comparison",
+    cmp_players_none: "No player data available for this match",
+    h2h_team1: "Team 1", h2h_team2: "Team 2", h2h_run: "See H2H",
+    h2h_prompt: "Select two teams to see their head-to-head history",
+    jug_team: "Team", jug_player: "Player", jug_run: "See Stats",
+    jug_prompt: "Select a team to view player statistics",
+    val_sub_calc: "EV Calculator", val_sub_patterns: "Historical Patterns",
+    val_odd_home: "Odds 1 — Home", val_odd_draw: "Odds X — Draw",
+    val_odd_away: "Odds 2 — Away", val_odd_over: "Odds Over 2.5",
+    val_odd_btts: "Odds BTTS", val_run: "Calculate value",
+    val_prompt: "Select teams and enter odds from your bookmaker",
+    landing_title: "The football data terminal",
+    landing_subtitle: "22 years of history. 15,000+ matches. Pro-level analytics, 100% free.",
+    landing_cta: "⚡ START ANALYZING",
+    landing_f1_title: "📅 Live Calendar",
+    landing_f1_body: "Today's and next matchday fixtures for La Liga and Segunda, with Bet365 odds.",
+    landing_f2_title: "⚡ Pre-Match Analysis",
+    landing_f2_body: "Recent form, H2H, Smart Alerts and Poisson probabilities for every match.",
+    landing_f3_title: "📚 Full History",
+    landing_f3_body: "Every head-to-head since 2004 with odds and division.",
+    landing_f4_title: "⚽ Player Scouting",
+    landing_f4_body: "Per-player stats and player-prop opportunity finder.",
+    landing_footer: "Educational use · Data: football-data.co.uk + FBref",
+    disclaimer: "This tool is for informational purposes only and does not constitute betting advice. Probabilities are mathematical estimates based on historical data. Gambling can be addictive — play responsibly.",
+    odds: "Odds", home: "Home", draw: "Draw", away: "Away",
+    player: "Player", shots: "Shots", shots_on: "On Target",
+    goals: "Goals", assists: "Assists", matches: "MP",
+  },
+};
+
+let LANG = localStorage.getItem("kdx_lang") || "es";
+
+function t(key) {
+  return (I18N[LANG] || I18N.es)[key] || key;
+}
+
+function toggleLang() {
+  LANG = LANG === "es" ? "en" : "es";
+  localStorage.setItem("kdx_lang", LANG);
+  applyI18n();
+  document.getElementById("langToggle").textContent = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
+  // Re-render inicio if loaded
+  if (APP.loaded && typeof renderInicio === "function") renderInicio();
+}
+
+function applyI18n() {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if (el.tagName === "INPUT") { el.placeholder = t(key); return; }
+    el.textContent = t(key);
+  });
+  document.documentElement.lang = LANG === "en" ? "en" : "es";
+}
+
+// ── Landing ────────────────────────────────────────────────────────────────
+function initLanding() {
+  const seen = localStorage.getItem("kdx_seen");
+  if (!seen) {
+    document.getElementById("landing-overlay").style.display = "flex";
+  }
+  document.getElementById("landing-start").addEventListener("click", () => {
+    document.getElementById("landing-overlay").style.display = "none";
+    localStorage.setItem("kdx_seen", "1");
+  });
+}
+
 // ── State ──────────────────────────────────────────────────────────────────
 const APP = {
   teams:       [],
+  leagues:     {},
+  fixtures:    { recent: [], upcoming: [] },
   teamStats:   {},
   h2h:         {},
   players:     {},
@@ -32,7 +162,7 @@ async function loadAllData() {
   metaEl.innerHTML = `<span class="spinner"></span> Cargando datos...`;
 
   try {
-    const [meta, teams, teamStats, h2h, players, playersDetail, valuePatterns] = await Promise.all([
+    const [meta, teams, teamStats, h2h, players, playersDetail, valuePatterns, leagues, fixtures] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -40,6 +170,8 @@ async function loadAllData() {
       fetchJSON("players.json").catch(() => ({})),
       fetchJSON("players_detail.json").catch(() => ({})),
       fetchJSON("value_patterns.json").catch(() => []),
+      fetchJSON("leagues.json").catch(() => ({})),
+      fetchJSON("fixtures.json").catch(() => ({ recent: [], upcoming: [] })),
     ]);
 
     APP.meta           = meta;
@@ -49,10 +181,13 @@ async function loadAllData() {
     APP.players        = players;
     APP.playersDetail  = playersDetail;
     APP.valuePatterns  = valuePatterns;
+    APP.leagues        = leagues;
+    APP.fixtures       = fixtures;
     APP.loaded         = true;
 
     updateHeader();
     populateAllSelects();
+    initSegControls();
     initModules();
 
     // Load patterns immediately
@@ -73,26 +208,70 @@ function updateHeader() {
     `${(m.total_matches || 0).toLocaleString()} partidos · actualizado ${upd}`;
 }
 
-function populateAllSelects() {
-  const ids = [
-    "cmp-home","cmp-away",
-    "h2h-t1","h2h-t2",
-    "val-home","val-away",
-    "jug-team",
-  ];
-  ids.forEach(id => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    const prev = sel.value;
-    // Keep placeholder
-    while (sel.options.length > 1) sel.remove(1);
-    APP.teams.forEach(t => {
-      const opt = document.createElement("option");
-      opt.value = t; opt.textContent = t;
-      sel.appendChild(opt);
-    });
-    if (prev) sel.value = prev;
+function getTeamsByLeague(leagueCode) {
+  if (!leagueCode || leagueCode === "all") return APP.teams;
+  const ld = APP.leagues[leagueCode];
+  return (ld && ld.teams && ld.teams.length) ? ld.teams : APP.teams;
+}
+
+function populateSelect(id, teams) {
+  const sel = document.getElementById(id);
+  if (!sel) return;
+  const prev = sel.value;
+  while (sel.options.length > 1) sel.remove(1);
+  teams.forEach(tm => {
+    const opt = document.createElement("option");
+    opt.value = tm; opt.textContent = tm;
+    sel.appendChild(opt);
   });
+  if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+function populateAllSelects() {
+  const cmpTeams = getTeamsByLeague("all");
+  ["cmp-home","cmp-away","val-home","val-away"].forEach(id => populateSelect(id, cmpTeams));
+  ["h2h-t1","h2h-t2"].forEach(id => populateSelect(id, APP.teams));
+  populateSelect("jug-team", APP.teams);
+}
+
+function initSegControls() {
+  // Comparador + Value league filter
+  const cmpFilter = document.getElementById("cmpLeagueFilter");
+  if (cmpFilter) {
+    cmpFilter.addEventListener("click", e => {
+      const btn = e.target.closest(".seg-btn");
+      if (!btn) return;
+      cmpFilter.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const teams = getTeamsByLeague(btn.dataset.league);
+      ["cmp-home","cmp-away","val-home","val-away"].forEach(id => populateSelect(id, teams));
+    });
+  }
+
+  // H2H league filter
+  const h2hFilter = document.getElementById("h2hLeagueFilter");
+  if (h2hFilter) {
+    h2hFilter.addEventListener("click", e => {
+      const btn = e.target.closest(".seg-btn");
+      if (!btn) return;
+      h2hFilter.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const teams = getTeamsByLeague(btn.dataset.league);
+      ["h2h-t1","h2h-t2"].forEach(id => populateSelect(id, teams));
+    });
+  }
+
+  // Inicio league filter
+  const inicioFilter = document.getElementById("inicioLeagueFilter");
+  if (inicioFilter) {
+    inicioFilter.addEventListener("click", e => {
+      const btn = e.target.closest(".seg-btn");
+      if (!btn) return;
+      inicioFilter.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      if (typeof renderInicio === "function") renderInicio(btn.dataset.league);
+    });
+  }
 }
 
 // ── Tab management ─────────────────────────────────────────────────────────
@@ -118,6 +297,7 @@ function initTabs() {
 }
 
 function initModules() {
+  if (typeof initInicio     === "function") initInicio();
   if (typeof initComparador === "function") initComparador();
   if (typeof initH2H        === "function") initH2H();
   if (typeof initJugadores  === "function") initJugadores();
@@ -363,6 +543,11 @@ function initAllTables(container) {
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
+  initLanding();
+  applyI18n();
+  // Set correct lang toggle label
+  const lt = document.getElementById("langToggle");
+  if (lt) lt.textContent = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
   initTabs();
   loadAllData();
 });

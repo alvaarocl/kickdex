@@ -57,7 +57,7 @@ def write_json(data, filename: str):
     path = OUTPUT_DIR / filename
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"), default=str)
-    print(f"  ✓ {filename}  ({path.stat().st_size / 1024:.1f} KB)")
+    print(f"  OK {filename}  ({path.stat().st_size / 1024:.1f} KB)")
 
 
 # ── Builders ──────────────────────────────────────────────────────────────────
@@ -184,6 +184,91 @@ def build_players_detail(df_players) -> dict:
     return result
 
 
+def build_leagues(df, teams: list) -> dict:
+    """Mapeo liga → equipos para el filtro de división en el frontend."""
+    import pandas as pd
+    from app.config import CURRENT_SEASON_START
+    current = df[df["Date"] >= CURRENT_SEASON_START]
+    result = {}
+    for code, name in {"SP1": "La Liga", "SP2": "Segunda División"}.items():
+        league_df = current[current["Div"] == code] if "Div" in current.columns else pd.DataFrame()
+        if league_df.empty:
+            continue
+        league_teams = sorted(
+            set(league_df["HomeTeam"].dropna()) | set(league_df["AwayTeam"].dropna())
+        )
+        result[code] = {"name": name, "teams": league_teams}
+    return result
+
+
+def build_fixtures(df) -> dict:
+    """
+    Genera partidos recientes (últimos 7 días) y próximos (NaN FTHG).
+    Fuente: CSVs de la temporada actual descargados frescos.
+    """
+    import pandas as pd
+    from datetime import datetime, timedelta
+    from pathlib import Path
+    from app.config import CURRENT_SEASON_CODE, DATA_DIR
+
+    recent = []
+    upcoming = []
+    leagues = {"SP1": "La Liga", "SP2": "Segunda División"}
+    cutoff = pd.Timestamp(datetime.utcnow() - timedelta(days=7))
+    now = pd.Timestamp(datetime.utcnow())
+
+    for code, name in leagues.items():
+        path = Path(DATA_DIR) / f"{code}_{CURRENT_SEASON_CODE}.csv"
+        if not path.exists():
+            continue
+        for enc in ("utf-8-sig", "latin1"):
+            try:
+                raw = pd.read_csv(path, encoding=enc, low_memory=False)
+                raw.columns = [c.lstrip("\ufeff").strip() for c in raw.columns]
+                break
+            except Exception:
+                continue
+        else:
+            continue
+
+        if "Date" not in raw.columns:
+            continue
+        raw["Date"] = pd.to_datetime(raw["Date"], dayfirst=True, errors="coerce")
+        raw = raw.dropna(subset=["Date"])
+
+        for _, row in raw.iterrows():
+            date = row["Date"]
+            has_score = pd.notna(row.get("FTHG")) and pd.notna(row.get("FTAG"))
+            item = {
+                "league": code,
+                "league_name": name,
+                "date": date.strftime("%Y-%m-%d"),
+                "time": str(row.get("Time", "") or "").strip(),
+                "home": str(row.get("HomeTeam", "")),
+                "away": str(row.get("AwayTeam", "")),
+            }
+            for odds_col, key in [("B365H","odds_home"),("B365D","odds_draw"),("B365A","odds_away"),
+                                   ("B365>2.5","odds_over25"),("B365<2.5","odds_under25")]:
+                v = row.get(odds_col)
+                try:
+                    item[key] = round(float(v), 2) if pd.notna(v) else None
+                except Exception:
+                    item[key] = None
+
+            if has_score:
+                item["home_score"] = int(row["FTHG"])
+                item["away_score"] = int(row["FTAG"])
+                if date >= cutoff:
+                    recent.append(item)
+            else:
+                if date >= now - pd.Timedelta(days=1):
+                    upcoming.append(item)
+
+    recent.sort(key=lambda x: x["date"], reverse=True)
+    upcoming.sort(key=lambda x: x["date"])
+    return {"recent": recent[:20], "upcoming": upcoming[:20]}
+
+
 def build_value_patterns(df) -> list:
     try:
         df_proc = calculate_rolling_metrics(df)
@@ -235,11 +320,15 @@ def main():
     print("\n[5/6] h2h.json...")
     write_json(build_h2h(df, teams), "h2h.json")
 
-    # 6. Players + Value
-    print("\n[6/6] players.json, players_detail.json, value_patterns.json...")
+    # 6. Players + Value + Leagues + Fixtures
+    print("\n[6/7] players.json, players_detail.json, value_patterns.json...")
     write_json(build_players(df_players), "players.json")
     write_json(build_players_detail(df_players), "players_detail.json")
     write_json(build_value_patterns(df), "value_patterns.json")
+
+    print("\n[7/7] leagues.json, fixtures.json...")
+    write_json(build_leagues(df, teams), "leagues.json")
+    write_json(build_fixtures(df), "fixtures.json")
 
     print("\n" + "=" * 60)
     print("✓ BUILD COMPLETADO")
