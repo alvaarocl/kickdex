@@ -100,12 +100,15 @@ function observeCounters(container) {
 
 /**
  * Apply sequential animation delays to .stagger-item elements.
+ * We set the full animation shorthand to avoid restart artefacts from
+ * overriding only animation-delay on an already-playing animation.
  */
 function staggerIn(container, delayStep = 65) {
   const root  = container || document;
   const items = root.querySelectorAll(".stagger-item");
   items.forEach((el, i) => {
-    el.style.animationDelay = `${i * delayStep}ms`;
+    const delay = i * delayStep;
+    el.style.animation = `staggerIn .55s cubic-bezier(.2,.8,.2,1) ${delay}ms both`;
   });
 }
 

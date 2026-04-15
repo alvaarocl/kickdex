@@ -1052,7 +1052,7 @@ tbody td b { font-family: var(--font-data); }
 .text-muted   { color: var(--muted); }
 .mono         { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
 .data-val     { font-family: var(--font-data); font-weight: 700; font-variant-numeric: tabular-nums; }
-.font-display: none; /* ensure font-display: swap via @font-face if needed */
+/* font-display: swap is handled by Google Fonts URL params */
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 920px) {
@@ -1087,6 +1087,9 @@ tbody td b { font-family: var(--font-data); }
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+  /* Ensure stagger items are visible when animations are disabled */
+  .stagger-item { opacity: 1 !important; transform: none !important; }
+  .bg-orb        { animation: none !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1381,13 +1384,16 @@ tbody td b { font-family: var(--font-data); }
 .count-up { display: inline-block; }
 
 /* ── Stagger entrance animations ─────────────────────────── */
+/* Initial hidden state — animation is applied by JS for staggered timing.
+   CSS animation is also set here as fallback (plays all at once if JS fails). */
 .stagger-item {
   opacity: 0;
   transform: translateY(16px);
-  animation: staggerIn .55s cubic-bezier(.2,.8,.2,1) forwards;
+  animation: staggerIn .55s cubic-bezier(.2,.8,.2,1) both;
 }
 @keyframes staggerIn {
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Skeleton loading bars ───────────────────────────────── */
