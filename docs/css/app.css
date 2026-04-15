@@ -1088,3 +1088,340 @@ tbody td b { font-family: var(--font-data); }
     transition-duration: .01ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PREMIUM LAYER — Animations, Team Badges, Stat Duel, Aurora
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Aurora background orbs ──────────────────────────────── */
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  opacity: .85;
+}
+.bg-orb-1 {
+  width: 680px; height: 500px;
+  background: radial-gradient(ellipse, rgba(0,212,170,.13) 0%, transparent 68%);
+  top: -180px; left: -130px;
+  animation: orbDrift1 30s ease-in-out infinite;
+}
+.bg-orb-2 {
+  width: 580px; height: 580px;
+  background: radial-gradient(ellipse, rgba(34,211,238,.09) 0%, transparent 68%);
+  top: 28%; right: -180px;
+  animation: orbDrift2 36s ease-in-out infinite;
+}
+.bg-orb-3 {
+  width: 480px; height: 380px;
+  background: radial-gradient(ellipse, rgba(124,58,237,.10) 0%, transparent 68%);
+  bottom: -80px; left: 38%;
+  animation: orbDrift3 24s ease-in-out infinite;
+}
+@keyframes orbDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(75px, 55px) scale(1.08); }
+  66%       { transform: translate(-35px, 90px) scale(.93); }
+}
+@keyframes orbDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-90px, -75px) scale(1.12); }
+  70%       { transform: translate(55px, 35px) scale(.88); }
+}
+@keyframes orbDrift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(-65px, -55px) scale(1.18); }
+}
+
+/* ── Team badges ─────────────────────────────────────────── */
+.team-badge {
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: .85rem;
+  letter-spacing: -.5px;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 24px -6px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.2);
+  text-shadow: 0 1px 3px rgba(0,0,0,.4);
+  text-transform: uppercase;
+  user-select: none;
+}
+.team-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(255,255,255,.28) 0%, transparent 55%);
+}
+.team-badge span { position: relative; z-index: 1; }
+
+/* ── Fixture header (premium match card) ─────────────────── */
+.fixture-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 28px;
+  background: var(--grad-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+}
+.fixture-header::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius);
+  padding: 1px;
+  background: linear-gradient(145deg,
+    rgba(0,212,170,.42) 0%,
+    transparent 30%,
+    transparent 68%,
+    rgba(34,211,238,.32) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.fixture-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(0,212,170,.06), transparent 70%);
+  pointer-events: none;
+}
+.fixture-team {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+.fixture-team.away { flex-direction: row-reverse; text-align: right; }
+.fixture-team-info { min-width: 0; }
+.fixture-team-name {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text);
+  letter-spacing: -.3px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fixture-team-sub {
+  font-size: .7rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+.fixture-vs {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 0 10px;
+}
+.fixture-vs-badge {
+  width: 46px; height: 46px;
+  background: var(--brand-soft);
+  border: 1.5px solid rgba(0,212,170,.38);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-data);
+  font-weight: 700;
+  font-size: .63rem;
+  color: var(--brand);
+  letter-spacing: 1.2px;
+  box-shadow: 0 0 28px -8px var(--brand-glow);
+  animation: vspulse 3s ease-in-out infinite;
+}
+@keyframes vspulse {
+  0%, 100% { box-shadow: 0 0 28px -8px var(--brand-glow); }
+  50%       { box-shadow: 0 0 40px -4px var(--brand-glow); }
+}
+.fixture-sub-text {
+  font-size: .6rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* ── Stat Duel — ValueStats-style horizontal comparison ───── */
+.stat-duel { display: flex; flex-direction: column; }
+.duel-header {
+  display: grid;
+  grid-template-columns: 58px 1fr 82px 1fr 58px;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border2);
+  margin-bottom: 2px;
+}
+.duel-row {
+  display: grid;
+  grid-template-columns: 58px 1fr 82px 1fr 58px;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.duel-row:last-child { border-bottom: none; }
+.duel-row:hover { background: rgba(255,255,255,.012); border-radius: 6px; }
+.duel-val-home {
+  font-family: var(--font-data);
+  font-weight: 700;
+  font-size: .87rem;
+  color: var(--brand);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.duel-val-away {
+  font-family: var(--font-data);
+  font-weight: 700;
+  font-size: .87rem;
+  color: #fb7185;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.duel-label {
+  text-align: center;
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.duel-track-home {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 7px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(0,212,170,.06);
+}
+.duel-track-away {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 7px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(244,63,94,.06);
+}
+.duel-bar-home {
+  height: 7px;
+  min-width: 3px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(0,212,170,.2), var(--brand));
+  box-shadow: 0 0 10px rgba(0,212,170,.45);
+  transition: width .95s cubic-bezier(.22,.88,.32,1);
+}
+.duel-bar-away {
+  height: 7px;
+  min-width: 3px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--red), rgba(244,63,94,.2));
+  box-shadow: 0 0 10px rgba(244,63,94,.38);
+  transition: width .95s cubic-bezier(.22,.88,.32,1);
+}
+/* Better neutral/tied bar colors */
+.duel-val-home.leading { color: var(--brand); text-shadow: 0 0 12px var(--brand-glow); }
+.duel-val-away.leading { color: var(--red);   text-shadow: 0 0 12px rgba(244,63,94,.5); }
+
+/* ── Form dots (WDL circles) ─────────────────────────────── */
+.form-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.form-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform .15s, box-shadow .15s;
+  cursor: default;
+}
+.form-dot:hover { transform: scale(1.5); }
+.form-dot.w { background: var(--brand);  box-shadow: 0 0 8px var(--brand-glow); }
+.form-dot.d { background: var(--yellow); box-shadow: 0 0 8px rgba(245,158,11,.45); }
+.form-dot.l { background: var(--red);    box-shadow: 0 0 8px rgba(244,63,94,.35); }
+
+/* ── Count-up animation placeholder ─────────────────────── */
+.count-up { display: inline-block; }
+
+/* ── Stagger entrance animations ─────────────────────────── */
+.stagger-item {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: staggerIn .55s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes staggerIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Skeleton loading bars ───────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.04) 0%,
+    rgba(255,255,255,.09) 40%,
+    rgba(255,255,255,.04) 100%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Neon glow text utilities ────────────────────────────── */
+.glow-brand { text-shadow: 0 0 20px var(--brand-glow), 0 0 6px rgba(0,212,170,.5); }
+.glow-gold  { text-shadow: 0 0 20px var(--gold-glow),  0 0 6px rgba(245,158,11,.5); }
+
+/* ── Responsive adjustments for new components ───────────── */
+@media (max-width: 860px) {
+  .fixture-header { padding: 18px 18px; gap: 10px; }
+  .fixture-team-name { font-size: .95rem; }
+  .fixture-vs { padding: 0 6px; }
+  .fixture-vs-badge { width: 38px; height: 38px; font-size: .58rem; }
+  .duel-header, .duel-row { grid-template-columns: 48px 1fr 70px 1fr 48px; gap: 6px; }
+  .duel-val-home, .duel-val-away { font-size: .79rem; }
+}
+@media (max-width: 540px) {
+  .fixture-team-name { font-size: .85rem; }
+  .team-badge { width: 40px !important; height: 40px !important; border-radius: 10px; font-size: .75rem; }
+  .duel-header, .duel-row { grid-template-columns: 42px 1fr 62px 1fr 42px; gap: 4px; }
+  .duel-val-home, .duel-val-away { font-size: .74rem; }
+  .duel-label { font-size: .55rem; }
+}
