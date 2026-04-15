@@ -19,6 +19,7 @@ from app.ui.styles import CUSTOM_CSS
 from app.data.loader import load_matches, load_players, get_team_list, invalidate_cache
 from app.data.updater import update_data
 from app.config import CURRENT_SEASON_LABEL, LEAGUES
+from app.i18n import t, get_lang, set_lang
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -31,8 +32,16 @@ logger = logging.getLogger(__name__)
 # ── CSS global ───────────────────────────────────────────────────────────────
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
+# ── Estado inicial de sesión ─────────────────────────────────────────────────
+if "show_landing" not in st.session_state:
+    st.session_state.show_landing = True
+if "lang" not in st.session_state:
+    st.session_state.lang = "es"
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "inicio"
 
-# ── Inicialización de datos (con caché Streamlit para no re-ejecutar) ────────
+
+# ── Inicialización de datos ──────────────────────────────────────────────────
 @st.cache_resource(show_spinner=False)
 def _init_data():
     """Descarga datos actualizados y los carga. Solo se ejecuta una vez por despliegue."""
@@ -52,11 +61,31 @@ def _load_data():
     return df, df_players
 
 
+# ── Language toggle (top-right) ──────────────────────────────────────────────
+def _render_lang_toggle():
+    """Botón ES/EN en la esquina superior derecha."""
+    _, col_lang = st.columns([6, 1])
+    with col_lang:
+        current = get_lang()
+        new_lang = st.radio(
+            "🌐",
+            options=["es", "en"],
+            format_func=lambda x: "🇪🇸 ES" if x == "es" else "🇬🇧 EN",
+            index=0 if current == "es" else 1,
+            horizontal=True,
+            label_visibility="collapsed",
+            key="lang_toggle",
+        )
+        if new_lang != current:
+            set_lang(new_lang)
+            st.rerun()
+
+
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 def _render_sidebar(df):
     with st.sidebar:
         st.markdown("## KICKDEX")
-        st.caption("Herramienta gratuita de Big Data futbolístico")
+        st.caption(t("sidebar_tool"))
         st.divider()
 
         if not df.empty:
@@ -64,16 +93,16 @@ def _render_sidebar(df):
             min_year = df["Date"].dt.year.min()
             max_year = df["Date"].dt.year.max()
             ligas = ", ".join(LEAGUES.values())
-            st.markdown(f"**📚 Base de Datos**")
-            st.caption(f"{n_partidos:,} partidos · {min_year}–{max_year}")
-            st.caption(f"Ligas: {ligas}")
-            st.caption(f"Temporada actual: {CURRENT_SEASON_LABEL}")
+            st.markdown(f"**{t('sidebar_db')}**")
+            st.caption(f"{n_partidos:,} {t('sidebar_matches')} · {min_year}–{max_year}")
+            st.caption(f"{t('sidebar_leagues')}: {ligas}")
+            st.caption(f"{t('sidebar_season')}: {CURRENT_SEASON_LABEL}")
         else:
-            st.error("Sin datos. Revisa la carpeta `datos/`.")
+            st.error(t("sidebar_no_data"))
 
         st.divider()
 
-        if st.button("🔄 Actualizar datos", use_container_width=True):
+        if st.button(t("sidebar_update"), use_container_width=True):
             invalidate_cache()
             _load_data.clear()
             st.rerun()
@@ -90,11 +119,16 @@ def _render_sidebar(df):
 
 # ── App principal ─────────────────────────────────────────────────────────────
 def main():
-    # Inicializar (solo una vez por deploy, gracias a cache_resource)
-    _init_data()
+    # Landing page primero (si procede)
+    if st.session_state.show_landing:
+        _render_lang_toggle()
+        from app.ui import landing
+        landing.render()
+        return
 
-    # Cargar datos (cacheados 1 hora)
-    with st.spinner("Cargando datos..."):
+    # Inicializar datos
+    _init_data()
+    with st.spinner("..."):
         df, df_players = _load_data()
 
     if df.empty:
@@ -106,48 +140,66 @@ def main():
 
     teams = get_team_list(df, recent_only=True)
 
-    # Sidebar
     _render_sidebar(df)
 
-    # ── Cabecera ──────────────────────────────────────────────────────────────
-    col_title, col_season = st.columns([3, 1])
+    # ── Cabecera + lang toggle ────────────────────────────────────────────────
+    col_title, col_season, col_lang = st.columns([4, 1, 1])
     with col_title:
         st.markdown(
-            '<h1 style="margin-bottom:0;color:#e8eaf6;">KICKDEX</h1>'
-            '<p style="color:#8b9ab0;margin-top:2px;font-size:0.9rem;">'
-            'Big Data · Value Bets · Player Scouting · 100% Gratuito</p>',
+            f'<h1 style="margin-bottom:0;color:#e8eaf6;">KICKDEX</h1>'
+            f'<p style="color:#8b9ab0;margin-top:2px;font-size:0.9rem;">'
+            f'{t("app_tagline")}</p>',
             unsafe_allow_html=True,
         )
     with col_season:
         st.markdown(
-            f'<div style="text-align:right;padding-top:12px;">'
+            f'<div style="text-align:right;padding-top:18px;">'
             f'<span style="background:#00d4aa22;color:#00d4aa;padding:4px 12px;'
             f'border-radius:20px;font-size:0.8rem;font-weight:700;">🟢 {CURRENT_SEASON_LABEL}</span>'
             f'</div>',
             unsafe_allow_html=True,
         )
+    with col_lang:
+        current = get_lang()
+        new_lang = st.radio(
+            "lang",
+            options=["es", "en"],
+            format_func=lambda x: "🇪🇸 ES" if x == "es" else "🇬🇧 EN",
+            index=0 if current == "es" else 1,
+            horizontal=True,
+            label_visibility="collapsed",
+            key="lang_toggle_main",
+        )
+        if new_lang != current:
+            set_lang(new_lang)
+            st.rerun()
 
     # ── Tabs principales ──────────────────────────────────────────────────────
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "⚡ Comparador",
-        "📚 H2H Histórico",
-        "⚽ Jugadores",
-        "💎 Value Bets",
-    ])
+    # Si hay pre-carga desde Inicio, seleccionamos Comparador como tab activa
+    tab_labels = [
+        t("tab_inicio"),
+        t("tab_comparador"),
+        t("tab_h2h"),
+        t("tab_jugadores"),
+        t("tab_value"),
+    ]
+    tab_inicio, tab_cmp, tab_h2h, tab_jug, tab_val = st.tabs(tab_labels)
 
-    # Importar UIs aquí para evitar imports circulares en arranque
-    from app.ui import comparador, h2h, jugadores, valor
+    from app.ui import inicio, comparador, h2h, jugadores, valor
 
-    with tab1:
-        comparador.render(df, teams)
+    with tab_inicio:
+        inicio.render()
 
-    with tab2:
+    with tab_cmp:
+        comparador.render(df, teams, df_players)
+
+    with tab_h2h:
         h2h.render(df, teams)
 
-    with tab3:
+    with tab_jug:
         jugadores.render(df_players)
 
-    with tab4:
+    with tab_val:
         valor.render(df, teams)
 
 
