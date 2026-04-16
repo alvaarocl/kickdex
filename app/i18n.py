@@ -18,6 +18,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "tab_comparador": {"es": "⚡ Comparador", "en": "⚡ Match Analysis"},
     "tab_h2h": {"es": "📚 H2H Histórico", "en": "📚 Head-to-Head"},
     "tab_jugadores": {"es": "⚽ Jugadores", "en": "⚽ Players"},
+    "tab_arbitros": {"es": "⚖️ Árbitros", "en": "⚖️ Referees"},
     "tab_value": {"es": "💎 Value Bets", "en": "💎 Value Bets"},
 
     # ── Sidebar ──────────────────────────────────────────────────────────────

@@ -1,331 +1,188 @@
 """
-Tab ⚡ Comparador de Partido.
-Forma reciente + Smart Alerts + Probabilidades + Comparativa de jugadores.
-Soporta filtro por división (SP1/SP2).
+Tab ⚡ Comparador de Partido Premium.
+Replica exactamente el Fixture Header y Stat Duel de la web estática.
 """
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
-
 from app.engine.metrics import get_recent_form, get_h2h_summary
-from app.engine.smart_alerts import generate_alerts, AlertStrength
+from app.engine.smart_alerts import generate_alerts
 from app.engine.probability import calculate_probabilities
 from app.ui.styles import result_tag, prob_bar_html, alert_card_html
-from app.config import (
-    ROLLING_WINDOW_OPTIONS, ROLLING_WINDOW_DEFAULT,
-    MIN_MATCHES_FOR_STATS, LEAGUES,
-)
+from app.config import ROLLING_WINDOW_OPTIONS, ROLLING_WINDOW_DEFAULT
 from app.i18n import t
 
+def _fixture_header_html(home, away, h_stats, a_stats):
+    h_win_rate = f"{int(h_stats.get('win_rate', 0)*100)}% casa"
+    a_win_rate = f"{int(a_stats.get('win_rate', 0)*100)}% fuera"
+    
+    return f"""
+    <div class="fixture-header">
+        <div class="fixture-team">
+            <div class="fixture-team-info">
+                <div class="fixture-team-name">{home}</div>
+                <div class="fixture-team-sub">{h_win_rate}</div>
+            </div>
+        </div>
+        <div class="fixture-vs">
+            <div class="fixture-vs-badge">VS</div>
+            <div class="fixture-sub-text">KICKDEX</div>
+        </div>
+        <div class="fixture-team away">
+            <div class="fixture-team-info">
+                <div class="fixture-team-name">{away}</div>
+                <div class="fixture-team-sub">{a_win_rate}</div>
+            </div>
+        </div>
+    </div>"""
 
-def _form_log_html(match_log: list[dict]) -> str:
-    rows = []
-    for m in reversed(match_log):
-        tag = result_tag(m["result"])
-        venue = "🏠" if m["venue"] == "C" else "✈️"
-        rows.append(
-            f'<div style="display:flex;align-items:center;gap:8px;padding:4px 0;">'
-            f'{tag} {venue} <span style="color:#b0bec5;font-size:0.82rem;">'
-            f'{m["score"]} vs <b>{m["opponent"]}</b> ({m["date"]})</span></div>'
-        )
-    return "\n".join(rows) if rows else "<span style='color:#8b9ab0'>—</span>"
+def _stat_duel_html(home, away, h, a):
+    def _row(label, hv, av, max_val, dec=1, pct=False, invert=False):
+        h_val = hv if hv is not None and not np.isnan(hv) else 0
+        a_val = av if av is not None and not np.isnan(av) else 0
+        h_bar = max(0, min((max_val - h_val)/max_val if invert else h_val/max_val, 1)) * 100
+        a_bar = max(0, min((max_val - a_val)/max_val if invert else a_val/max_val, 1)) * 100
+        h_disp = f"{int(h_val*100)}%" if pct else f"{h_val:.{dec}f}"
+        a_disp = f"{int(a_val*100)}%" if pct else f"{a_val:.{dec}f}"
+        h_leading = "leading" if (h_val < a_val if invert else h_val > a_val) else ""
+        a_leading = "leading" if (a_val < h_val if invert else a_val > h_val) else ""
+        
+        return f"""
+        <div class="duel-row">
+            <div class="duel-val-home {h_leading}">{h_disp}</div>
+            <div class="duel-track-home"><div class="duel-bar-home" style="width:{h_bar}%"></div></div>
+            <div class="duel-label">{label}</div>
+            <div class="duel-track-away"><div class="duel-bar-away" style="width:{a_bar}%"></div></div>
+            <div class="duel-val-away {a_leading}">{a_disp}</div>
+        </div>"""
 
-
-def _radar_chart(home_stats: dict, away_stats: dict) -> go.Figure:
-    categories = ["Goals", "Shots", "SoT", "Corners", "xG"]
-    home_vals = [
-        home_stats.get("avg_goals", 0),
-        home_stats.get("avg_shots", 0) / 3,
-        home_stats.get("avg_shots_on", 0),
-        home_stats.get("avg_corners", 0) / 2,
-        home_stats.get("avg_xg_proxy", 0),
+    rows = [
+        _row("Victorias", h.get('win_rate'), a.get('win_rate'), 1, pct=True),
+        _row("Goles/p", h.get('avg_goals'), a.get('avg_goals'), 3),
+        _row("Gc enc./p", h.get('avg_goals_against'), a.get('avg_goals_against'), 3, invert=True),
+        _row("xG proxy", h.get('avg_xg_proxy'), a.get('avg_xg_proxy'), 2.5),
+        _row("Tiros/p", h.get('avg_shots'), a.get('avg_shots'), 20),
+        _row("SoT/p", h.get('avg_shots_on'), a.get('avg_shots_on'), 10),
+        _row("Córners/p", h.get('avg_corners'), a.get('avg_corners'), 12),
+        _row("Over 2.5", h.get('over25_rate'), a.get('over25_rate'), 1, pct=True),
+        _row("BTTS", h.get('btts_rate'), a.get('btts_rate'), 1, pct=True),
     ]
-    away_vals = [
-        away_stats.get("avg_goals", 0),
-        away_stats.get("avg_shots", 0) / 3,
-        away_stats.get("avg_shots_on", 0),
-        away_stats.get("avg_corners", 0) / 2,
-        away_stats.get("avg_xg_proxy", 0),
-    ]
+    
+    header = f"""
+    <div class="duel-header">
+        <div style="text-align:right; font-size:.62rem; color:var(--brand); font-weight:800;">{home.upper()}</div>
+        <div></div><div></div><div></div>
+        <div style="text-align:left; font-size:.62rem; color:#fb7185; font-weight:800;">{away.upper()}</div>
+    </div>"""
+    
+    return f'<div class="card" style="margin-bottom:20px;"><div class="section-title">Comparativa de estadísticas</div>{header}<div class="stat-duel">{"".join(rows)}</div></div>'
+
+def _radar_chart(home, away, h_stats, a_stats):
+    categories = ["Goles", "Victorias", "Tiros", "xG", "Defensa"]
+    
+    def norm(v, m):
+        if v is None or np.isnan(v): return 0
+        return max(0, min(v/m, 1)) * 100
+    
+    h_def = max(0, 1 - (h_stats.get('avg_goals_against', 0) / 3))
+    a_def = max(0, 1 - (a_stats.get('avg_goals_against', 0) / 3))
+
+    h_vals = [norm(h_stats.get('avg_goals'), 3), norm(h_stats.get('win_rate'), 1), norm(h_stats.get('avg_shots'), 20), norm(h_stats.get('avg_xg_proxy'), 2.5), h_def * 100]
+    a_vals = [norm(a_stats.get('avg_goals'), 3), norm(a_stats.get('win_rate'), 1), norm(a_stats.get('avg_shots'), 20), norm(a_stats.get('avg_xg_proxy'), 2.5), a_def * 100]
+
     fig = go.Figure()
-    fig.add_trace(go.Scatterpolar(
-        r=home_vals + [home_vals[0]],
-        theta=categories + [categories[0]],
-        fill="toself",
-        name=home_stats.get("team", "Home"),
-        line_color="#00d4aa",
-        fillcolor="rgba(0,212,170,0.15)",
-    ))
-    fig.add_trace(go.Scatterpolar(
-        r=away_vals + [away_vals[0]],
-        theta=categories + [categories[0]],
-        fill="toself",
-        name=away_stats.get("team", "Away"),
-        line_color="#7c4dff",
-        fillcolor="rgba(124,77,255,0.15)",
-    ))
+    fig.add_trace(go.Scatterpolar(r=h_vals, theta=categories, fill='toself', name=home, line_color='#2EE6A6', fillcolor='rgba(46,230,166,0.1)'))
+    fig.add_trace(go.Scatterpolar(r=a_vals, theta=categories, fill='toself', name=away, line_color='#fb7185', fillcolor='rgba(251,113,133,0.1)'))
+    
     fig.update_layout(
-        polar=dict(
-            bgcolor="#1a1f2e",
-            radialaxis=dict(visible=True, range=[0, 5], gridcolor="#2a3040",
-                            tickfont=dict(color="#8b9ab0")),
-            angularaxis=dict(gridcolor="#2a3040", tickfont=dict(color="#b0bec5")),
-        ),
-        showlegend=True,
-        paper_bgcolor="#0e1117",
-        font=dict(color="#b0bec5"),
-        height=320,
-        margin=dict(l=20, r=20, t=20, b=20),
-        legend=dict(bgcolor="#1a1f2e", bordercolor="#2a3040", borderwidth=1),
+        polar=dict(radialaxis=dict(visible=False, range=[0, 100]), bgcolor='rgba(0,0,0,0)', gridcolor='rgba(255,255,255,0.05)'),
+        showlegend=True, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#8b9ab0', size=10), margin=dict(l=40, r=40, t=20, b=20)
     )
     return fig
 
-
-def _get_teams_by_league(df: pd.DataFrame, league_code: str | None) -> list[str]:
-    """Devuelve los equipos de una liga específica (o de todas si league_code is None)."""
-    source = df if league_code is None else df[df["Div"] == league_code]
-    if source.empty:
-        return []
-    teams = set(source["HomeTeam"].dropna()) | set(source["AwayTeam"].dropna())
-    return sorted(teams)
-
-
-def _player_comparison(df_players: pd.DataFrame, home_team: str, away_team: str) -> None:
-    """Muestra tabla side-by-side con top jugadores de cada equipo."""
-    st.divider()
-    st.markdown(f"#### {t('cmp_players_title')}")
-
-    if df_players is None or df_players.empty:
-        st.info(t("cmp_players_none"))
-        return
-
-    def _top_players(team: str, n: int = 6) -> pd.DataFrame:
-        grp = df_players[df_players["team"] == team]
-        if grp.empty:
-            return pd.DataFrame()
-        agg = (
-            grp.groupby("player")
-            .agg(
-                Tiros=("sh", "mean"),
-                APuerta=("sot", "mean"),
-                Goles=("gls", "sum"),
-                Asis=("ast", "sum"),
-                PJ=("player", "count"),
-            )
-            .sort_values("Tiros", ascending=False)
-            .head(n)
-            .reset_index()
-        )
-        agg["Tiros"] = agg["Tiros"].round(2)
-        agg["APuerta"] = agg["APuerta"].round(2)
-        agg.columns = [
-            t("player"), t("shots"), t("shots_on"),
-            t("goals"), t("assists"), t("matches"),
-        ]
-        return agg
-
-    home_df = _top_players(home_team)
-    away_df = _top_players(away_team)
-
-    if home_df.empty and away_df.empty:
-        st.info(t("cmp_players_none"))
-        return
-
-    st.caption(t("cmp_players_top"))
-    cp_l, cp_r = st.columns(2)
-    with cp_l:
-        st.markdown(f"**🏠 {home_team}**")
-        if home_df.empty:
-            st.caption("—")
-        else:
-            st.dataframe(home_df, hide_index=True, use_container_width=True)
-    with cp_r:
-        st.markdown(f"**✈️ {away_team}**")
-        if away_df.empty:
-            st.caption("—")
-        else:
-            st.dataframe(away_df, hide_index=True, use_container_width=True)
-
-
-def render(df: pd.DataFrame, teams: list[str], df_players: pd.DataFrame | None = None) -> None:
-    """Renderiza la pestaña Comparador."""
-    st.markdown(f"### {t('cmp_title')}")
-
-    # ── Filtro de división ──────────────────────────────────────────────────
-    league_options = ["ALL"] + list(LEAGUES.keys())
-
-    def _league_label(code: str) -> str:
-        if code == "ALL":
-            return t("league_all")
-        if code == "SP1":
-            return t("league_sp1")
-        if code == "SP2":
-            return t("league_sp2")
-        return code
-
-    # Leer pre-carga desde session_state (viene del Inicio)
-    preload_league = st.session_state.pop("cmp_preload_league", None)
-    default_league_idx = league_options.index(preload_league) if preload_league in league_options else 0
-
-    league_choice = st.radio(
-        t("cmp_league"),
-        options=league_options,
-        format_func=_league_label,
-        horizontal=True,
-        index=default_league_idx,
-        key="cmp_league_radio",
-    )
-    league_code = None if league_choice == "ALL" else league_choice
-    filtered_teams = _get_teams_by_league(df, league_code) if league_code else teams
-
-    if not filtered_teams:
-        st.warning(t("cmp_no_data"))
-        return
-
-    # ── Selectores de equipos ───────────────────────────────────────────────
-    preload_home = st.session_state.pop("cmp_preload_home", None)
-    preload_away = st.session_state.pop("cmp_preload_away", None)
-
+def render(df, teams, df_players):
+    st.markdown('<h2 class="section-h2">Comparador de Partido</h2>', unsafe_allow_html=True)
+    
+    # Pre-carga
+    ph = st.session_state.get("cmp_preload_home", "Real Madrid")
+    pa = st.session_state.get("cmp_preload_away", "Barcelona")
+    
     col1, col2, col3 = st.columns([2, 2, 1])
-    with col1:
-        if preload_home and preload_home in filtered_teams:
-            default_home = filtered_teams.index(preload_home)
-        else:
-            default_home = filtered_teams.index("Real Madrid") if "Real Madrid" in filtered_teams else 0
-        local = st.selectbox(t("cmp_home"), filtered_teams, index=default_home, key="cmp_home_sel")
-    with col2:
-        away_teams_list = [t_ for t_ in filtered_teams if t_ != local]
-        if not away_teams_list:
-            st.warning(t("cmp_no_data"))
-            return
-        if preload_away and preload_away in away_teams_list:
-            default_away = away_teams_list.index(preload_away)
-        else:
-            default_away = away_teams_list.index("Barcelona") if "Barcelona" in away_teams_list else 0
-        visitante = st.selectbox(t("cmp_away"), away_teams_list, index=default_away, key="cmp_away_sel")
-    with col3:
-        n = st.selectbox(
-            t("cmp_last"),
-            ROLLING_WINDOW_OPTIONS,
-            index=ROLLING_WINDOW_OPTIONS.index(ROLLING_WINDOW_DEFAULT),
-            key="cmp_n",
-        )
+    home = col1.selectbox("Local", teams, index=teams.index(ph) if ph in teams else 0)
+    away = col2.selectbox("Visitante", teams, index=teams.index(pa) if pa in teams else 1)
+    window = col3.selectbox("Ventana", [6, 10, 20], index=1)
 
-    # Auto-analizar si venimos de pre-carga, si no esperar al botón
-    auto_analyze = bool(preload_home and preload_away)
-    analizar = st.button(t("cmp_analyze"), type="primary", use_container_width=True)
+    h_stats = get_recent_form(df, home, venue="Home", n=window)
+    a_stats = get_recent_form(df, away, venue="Away", n=window)
+    h2h_sum = get_h2h_summary(df, home, away)
 
-    if not (analizar or auto_analyze):
-        st.markdown(
-            f'<div style="text-align:center;color:#8b9ab0;margin-top:60px;font-size:1.1rem;">'
-            f'{t("cmp_select_prompt")}</div>',
-            unsafe_allow_html=True,
-        )
+    if not h_stats or not a_stats:
+        st.warning("Datos insuficientes")
         return
 
-    # ── Calcular stats ──────────────────────────────────────────────────────
-    # Si hay filtro de liga, restringir df a esa liga; si no, usar todo
-    df_source = df[df["Div"] == league_code].copy() if league_code else df
+    # ── UI Premium ──
+    st.markdown(_fixture_header_html(home, away, h_stats, a_stats), unsafe_allow_html=True)
+    st.markdown(_stat_duel_html(home, away, h_stats, a_stats), unsafe_allow_html=True)
 
-    with st.spinner("..."):
-        home_stats = get_recent_form(df_source, local, venue="Home", n=n)
-        away_stats = get_recent_form(df_source, visitante, venue="Away", n=n)
-        h2h_sum = get_h2h_summary(df_source, local, visitante)
+    # Probabilidades
+    probs = calculate_probabilities(h_stats, a_stats, h2h_sum or None)
+    st.markdown('<div class="card" style="margin-bottom:20px;"><div class="section-title">Probabilidades KICKDEX</div>', unsafe_allow_html=True)
+    st.markdown(prob_bar_html(f"🏠 {home}", probs.home, "#2EE6A6"), unsafe_allow_html=True)
+    st.markdown(prob_bar_html("⚖️ Empate", probs.draw, "#8b9ab0"), unsafe_allow_html=True)
+    st.markdown(prob_bar_html(f"✈️ {away}", probs.away, "#fb7185"), unsafe_allow_html=True)
+    st.markdown('<hr/>', unsafe_allow_html=True)
+    st.markdown(prob_bar_html("⚽ Over 2.5", probs.over25, "#5BD6FF"), unsafe_allow_html=True)
+    st.markdown(prob_bar_html("🤝 BTTS", probs.btts, "#a78bfa"), unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    if not home_stats or not away_stats:
-        st.warning(t("cmp_no_data"))
-        return
+    # Radar + Alertas
+    c_radar, c_alerts = st.columns(2)
+    with c_radar:
+        st.markdown('<div class="chart-box" style="height:100%;"><div class="section-title">Radar Comparativo</div>', unsafe_allow_html=True)
+        st.plotly_chart(_radar_chart(home, away, h_stats, a_stats), use_container_width=True, config={'displayModeBar':False})
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with c_alerts:
+        st.markdown('<div class="card" style="height:100%;"><div class="section-title">Alertas Inteligentes</div>', unsafe_allow_html=True)
+        alerts = generate_alerts(h_stats, a_stats, h2h_sum or None)
+        for a in alerts:
+            st.markdown(alert_card_html(a.text, "#2EE6A6" if a.strength=="HIGH" else "#F5B93C"), unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # ── Layout principal ────────────────────────────────────────────────────
+    # Tabla de Jugadores
     st.divider()
+    st.markdown('<h4 class="players-col-title">Scouting de Jugadores Pro</h4>', unsafe_allow_html=True)
+    
+    h_p = df_players[df_players["team"] == home].groupby("player").mean(numeric_only=True).sort_values("gls", ascending=False).head(10)
+    a_p = df_players[df_players["team"] == away].groupby("player").mean(numeric_only=True).sort_values("gls", ascending=False).head(10)
+    
+    col_ph, col_pa = st.columns(2)
+    with col_ph:
+        st.markdown(f'<div class="players-col-title">{home}</div>', unsafe_allow_html=True)
+        st.dataframe(h_p[["gls", "ast", "sh", "sot"]], use_container_width=True)
+    with col_pa:
+        st.markdown(f'<div class="players-col-title">{away}</div>', unsafe_allow_html=True)
+        st.dataframe(a_p[["gls", "ast", "sh", "sot"]], use_container_width=True)
 
-    c_home, c_away = st.columns(2)
-
-    with c_home:
-        st.markdown(f"#### 🏠 {local}")
-        st.markdown(
-            f"**{home_stats['wins']}{t('cmp_wins')} · {home_stats['draws']}{t('cmp_draws')} · "
-            f"{home_stats['losses']}{t('cmp_losses')}** "
-            f"({t('cmp_last_home', n=home_stats['matches_analyzed'])})"
-        )
-        st.markdown(_form_log_html(home_stats["match_log"]), unsafe_allow_html=True)
-        st.markdown("---")
-        mc1, mc2, mc3 = st.columns(3)
-        mc1.metric(t("cmp_goals_match"), f"{home_stats['avg_goals']:.1f}")
-        mc2.metric(t("cmp_shots_on"), f"{home_stats['avg_shots_on']:.1f}")
-        mc3.metric(t("cmp_xg_proxy"), f"{home_stats['avg_xg_proxy']:.2f}")
-        mc1.metric(t("cmp_corners"), f"{home_stats['avg_corners']:.1f}")
-        mc2.metric(t("cmp_cards"), f"{home_stats['avg_cards']:.1f}")
-        mc3.metric(t("cmp_over25"), f"{int(home_stats['over25_rate']*100)}%")
-
-    with c_away:
-        st.markdown(f"#### ✈️ {visitante}")
-        st.markdown(
-            f"**{away_stats['wins']}{t('cmp_wins')} · {away_stats['draws']}{t('cmp_draws')} · "
-            f"{away_stats['losses']}{t('cmp_losses')}** "
-            f"({t('cmp_last_away', n=away_stats['matches_analyzed'])})"
-        )
-        st.markdown(_form_log_html(away_stats["match_log"]), unsafe_allow_html=True)
-        st.markdown("---")
-        mc1, mc2, mc3 = st.columns(3)
-        mc1.metric(t("cmp_goals_match"), f"{away_stats['avg_goals']:.1f}")
-        mc2.metric(t("cmp_shots_on"), f"{away_stats['avg_shots_on']:.1f}")
-        mc3.metric(t("cmp_xg_proxy"), f"{away_stats['avg_xg_proxy']:.2f}")
-        mc1.metric(t("cmp_corners"), f"{away_stats['avg_corners']:.1f}")
-        mc2.metric(t("cmp_cards"), f"{away_stats['avg_cards']:.1f}")
-        mc3.metric(t("cmp_over25"), f"{int(away_stats['over25_rate']*100)}%")
-
+    # Calculadora Maestra SQL
+    from app.engine.query_engine import QueryEngine
+    from app.data.database import SessionLocal
+    db = SessionLocal()
+    qe = QueryEngine(db)
+    
     st.divider()
-
-    # ── Radar + Probabilidades ──────────────────────────────────────────────
-    col_radar, col_probs = st.columns([1, 1])
-
-    with col_radar:
-        st.markdown(f"#### {t('cmp_radar')}")
-        fig = _radar_chart(home_stats, away_stats)
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-
-    with col_probs:
-        st.markdown(f"#### {t('cmp_probs')}")
-        probs = calculate_probabilities(home_stats, away_stats, h2h_sum or None)
-        fair_odds = probs.implied_odds()
-
-        st.markdown(prob_bar_html(f"🏠 {local}", probs.home, "#00d4aa"), unsafe_allow_html=True)
-        st.markdown(prob_bar_html(f"⚖️ {t('draw')}", probs.draw, "#f0c040"), unsafe_allow_html=True)
-        st.markdown(prob_bar_html(f"✈️ {visitante}", probs.away, "#7c4dff"), unsafe_allow_html=True)
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown(prob_bar_html("⚽ Over 2.5", probs.over25, "#ff8f00"), unsafe_allow_html=True)
-        st.markdown(prob_bar_html(t("cmp_btts"), probs.btts, "#29b6f6"), unsafe_allow_html=True)
-
-        st.caption(
-            f"{t('cmp_fair_odds')}: "
-            f"{t('home')} {fair_odds['home']} · {t('draw')} {fair_odds['draw']} · "
-            f"{t('away')} {fair_odds['away']}"
-        )
-
-    st.divider()
-
-    # ── Smart Alerts ────────────────────────────────────────────────────────
-    st.markdown(f"#### {t('cmp_alerts')}")
-    alerts = generate_alerts(home_stats, away_stats, h2h_sum or None,
-                             n=n, min_strength=AlertStrength.MEDIUM)
-    if alerts:
-        alert_html = "".join(alert_card_html(a) for a in alerts)
-        st.markdown(alert_html, unsafe_allow_html=True)
-    else:
-        st.info(t("cmp_no_alerts"))
-
-    # ── H2H resumen ─────────────────────────────────────────────────────────
-    if h2h_sum and h2h_sum.get("total", 0) > 0:
-        with st.expander(t("cmp_h2h_header", n=h2h_sum["total"])):
-            c1, c2, c3 = st.columns(3)
-            c1.metric(t("cmp_h2h_wins_t1", team=local[:12]), h2h_sum["wins_team1"])
-            c2.metric(t("cmp_h2h_draws"), h2h_sum["draws"])
-            c3.metric(t("cmp_h2h_wins_t1", team=visitante[:12]), h2h_sum["wins_team2"])
-            c1.metric(t("cmp_h2h_avg"), h2h_sum["avg_goals"])
-            c2.metric(t("cmp_over25"), f"{int(h2h_sum['over25_rate']*100)}%")
-            c3.metric("BTTS", f"{int(h2h_sum['btts_rate']*100)}%")
-
-    # ── Comparativa de jugadores ────────────────────────────────────────────
-    _player_comparison(df_players, local, visitante)
+    st.markdown('<div class="card" style="border-color:var(--brand);"><div class="section-title">🔍 KICKDEX Terminal — Calculadora SQL</div>', unsafe_allow_html=True)
+    q_team = st.selectbox("Analizar Equipo (SQL)", teams, key="q_sql")
+    if st.button("EJECUTAR CÁLCULO PRO"):
+        res = qe.get_team_stats(q_team)
+        if res:
+            st.success(f"Resultados para {q_team} (Últimos {res['n_matches']} partidos)")
+            mc1, mc2, mc3 = st.columns(3)
+            mc1.metric("Goles Marcados", f"{res['avg_goals_scored']:.2f}")
+            mc2.metric("Goles Encajados", f"{res['avg_goals_conceded']:.2f}")
+            mc3.metric("Win Rate", f"{res['win_pct']:.1f}%")
+    st.markdown('</div>', unsafe_allow_html=True)
+    db.close()

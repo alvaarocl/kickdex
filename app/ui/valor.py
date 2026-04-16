@@ -19,6 +19,7 @@ def _value_row_html(vr) -> str:
     """Renderiza una fila de value result como HTML."""
     ev_pct = f"{vr.ev * 100:+.1f}%"
     edge_pct = f"{vr.edge * 100:+.1f}%"
+    kelly_pct = f"{vr.kelly * 100:.1f}%"
     color = vr.color
     bg = f"{color}15"  # 15% opacity
     return f"""
@@ -30,11 +31,10 @@ def _value_row_html(vr) -> str:
             <span style="color:#b0bec5;margin-left:10px;font-size:0.85rem;">{vr.market}</span>
         </div>
         <div style="display:flex;gap:18px;font-size:0.82rem;">
-            <span style="color:#8b9ab0;">Nuestro: <b style="color:#e8eaf6">{int(vr.our_prob*100)}%</b></span>
-            <span style="color:#8b9ab0;">Implícito: <b style="color:#e8eaf6">{int(vr.implied_prob*100)}%</b></span>
+            <span style="color:#8b9ab0;">Prob: <b style="color:#e8eaf6">{int(vr.our_prob*100)}%</b></span>
             <span style="color:#8b9ab0;">Cuota: <b style="color:#e8eaf6">{vr.odds:.2f}</b></span>
-            <span style="color:#8b9ab0;">Edge: <b style="color:{color}">{edge_pct}</b></span>
             <span style="color:#8b9ab0;">EV: <b style="color:{color}">{ev_pct}</b></span>
+            <span style="color:#8b9ab0;">Stake Sugerido: <b style="color:{color}">{kelly_pct}</b></span>
         </div>
     </div>"""
 

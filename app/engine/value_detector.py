@@ -35,6 +35,25 @@ class ValueResult:
         return round(self.our_prob * self.odds - 1, 4)
 
     @property
+    def kelly(self) -> float:
+        """
+        Cálculo del Criterio de Kelly (Stake sugerido).
+        f* = (Prob * Cuota - 1) / (Cuota - 1)
+        Aplicamos un Kelly fraccional del 25% para mayor seguridad.
+        """
+        if self.odds <= 1.0 or not self.is_value or self.our_prob <= 0:
+            return 0.0
+        
+        b = self.odds - 1
+        f_star = (self.our_prob * self.odds - 1) / b
+        
+        # Kelly fraccional (0.25) para reducir volatilidad
+        fractional_kelly = f_star * 0.25
+        
+        # Limitar a un máximo del 5% del bankroll por apuesta para seguridad
+        return round(min(max(0, fractional_kelly), 0.05), 4)
+
+    @property
     def color(self) -> str:
         if self.is_value:
             return "#00d4aa"

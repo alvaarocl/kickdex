@@ -7,114 +7,44 @@ import pandas as pd
 import numpy as np
 from typing import Any, Dict, List, Optional
 
+from sqlalchemy.orm import Session
+from app.data.models import Team, Match, PlayerStat
+from sqlalchemy import or_, func
+
 class QueryEngine:
-    def __init__(self, df_matches: pd.DataFrame, df_players: pd.DataFrame):
-        self.df = df_matches
-        self.df_p = df_players
+    def __init__(self, db: Session):
+        self.db = db
 
-    def get_team_stats(
-        self, 
-        team: str, 
-        venue: str = "All", 
-        last_n: Optional[int] = None,
-        league: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """Calcula estadísticas profundas para un equipo bajo ciertas condiciones."""
-        df = self.df.copy()
+    def get_team_stats(self, team_name: str, venue: str = "All", last_n: int = 10):
+        """Consulta estadísticas de equipo directamente desde SQL."""
+        team = self.db.query(Team).filter(Team.name == team_name).first()
+        if not team: return {}
+
+        query = self.db.query(Match).filter(
+            or_(Match.home_team_id == team.id, Match.away_team_id == team.id)
+        )
         
-        if league:
-            df = df[df["Div"] == league]
-            
         if venue == "Home":
-            m = df[df["HomeTeam"] == team]
-            prefix = "H"
+            query = query.filter(Match.home_team_id == team.id)
         elif venue == "Away":
-            m = df[df["AwayTeam"] == team]
-            prefix = "A"
-        else:
-            m = df[(df["HomeTeam"] == team) | (df["AwayTeam"] == team)]
-            prefix = "Both"
+            query = query.filter(Match.away_team_id == team.id)
 
-        if m.empty:
-            return {}
+        matches = query.order_by(Match.date.desc()).limit(last_n).all()
+        if not matches: return {}
 
-        if last_n:
-            m = m.sort_values("Date").tail(last_n)
-
-        # Helper para extraer métricas según el lado
-        def _get_metric(row, metric_base):
-            is_home = row["HomeTeam"] == team
-            col = f"H{metric_base}" if is_home else f"A{metric_base}"
-            return row.get(col, 0)
-
-        # Diccionario de resultados
-        results = {
-            "n_matches": len(m),
-            "avg_goals_scored": 0.0,
-            "avg_goals_conceded": 0.0,
-            "avg_corners": 0.0,
-            "avg_shots": 0.0,
-            "avg_sot": 0.0,
-            "avg_cards": 0.0,
-            "btts_pct": 0.0,
-            "over25_pct": 0.0,
-            "clean_sheet_pct": 0.0,
-            "win_pct": 0.0
-        }
-
-        scored = []
-        conceded = []
-        corners = []
-        shots = []
-        sot = []
-        cards = []
-        wins = 0
-        btts = 0
-        o25 = 0
-        cs = 0
-
-        for _, r in m.iterrows():
-            is_home = r["HomeTeam"] == team
-            gs = r["FTHG"] if is_home else r["FTAG"]
-            gc = r["FTAG"] if is_home else r["FTHG"]
-            res = r["FTR"]
-            
-            scored.append(gs)
-            conceded.append(gc)
-            corners.append(r["HC"] if is_home else r["AC"])
-            shots.append(r["HS"] if is_home else r["AS"])
-            sot.append(r["HST"] if is_home else r["AST"])
-            cards.append((r["HY"] or 0) + (r["HR"] or 0) if is_home else (r["AY"] or 0) + (r["AR"] or 0))
-            
-            if (is_home and res == "H") or (not is_home and res == "A"):
-                wins += 1
-            if gs > 0 and gc > 0:
-                btts += 1
-            if gs + gc > 2.5:
-                o25 += 1
-            if gc == 0:
-                cs += 1
-
-        results.update({
-            "avg_goals_scored": np.mean(scored),
-            "std_goals_scored": np.std(scored), # Volatilidad
-            "avg_goals_conceded": np.mean(conceded),
-            "std_goals_conceded": np.std(conceded),
-            "avg_corners": np.mean(corners),
-            "std_corners": np.std(corners),
-            "avg_shots": np.mean(shots),
-            "avg_sot": np.mean(sot),
-            "avg_cards": np.mean(cards),
-            "win_pct": (wins / len(m)) * 100,
-            "btts_pct": (btts / len(m)) * 100,
-            "over25_pct": (o25 / len(m)) * 100,
-            "clean_sheet_pct": (cs / len(m)) * 100,
-            # Data raw para histogramas
+        # Cálculos SQL-style
+        scored = [m.fthg if m.home_team_id == team.id else m.ftag for m in matches]
+        conceded = [m.ftag if m.home_team_id == team.id else m.fthg for m in matches]
+        corners = [m.hc if m.home_team_id == team.id else m.ac for m in matches]
+        
+        return {
+            "n_matches": len(matches),
+            "avg_goals_scored": sum(scored) / len(scored),
+            "avg_goals_conceded": sum(conceded) / len(conceded),
+            "avg_corners": sum(corners) / len(corners),
             "raw_corners": corners,
-            "raw_goals_scored": scored
-        })
-
-        return results
+            "win_pct": (sum(1 for m in matches if (m.ftr == 'H' and m.home_team_id == team.id) or (m.ftr == 'A' and m.away_team_id == team.id)) / len(matches)) * 100
+        }
 
     def get_player_stats(self, player: str, last_n: Optional[int] = None) -> Dict[str, Any]:
         """Calcula estadísticas profundas para un jugador."""

@@ -12,6 +12,11 @@ CURRENT_SEASON_LABEL = "2025/26"
 LEAGUES = {
     "SP1": "La Liga",
     "SP2": "Segunda División",
+    "E0": "Premier League",
+    "I1": "Serie A",
+    "D1": "Bundesliga",
+    "F1": "Ligue 1",
+    "N1": "Eredivisie",
 }
 
 # ── Parámetros de análisis ────────────────────────────────────────────────────
@@ -101,6 +106,35 @@ TEAM_ALIASES: dict[str, str] = {
     "eldense": "Eldense",
     "mirandes": "Mirandes",
     "sd mirandes": "Mirandes",
+    # Premier League
+    "man city": "Man City",
+    "manchester city": "Man City",
+    "man united": "Man United",
+    "manchester united": "Man United",
+    "arsenal": "Arsenal",
+    "liverpool": "Liverpool",
+    "chelsea": "Chelsea",
+    "tottenham": "Tottenham",
+    # Bundesliga
+    "bayern munich": "Bayern Munich",
+    "fc bayern": "Bayern Munich",
+    "dortmund": "Dortmund",
+    "borussia dortmund": "Dortmund",
+    "leverkusen": "Leverkusen",
+    "bayer leverkusen": "Leverkusen",
+    # Serie A
+    "inter": "Inter",
+    "inter milan": "Inter",
+    "juventus": "Juventus",
+    "ac milan": "Milan",
+    "milan": "Milan",
+    "napoli": "Napoli",
+    "roma": "Roma",
+    # Ligue 1
+    "psg": "PSG",
+    "paris sg": "PSG",
+    "marseille": "Marseille",
+    "lyon": "Lyon",
 }
 
 # ── Colores UI ────────────────────────────────────────────────────────────────

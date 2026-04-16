@@ -1,204 +1,76 @@
 """
-Tab 🏠 Inicio — Calendario de partidos (hoy + próxima jornada) y resultados recientes.
+Tab 🏠 Inicio — Calendario Premium.
+Replica exactamente las cards y badges de la web estática.
 """
 
 from __future__ import annotations
-
-from datetime import datetime
-
 import streamlit as st
-
-from app.data.fixtures import (
-    Fixture,
-    get_upcoming_fixtures,
-    get_recent_results,
-    get_todays_fixtures,
-)
+import pandas as pd
+from app.data.fixtures import Fixture, get_upcoming_fixtures, get_recent_results, get_todays_fixtures
 from app.i18n import t
-
-
-INICIO_CSS = """
-<style>
-.fx-card {
-    background: linear-gradient(135deg, #1a1f2e 0%, #151925 100%);
-    border: 1px solid #2a3040;
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin-bottom: 10px;
-    transition: border-color 0.15s;
-}
-.fx-card:hover { border-color: #00d4aa55; }
-.fx-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.fx-teams {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1 1 320px;
-    min-width: 260px;
-}
-.fx-team {
-    color: #e8eaf6;
-    font-weight: 700;
-    font-size: 1.02rem;
-}
-.fx-vs {
-    color: #8b9ab0;
-    font-weight: 700;
-    font-size: 0.95rem;
-    padding: 0 6px;
-}
-.fx-score {
-    background: #00d4aa22;
-    color: #00d4aa;
-    font-weight: 800;
-    padding: 2px 10px;
-    border-radius: 6px;
-    font-size: 1rem;
-}
-.fx-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.fx-badge {
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-}
-.fx-badge.sp1 { background: #00d4aa22; color: #00d4aa; }
-.fx-badge.sp2 { background: #7c4dff22; color: #7c4dff; }
-.fx-date {
-    color: #8b9ab0;
-    font-size: 0.82rem;
-    font-weight: 600;
-}
-.fx-odds {
-    display: flex;
-    gap: 8px;
-    color: #b0bec5;
-    font-size: 0.82rem;
-    font-family: "JetBrains Mono", monospace;
-}
-.fx-odd { background: #0e1117; padding: 3px 9px; border-radius: 5px; border: 1px solid #2a3040; }
-.fx-odd b { color: #e8eaf6; }
-.fx-empty {
-    text-align: center;
-    color: #8b9ab0;
-    padding: 36px 20px;
-    background: #1a1f2e;
-    border: 1px dashed #2a3040;
-    border-radius: 12px;
-    font-size: 0.92rem;
-    line-height: 1.5;
-}
-.fx-section-title {
-    color: #e8eaf6 !important;
-    font-size: 1.15rem !important;
-    margin-top: 22px !important;
-    margin-bottom: 12px !important;
-    font-weight: 700 !important;
-}
-</style>
-"""
-
-
-def _badge(league_code: str) -> str:
-    cls = "sp1" if league_code == "SP1" else "sp2"
-    label = t("league_sp1") if league_code == "SP1" else t("league_sp2")
-    return f'<span class="fx-badge {cls}">{label}</span>'
-
-
-def _odds_html(fx: Fixture) -> str:
-    if fx.odds_home is None:
-        return ""
-    return (
-        '<div class="fx-odds">'
-        f'<span class="fx-odd">{t("home")} <b>{fx.odds_home:.2f}</b></span>'
-        f'<span class="fx-odd">{t("draw")} <b>{fx.odds_draw:.2f}</b></span>'
-        f'<span class="fx-odd">{t("away")} <b>{fx.odds_away:.2f}</b></span>'
-        '</div>'
-    )
-
-
-def _fixture_card(fx: Fixture, idx: int, key_prefix: str) -> None:
-    """Renderiza una tarjeta de partido con botón de acción."""
-    date_str = fx.date.strftime("%d/%m/%Y")
-    time_str = f" · {fx.time}" if fx.time else ""
-    score_or_vs = (
-        f'<span class="fx-score">{fx.home_score}-{fx.away_score}</span>'
-        if fx.is_played
-        else '<span class="fx-vs">vs</span>'
-    )
-
-    col_card, col_btn = st.columns([5, 1])
-
-    with col_card:
-        st.markdown(
-            f"""
-            <div class="fx-card">
-                <div class="fx-row">
-                    <div class="fx-teams">
-                        <span class="fx-team">{fx.home}</span>
-                        {score_or_vs}
-                        <span class="fx-team">{fx.away}</span>
-                    </div>
-                    <div class="fx-meta">
-                        {_badge(fx.league_code)}
-                        <span class="fx-date">📅 {date_str}{time_str}</span>
-                    </div>
-                </div>
-                {_odds_html(fx)}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col_btn:
-        if st.button(
-            t("inicio_analyze"),
-            key=f"{key_prefix}_{idx}",
-            use_container_width=True,
-        ):
-            # Pre-carga equipos en el Comparador via session_state
-            st.session_state.cmp_preload_home = fx.home
-            st.session_state.cmp_preload_away = fx.away
-            st.session_state.cmp_preload_league = fx.league_code
-            st.session_state.active_tab = "comparador"
-            st.rerun()
-
-
-def _filter_by_league(fixtures: list[Fixture], league: str) -> list[Fixture]:
-    if league == "all":
-        return fixtures
-    return [f for f in fixtures if f.league_code == league]
-
-
 from app.engine.api_manager import ExternalAPIManager
 
-# ... (CSS remains same) ...
-
-def _render_live_market() -> None:
-    """Muestra una sección de mercado en tiempo real si hay API keys."""
-    api = ExternalAPIManager()
-    st.markdown('<h4 class="fx-section-title">📊 Intelligence: Mercado en Tiempo Real</h4>', unsafe_allow_html=True)
+def _fixture_card_html(fx: Fixture, is_result: bool = False) -> str:
+    league_cls = fx.league_code.lower()
+    league_label = LEAGUES.get(fx.league_code, fx.league_code)
     
-    with st.spinner("Conectando con The Odds API..."):
-        odds_data = api.get_live_odds()
-        
-    if not odds_data:
-        st.info("No hay cuotas en vivo disponibles en este momento.")
-        return
+    # Formatear fecha estilo JS
+    date_label = fx.date.strftime("%a %d %b")
+    if fx.time: date_label += f" · {fx.time}"
 
-    cols = st.columns(len(odds_data[:3])) # Mostrar top 3
-    for i, match in enumerate(odds_data[:3]):
-        with cols[i]:
-            with st.container():
-                st.markdown(f"**{match['home_team']} vs {match['away_team']}**")
+    main_content = ""
+    if is_result:
+        home_win = fx.home_score > fx.away_score
+        away_win = fx.away_score > fx.home_score
+        main_content = f"""
+        <div class="fx-score">
+            <span class="{'fx-score-win' if home_win else ''}">{fx.home_score}</span>
+            <span class="fx-score-sep">–</span>
+            <span class="{'fx-score-win' if away_win else ''}">{fx.away_score}</span>
+        </div>"""
+    else:
+        odds_html = ""
+        if fx.odds_home:
+            odds_html = f"""
+            <div class="fx-odds">
+                <div class="fx-odd"><span>1</span><strong>{fx.odds_home:.2f}</strong></div>
+                <div class="fx-odd"><span>X</span><strong>{fx.odds_draw:.2f}</strong></div>
+                <div class="fx-odd"><span>2</span><strong>{fx.odds_away:.2f}</strong></div>
+            </div>"""
+        main_content = odds_html
+
+    return f"""
+    <div class="fx-card">
+        <div class="fx-row">
+            <span class="fx-league-badge {league_cls}">{league_label}</span>
+            <span class="fx-date">{date_label}</span>
+        </div>
+        <div class="fx-row fx-main">
+            <div class="fx-teams">
+                <span class="fx-team">{fx.home}</span>
+                <span class="fx-vs">vs</span>
+                <span class="fx-team">{fx.away}</span>
+            </div>
+            {main_content}
+        </div>
+    </div>"""
+
+def render() -> None:
+    st.markdown('<h2 class="section-h2">Calendario y Partidos</h2>', unsafe_allow_html=True)
+    st.markdown('<p class="section-desc">Próximos partidos con cuotas en tiempo real. Análisis profesional.</p>', unsafe_allow_html=True)
+
+    # ── Inteligencia de Mercado (Live) ──
+    api = ExternalAPIManager()
+    st.markdown('<div class="fx-section-title">📊 Intelligence: Mercado en Tiempo Real</div>', unsafe_allow_html=True)
+    
+    odds_data = api.get_live_odds()
+    if odds_data:
+        # Replicar el grid de la web estática para live market si fuera posible, 
+        # pero usaremos las cards premium de fixtures para consistencia.
+        # Por ahora, mostrar los primeros 3 partidos live de la API
+        cols = st.columns(3)
+        for i, match in enumerate(odds_data[:3]):
+            with cols[i]:
                 bookie = match['bookmakers'][0] if match['bookmakers'] else None
                 if bookie:
                     outcomes = bookie['markets'][0]['outcomes']
@@ -206,88 +78,65 @@ def _render_live_market() -> None:
                     d = next(x['price'] for x in outcomes if x['name'] == 'Draw')
                     a = next(x['price'] for x in outcomes if x['name'] == match['away_team'])
                     
-                    st.markdown(
-                        f'<div style="display:flex; gap:5px; font-family:monospace;">'
-                        f'<span style="background:#1a2236; padding:2px 8px; border-radius:4px;">1: <b>{h:.2f}</b></span>'
-                        f'<span style="background:#1a2236; padding:2px 8px; border-radius:4px;">X: <b>{d:.2f}</b></span>'
-                        f'<span style="background:#1a2236; padding:2px 8px; border-radius:4px;">2: <b>{a:.2f}</b></span>'
-                        f'</div>',
-                        unsafe_allow_html=True
-                    )
-                st.caption(f"Fuente: {bookie['title'] if bookie else 'N/A'}")
+                    st.markdown(f"""
+                    <div class="fx-card" style="border-color: var(--brand);">
+                        <div class="fx-row"><span class="fx-league-badge sp1">LIVE MARKET</span></div>
+                        <div class="fx-team" style="margin-top:10px;">{match['home_team']} vs {match['away_team']}</div>
+                        <div class="fx-odds">
+                            <div class="fx-odd"><span>1</span><strong>{h:.2f}</strong></div>
+                            <div class="fx-odd"><span>X</span><strong>{d:.2f}</strong></div>
+                            <div class="fx-odd"><span>2</span><strong>{a:.2f}</strong></div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
 
-def render() -> None:
-    """Renderiza la tab de inicio con calendario."""
-    st.markdown(INICIO_CSS, unsafe_allow_html=True)
+    # ── Filtros ──
+    options = ["all"] + list(LEAGUES.keys())
+    
+    def _format_league(code):
+        if code == "all": return "Todas"
+        return LEAGUES.get(code, code)
 
-    # ── Live Market Intelligence ─────────────────────────────────────────────
-    _render_live_market()
+    league_choice = st.radio(
+        "Filtro", options=options, 
+        format_func=_format_league,
+        horizontal=True, label_visibility="collapsed"
+    )
 
-    st.markdown(f"### {t('inicio_title')}")
-    st.caption(t("inicio_subtitle"))
+    # ── Datos ──
+    today_fx = get_todays_fixtures()
+    upcoming_fx = get_upcoming_fixtures()
+    recent_fx = get_recent_results()
 
-    # ── Controles ────────────────────────────────────────────────────────────
-    col_filter, col_refresh = st.columns([3, 1])
-    with col_filter:
-        league_choice = st.radio(
-            t("inicio_filter_league"),
-            options=["all", "SP1", "SP2"],
-            format_func=lambda x: (
-                t("league_all") if x == "all"
-                else t("league_sp1") if x == "SP1"
-                else t("league_sp2")
-            ),
-            horizontal=True,
-            key="inicio_league",
-        )
-    with col_refresh:
-        force = st.button(t("inicio_refresh"), use_container_width=True, key="inicio_refresh_btn")
-        if force:
-            # Limpiar caché de la función cacheada
-            _cached_fixtures.clear()
+    def _filter(l):
+        return [f for f in l if league_choice == "all" or f.league_code == league_choice]
 
-    # ── Obtener fixtures (cacheado 1h) ───────────────────────────────────────
-    with st.spinner("..."):
-        today_fx, upcoming_fx, recent_fx = _cached_fixtures()
+    # Renderizar secciones
+    t_fx = _filter(today_fx)
+    if t_fx:
+        st.markdown('<div class="fx-section-title">Partidos de hoy</div>', unsafe_allow_html=True)
+        for fx in t_fx:
+            col_c, col_b = st.columns([5, 1])
+            col_c.markdown(_fixture_card_html(fx), unsafe_allow_html=True)
+            if col_b.button("Analizar", key=f"btn_t_{fx.home}"):
+                st.session_state.cmp_preload_home = fx.home
+                st.session_state.cmp_preload_away = fx.away
+                # st.session_state.active_tab = "comparador" # No funciona con st.tabs
+                st.info("Equipos cargados. Ve a la pestaña Comparador.")
 
-    today_fx = _filter_by_league(today_fx, league_choice)
-    upcoming_fx = _filter_by_league(upcoming_fx, league_choice)
-    recent_fx = _filter_by_league(recent_fx, league_choice)
+    u_fx = _filter(upcoming_fx)
+    if u_fx:
+        st.markdown('<div class="fx-section-title">Próxima jornada</div>', unsafe_allow_html=True)
+        for fx in u_fx[:10]:
+            col_c, col_b = st.columns([5, 1])
+            col_c.markdown(_fixture_card_html(fx), unsafe_allow_html=True)
+            if col_b.button("Analizar", key=f"btn_u_{fx.home}"):
+                st.session_state.cmp_preload_home = fx.home
+                st.session_state.cmp_preload_away = fx.away
+                st.info("Equipos cargados. Ve a la pestaña Comparador.")
 
-    # ── Hoy ──────────────────────────────────────────────────────────────────
-    if today_fx:
-        st.markdown(f'<h4 class="fx-section-title">{t("inicio_today")}</h4>', unsafe_allow_html=True)
-        for i, fx in enumerate(today_fx):
-            _fixture_card(fx, i, "today")
-
-    # ── Próxima jornada ──────────────────────────────────────────────────────
-    st.markdown(f'<h4 class="fx-section-title">{t("inicio_upcoming")}</h4>', unsafe_allow_html=True)
-    today_keys = {(f.league_code, f.home, f.away, f.date) for f in today_fx}
-    upcoming_not_today = [
-        f for f in upcoming_fx
-        if (f.league_code, f.home, f.away, f.date) not in today_keys
-    ]
-
-    if upcoming_not_today:
-        for i, fx in enumerate(upcoming_not_today[:20]):
-            _fixture_card(fx, i, "upcoming")
-    else:
-        st.markdown(
-            f'<div class="fx-empty">{t("inicio_no_upcoming")}</div>',
-            unsafe_allow_html=True,
-        )
-
-    # ── Recientes ────────────────────────────────────────────────────────────
-    if recent_fx:
-        st.markdown(f'<h4 class="fx-section-title">{t("inicio_recent")}</h4>', unsafe_allow_html=True)
-        for i, fx in enumerate(recent_fx[:10]):
-            _fixture_card(fx, i, "recent")
-
-
-@st.cache_data(show_spinner=False, ttl=3600)
-def _cached_fixtures():
-    """Cachea 1 hora las 3 listas para no re-descargar en cada render."""
-    today = get_todays_fixtures()
-    upcoming = get_upcoming_fixtures(max_days_ahead=14)
-    recent = get_recent_results(days_back=5)
-    return today, upcoming, recent
+    r_fx = _filter(recent_fx)
+    if r_fx:
+        st.markdown('<div class="fx-section-title">Resultados recientes</div>', unsafe_allow_html=True)
+        for fx in r_fx[:5]:
+            st.markdown(_fixture_card_html(fx, is_result=True), unsafe_allow_html=True)
