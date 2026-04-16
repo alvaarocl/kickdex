@@ -38,13 +38,13 @@ const I18N = {
     landing_title: "La terminal de datos del fútbol",
     landing_subtitle: "22 años de historia. 15.000+ partidos. Análisis profesional 100% gratuito.",
     landing_cta: "⚡ EMPEZAR A ANALIZAR",
-    landing_f1_title: "📅 Calendario en Vivo",
+    landing_f1_title: "Calendario en Vivo",
     landing_f1_body: "Partidos de hoy y próxima jornada de La Liga y Segunda, con cuotas Bet365.",
-    landing_f2_title: "⚡ Análisis Pre-Partido",
+    landing_f2_title: "Análisis Pre-Partido",
     landing_f2_body: "Forma reciente, H2H, Smart Alerts y probabilidades Poisson para cualquier partido.",
-    landing_f3_title: "📚 Historial Completo",
+    landing_f3_title: "Historial Completo",
     landing_f3_body: "Todos los enfrentamientos directos desde 2004 con cuotas y división.",
-    landing_f4_title: "⚽ Player Scouting",
+    landing_f4_title: "Player Scouting",
     landing_f4_body: "Estadísticas de cada jugador y buscador de oportunidades en player props.",
     landing_footer: "Uso educativo · Datos: football-data.co.uk + FBref",
     disclaimer: "Esta herramienta es exclusivamente informativa y no constituye asesoramiento de apuestas. Las probabilidades son estimaciones matemáticas basadas en datos históricos. El juego puede crear adicción — juega con responsabilidad.",
@@ -83,13 +83,13 @@ const I18N = {
     landing_title: "The football data terminal",
     landing_subtitle: "22 years of history. 15,000+ matches. Pro-level analytics, 100% free.",
     landing_cta: "⚡ START ANALYZING",
-    landing_f1_title: "📅 Live Calendar",
+    landing_f1_title: "Live Calendar",
     landing_f1_body: "Today's and next matchday fixtures for La Liga and Segunda, with Bet365 odds.",
-    landing_f2_title: "⚡ Pre-Match Analysis",
+    landing_f2_title: "Pre-Match Analysis",
     landing_f2_body: "Recent form, H2H, Smart Alerts and Poisson probabilities for every match.",
-    landing_f3_title: "📚 Full History",
+    landing_f3_title: "Full History",
     landing_f3_body: "Every head-to-head since 2004 with odds and division.",
-    landing_f4_title: "⚽ Player Scouting",
+    landing_f4_title: "Player Scouting",
     landing_f4_body: "Per-player stats and player-prop opportunity finder.",
     landing_footer: "Educational use · Data: football-data.co.uk + FBref",
     disclaimer: "This tool is for informational purposes only and does not constitute betting advice. Probabilities are mathematical estimates based on historical data. Gambling can be addictive — play responsibly.",
@@ -124,17 +124,54 @@ function applyI18n() {
 }
 
 // ── Landing ────────────────────────────────────────────────────────────────
+function animateCounters() {
+  document.querySelectorAll("[data-counter]").forEach(el => {
+    const target  = parseInt(el.dataset.counter, 10);
+    const suffix  = el.dataset.suffix  || "";
+    const abbrev  = el.dataset.abbrev === "true";
+    const dur     = 1400;
+    const start   = performance.now();
+
+    function step(now) {
+      const t   = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const val  = Math.round(ease * target);
+      let display;
+      if (abbrev && val >= 1000) {
+        display = (val / 1000).toFixed(val >= 10000 ? 0 : 1) + "k";
+      } else {
+        display = val.toLocaleString("es-ES");
+      }
+      el.textContent = display + (t >= 1 ? suffix : "");
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+function activateLandingCards() {
+  document.querySelectorAll(".landing-card").forEach(c => c.classList.add("visible"));
+}
+
 function initLanding() {
-  const seen = localStorage.getItem("kdx_seen");
+  const seen    = localStorage.getItem("kdx_seen");
   const landing = document.getElementById("landing-overlay");
   if (!seen && landing) {
     landing.style.display = "flex";
+    setTimeout(() => { animateCounters(); activateLandingCards(); }, 200);
   }
   const startBtn = document.getElementById("landing-start");
   if (startBtn) {
     startBtn.addEventListener("click", () => {
       if (landing) landing.style.display = "none";
       localStorage.setItem("kdx_seen", "1");
+    });
+  }
+  // Also animate when logo re-opens the landing
+  const logo = document.querySelector(".logo");
+  if (logo) {
+    logo.addEventListener("click", () => {
+      setTimeout(() => { animateCounters(); activateLandingCards(); }, 100);
     });
   }
 }
@@ -247,8 +284,7 @@ function populateAllSelects() {
 function initSegControls() {
   const populateLeagueSelect = (id) => {
     const sel = document.getElementById(id);
-    if (!sel) return;
-    // Keep 'all' option, add others
+    if (!sel || sel.tagName !== "SELECT") return;
     Object.entries(APP.leagues).forEach(([code, data]) => {
       const opt = document.createElement("option");
       opt.value = code;
@@ -261,7 +297,6 @@ function initSegControls() {
   populateLeagueSelect("h2hLeagueFilter");
   populateLeagueSelect("inicioLeagueFilter");
 
-  // Comparador + Value league filter
   const cmpFilter = document.getElementById("cmpLeagueFilter");
   if (cmpFilter) {
     cmpFilter.addEventListener("change", e => {

@@ -35,29 +35,52 @@
 
     <div class="landing-logo">KICKDEX</div>
     <h1 class="landing-title" data-i18n="landing_title">La terminal de datos del fútbol</h1>
-    <p class="landing-sub" data-i18n="landing_subtitle">22 años de historia. 15.000+ partidos. Análisis profesional 100% gratuito.</p>
+    <p class="landing-sub" data-i18n="landing_subtitle">22 a��os de historia. 15.000+ partidos. Análisis profesional 100% gratuito.</p>
+
+    <!-- Stat counters -->
+    <div class="landing-stats">
+      <div class="landing-stat">
+        <span class="landing-stat-num" data-counter="22" data-suffix="años">0</span>
+        <span class="landing-stat-label">de datos</span>
+      </div>
+      <div class="landing-stat-sep"></div>
+      <div class="landing-stat">
+        <span class="landing-stat-num" data-counter="85000" data-suffix="+" data-abbrev="true">0</span>
+        <span class="landing-stat-label">partidos</span>
+      </div>
+      <div class="landing-stat-sep"></div>
+      <div class="landing-stat">
+        <span class="landing-stat-num" data-counter="10" data-suffix=" ligas">0</span>
+        <span class="landing-stat-label">ligas top</span>
+      </div>
+      <div class="landing-stat-sep"></div>
+      <div class="landing-stat">
+        <span class="landing-stat-num" data-counter="100" data-suffix="% gratis">0</span>
+        <span class="landing-stat-label">siempre</span>
+      </div>
+    </div>
 
     <div class="landing-features">
       <div class="landing-card">
-        <h4 data-i18n="landing_f1_title">📅 Calendario en Vivo</h4>
+        <h4 data-i18n="landing_f1_title">Calendario en Vivo</h4>
         <p data-i18n="landing_f1_body">Partidos de hoy y próxima jornada de La Liga y Segunda, con cuotas Bet365.</p>
       </div>
       <div class="landing-card">
-        <h4 data-i18n="landing_f2_title">⚡ Análisis Pre-Partido</h4>
+        <h4 data-i18n="landing_f2_title">Análisis Pre-Partido</h4>
         <p data-i18n="landing_f2_body">Forma reciente, H2H, Smart Alerts y probabilidades Poisson para cualquier partido.</p>
       </div>
       <div class="landing-card">
-        <h4 data-i18n="landing_f3_title">📚 Historial Completo</h4>
+        <h4 data-i18n="landing_f3_title">Historial Completo</h4>
         <p data-i18n="landing_f3_body">Todos los enfrentamientos directos desde 2004 con cuotas y división.</p>
       </div>
       <div class="landing-card">
-        <h4 data-i18n="landing_f4_title">⚽ Player Scouting</h4>
+        <h4 data-i18n="landing_f4_title">Player Scouting</h4>
         <p data-i18n="landing_f4_body">Estadísticas de cada jugador y buscador de oportunidades en player props.</p>
       </div>
     </div>
 
     <button class="landing-cta" id="landing-start" data-i18n="landing_cta">
-      ⚡ EMPEZAR A ANALIZAR
+      EMPEZAR A ANALIZAR
     </button>
 
     <p class="landing-footer" data-i18n="landing_footer">Uso educativo · Datos: football-data.co.uk + FBref</p>
@@ -156,13 +179,11 @@
 
     <!-- Liga filter -->
     <div class="controls" style="margin-bottom:18px;">
-      <div class="field" style="max-width:300px;">
-        <label data-i18n="inicio_filter">Filtrar por liga</label>
-        <div class="seg-control" id="inicioLeagueFilter">
-          <button class="seg-btn active" data-league="all" data-i18n="league_all">Todas</button>
-          <button class="seg-btn" data-league="SP1">La Liga</button>
-          <button class="seg-btn" data-league="SP2">Segunda</button>
-        </div>
+      <div class="field" style="max-width:260px;">
+        <label for="inicioLeagueFilter" data-i18n="inicio_filter">Filtrar por liga</label>
+        <select id="inicioLeagueFilter">
+          <option value="all" data-i18n="league_all">Todas las ligas</option>
+        </select>
       </div>
     </div>
 
@@ -231,12 +252,10 @@
     <div class="controls" style="flex-wrap:wrap;gap:14px 18px;">
       <!-- Division filter -->
       <div class="field" style="width:100%;padding-bottom:4px;">
-        <label data-i18n="cmp_league">Liga</label>
-        <div class="seg-control" id="h2hLeagueFilter">
-          <button class="seg-btn active" data-league="all" data-i18n="league_all">Todas</button>
-          <button class="seg-btn" data-league="SP1">La Liga</button>
-          <button class="seg-btn" data-league="SP2">Segunda</button>
-        </div>
+        <label for="h2hLeagueFilter" data-i18n="cmp_league">Liga</label>
+        <select id="h2hLeagueFilter">
+          <option value="all" data-i18n="league_all">Todas las ligas</option>
+        </select>
       </div>
       <div class="field">
         <label for="h2h-t1" data-i18n="h2h_team1">Equipo 1</label>
@@ -386,6 +405,15 @@
     <div class="section-header" style="margin-bottom:16px;">
       <h2 class="section-h2" data-i18n="arb_title">Árbitros</h2>
       <p class="section-desc" data-i18n="arb_subtitle">Perfil disciplinario histórico. Identifica árbitros con tendencia a sacar más o menos tarjetas.</p>
+    </div>
+
+    <div class="controls" style="margin-bottom:18px;">
+      <div class="field" style="max-width:260px;">
+        <label for="arb-league-filter" data-i18n="cmp_league">Liga</label>
+        <select id="arb-league-filter">
+          <option value="all" data-i18n="league_all">Todas las ligas</option>
+        </select>
+      </div>
     </div>
 
     <div id="arbitros-result">

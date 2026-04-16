@@ -291,40 +291,42 @@ def build_value_patterns(df) -> list:
 
 def build_referees(df) -> list:
     import pandas as pd
-    if "Referee" not in df.columns:
+    if "Referee" not in df.columns or "Div" not in df.columns:
         return []
-    rdf = df.dropna(subset=["Referee"]).copy()
+    rdf = df.dropna(subset=["Referee", "Div"]).copy()
     rdf["Referee"] = rdf["Referee"].str.strip()
     if rdf.empty:
         return []
-    
+
     for col in ["HY", "AY", "HR", "AR", "HF", "AF"]:
         if col in rdf.columns:
             rdf[col] = pd.to_numeric(rdf[col], errors="coerce").fillna(0)
-            
-    rdf["Total_Yellows"] = rdf.get("HY", 0) + rdf.get("AY", 0)
-    rdf["Total_Reds"] = rdf.get("HR", 0) + rdf.get("AR", 0)
-    rdf["Total_Fouls"] = rdf.get("HF", 0) + rdf.get("AF", 0)
-    
-    count_col = "Div" if "Div" in rdf.columns else rdf.columns[0]
-    
-    stats = rdf.groupby("Referee").agg({
-        count_col: "count",
-        "Total_Yellows": "sum",
-        "Total_Reds": "sum",
-        "Total_Fouls": "sum"
-    }).rename(columns={count_col: "matches"})
-    
+
+    rdf["Total_Yellows"] = rdf.get("HY", pd.Series(0, index=rdf.index)) + rdf.get("AY", pd.Series(0, index=rdf.index))
+    rdf["Total_Reds"]    = rdf.get("HR", pd.Series(0, index=rdf.index)) + rdf.get("AR", pd.Series(0, index=rdf.index))
+    rdf["Total_Fouls"]   = rdf.get("HF", pd.Series(0, index=rdf.index)) + rdf.get("AF", pd.Series(0, index=rdf.index))
+
+    stats = rdf.groupby(["Div", "Referee"]).agg(
+        matches=("Div", "count"),
+        Total_Yellows=("Total_Yellows", "sum"),
+        Total_Reds=("Total_Reds", "sum"),
+        Total_Fouls=("Total_Fouls", "sum"),
+    ).reset_index()
+
     stats = stats[stats["matches"] >= 3].copy()
     if stats.empty:
         return []
-        
+
     stats["yellows_per_match"] = (stats["Total_Yellows"] / stats["matches"]).round(2)
-    stats["reds_per_match"] = (stats["Total_Reds"] / stats["matches"]).round(2)
-    stats["fouls_per_match"] = (stats["Total_Fouls"] / stats["matches"]).round(2)
-    
-    stats = stats.sort_values("yellows_per_match", ascending=False).reset_index()
-    return stats[["Referee", "matches", "yellows_per_match", "reds_per_match", "fouls_per_match"]].rename(columns={"Referee": "name"}).to_dict("records")
+    stats["reds_per_match"]    = (stats["Total_Reds"]    / stats["matches"]).round(2)
+    stats["fouls_per_match"]   = (stats["Total_Fouls"]   / stats["matches"]).round(2)
+
+    stats = stats.sort_values(["Div", "yellows_per_match"], ascending=[True, False]).reset_index(drop=True)
+    return (
+        stats[["Referee", "Div", "matches", "yellows_per_match", "reds_per_match", "fouls_per_match"]]
+        .rename(columns={"Referee": "name", "Div": "league"})
+        .to_dict("records")
+    )
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
