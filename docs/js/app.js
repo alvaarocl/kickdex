@@ -125,7 +125,7 @@ function applyI18n() {
 
 // ── Landing ────────────────────────────────────────────────────────────────
 function animateCounters() {
-  document.querySelectorAll("[data-counter]").forEach(el => {
+  document.querySelectorAll(".lp-overlay [data-counter], .landing-overlay [data-counter]").forEach(el => {
     const target  = parseInt(el.dataset.counter, 10);
     const suffix  = el.dataset.suffix  || "";
     const abbrev  = el.dataset.abbrev === "true";
@@ -153,27 +153,39 @@ function activateLandingCards() {
   document.querySelectorAll(".landing-card").forEach(c => c.classList.add("visible"));
 }
 
+function closeLanding() {
+  const landing = document.getElementById("landing-overlay");
+  if (landing) {
+    landing.style.opacity = "0";
+    landing.style.transition = "opacity .25s ease";
+    setTimeout(() => { landing.style.display = "none"; landing.style.opacity = ""; }, 260);
+  }
+  localStorage.setItem("kdx_seen", "1");
+}
+
+function openLanding() {
+  const landing = document.getElementById("landing-overlay");
+  if (!landing) return;
+  landing.style.display = "block";
+  landing.scrollTop = 0;
+  setTimeout(() => { animateCounters(); }, 150);
+}
+
 function initLanding() {
   const seen    = localStorage.getItem("kdx_seen");
   const landing = document.getElementById("landing-overlay");
   if (!seen && landing) {
-    landing.style.display = "flex";
-    setTimeout(() => { animateCounters(); activateLandingCards(); }, 200);
+    landing.style.display = "block";
+    setTimeout(() => { animateCounters(); }, 300);
   }
-  const startBtn = document.getElementById("landing-start");
-  if (startBtn) {
-    startBtn.addEventListener("click", () => {
-      if (landing) landing.style.display = "none";
-      localStorage.setItem("kdx_seen", "1");
-    });
-  }
-  // Also animate when logo re-opens the landing
+  // All CTA buttons that close the landing
+  ["landing-start", "lp-enter-nav", "lp-final-cta"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener("click", closeLanding);
+  });
+  // Logo re-opens landing
   const logo = document.querySelector(".logo");
-  if (logo) {
-    logo.addEventListener("click", () => {
-      setTimeout(() => { animateCounters(); activateLandingCards(); }, 100);
-    });
-  }
+  if (logo) logo.addEventListener("click", openLanding);
 }
 
 // ── State ──────────────────────────────────────────────────────────────────
