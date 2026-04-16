@@ -178,9 +178,50 @@ def _filter_by_league(fixtures: list[Fixture], league: str) -> list[Fixture]:
     return [f for f in fixtures if f.league_code == league]
 
 
+from app.engine.api_manager import ExternalAPIManager
+
+# ... (CSS remains same) ...
+
+def _render_live_market() -> None:
+    """Muestra una sección de mercado en tiempo real si hay API keys."""
+    api = ExternalAPIManager()
+    st.markdown('<h4 class="fx-section-title">📊 Intelligence: Mercado en Tiempo Real</h4>', unsafe_allow_html=True)
+    
+    with st.spinner("Conectando con The Odds API..."):
+        odds_data = api.get_live_odds()
+        
+    if not odds_data:
+        st.info("No hay cuotas en vivo disponibles en este momento.")
+        return
+
+    cols = st.columns(len(odds_data[:3])) # Mostrar top 3
+    for i, match in enumerate(odds_data[:3]):
+        with cols[i]:
+            with st.container():
+                st.markdown(f"**{match['home_team']} vs {match['away_team']}**")
+                bookie = match['bookmakers'][0] if match['bookmakers'] else None
+                if bookie:
+                    outcomes = bookie['markets'][0]['outcomes']
+                    h = next(x['price'] for x in outcomes if x['name'] == match['home_team'])
+                    d = next(x['price'] for x in outcomes if x['name'] == 'Draw')
+                    a = next(x['price'] for x in outcomes if x['name'] == match['away_team'])
+                    
+                    st.markdown(
+                        f'<div style="display:flex; gap:5px; font-family:monospace;">'
+                        f'<span style="background:#1a2236; padding:2px 8px; border-radius:4px;">1: <b>{h:.2f}</b></span>'
+                        f'<span style="background:#1a2236; padding:2px 8px; border-radius:4px;">X: <b>{d:.2f}</b></span>'
+                        f'<span style="background:#1a2236; padding:2px 8px; border-radius:4px;">2: <b>{a:.2f}</b></span>'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
+                st.caption(f"Fuente: {bookie['title'] if bookie else 'N/A'}")
+
 def render() -> None:
     """Renderiza la tab de inicio con calendario."""
     st.markdown(INICIO_CSS, unsafe_allow_html=True)
+
+    # ── Live Market Intelligence ─────────────────────────────────────────────
+    _render_live_market()
 
     st.markdown(f"### {t('inicio_title')}")
     st.caption(t("inicio_subtitle"))
