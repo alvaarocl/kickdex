@@ -120,6 +120,132 @@ function staggerIn(container, delayStep = 65) {
  */
 function triggerAnimations(container) {
   staggerIn(container, 65);
-  // Small delay so DOM is fully painted before counters observe
   setTimeout(() => observeCounters(container), 80);
+}
+
+// ═══════════════════════════════════════════════════════════
+// LANDING PAGE ANIMATIONS
+// ═══════════════════════════════════════════════════════════
+
+let _lpScrollHandler = null;
+
+/**
+ * Initialize all landing page animations.
+ * Safe to call multiple times (teardown + reinit).
+ */
+function initLandingAnimations() {
+  const overlay = document.getElementById("landing-overlay");
+  if (!overlay) return;
+
+  // Teardown previous listener if re-opened
+  if (_lpScrollHandler) {
+    overlay.removeEventListener("scroll", _lpScrollHandler);
+  }
+
+  _setupSmoothScroll(overlay);
+  _setupScrollReveal(overlay);
+  _setupParallax(overlay);
+  _setupNavbarScroll(overlay);
+  _setupMockupAnimation();
+}
+
+// ── Smooth scroll for in-page nav links ────────────────────
+function _setupSmoothScroll(overlay) {
+  overlay.querySelectorAll('a[href^="#lp-"]').forEach(a => {
+    a.addEventListener("click", e => {
+      const target = document.getElementById(a.getAttribute("href").slice(1));
+      if (!target) return;
+      e.preventDefault();
+      overlay.scrollTo({ top: target.offsetTop - 68, behavior: "smooth" });
+    });
+  });
+}
+
+// ── Navbar scroll state ─────────────────────────────────────
+function _setupNavbarScroll(overlay) {
+  const nav = document.getElementById("lpNav");
+  _lpScrollHandler = () => {
+    const y = overlay.scrollTop;
+    if (nav) nav.classList.toggle("lp-nav--scrolled", y > 30);
+    // Parallax orbs
+    overlay.querySelector(".lp-orb-1") &&
+      (overlay.querySelector(".lp-orb-1").style.transform = `translateY(${y * 0.1}px)`);
+    overlay.querySelector(".lp-orb-2") &&
+      (overlay.querySelector(".lp-orb-2").style.transform = `translateY(${-y * 0.07}px)`);
+    overlay.querySelector(".lp-orb-3") &&
+      (overlay.querySelector(".lp-orb-3").style.transform = `translateY(${y * 0.05}px)`);
+  };
+  overlay.addEventListener("scroll", _lpScrollHandler, { passive: true });
+}
+
+// ── Parallax placeholder (handled in scroll handler above) ──
+function _setupParallax() {}
+
+// ── Scroll-reveal via IntersectionObserver ──────────────────
+function _setupScrollReveal(overlay) {
+  // Groups: selector, base delay (ms), per-item stagger (ms), variant
+  const groups = [
+    // Leagues section
+    { sel: "#lp-leagues .lp-section-eyebrow", base: 0,   stagger: 0  },
+    { sel: "#lp-leagues .lp-section-h2",      base: 80,  stagger: 0  },
+    { sel: ".lp-league-pill",                 base: 0,   stagger: 45, variant: "scale" },
+
+    // Features section
+    { sel: "#lp-features .lp-section-eyebrow", base: 0,   stagger: 0  },
+    { sel: "#lp-features .lp-section-h2",      base: 70,  stagger: 0  },
+    { sel: "#lp-features .lp-section-sub",     base: 120, stagger: 0  },
+    { sel: ".lp-feat-card",                    base: 0,   stagger: 75 },
+
+    // How it works
+    { sel: "#lp-how .lp-section-eyebrow",      base: 0,   stagger: 0   },
+    { sel: "#lp-how .lp-section-h2",           base: 70,  stagger: 0   },
+    { sel: ".lp-step",                         base: 0,   stagger: 130, variant: "up" },
+    { sel: ".lp-step-arrow",                   base: 180, stagger: 0,   variant: "fade" },
+
+    // Trust bar
+    { sel: ".lp-trust-item",                   base: 0,   stagger: 55  },
+
+    // Final CTA
+    { sel: ".lp-final-h2",                     base: 0,   stagger: 0   },
+    { sel: ".lp-final-sub",                    base: 90,  stagger: 0   },
+    { sel: ".lp-final-section .lp-cta-primary", base: 170, stagger: 0, variant: "scale" },
+    { sel: ".lp-final-disclaimer",             base: 240, stagger: 0,  variant: "fade"  },
+  ];
+
+  const io = new IntersectionObserver(
+    entries => entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      io.unobserve(entry.target);
+    }),
+    { threshold: 0.08, rootMargin: "0px 0px -24px 0px", root: overlay }
+  );
+
+  groups.forEach(({ sel, base, stagger, variant }) => {
+    overlay.querySelectorAll(sel).forEach((el, i) => {
+      el.classList.add("lp-reveal");
+      if (variant) el.classList.add(`lp-reveal--${variant}`);
+      el.style.setProperty("--lp-d", `${base + i * stagger}ms`);
+      io.observe(el);
+    });
+  });
+}
+
+// ── Mockup: typewriter on alert + staggered form badges ─────
+function _setupMockupAnimation() {
+  // Stagger form badge entrance
+  document.querySelectorAll(".lp-mock-form span").forEach((el, i) => {
+    el.style.animation = `lp-badge-pop .3s cubic-bezier(.34,1.56,.64,1) ${300 + i * 90}ms both`;
+  });
+
+  // Mockup rows slide in
+  document.querySelectorAll(".lp-mock-row").forEach((el, i) => {
+    el.style.animation = `lp-slide-up .4s ease ${500 + i * 90}ms both`;
+  });
+
+  // Alert shimmer after rows
+  const alert = document.querySelector(".lp-mock-alert");
+  if (alert) {
+    alert.style.animation = "lp-slide-up .4s ease 800ms both, lp-alert-glow 2.5s 1.2s ease-in-out infinite";
+  }
 }

@@ -168,7 +168,10 @@ function openLanding() {
   if (!landing) return;
   landing.style.display = "block";
   landing.scrollTop = 0;
-  setTimeout(() => { animateCounters(); }, 150);
+  setTimeout(() => {
+    animateCounters();
+    if (typeof initLandingAnimations === "function") initLandingAnimations();
+  }, 100);
 }
 
 function initLanding() {
@@ -176,7 +179,10 @@ function initLanding() {
   const landing = document.getElementById("landing-overlay");
   if (!seen && landing) {
     landing.style.display = "block";
-    setTimeout(() => { animateCounters(); }, 300);
+    setTimeout(() => {
+      animateCounters();
+      if (typeof initLandingAnimations === "function") initLandingAnimations();
+    }, 200);
   }
   // All CTA buttons that close the landing
   ["landing-start", "lp-enter-nav", "lp-final-cta"].forEach(id => {
