@@ -9,7 +9,8 @@
 const I18N = {
   es: {
     tab_inicio: "Inicio", tab_comparador: "Comparador", tab_h2h: "H2H",
-    tab_jugadores: "Jugadores", tab_valor: "Value Bets",
+    tab_jugadores: "Jugadores", tab_valor: "Value Bets", tab_arbitros: "Árbitros",
+    arb_title: "Árbitros", arb_subtitle: "Perfil disciplinario histórico. Identifica árbitros con tendencia a sacar más o menos tarjetas.",
     league_all: "Todas", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendario y Partidos",
     inicio_subtitle: "Próximos partidos con cuotas Bet365. Pulsa «Analizar» para ver el análisis completo.",
@@ -54,6 +55,7 @@ const I18N = {
   en: {
     tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
     tab_jugadores: "Players", tab_valor: "Value Bets", tab_arbitros: "Referees",
+    arb_title: "Referees", arb_subtitle: "Historical disciplinary profile. Identify referees with a tendency to show more or fewer cards.",
     league_all: "All", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendar & Matches",
     inicio_subtitle: "Upcoming matches with Bet365 odds. Click «Analyze» for the full breakdown.",
@@ -147,6 +149,7 @@ const APP = {
   players:     {},
   playersDetail: {},
   valuePatterns: [],
+  referees:    [],
   meta:        {},
   loaded:      false,
 };
@@ -165,7 +168,7 @@ async function loadAllData() {
   if (metaEl) metaEl.innerHTML = `<span class="spinner"></span> Cargando datos...`;
 
   try {
-    const [meta, teams, teamStats, h2h, players, playersDetail, valuePatterns, leagues, fixtures] = await Promise.all([
+    const [meta, teams, teamStats, h2h, players, playersDetail, valuePatterns, leagues, fixtures, referees] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -175,6 +178,7 @@ async function loadAllData() {
       fetchJSON("value_patterns.json").catch(() => []),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("fixtures.json").catch(() => ({ recent: [], upcoming: [] })),
+      fetchJSON("referees.json").catch(() => []),
     ]);
 
     APP.meta           = meta;
@@ -186,6 +190,7 @@ async function loadAllData() {
     APP.valuePatterns  = valuePatterns;
     APP.leagues        = leagues;
     APP.fixtures       = fixtures;
+    APP.referees       = referees;
     APP.loaded         = true;
 
     updateHeader();
@@ -312,6 +317,7 @@ function initModules() {
   if (typeof initH2H        === "function") initH2H();
   if (typeof initJugadores  === "function") initJugadores();
   if (typeof initValor      === "function") initValor();
+  if (typeof initArbitros   === "function") initArbitros();
 }
 
 // ── Utilities ──────────────────────────────────────────────────────────────
