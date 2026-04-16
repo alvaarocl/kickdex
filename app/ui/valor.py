@@ -186,12 +186,74 @@ def render_scanner_tab(df: pd.DataFrame) -> None:
     )
 
 
+def render_backtesting_lab(df: pd.DataFrame) -> None:
+    """Sub-pestaña: Laboratorio de Backtesting histórico."""
+    from app.engine.backtester import Backtester
+    import plotly.express as px
+
+    st.markdown("#### 🧪 Laboratorio de Backtesting Pro")
+    st.caption("Valida tus hipótesis de análisis con datos históricos reales (20 años).")
+
+    with st.expander("🛠️ Configurar Estrategia", expanded=True):
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            market = st.selectbox("Mercado", ["1", "X", "2", "Over 2.5"], key="bt_market")
+        with col2:
+            metric = st.selectbox("Métrica Base (Rolling)", [
+                "Home_Roll_Goals", "Away_Roll_Goals", 
+                "Home_Roll_Corners", "Away_Roll_Corners",
+                "Home_Roll_Shots", "Away_Roll_Shots"
+            ], key="bt_metric")
+        with col3:
+            threshold = st.number_input("Valor Mínimo Métrica", value=1.5, step=0.1, key="bt_thresh")
+            
+        col_o1, col_o2 = st.columns(2)
+        with col_o1:
+            min_o = st.slider("Cuota Mínima", 1.01, 10.0, 1.10)
+        with col_o2:
+            max_o = st.slider("Cuota Máxima", 1.01, 10.0, 5.0)
+
+    if st.button("🚀 EJECUTAR BACKTEST", use_container_width=True):
+        with st.spinner("Escaneando el histórico..."):
+            tester = Backtester(df)
+            result = tester.run_strategy(market, threshold, metric, min_o, max_o)
+            summary = result.get_summary()
+            
+            if not summary:
+                st.warning("No se encontraron partidos con esos filtros.")
+                return
+
+            st.success(f"Simulación completada sobre **{summary['total_bets']}** partidos.")
+            
+            # Dashboard de resultados
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("Yield (ROI)", f"{summary['yield_roi']:.2f}%")
+            m2.metric("Win Rate", f"{summary['win_rate']:.1f}%")
+            m3.metric("Profit Total", f"{summary['total_profit']:.2f}u")
+            m4.metric("Max Drawdown", f"{summary['max_drawdown']:.2f}u")
+
+            # Curva de Equity
+            fig = px.line(x=list(range(len(summary['equity_curve']))), y=summary['equity_curve'],
+                          title="Curva de Rendimiento (Unidades)",
+                          labels={'x': 'Número de Apuesta', 'y': 'Banca (u)'},
+                          color_discrete_sequence=["#00d4aa"])
+            fig.update_layout(paper_bgcolor="#0b0f1a", plot_bgcolor="#0b0f1a", font=dict(color="#8b9ab0"))
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Tabla de trades
+            with st.expander("Ver detalle de operaciones"):
+                st.dataframe(result.trades[["date", "match", "odds", "won", "profit", "balance"]], 
+                             use_container_width=True, hide_index=True)
+
+
 def render(df: pd.DataFrame, teams: list[str]) -> None:
-    """Renderiza la pestaña Value Detection con sub-tabs."""
+    """Renderiza la pestaña Value Detection con sub-tabs actualizadas."""
     st.markdown("### 💎 Value Detection")
 
-    sub1, sub2 = st.tabs(["🎯 Analizar Partido", "🔬 Scanner Histórico"])
+    sub1, sub2, sub3 = st.tabs(["🎯 Analizar Partido", "🔬 Scanner Histórico", "🧪 Lab Backtesting"])
     with sub1:
         render_partido_tab(df, teams)
     with sub2:
         render_scanner_tab(df)
+    with sub3:
+        render_backtesting_lab(df)

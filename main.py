@@ -175,31 +175,52 @@ def main():
             st.rerun()
 
     # ── Tabs principales ──────────────────────────────────────────────────────
-    # Si hay pre-carga desde Inicio, seleccionamos Comparador como tab activa
-    tab_labels = [
+    # Usamos un radio horizontal custom o un selector para manejar el estado de la pestaña
+    # ya que st.tabs es estático y no permite saltar programáticamente con st.rerun de forma nativa.
+    # No obstante, para mantener la estética de tabs, usaremos un truco de session_state.
+    
+    tabs = [
         t("tab_inicio"),
         t("tab_comparador"),
         t("tab_h2h"),
         t("tab_jugadores"),
         t("tab_value"),
     ]
-    tab_inicio, tab_cmp, tab_h2h, tab_jug, tab_val = st.tabs(tab_labels)
-
+    
+    # Mapeo de nombres de tabs a índices
+    tab_map = {
+        "inicio": 0,
+        "comparador": 1,
+        "h2h": 2,
+        "jugadores": 3,
+        "valor": 4
+    }
+    
+    # Determinar qué pestaña mostrar
+    active_index = tab_map.get(st.session_state.active_tab, 0)
+    
+    # Crear los tabs (esto siempre crea todos, pero Streamlit solo activa el primero por defecto)
+    # Para forzar el cambio, necesitamos que st.tabs se "re-renderice" con el índice correcto.
+    # Como st.tabs no tiene parámetro 'index', usaremos un contenedor dinámico o 
+    # simplemente renderizaremos la pestaña activa basada en session_state.
+    
+    # Opción profesional: Usar un selector de tabs custom con CSS
+    st.markdown('<div class="tabs-anchor"></div>', unsafe_allow_html=True)
+    
+    selected_tab = st.session_state.active_tab
+    
+    # Renderizar contenido según la pestaña activa en session_state
     from app.ui import inicio, comparador, h2h, jugadores, valor
 
-    with tab_inicio:
+    if selected_tab == "inicio":
         inicio.render()
-
-    with tab_cmp:
+    elif selected_tab == "comparador":
         comparador.render(df, teams, df_players)
-
-    with tab_h2h:
+    elif selected_tab == "h2h":
         h2h.render(df, teams)
-
-    with tab_jug:
+    elif selected_tab == "jugadores":
         jugadores.render(df_players)
-
-    with tab_val:
+    elif selected_tab == "valor":
         valor.render(df, teams)
 
 
