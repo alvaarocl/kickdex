@@ -100,8 +100,6 @@ function observeCounters(container) {
 
 /**
  * Apply sequential animation delays to .stagger-item elements.
- * We set the full animation shorthand to avoid restart artefacts from
- * overriding only animation-delay on an already-playing animation.
  */
 function staggerIn(container, delayStep = 65) {
   const root  = container || document;
@@ -116,7 +114,6 @@ function staggerIn(container, delayStep = 65) {
 
 /**
  * Trigger all premium animations within a freshly rendered container.
- * Called from comparador.js, h2h.js, etc. after innerHTML is set.
  */
 function triggerAnimations(container) {
   staggerIn(container, 65);
@@ -128,6 +125,7 @@ function triggerAnimations(container) {
 // ═══════════════════════════════════════════════════════════
 
 let _lpScrollHandler = null;
+let _lpRevealEls     = [];
 
 /**
  * Initialize all landing page animations.
@@ -137,26 +135,34 @@ function initLandingAnimations() {
   const overlay = document.getElementById("landing-overlay");
   if (!overlay) return;
 
-  // Teardown previous listener if re-opened
+  // Teardown previous listeners
   if (_lpScrollHandler) {
     overlay.removeEventListener("scroll", _lpScrollHandler);
+    _lpScrollHandler = null;
   }
+  _lpRevealEls = [];
 
   _setupSmoothScroll(overlay);
   _setupScrollReveal(overlay);
-  _setupParallax(overlay);
   _setupNavbarScroll(overlay);
   _setupMockupAnimation();
+
+  // Trigger initial check after a short paint delay
+  setTimeout(() => _checkReveal(overlay), 120);
 }
 
 // ── Smooth scroll for in-page nav links ────────────────────
 function _setupSmoothScroll(overlay) {
   overlay.querySelectorAll('a[href^="#lp-"]').forEach(a => {
     a.addEventListener("click", e => {
-      const target = document.getElementById(a.getAttribute("href").slice(1));
+      const id     = a.getAttribute("href").slice(1);
+      const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();
-      overlay.scrollTo({ top: target.offsetTop - 68, behavior: "smooth" });
+      const oRect = overlay.getBoundingClientRect();
+      const tRect = target.getBoundingClientRect();
+      const scrollTo = overlay.scrollTop + (tRect.top - oRect.top) - 68;
+      overlay.scrollTo({ top: scrollTo, behavior: "smooth" });
     });
   });
 }
@@ -164,31 +170,33 @@ function _setupSmoothScroll(overlay) {
 // ── Navbar scroll state ─────────────────────────────────────
 function _setupNavbarScroll(overlay) {
   const nav = document.getElementById("lpNav");
+
   _lpScrollHandler = () => {
     const y = overlay.scrollTop;
+
     if (nav) nav.classList.toggle("lp-nav--scrolled", y > 30);
+
     // Parallax orbs
-    overlay.querySelector(".lp-orb-1") &&
-      (overlay.querySelector(".lp-orb-1").style.transform = `translateY(${y * 0.1}px)`);
-    overlay.querySelector(".lp-orb-2") &&
-      (overlay.querySelector(".lp-orb-2").style.transform = `translateY(${-y * 0.07}px)`);
-    overlay.querySelector(".lp-orb-3") &&
-      (overlay.querySelector(".lp-orb-3").style.transform = `translateY(${y * 0.05}px)`);
+    const orb1 = overlay.querySelector(".lp-orb-1");
+    const orb2 = overlay.querySelector(".lp-orb-2");
+    const orb3 = overlay.querySelector(".lp-orb-3");
+    if (orb1) orb1.style.transform = `translateY(${y * 0.1}px)`;
+    if (orb2) orb2.style.transform = `translateY(${-y * 0.07}px)`;
+    if (orb3) orb3.style.transform = `translateY(${y * 0.05}px)`;
+
+    _checkReveal(overlay);
   };
+
   overlay.addEventListener("scroll", _lpScrollHandler, { passive: true });
 }
 
-// ── Parallax placeholder (handled in scroll handler above) ──
-function _setupParallax() {}
-
-// ── Scroll-reveal via IntersectionObserver ──────────────────
+// ── Scroll-reveal via scroll event (reliable for fixed containers) ──
 function _setupScrollReveal(overlay) {
-  // Groups: selector, base delay (ms), per-item stagger (ms), variant
   const groups = [
     // Leagues section
-    { sel: "#lp-leagues .lp-section-eyebrow", base: 0,   stagger: 0  },
-    { sel: "#lp-leagues .lp-section-h2",      base: 80,  stagger: 0  },
-    { sel: ".lp-league-pill",                 base: 0,   stagger: 45, variant: "scale" },
+    { sel: "#lp-leagues .lp-section-eyebrow", base: 0,   stagger: 0   },
+    { sel: "#lp-leagues .lp-section-h2",      base: 80,  stagger: 0   },
+    { sel: ".lp-league-pill",                 base: 0,   stagger: 45,  variant: "scale" },
 
     // Features section
     { sel: "#lp-features .lp-section-eyebrow", base: 0,   stagger: 0  },
@@ -206,44 +214,59 @@ function _setupScrollReveal(overlay) {
     { sel: ".lp-trust-item",                   base: 0,   stagger: 55  },
 
     // Final CTA
-    { sel: ".lp-final-h2",                     base: 0,   stagger: 0   },
-    { sel: ".lp-final-sub",                    base: 90,  stagger: 0   },
-    { sel: ".lp-final-section .lp-cta-primary", base: 170, stagger: 0, variant: "scale" },
-    { sel: ".lp-final-disclaimer",             base: 240, stagger: 0,  variant: "fade"  },
+    { sel: ".lp-final-h2",                      base: 0,   stagger: 0   },
+    { sel: ".lp-final-sub",                     base: 90,  stagger: 0   },
+    { sel: ".lp-final-section .lp-cta-primary", base: 170, stagger: 0,  variant: "scale" },
+    { sel: ".lp-final-disclaimer",              base: 240, stagger: 0,  variant: "fade"  },
   ];
 
-  const io = new IntersectionObserver(
-    entries => entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add("is-visible");
-      io.unobserve(entry.target);
-    }),
-    { threshold: 0.08, rootMargin: "0px 0px -24px 0px", root: overlay }
-  );
+  _lpRevealEls = [];
 
   groups.forEach(({ sel, base, stagger, variant }) => {
     overlay.querySelectorAll(sel).forEach((el, i) => {
       el.classList.add("lp-reveal");
       if (variant) el.classList.add(`lp-reveal--${variant}`);
       el.style.setProperty("--lp-d", `${base + i * stagger}ms`);
-      io.observe(el);
+      _lpRevealEls.push(el);
     });
   });
 }
 
-// ── Mockup: typewriter on alert + staggered form badges ─────
+/**
+ * Check all registered reveal elements and add lp-in to those in viewport.
+ * Uses getBoundingClientRect relative to overlay bounds — works correctly
+ * for position:fixed overflow-y:auto containers.
+ */
+function _checkReveal(overlay) {
+  if (!_lpRevealEls.length) return;
+  const oRect  = overlay.getBoundingClientRect();
+  const bottom = oRect.height + 40; // 40px grace below fold
+
+  _lpRevealEls = _lpRevealEls.filter(el => {
+    if (el.classList.contains("lp-in")) return false; // already triggered
+    const rect = el.getBoundingClientRect();
+    const elTop = rect.top - oRect.top;
+    if (elTop < bottom && rect.bottom > oRect.top) {
+      el.classList.add("lp-in");
+      return false; // remove from future checks
+    }
+    return true;
+  });
+}
+
+// ── Parallax placeholder (handled in scroll handler above) ──
+function _setupParallax() {}
+
+// ── Mockup: staggered form badges + rows + alert ─────────────
 function _setupMockupAnimation() {
-  // Stagger form badge entrance
   document.querySelectorAll(".lp-mock-form span").forEach((el, i) => {
     el.style.animation = `lp-badge-pop .3s cubic-bezier(.34,1.56,.64,1) ${300 + i * 90}ms both`;
   });
 
-  // Mockup rows slide in
   document.querySelectorAll(".lp-mock-row").forEach((el, i) => {
     el.style.animation = `lp-slide-up .4s ease ${500 + i * 90}ms both`;
   });
 
-  // Alert shimmer after rows
   const alert = document.querySelector(".lp-mock-alert");
   if (alert) {
     alert.style.animation = "lp-slide-up .4s ease 800ms both, lp-alert-glow 2.5s 1.2s ease-in-out infinite";
