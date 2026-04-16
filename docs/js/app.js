@@ -53,7 +53,7 @@ const I18N = {
   },
   en: {
     tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
-    tab_jugadores: "Players", tab_valor: "Value Bets",
+    tab_jugadores: "Players", tab_valor: "Value Bets", tab_arbitros: "Referees",
     league_all: "All", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendar & Matches",
     inicio_subtitle: "Upcoming matches with Bet365 odds. Click «Analyze» for the full breakdown.",
@@ -240,38 +240,43 @@ function populateAllSelects() {
 }
 
 function initSegControls() {
+  const populateLeagueSelect = (id) => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    // Keep 'all' option, add others
+    Object.entries(APP.leagues).forEach(([code, data]) => {
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = data.name;
+      sel.appendChild(opt);
+    });
+  };
+
+  populateLeagueSelect("cmpLeagueFilter");
+  populateLeagueSelect("h2hLeagueFilter");
+  populateLeagueSelect("inicioLeagueFilter");
+
+  // Comparador + Value league filter
   const cmpFilter = document.getElementById("cmpLeagueFilter");
   if (cmpFilter) {
-    cmpFilter.addEventListener("click", e => {
-      const btn = e.target.closest(".seg-btn");
-      if (!btn) return;
-      cmpFilter.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const teams = getTeamsByLeague(btn.dataset.league);
+    cmpFilter.addEventListener("change", e => {
+      const teams = getTeamsByLeague(e.target.value);
       ["cmp-home","cmp-away","val-home","val-away"].forEach(id => populateSelect(id, teams));
     });
   }
 
   const h2hFilter = document.getElementById("h2hLeagueFilter");
   if (h2hFilter) {
-    h2hFilter.addEventListener("click", e => {
-      const btn = e.target.closest(".seg-btn");
-      if (!btn) return;
-      h2hFilter.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const teams = getTeamsByLeague(btn.dataset.league);
+    h2hFilter.addEventListener("change", e => {
+      const teams = getTeamsByLeague(e.target.value);
       ["h2h-t1","h2h-t2"].forEach(id => populateSelect(id, teams));
     });
   }
 
   const inicioFilter = document.getElementById("inicioLeagueFilter");
   if (inicioFilter) {
-    inicioFilter.addEventListener("click", e => {
-      const btn = e.target.closest(".seg-btn");
-      if (!btn) return;
-      inicioFilter.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      if (typeof renderInicio === "function") renderInicio(btn.dataset.league);
+    inicioFilter.addEventListener("change", e => {
+      if (typeof renderInicio === "function") renderInicio(e.target.value);
     });
   }
 }

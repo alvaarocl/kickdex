@@ -162,6 +162,7 @@ function buildValueRow(m) {
         <span>Prob. implícita: <b>${pct(m.impliedProb)}</b></span>
         <span>Edge: <b style="color:${evColor}">${evSign}${(m.edge * 100).toFixed(1)}%</b></span>
         <span>EV: <b style="color:${evColor};font-size:.88rem;">${evSign}${(m.ev * 100).toFixed(1)}%</b></span>
+        ${m.kelly > 0 ? `<span title="Criterio de Kelly (Stake recomendado según riesgo/beneficio)">Kelly: <b style="color:var(--brand)">${(m.kelly * 100).toFixed(1)}%</b></span>` : ""}
       </div>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px;margin-left:16px;flex-shrink:0;">

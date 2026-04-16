@@ -47,6 +47,7 @@ function runComparador() {
 
   setTimeout(() => {
     drawRadar(home, away, homeData, awayData);
+    if (typeof initAllTables === "function") initAllTables(box);
     if (typeof triggerAnimations === "function") triggerAnimations(box);
     initAllTables(box);
   }, 50);
@@ -262,7 +263,11 @@ function buildPlayerComparison(home, away) {
   if (!homePlayers.length && !awayPlayers.length) return "";
 
   function playerTable(players, teamName) {
-    const rows = players.slice(0, 10).map(p => `
+    if (!players.length) {
+      return `<div class="players-col-title">${teamName}</div>
+              <p style="color:var(--muted);font-size:.82rem;">Sin datos</p>`;
+    }
+    const rows = players.map(p => `
       <tr>
         <td>${p.player}</td>
         <td class="mono">${fmt(p.sh, 1)}</td>
@@ -274,7 +279,7 @@ function buildPlayerComparison(home, away) {
 
     return `
     <div class="players-col-title">${teamName}</div>
-    <div class="table-wrap">
+    <div class="table-wrap" style="overflow-x:auto; max-height:450px; overflow-y:auto;">
       <table>
         <thead><tr><th>Jugador</th><th>Sh</th><th>SoT</th><th>Gls</th><th>Ast</th><th>Fls</th></tr></thead>
         <tbody>${rows}</tbody>

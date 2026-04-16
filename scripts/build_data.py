@@ -89,8 +89,16 @@ def build_team_stats(df, teams: list) -> dict:
 
 def build_h2h(df, teams: list) -> dict:
     result = {}
-    pairs = [(t1, t2) for i, t1 in enumerate(teams) for t2 in teams[i+1:]]
-    print(f"    Calculando {len(pairs)} pares...")
+    
+    # Find unique pairs that actually played against each other
+    actual_pairs = set()
+    for _, row in df[['HomeTeam', 'AwayTeam']].dropna().drop_duplicates().iterrows():
+        t1, t2 = sorted([row['HomeTeam'], row['AwayTeam']])
+        if t1 in teams and t2 in teams:
+            actual_pairs.add((t1, t2))
+            
+    pairs = list(actual_pairs)
+    print(f"    Calculando {len(pairs)} pares reales (filtrado de {len(teams) * (len(teams)-1) // 2} posibles)...")
 
     for t1, t2 in pairs:
         summary = get_h2h_summary(df, t1, t2)
@@ -187,10 +195,10 @@ def build_players_detail(df_players) -> dict:
 def build_leagues(df, teams: list) -> dict:
     """Mapeo liga → equipos para el filtro de división en el frontend."""
     import pandas as pd
-    from app.config import CURRENT_SEASON_START
+    from app.config import CURRENT_SEASON_START, LEAGUES
     current = df[df["Date"] >= CURRENT_SEASON_START]
     result = {}
-    for code, name in {"SP1": "La Liga", "SP2": "Segunda División"}.items():
+    for code, name in LEAGUES.items():
         league_df = current[current["Div"] == code] if "Div" in current.columns else pd.DataFrame()
         if league_df.empty:
             continue
@@ -281,6 +289,44 @@ def build_value_patterns(df) -> list:
         return []
 
 
+def build_referees(df) -> list:
+    import pandas as pd
+    if "Referee" not in df.columns:
+        return []
+    rdf = df.dropna(subset=["Referee"]).copy()
+    rdf["Referee"] = rdf["Referee"].str.strip()
+    if rdf.empty:
+        return []
+    
+    for col in ["HY", "AY", "HR", "AR", "HF", "AF"]:
+        if col in rdf.columns:
+            rdf[col] = pd.to_numeric(rdf[col], errors="coerce").fillna(0)
+            
+    rdf["Total_Yellows"] = rdf.get("HY", 0) + rdf.get("AY", 0)
+    rdf["Total_Reds"] = rdf.get("HR", 0) + rdf.get("AR", 0)
+    rdf["Total_Fouls"] = rdf.get("HF", 0) + rdf.get("AF", 0)
+    
+    count_col = "Div" if "Div" in rdf.columns else rdf.columns[0]
+    
+    stats = rdf.groupby("Referee").agg({
+        count_col: "count",
+        "Total_Yellows": "sum",
+        "Total_Reds": "sum",
+        "Total_Fouls": "sum"
+    }).rename(columns={count_col: "matches"})
+    
+    stats = stats[stats["matches"] >= 3].copy()
+    if stats.empty:
+        return []
+        
+    stats["yellows_per_match"] = (stats["Total_Yellows"] / stats["matches"]).round(2)
+    stats["reds_per_match"] = (stats["Total_Reds"] / stats["matches"]).round(2)
+    stats["fouls_per_match"] = (stats["Total_Fouls"] / stats["matches"]).round(2)
+    
+    stats = stats.sort_values("yellows_per_match", ascending=False).reset_index()
+    return stats[["Referee", "matches", "yellows_per_match", "reds_per_match", "fouls_per_match"]].rename(columns={"Referee": "name"}).to_dict("records")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -320,11 +366,12 @@ def main():
     print("\n[5/6] h2h.json...")
     write_json(build_h2h(df, teams), "h2h.json")
 
-    # 6. Players + Value + Leagues + Fixtures
-    print("\n[6/7] players.json, players_detail.json, value_patterns.json...")
+    # 6. Players + Value + Leagues + Fixtures + Referees
+    print("\n[6/7] players.json, players_detail.json, value_patterns.json, referees.json...")
     write_json(build_players(df_players), "players.json")
     write_json(build_players_detail(df_players), "players_detail.json")
     write_json(build_value_patterns(df), "value_patterns.json")
+    write_json(build_referees(df), "referees.json")
 
     print("\n[7/7] leagues.json, fixtures.json...")
     write_json(build_leagues(df, teams), "leagues.json")

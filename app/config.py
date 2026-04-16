@@ -13,9 +13,13 @@ LEAGUES = {
     "SP1": "La Liga",
     "SP2": "Segunda División",
     "E0": "Premier League",
+    "E1": "Championship",
     "I1": "Serie A",
+    "I2": "Serie B",
     "D1": "Bundesliga",
+    "D2": "2. Bundesliga",
     "F1": "Ligue 1",
+    "F2": "Ligue 2",
     "N1": "Eredivisie",
 }
 
