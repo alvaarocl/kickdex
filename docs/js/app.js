@@ -358,63 +358,30 @@ function getH2H(t1, t2) {
 
 // ── Probability engine (Poisson bivariante) ────────────────────────────────
 
-function poissonPMF(k, lambda) {
-  if (lambda <= 0) return k === 0 ? 1 : 0;
-  let log_p = -lambda + k * Math.log(lambda);
-  for (let i = 1; i <= k; i++) log_p -= Math.log(i);
-  return Math.exp(log_p);
-}
+... (existing poisson code) ...
+
+// ── Smart Queries Engine (JS Edition) ──────────────────────────────────────
 
 /**
- * Calculate match probabilities using bivariate Poisson
- * @param {object} homeStats  - home/away form object from team_stats.json
- * @param {object} awayStats
- * @param {object|null} h2hSummary
- * @returns {{ home, draw, away, over25, btts, lambda_h, lambda_a }}
+ * Calculates deep stats for a team or player dynamically.
+ * Mimics Python's QueryEngine for the static frontend.
  */
-function calcProbabilities(homeStats, awayStats, h2hSummary) {
-  const hHome = homeStats?.home;
-  const aAway = awayStats?.away;
-
-  if (!hHome || !aAway) return null;
-
-  let lambdaH = (hHome.avg_goals ?? 1.5) * 0.7 + (aAway.avg_goals_against ?? 1.2) * 0.3;
-  let lambdaA = (aAway.avg_goals ?? 1.2) * 0.7 + (hHome.avg_goals_against ?? 1.3) * 0.3;
-
-  // H2H adjustment (small weight)
-  if (h2hSummary && h2hSummary.total >= 3) {
-    const h2hGoals = h2hSummary.avg_goals ?? (lambdaH + lambdaA);
-    lambdaH = lambdaH * 0.88 + (h2hGoals * 0.48) * 0.12;
-    lambdaA = lambdaA * 0.88 + (h2hGoals * 0.52) * 0.12;
-  }
-
-  lambdaH = Math.max(0.3, Math.min(5.0, lambdaH));
-  lambdaA = Math.max(0.3, Math.min(5.0, lambdaA));
-
-  const MAX_GOALS = 8;
-  let home = 0, draw = 0, away = 0, over25 = 0, btts = 0;
-
-  for (let i = 0; i <= MAX_GOALS; i++) {
-    for (let j = 0; j <= MAX_GOALS; j++) {
-      const p = poissonPMF(i, lambdaH) * poissonPMF(j, lambdaA);
-      if (i > j) home += p;
-      else if (i === j) draw += p;
-      else away += p;
-      if (i + j > 2.5) over25 += p;
-      if (i > 0 && j > 0) btts += p;
+function runMasterQuery(subject, type = "team", venue = "all", lastN = 10) {
+  if (type === "team") {
+    const stats = APP.teamStats[subject];
+    if (!stats) return null;
+    const data = venue === "home" ? stats.home : (venue === "away" ? stats.away : stats.all);
+    // Add logic to handle lastN filtering if we had full match logs available in JS state
+    // For now, we use the pre-calculated windows from team_stats.json
+    return data;
+  } else {
+    // Player search
+    for (const team in APP.players) {
+      const p = APP.players[team].find(x => x.player === subject);
+      if (p) return p;
     }
   }
-
-  const total = home + draw + away;
-  return {
-    home:     home  / total,
-    draw:     draw  / total,
-    away:     away  / total,
-    over25:   over25,
-    btts:     btts,
-    lambda_h: lambdaH,
-    lambda_a: lambdaA,
-  };
+  return null;
 }
 
 // ── Smart Alerts engine ────────────────────────────────────────────────────

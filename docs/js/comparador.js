@@ -1,5 +1,5 @@
 /**
- * comparador.js — Tab "Comparador": fixture header, stat-duel, form dots, radar, alerts
+ * comparador.js — Tab "Comparador": fixture header, stat-duel, form dots, radar, alerts, players, calculator
  */
 
 "use strict";
@@ -42,11 +42,13 @@ function runComparador() {
   const alerts     = generateAlerts(homeData, awayData, h2hSummary);
 
   box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary)
-    + buildPlayerComparison(home, away);
+    + buildPlayerComparison(home, away)
+    + buildMasterCalculatorJS(home, away);
 
   setTimeout(() => {
     drawRadar(home, away, homeData, awayData);
     if (typeof triggerAnimations === "function") triggerAnimations(box);
+    initAllTables(box);
   }, 50);
 }
 
@@ -69,7 +71,6 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
   <!-- ── Fixture header ── -->
   <div class="fixture-header stagger-item">
     <div class="fixture-team">
-      ${typeof teamBadge === "function" ? teamBadge(home, 52) : ""}
       <div class="fixture-team-info">
         <div class="fixture-team-name">${home}</div>
         <div class="fixture-team-sub">${homeWinRate}</div>
@@ -77,10 +78,9 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
     </div>
     <div class="fixture-vs">
       <div class="fixture-vs-badge">VS</div>
-      <div class="fixture-sub-text">Poisson</div>
+      <div class="fixture-sub-text">KICKDEX</div>
     </div>
     <div class="fixture-team away">
-      ${typeof teamBadge === "function" ? teamBadge(away, 52) : ""}
       <div class="fixture-team-info">
         <div class="fixture-team-name">${away}</div>
         <div class="fixture-team-sub">${awayWinRate}</div>
@@ -127,8 +127,6 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
   `;
 }
 
-// ── Stat Duel (ValueStats-style) ──────────────────────────
-
 function buildStatDuel(home, away, hStats, aStats) {
   const rows = [
     { label: "Victorias",    hv: hStats.win_rate,             av: aStats.win_rate,             max: 1,    pct: true                 },
@@ -143,30 +141,19 @@ function buildStatDuel(home, away, hStats, aStats) {
     { label: "P. a cero",    hv: hStats.clean_sheet_rate,     av: aStats.clean_sheet_rate,     max: 1,    pct: true                 },
   ];
 
-  // Column header row
   const header = `
   <div class="duel-header">
     <div style="text-align:right;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:var(--brand);font-weight:800;">${home.split(" ")[0]}</div>
-    <div></div>
-    <div></div>
-    <div></div>
+    <div></div><div></div><div></div>
     <div style="text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:#fb7185;font-weight:800;">${away.split(" ")[0]}</div>
   </div>`;
 
   const rowsHtml = rows.map(r => {
-    const hv  = r.hv ?? 0;
-    const av  = r.av ?? 0;
-    const max = r.max || 1;
-
-    // Bar width (0–100%) — higher is better for home (invert if lower is better, e.g. goals against)
+    const hv = r.hv ?? 0; const av = r.av ?? 0; const max = r.max || 1;
     const hBar = Math.min(r.invert ? (max - hv) / max : hv / max, 1) * 100;
     const aBar = Math.min(r.invert ? (max - av) / max : av / max, 1) * 100;
-
-    // Display value
     const hDisp = r.pct ? pct(hv) : fmt(hv, r.dec ?? 1);
     const aDisp = r.pct ? pct(av) : fmt(av, r.dec ?? 1);
-
-    // Leading team highlight (considering direction)
     const hBetter = r.invert ? (hv < av) : (hv > av);
     const aBetter = r.invert ? (av < hv) : (av > hv);
 
@@ -183,77 +170,45 @@ function buildStatDuel(home, away, hStats, aStats) {
   return `${header}<div class="stat-duel">${rowsHtml}</div>`;
 }
 
-// ── Form dots ─────────────────────────────────────────────
-
 function buildFormDots(stats) {
   const log = stats.match_log;
   if (!log || log.length === 0) return "";
   const dots = log.slice(0, 10).map(m => {
-    const r   = (m.result || "").toUpperCase();
+    const r = (m.result || "").toUpperCase();
     const cls = r === "W" ? "w" : r === "D" ? "d" : "l";
-    const lbl = r === "W" ? "V" : r === "D" ? "E" : "D";
-    return `<span class="form-dot ${cls}" title="${lbl}: ${m.opponent || ""} ${m.score || ""}"></span>`;
+    return `<span class="form-dot ${cls}"></span>`;
   }).join("");
   return `<div class="form-dots">${dots}</div>`;
 }
 
-// ── Match log ─────────────────────────────────────────────
-
 function buildMatchLog(log) {
   if (!log || log.length === 0) return "";
-
-  const venueIconHome = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand);opacity:.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
-  const venueIconAway = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);opacity:.7"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19.5 2.5S18 2 16.5 3.5L13 7 4.8 5.2a1 1 0 0 0-.8.3L2.7 7.7a.5.5 0 0 0 .1.7L7 11l-2 3H2l-1 1 3 2 2 3 1-1v-3l3-2 3.3 4.2a.5.5 0 0 0 .7.1l2.2-1.4a1 1 0 0 0 .3-.8z"/></svg>`;
-
   const items = log.slice(0, 6).map(m => `
     <div class="match-row">
       ${wdlTag(m.result)}
-      <span class="venue-icon" title="${m.venue === "C" || m.venue === "Home" ? "Local" : "Visitante"}">${m.venue === "C" || m.venue === "Home" ? venueIconHome : venueIconAway}</span>
       <b>${m.opponent}</b>
       <span class="score">${m.score || ""}</span>
     </div>`).join("");
-
   return `<hr/><div class="match-log" style="margin-top:8px;">${items}</div>`;
 }
-
-// ── Probability section ───────────────────────────────────
 
 function buildProbSection(home, away, probs) {
   const impliedH = probs.home > 0 ? (1 / probs.home).toFixed(2) : "—";
   const impliedD = probs.draw > 0 ? (1 / probs.draw).toFixed(2) : "—";
   const impliedA = probs.away > 0 ? (1 / probs.away).toFixed(2) : "—";
-
-  const maxP    = Math.max(probs.home, probs.draw, probs.away);
+  const maxP = Math.max(probs.home, probs.draw, probs.away);
   const homeWin = probs.home === maxP ? "winner" : "";
   const drawWin = probs.draw === maxP ? "winner" : "";
   const awayWin = probs.away === maxP ? "winner" : "";
 
   return `
   <div class="card stagger-item" style="margin-bottom:20px;">
-    <div class="section-title">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Probabilidades Poisson
-      <small>λ local: ${fmt(probs.lambda_h,2)} · λ visitante: ${fmt(probs.lambda_a,2)}</small>
+    <div class="section-title">Probabilidades KICKDEX</div>
+    <div class="prob-1x2">
+      <div class="prob-1x2-box ${homeWin}"><div class="prob-1x2-label">1</div><div class="prob-1x2-pct">${(probs.home*100).toFixed(1)}%</div><div class="prob-1x2-odds">≈ ${impliedH}</div></div>
+      <div class="prob-1x2-box ${drawWin}"><div class="prob-1x2-label">X</div><div class="prob-1x2-pct">${(probs.draw*100).toFixed(1)}%</div><div class="prob-1x2-odds">≈ ${impliedD}</div></div>
+      <div class="prob-1x2-box ${awayWin}"><div class="prob-1x2-label">2</div><div class="prob-1x2-pct">${(probs.away*100).toFixed(1)}%</div><div class="prob-1x2-odds">≈ ${impliedA}</div></div>
     </div>
-
-    <div class="prob-1x2" style="margin-bottom:18px;">
-      <div class="prob-1x2-box ${homeWin}">
-        <div class="prob-1x2-label">1 — Local</div>
-        <div class="prob-1x2-pct" style="color:${homeWin ? "var(--brand)" : "var(--text)"}">${(probs.home*100).toFixed(1)}%</div>
-        <div class="prob-1x2-odds">≈ ${impliedH}</div>
-      </div>
-      <div class="prob-1x2-box ${drawWin}">
-        <div class="prob-1x2-label">X — Empate</div>
-        <div class="prob-1x2-pct" style="color:${drawWin ? "var(--brand)" : "var(--text)"}">${(probs.draw*100).toFixed(1)}%</div>
-        <div class="prob-1x2-odds">≈ ${impliedD}</div>
-      </div>
-      <div class="prob-1x2-box ${awayWin}">
-        <div class="prob-1x2-label">2 — Visitante</div>
-        <div class="prob-1x2-pct" style="color:${awayWin ? "var(--brand)" : "var(--text)"}">${(probs.away*100).toFixed(1)}%</div>
-        <div class="prob-1x2-odds">≈ ${impliedA}</div>
-      </div>
-    </div>
-
     <div style="border-top:1px solid var(--border);padding-top:16px;">
       ${probRow("Over 2.5 goles", probs.over25, "var(--blue)")}
       ${probRow("BTTS — Ambos marcan", probs.btts, "var(--purple)")}
@@ -261,109 +216,40 @@ function buildProbSection(home, away, probs) {
   </div>`;
 }
 
-// ── Alerts ────────────────────────────────────────────────
-
 function buildAlertsHTML(alerts) {
-  if (!alerts || alerts.length === 0) {
-    return `<div style="color:var(--muted);font-size:.82rem;padding:8px 0;">No hay alertas significativas para este partido</div>`;
-  }
-  return `<div class="alerts-list">${alerts.map(a => {
-    const cls = a.strength === "HIGH" ? "" : a.strength === "MEDIUM" ? "medium" : "low";
-    return `<div class="alert-card ${cls}" title="Fuerza: ${a.strength}">${a.text}</div>`;
-  }).join("")}</div>`;
+  if (!alerts || alerts.length === 0) return `<div class="muted">No hay alertas</div>`;
+  return `<div class="alerts-list">${alerts.map(a => `<div class="alert-card ${a.strength.toLowerCase()}">${a.text}</div>`).join("")}</div>`;
 }
-
-// ── H2H mini section ──────────────────────────────────────
 
 function buildH2HMiniSection(summary) {
   return `
   <div class="card stagger-item" style="margin-bottom:20px;">
-    <div class="section-title">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>
-      Resumen H2H
-      <small>${summary.total} partidos históricos</small>
-    </div>
+    <div class="section-title">Resumen H2H <small>${summary.total} partidos</small></div>
     <div class="h2h-summary">
-      <div class="h2h-box"><div class="val" style="color:var(--green)">${summary.wins1}</div><div class="lbl">V equipo 1</div></div>
+      <div class="h2h-box"><div class="val" style="color:var(--green)">${summary.wins1}</div><div class="lbl">V Local</div></div>
       <div class="h2h-box"><div class="val" style="color:var(--yellow)">${summary.draws}</div><div class="lbl">Empates</div></div>
-      <div class="h2h-box"><div class="val" style="color:var(--red)">${summary.wins2}</div><div class="lbl">V equipo 2</div></div>
+      <div class="h2h-box"><div class="val" style="color:var(--red)">${summary.wins2}</div><div class="lbl">V Vis.</div></div>
       <div class="h2h-box"><div class="val">${fmt(summary.avg_goals)}</div><div class="lbl">Goles/p</div></div>
-      <div class="h2h-box"><div class="val">${pct(summary.over25_rate)}</div><div class="lbl">Over 2.5</div></div>
-      <div class="h2h-box"><div class="val">${pct(summary.btts_rate ?? 0)}</div><div class="lbl">BTTS</div></div>
+      <div class="h2h-box"><div class="val">${pct(summary.over25_rate)}</div><div class="lbl">O2.5</div></div>
     </div>
   </div>`;
 }
 
-// ── Radar chart ───────────────────────────────────────────
-
 function drawRadar(home, away, homeData, awayData) {
-  const ctx = document.getElementById("radarChart");
-  if (!ctx) return;
-
-  if (radarChart) { radarChart.destroy(); radarChart = null; }
-
-  const hH = homeData.home || {};
-  const aA = awayData.away  || {};
-
-  const normalize = (val, max) => val != null ? Math.min(val / max, 1) * 100 : 0;
-
-  const labels   = ["Goles/p", "Victorias", "Tiros/p", "xG proxy", "Over 2.5", "BTTS", "xDefensa"];
-  const dataHome = [
-    normalize(hH.avg_goals,        3.5),
-    normalize(hH.win_rate,         1.0),
-    normalize(hH.avg_shots,        22),
-    normalize(hH.avg_xg_proxy,     3.0),
-    normalize(hH.over25_rate,      1.0),
-    normalize(hH.btts_rate,        1.0),
-    normalize(1 - (hH.avg_goals_against ?? 1) / 3.5, 1.0),
-  ];
-  const dataAway = [
-    normalize(aA.avg_goals,        3.5),
-    normalize(aA.win_rate,         1.0),
-    normalize(aA.avg_shots,        22),
-    normalize(aA.avg_xg_proxy,     3.0),
-    normalize(aA.over25_rate,      1.0),
-    normalize(aA.btts_rate,        1.0),
-    normalize(1 - (aA.avg_goals_against ?? 1) / 3.5, 1.0),
-  ];
-
+  const ctx = document.getElementById("radarChart"); if (!ctx) return;
+  if (radarChart) { radarChart.destroy(); }
+  const hH = homeData.home || {}; const aA = awayData.away || {};
+  const normalize = (v, m) => v != null ? Math.min(v / m, 1) * 100 : 0;
   radarChart = new Chart(ctx, {
     type: "radar",
     data: {
-      labels,
+      labels: ["Goles", "Victorias", "Tiros", "xG", "Over 2.5", "BTTS", "Defensa"],
       datasets: [
-        {
-          label: home,
-          data: dataHome,
-          borderColor: "rgba(0,212,170,.9)",
-          backgroundColor: "rgba(0,212,170,.15)",
-          pointBackgroundColor: "rgba(0,212,170,1)",
-          pointRadius: 4,
-        },
-        {
-          label: away,
-          data: dataAway,
-          borderColor: "rgba(255,75,75,.9)",
-          backgroundColor: "rgba(255,75,75,.12)",
-          pointBackgroundColor: "rgba(255,75,75,1)",
-          pointRadius: 4,
-        },
-      ],
+        { label: home, data: [normalize(hH.avg_goals, 3), normalize(hH.win_rate, 1), normalize(hH.avg_shots, 20), normalize(hH.avg_xg_proxy, 2.5), normalize(hH.over25_rate, 1), normalize(hH.btts_rate, 1), normalize(1-hH.avg_goals_against/3, 1)], borderColor: "rgba(0,212,170,1)", backgroundColor: "rgba(0,212,170,0.1)" },
+        { label: away, data: [normalize(aA.avg_goals, 3), normalize(aA.win_rate, 1), normalize(aA.avg_shots, 20), normalize(aA.avg_xg_proxy, 2.5), normalize(aA.over25_rate, 1), normalize(aA.btts_rate, 1), normalize(1-aA.avg_goals_against/3, 1)], borderColor: "#fb7185", backgroundColor: "rgba(251,113,133,0.1)" }
+      ]
     },
-    options: {
-      scales: {
-        r: {
-          min: 0, max: 100,
-          ticks: { display: false },
-          grid:  { color: "rgba(255,255,255,.08)" },
-          pointLabels: { color: "#8b9ab0", font: { size: 11 } },
-          angleLines: { color: "rgba(255,255,255,.08)" },
-        },
-      },
-      plugins: {
-        legend: { labels: { color: "#e8eaf6", font: { size: 12 } } },
-      },
-    },
+    options: { scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: "rgba(255,255,255,0.05)" } } }, plugins: { legend: { labels: { color: "#8b9ab0" } } } }
   });
 }
 
@@ -373,45 +259,24 @@ function buildPlayerComparison(home, away) {
   const homePlayers = (APP.players || {})[home] || [];
   const awayPlayers = (APP.players || {})[away] || [];
 
-  const svgUsers = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
-
-  if (!homePlayers.length && !awayPlayers.length) {
-    return `
-    <div class="card stagger-item" style="margin-bottom:20px;">
-      <div class="section-title">${svgUsers} ${t("cmp_players_title")}</div>
-      <p style="color:var(--muted);font-size:.85rem;">${t("cmp_players_none")}</p>
-    </div>`;
-  }
+  if (!homePlayers.length && !awayPlayers.length) return "";
 
   function playerTable(players, teamName) {
-    if (!players.length) {
-      return `<div class="players-col-title">${teamName}</div>
-              <p style="color:var(--muted);font-size:.82rem;">Sin datos</p>`;
-    }
-    const rows = players.slice(0, 8).map(p => `
+    const rows = players.slice(0, 10).map(p => `
       <tr>
         <td>${p.player}</td>
         <td class="mono">${fmt(p.sh, 1)}</td>
         <td class="mono">${fmt(p.sot, 1)}</td>
-        <td class="mono">${fmt(p.gls, 2)}</td>
-        <td class="mono">${fmt(p.ast, 2)}</td>
-        <td class="mono">${p.fls != null ? fmt(p.fls, 1) : "—"}</td>
+        <td class="mono">${fmt(p.gls, 1)}</td>
+        <td class="mono">${fmt(p.ast, 1)}</td>
+        <td class="mono">${p.fls ? fmt(p.fls, 1) : "—"}</td>
       </tr>`).join("");
 
     return `
     <div class="players-col-title">${teamName}</div>
-    <div class="table-wrap" style="overflow-x:auto;">
+    <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th>${t("player")}</th>
-            <th title="${t("shots")}">${t("shots")}</th>
-            <th title="${t("shots_on")}">${t("shots_on")}</th>
-            <th title="${t("goals")}">${t("goals")}</th>
-            <th title="${t("assists")}">${t("assists")}</th>
-            <th>Faltas</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Jugador</th><th>Sh</th><th>SoT</th><th>Gls</th><th>Ast</th><th>Fls</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
@@ -419,7 +284,7 @@ function buildPlayerComparison(home, away) {
 
   return `
   <div class="card stagger-item" style="margin-bottom:20px;">
-    <div class="section-title">${svgUsers} ${t("cmp_players_title")} <small>últimos 10 partidos / jugador</small></div>
+    <div class="section-title">📊 Comparativa de Jugadores Pro</div>
     <div class="players-comparison">
       <div>${playerTable(homePlayers, home)}</div>
       <div>${playerTable(awayPlayers, away)}</div>
@@ -427,40 +292,23 @@ function buildPlayerComparison(home, away) {
   </div>`;
 }
 
-// ── Legacy buildFormStats (kept for optional use) ─────────
+// ── Master Calculator (JS Version) ────────────────────────
 
-function buildFormStats(stats) {
-  if (!stats || Object.keys(stats).length === 0) {
-    return `<div style="color:var(--muted);font-size:.8rem;">Sin datos</div>`;
-  }
-  const sv = (val, cls) => `<span class="stat-value ${cls || ""}">${val}</span>`;
-  const winCls  = (v) => v >= .55 ? "good" : v <= .30 ? "bad" : "warn";
-  const goalCls = (v) => v >= 1.8 ? "good" : v <= 0.9 ? "bad" : "";
-  const gcCls   = (v) => v <= 0.9 ? "good" : v >= 2.0 ? "bad" : "warn";
-  const rateCls = (v) => v >= .60 ? "warn" : v <= .25 ? "good" : "";
-  const csCls   = (v) => v >= .35 ? "good" : v <= .10 ? "bad" : "";
-  const xgCls   = (v) => v >= 1.4 ? "good" : v <= 0.7 ? "bad" : "";
-
-  const wr = stats.win_rate ?? 0;
-  const gf = stats.avg_goals ?? 0;
-  const ga = stats.avg_goals_against ?? 0;
-  const xg = stats.avg_xg_proxy ?? 0;
-  const ov = stats.over25_rate ?? 0;
-  const bt = stats.btts_rate ?? 0;
-  const cs = stats.clean_sheet_rate ?? 0;
-
+function buildMasterCalculatorJS(home, away) {
   return `
-  <div>
-    <div class="stat-row"><span class="stat-label">Partidos</span>${sv(stats.matches_analyzed ?? stats.n ?? "—")}</div>
-    <div class="stat-row"><span class="stat-label">Victorias</span>${sv(pct(wr), winCls(wr))}</div>
-    <div class="stat-row"><span class="stat-label">Goles marcados/p</span>${sv(fmt(gf), goalCls(gf))}</div>
-    <div class="stat-row"><span class="stat-label">Goles encajados/p</span>${sv(fmt(ga), gcCls(ga))}</div>
-    <div class="stat-row"><span class="stat-label">xG proxy/p</span>${sv(fmt(xg), xgCls(xg))}</div>
-    <div class="stat-row"><span class="stat-label">Tiros/p</span>${sv(fmt(stats.avg_shots, 1))}</div>
-    <div class="stat-row"><span class="stat-label">Tiros a puerta/p</span>${sv(fmt(stats.avg_shots_on, 1))}</div>
-    <div class="stat-row"><span class="stat-label">Córners/p</span>${sv(fmt(stats.avg_corners, 1))}</div>
-    <div class="stat-row"><span class="stat-label">Over 2.5</span>${sv(pct(ov), rateCls(ov))}</div>
-    <div class="stat-row"><span class="stat-label">BTTS</span>${sv(pct(bt), rateCls(bt))}</div>
-    <div class="stat-row"><span class="stat-label">Portería a cero</span>${sv(pct(cs), csCls(cs))}</div>
+  <div class="card stagger-item" style="margin-bottom:40px; border: 1px solid var(--brand-dim);">
+    <div class="section-title">🔍 KICKDEX Terminal — Calculadora Multidimensional</div>
+    <p class="muted" style="margin-bottom:20px;">Análisis profundo por equipo y jugador (Versión Web Ligera)</p>
+    
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+      <div class="calc-box" style="background:rgba(255,255,255,0.02); padding:15px; border-radius:8px;">
+        <h4 style="color:var(--brand); font-size:0.85rem; margin-top:0;">ANÁLISIS EQUIPO: ${home}</h4>
+        <div id="calc-result-home">Selecciona métrica para calcular...</div>
+      </div>
+      <div class="calc-box" style="background:rgba(255,255,255,0.02); padding:15px; border-radius:8px;">
+        <h4 style="color:#fb7185; font-size:0.85rem; margin-top:0;">ANÁLISIS EQUIPO: ${away}</h4>
+        <div id="calc-result-away">Selecciona métrica para calcular...</div>
+      </div>
+    </div>
   </div>`;
 }
