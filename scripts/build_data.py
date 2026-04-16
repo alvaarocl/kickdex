@@ -285,7 +285,7 @@ def build_value_patterns(df) -> list:
 
 def main():
     print("=" * 60)
-    print("BUILD DATA - Analista Pro  -> docs/data/")
+    print("BUILD DATA - KICKDEX  -> docs/data/")
     print("=" * 60)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

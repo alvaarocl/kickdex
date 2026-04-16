@@ -1,138 +1,173 @@
-"""CSS global de KICKDEX — modo oscuro, estética terminal de fútbol."""
-
-CUSTOM_CSS = """
-<style>
-/* ── Base ─────────────────────────────────────────────────── */
-[data-testid="stAppViewContainer"] {
-    background-color: #0e1117;
-}
-[data-testid="stSidebar"] {
-    background-color: #1a1f2e;
-}
-h1, h2, h3, h4 {
-    color: #e8eaf6 !important;
-    letter-spacing: -0.3px;
-}
-p, li, span, label {
-    color: #b0bec5 !important;
-}
-/* ── Tarjetas de métricas ─────────────────────────────────── */
-[data-testid="metric-container"] {
-    background: #1a1f2e;
-    border: 1px solid #2a3040;
-    border-radius: 10px;
-    padding: 14px 18px;
-}
-[data-testid="stMetricValue"] {
-    color: #e8eaf6 !important;
-    font-size: 1.6rem !important;
-    font-weight: 700 !important;
-}
-[data-testid="stMetricLabel"] {
-    color: #8b9ab0 !important;
-    font-size: 0.75rem !important;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
-[data-testid="stMetricDelta"] svg { display: none; }
-/* ── Tablas ───────────────────────────────────────────────── */
-[data-testid="stDataFrame"] {
-    border-radius: 8px;
-    overflow: hidden;
-}
-/* ── Tabs ─────────────────────────────────────────────────── */
-[data-testid="stTabs"] button {
-    color: #8b9ab0 !important;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-[data-testid="stTabs"] button[aria-selected="true"] {
-    color: #00d4aa !important;
-    border-bottom: 2px solid #00d4aa !important;
-}
-/* ── Botón primario ───────────────────────────────────────── */
-[data-testid="baseButton-primary"] {
-    background: linear-gradient(135deg, #00d4aa, #0097a7) !important;
-    border: none !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.5px;
-}
-/* ── Divider ──────────────────────────────────────────────── */
-hr {
-    border-color: #2a3040 !important;
-    margin: 18px 0 !important;
-}
-/* ── Alertas personalizadas ───────────────────────────────── */
-.alert-card {
-    background: #1a1f2e;
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    border-left: 3px solid #00d4aa;
-    font-size: 0.88rem;
-    color: #d0d9e6 !important;
-}
-.alert-card.medium { border-left-color: #f0c040; }
-.alert-card.low    { border-left-color: #8b9ab0; }
-/* ── Prob bar ─────────────────────────────────────────────── */
-.prob-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 6px 0;
-}
-.prob-label { color: #8b9ab0; font-size: 0.78rem; min-width: 90px; }
-.prob-bar-wrap { flex: 1; background: #2a3040; border-radius: 4px; height: 8px; }
-.prob-bar { height: 8px; border-radius: 4px; }
-.prob-value { color: #e8eaf6; font-size: 0.82rem; min-width: 42px; text-align: right; font-weight: 600; }
-/* ── Form tag ─────────────────────────────────────────────── */
-.form-w { background:#00d4aa22; color:#00d4aa; padding:2px 7px; border-radius:4px; font-weight:700; font-size:0.8rem; }
-.form-d { background:#f0c04022; color:#f0c040; padding:2px 7px; border-radius:4px; font-weight:700; font-size:0.8rem; }
-.form-l { background:#ff4b4b22; color:#ff4b4b; padding:2px 7px; border-radius:4px; font-weight:700; font-size:0.8rem; }
-/* ── Value badge ──────────────────────────────────────────── */
-.value-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700; }
-.value-green { background:#00d4aa22; color:#00d4aa; }
-.value-red   { background:#ff4b4b22; color:#ff4b4b; }
-.value-grey  { background:#2a304088; color:#8b9ab0; }
-/* ── Disclaimer ───────────────────────────────────────────── */
-.disclaimer {
-    background: #1a1f2e;
-    border: 1px solid #2a3040;
-    border-radius: 6px;
-    padding: 10px 14px;
-    color: #8b9ab0 !important;
-    font-size: 0.75rem;
-    margin-top: 20px;
-}
-</style>
+"""
+Definiciones de estilos CSS para la interfaz de KICKDEX en Streamlit.
+Enfocado en estética 'Data-Dense' y 'OLED Dark'.
 """
 
+# Colores de marca
+COLOR_TURF = "#00d4aa"
+COLOR_SIGNAL_BLUE = "#5bd6ff"
+COLOR_EDGE_GOLD = "#f5b93c"
+COLOR_RED_CARD = "#ff5a6e"
 
-def result_tag(result: str) -> str:
-    """Devuelve HTML de tag coloreado para W/D/L."""
-    tags = {
-        "W": '<span class="form-w">G</span>',
-        "D": '<span class="form-d">E</span>',
-        "L": '<span class="form-l">P</span>',
-    }
-    return tags.get(result, result)
+CUSTOM_CSS = f"""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    /* ── Base ── */
+    .stApp {{
+        background-color: #05070d;
+        color: #e8eaf6;
+        font-family: 'IBM Plex Sans', sans-serif;
+    }}
+
+    /* ── Headers ── */
+    h1, h2, h3, h4, h5 {{
+        font-family: 'IBM Plex Sans', sans-serif !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.5px !important;
+        color: #e8eaf6 !important;
+    }}
+
+    /* ── Terminal Data Style ── */
+    .mono {{
+        font-family: 'JetBrains Mono', monospace !important;
+    }}
+
+    /* ── Tabs ── */
+    .stTabs [data-baseweb="tab-list"] {{
+        gap: 8px;
+        background-color: transparent;
+    }}
+    .stTabs [data-baseweb="tab"] {{
+        height: 45px;
+        white-space: pre;
+        background-color: #0b0f1a;
+        border-radius: 8px 8px 0px 0px;
+        color: #8b9ab0;
+        padding-left: 16px;
+        padding-right: 16px;
+        border: 1px solid #1a2236;
+        border-bottom: none;
+    }}
+    .stTabs [aria-selected="true"] {{
+        background-color: #1a2236 !important;
+        color: {COLOR_TURF} !important;
+        border-top: 2px solid {COLOR_TURF} !important;
+    }}
+
+    /* ── Cards & Containers ── */
+    [data-testid="stVerticalBlock"] > div > div > [data-testid="stVerticalBlock"] {{
+        background-color: #0b0f1a;
+        border: 1px solid #1a2236;
+        border-radius: 12px;
+        padding: 20px;
+    }}
+
+    /* ── Metrics ── */
+    [data-testid="stMetricValue"] {{
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        color: #e8eaf6;
+    }}
+    [data-testid="stMetricLabel"] {{
+        color: #8b9ab0;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }}
+
+    /* ── Dataframes ── */
+    [data-testid="stDataFrame"] {{
+        background-color: #0b0f1a;
+        border: 1px solid #1a2236;
+        border-radius: 8px;
+    }}
+
+    /* ── Buttons ── */
+    .stButton > button {{
+        background: linear-gradient(135deg, {COLOR_TURF} 0%, #0097a7 100%);
+        color: #0e1117;
+        font-weight: 700;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        transition: transform 0.1s;
+    }}
+    .stButton > button:hover {{
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+    }}
+
+    /* ── Custom Tags ── */
+    .tag {{
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }}
+    .tag-w {{ background: #00d4aa22; color: #00d4aa; border: 1px solid #00d4aa44; }}
+    .tag-d {{ background: #f0c04022; color: #f0c040; border: 1px solid #f0c04044; }}
+    .tag-l {{ background: #ff5a6e22; color: #ff5a6e; border: 1px solid #ff5a6e44; }}
+
+    /* ── Prob Bar ── */
+    .prob-container {{
+        background: #1a2236;
+        border-radius: 4px;
+        height: 24px;
+        width: 100%;
+        margin: 4px 0;
+        overflow: hidden;
+        display: flex;
+    }}
+    .prob-bar {{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #0e1117;
+    }}
+
+    /* ── Disclaimer ── */
+    .disclaimer {{
+        color: #8b9ab0;
+        font-size: 0.7rem;
+        border-top: 1px solid #1a2236;
+        margin-top: 40px;
+        padding-top: 10px;
+        text-align: center;
+    }}
+</style>
+""",
 
 
-def prob_bar_html(label: str, prob: float, color: str = "#00d4aa") -> str:
-    """Genera barra de probabilidad HTML."""
-    pct = int(prob * 100)
+def result_tag(res: str) -> str:
+    cls = "tag-w" if res == "W" else ("tag-d" if res == "D" else "tag-l")
+    return f'<span class="tag {cls}">{res}</span>'
+
+
+def prob_bar_html(p_h: float, p_d: float, p_a: float) -> str:
+    total = p_h + p_d + p_a
+    ph_pct = (p_h / total) * 100
+    pd_pct = (p_d / total) * 100
+    pa_pct = (p_a / total) * 100
     return f"""
     <div class="prob-container">
-        <span class="prob-label">{label}</span>
-        <div class="prob-bar-wrap">
-            <div class="prob-bar" style="width:{pct}%; background:{color};"></div>
-        </div>
-        <span class="prob-value">{pct}%</span>
-    </div>"""
+        <div class="prob-bar" style="width:{ph_pct}%; background:{COLOR_TURF};" title="Local: {p_h*100:.1f}%">{int(ph_pct)}%</div>
+        <div class="prob-bar" style="width:{pd_pct}%; background:#8b9ab0;" title="Empate: {p_d*100:.1f}%">{int(pd_pct)}%</div>
+        <div class="prob-bar" style="width:{pa_pct}%; background:{COLOR_SIGNAL_BLUE};" title="Visitante: {p_a*100:.1f}%">{int(pa_pct)}%</div>
+    </div>
+    """
 
 
-def alert_card_html(alert) -> str:
-    """Genera card HTML para un Alert."""
-    cls_map = {"HIGH": "", "MEDIUM": " medium", "LOW": " low"}
-    cls = cls_map.get(alert.strength.value, "")
-    return f'<div class="alert-card{cls}">{alert.emoji} {alert.text}</div>'
+def alert_card_html(text: str, color: str, emoji: str) -> str:
+    return f"""
+    <div style="background:{color}15; border-left: 3px solid {color}; padding: 12px 16px; border-radius: 6px; margin-bottom: 8px;">
+        <span style="font-size:1rem; margin-right:8px;">{emoji}</span>
+        <span style="color:#e8eaf6; font-size:0.9rem;">{text}</span>
+    </div>
+    """

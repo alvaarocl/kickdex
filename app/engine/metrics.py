@@ -194,6 +194,34 @@ def get_recent_form(
     }
 
 
+def calculate_player_percentiles(df_players: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calcula el Z-Score y percentil de cada jugador en métricas clave.
+    Compara al jugador contra todos los demás de la liga para dar contexto 'Pro'.
+    """
+    if df_players.empty:
+        return df_players
+        
+    cols_to_score = ["sh", "sot", "gls", "ast"]
+    df = df_players.copy()
+    
+    # Agrupar por jugador para tener sus medias de temporada
+    player_stats = df.groupby("player")[cols_to_score].mean()
+    
+    for col in cols_to_score:
+        mean = player_stats[col].mean()
+        std = player_stats[col].std()
+        if std > 0:
+            # Z-Score: (x - mean) / std
+            z_col = f"{col}_z"
+            player_stats[z_col] = (player_stats[col] - mean) / std
+            # Convertir a Percentil (0-100) simplificado
+            from scipy.stats import norm
+            player_stats[f"{col}_pct"] = player_stats[z_col].apply(lambda x: norm.cdf(x) * 100)
+            
+    return player_stats.reset_index()
+
+
 # ─── H2H ────────────────────────────────────────────────────────────────────
 
 def get_h2h(df: pd.DataFrame, team1: str, team2: str) -> pd.DataFrame | None:

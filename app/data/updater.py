@@ -20,6 +20,8 @@ from app.config import (
     SEASONS_RANGE,
 )
 
+from app.data.player_scraper import update_players
+
 logger = logging.getLogger(__name__)
 
 _HEADERS = {"User-Agent": "Mozilla/5.0 (KICKDEX / educational use)"}
@@ -50,20 +52,32 @@ def _save_last_update(data_dir: Path, info: dict) -> None:
 
 def update_data(force_current: bool = True) -> dict:
     """
-    Descarga/actualiza los CSVs de partidos.
+    Descarga/actualiza los CSVs de partidos y estadísticas de jugadores.
 
     Args:
         force_current: Si True, siempre re-descarga la temporada actual.
 
     Returns:
-        Resumen con claves 'downloaded', 'skipped', 'failed'.
+        Resumen con claves 'downloaded', 'skipped', 'failed', 'players_updated'.
     """
     data_dir = Path(DATA_DIR)
     data_dir.mkdir(exist_ok=True)
 
+    # 1. Actualizar jugadores (FBref via soccerdata)
+    players_updated = False
+    try:
+        players_updated = update_players()
+    except Exception as e:
+        logger.error("Error al actualizar jugadores: %s", e)
+
     last_update = _load_last_update(data_dir)
     seasons = _season_codes()
-    summary = {"downloaded": [], "skipped": [], "failed": []}
+    summary = {
+        "downloaded": [],
+        "skipped": [],
+        "failed": [],
+        "players_updated": players_updated
+    }
 
     logger.info("Verificando base de datos histórica (%d temporadas × %d ligas)…",
                 len(seasons), len(LEAGUES))

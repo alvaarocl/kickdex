@@ -56,28 +56,46 @@ def _poisson_prob(lam: float, k: int) -> float:
     return math.exp(-lam) * (lam ** k) / math.factorial(k)
 
 
-def _poisson_matrix(lam_home: float, lam_away: float, max_goals: int = 7) -> tuple[float, float, float]:
+def _dixon_coles_adjustment(hg: int, ag: int, lam_h: float, lam_a: float, rho: float = -0.10) -> float:
     """
-    Calcula P(H>A), P(H=A), P(H<A) usando distribución de Poisson bivariante.
-    Asume independencia entre goles de local y visitante (simplificación).
+    Ajuste de Dixon-Coles para corregir la subestimación de empates (0-0, 1-1) 
+    y resultados 1-0, 0-1. Rho suele estar entre -0.1 y -0.2.
+    """
+    if rho == 0: return 1.0
+    if hg == 0 and ag == 0:
+        return 1 - (lam_h * lam_a * rho)
+    if hg == 1 and ag == 0:
+        return 1 + (lam_a * rho)
+    if hg == 0 and ag == 1:
+        return 1 + (lam_h * rho)
+    if hg == 1 and ag == 1:
+        return 1 - rho
+    return 1.0
+
+
+def _poisson_matrix(lam_home: float, lam_away: float, max_goals: int = 8) -> tuple[float, float, float]:
+    """
+    Calcula matriz de probabilidades con ajuste Dixon-Coles.
     """
     p_home = p_draw = p_away = 0.0
+    # Rho aproximado basado en la tendencia de la liga a empates bajos
+    rho = -0.12 
+
     for hg in range(max_goals + 1):
+        p_h = _poisson_prob(lam_home, hg)
         for ag in range(max_goals + 1):
-            p = _poisson_prob(lam_home, hg) * _poisson_prob(lam_away, ag)
+            p_a = _poisson_prob(lam_away, ag)
+            prob = p_h * p_a * _dixon_coles_adjustment(hg, ag, lam_home, lam_away, rho)
+            
             if hg > ag:
-                p_home += p
+                p_home += prob
             elif hg == ag:
-                p_draw += p
+                p_draw += prob
             else:
-                p_away += p
-    # Normalizar para que sumen exactamente 1
+                p_away += prob
+    
     total = p_home + p_draw + p_away
-    if total > 0:
-        p_home /= total
-        p_draw /= total
-        p_away /= total
-    return round(p_home, 4), round(p_draw, 4), round(p_away, 4)
+    return p_home / total, p_draw / total, p_away / total
 
 
 def _estimate_lambda(
