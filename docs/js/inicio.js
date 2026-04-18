@@ -88,8 +88,8 @@ function renderInicio(leagueFilter) {
 }
 
 function buildFixtureCard(f, isResult) {
-  const leagueCls   = f.league === "SP1" ? "sp1" : "sp2";
-  const leagueLabel = f.league === "SP1" ? "La Liga" : "2ª";
+  const leagueCls   = f.league ? f.league.toLowerCase().replace(/\d/g, "") : "other";
+  const leagueLabel = APP.leagues?.[f.league]?.name || f.league || "—";
   const dateLabel   = fxDateLabel(f.date, f.time);
 
   let mainContent = "";

@@ -80,6 +80,11 @@ function evaluateMarket(name, modelProb, odds, home, away) {
   const impliedProb = 1 / odds;
   const ev          = (modelProb * odds) - 1;
   const edge        = modelProb - impliedProb;
+  // Kelly criterion: f* = (p·b - q) / b  where b = odds-1, q = 1-p
+  const b     = odds - 1;
+  const kelly = b > 0 ? Math.max(0, (modelProb * b - (1 - modelProb)) / b) : 0;
+  // Half-Kelly for safer stake recommendation
+  const halfKelly = kelly / 2;
 
   let verdict, cls;
   if (ev >= 0.08) {
@@ -96,7 +101,7 @@ function evaluateMarket(name, modelProb, odds, home, away) {
     cls = "grey";
   }
 
-  return { name, modelProb, odds, impliedProb, ev, edge, verdict, cls };
+  return { name, modelProb, odds, impliedProb, ev, edge, kelly, halfKelly, verdict, cls };
 }
 
 function buildValorHTML(home, away, probs, markets) {
@@ -162,7 +167,7 @@ function buildValueRow(m) {
         <span>Prob. implícita: <b>${pct(m.impliedProb)}</b></span>
         <span>Edge: <b style="color:${evColor}">${evSign}${(m.edge * 100).toFixed(1)}%</b></span>
         <span>EV: <b style="color:${evColor};font-size:.88rem;">${evSign}${(m.ev * 100).toFixed(1)}%</b></span>
-        ${m.kelly > 0 ? `<span title="Criterio de Kelly (Stake recomendado según riesgo/beneficio)">Kelly: <b style="color:var(--brand)">${(m.kelly * 100).toFixed(1)}%</b></span>` : ""}
+        ${m.halfKelly > 0 ? `<span title="½ Kelly — stake recomendado sobre bankroll (criterio conservador)">½ Kelly: <b style="color:var(--brand)">${(m.halfKelly * 100).toFixed(1)}%</b></span>` : ""}
       </div>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px;margin-left:16px;flex-shrink:0;">

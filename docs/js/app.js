@@ -308,7 +308,9 @@ function populateAllSelects() {
   const cmpTeams = getTeamsByLeague("all");
   ["cmp-home","cmp-away","val-home","val-away"].forEach(id => populateSelect(id, cmpTeams));
   ["h2h-t1","h2h-t2"].forEach(id => populateSelect(id, APP.teams));
-  populateSelect("jug-team", APP.teams);
+  // Jugadores: solo mostrar equipos con datos de jugadores reales
+  const jugTeams = Object.keys(APP.playersDetail || {}).sort();
+  populateSelect("jug-team", jugTeams);
 }
 
 function initSegControls() {
@@ -331,7 +333,7 @@ function initSegControls() {
   if (cmpFilter) {
     cmpFilter.addEventListener("change", e => {
       const teams = getTeamsByLeague(e.target.value);
-      ["cmp-home","cmp-away","val-home","val-away"].forEach(id => populateSelect(id, teams));
+      ["cmp-home","cmp-away"].forEach(id => populateSelect(id, teams));
     });
   }
 
@@ -345,6 +347,18 @@ function initSegControls() {
 
   const inicioFilter = document.getElementById("inicioLeagueFilter");
   if (inicioFilter) {
+    // Populate only leagues that actually have fixture data
+    const fxLeagues = new Set([
+      ...(APP.fixtures?.upcoming || []).map(f => f.league),
+      ...(APP.fixtures?.recent   || []).map(f => f.league),
+    ]);
+    fxLeagues.forEach(code => {
+      const ld = APP.leagues[code];
+      if (!ld) return;
+      const opt = document.createElement("option");
+      opt.value = code; opt.textContent = ld.name;
+      inicioFilter.appendChild(opt);
+    });
     inicioFilter.addEventListener("change", e => {
       if (typeof renderInicio === "function") renderInicio(e.target.value);
     });

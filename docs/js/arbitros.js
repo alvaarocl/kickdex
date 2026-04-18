@@ -5,8 +5,7 @@
 "use strict";
 
 let _arbLeague = "all";
-let _arbScope  = "overall"; // "overall" | "season"
-let _arbWindow = "all";     // "all" | "10" | "5"
+let _arbWindow = "all"; // "all" | "10" | "5"
 
 function initArbitros() {
   const sel = document.getElementById("arb-league-filter");
@@ -25,14 +24,6 @@ function initArbitros() {
     });
   }
 
-  const scopeSel = document.getElementById("arb-scope");
-  if (scopeSel) {
-    scopeSel.addEventListener("change", e => {
-      _arbScope = e.target.value;
-      renderArbitros();
-    });
-  }
-
   const windowSel = document.getElementById("arb-window");
   if (windowSel) {
     windowSel.addEventListener("change", e => {
@@ -45,72 +36,67 @@ function initArbitros() {
 }
 
 /**
- * Resolve the right stats block from a referee record given current scope/window.
- * Returns {matches, yellows_per_match, reds_per_match, fouls_per_match} or null.
+ * Resolve stats block for a referee given current window.
+ * Always returns data — falls back to overall if windowed block is null.
  */
-function pickRefStats(r, scope, window_) {
-  // Key mapping: scope × window → JSON field name
-  let key;
-  if (scope === "season") {
-    key = window_ === "5" ? "season_last5" : window_ === "10" ? "season_last10" : "season";
-  } else {
-    key = window_ === "5" ? "last5" : window_ === "10" ? "last10" : "overall";
-  }
-
+function pickRefStats(r, window_) {
+  const key = window_ === "5" ? "last5" : window_ === "10" ? "last10" : "overall";
   const block = r[key];
-  // If the new windowed fields don't exist (old JSON), fall back to legacy top-level fields
-  if (!block) {
-    if (scope === "season") return null; // no season data in old format
-    return {
-      matches:           r.matches           ?? 0,
-      yellows_per_match: r.yellows_per_match ?? 0,
-      reds_per_match:    r.reds_per_match    ?? 0,
-      fouls_per_match:   r.fouls_per_match   ?? 0,
-    };
-  }
-  return block;
+
+  if (block) return { ...block, _fallback: false };
+
+  // Fall back to overall block or legacy flat fields
+  const overall = r["overall"];
+  if (overall) return { ...overall, _fallback: window_ !== "all" };
+
+  // Legacy flat format
+  return {
+    matches:           r.matches           ?? 0,
+    yellows_per_match: r.yellows_per_match ?? 0,
+    reds_per_match:    r.reds_per_match    ?? 0,
+    fouls_per_match:   r.fouls_per_match   ?? 0,
+    _fallback: window_ !== "all",
+  };
 }
 
 function renderArbitros() {
   const box = document.getElementById("arbitros-result");
   if (!box) return;
 
-  const all = APP.referees || [];
+  const all      = APP.referees || [];
   const byLeague = _arbLeague === "all" ? all : all.filter(r => r.league === _arbLeague);
 
-  // Resolve stats for each referee under current scope/window; skip those with no data
-  const referees = byLeague
-    .map(r => ({ r, stats: pickRefStats(r, _arbScope, _arbWindow) }))
-    .filter(({ stats }) => stats !== null);
-
-  if (referees.length === 0) {
-    const noRefLeagues = ["SP1","SP2","D1","D2","F1","F2","N1","B1","P1","T1","G1","SC0","SC1"];
-    const isNoRefLeague = _arbLeague !== "all" && noRefLeagues.includes(_arbLeague);
-    const msg = isNoRefLeague
-      ? `La fuente de datos (football-data.co.uk) no incluye árbitros para ${APP.leagues[_arbLeague]?.name || _arbLeague}. Disponible para: Premier League, Championship, Serie A.`
-      : "Sin datos de árbitros para esta combinación de filtros.";
+  if (byLeague.length === 0) {
     box.innerHTML = `<div class="state-box"><div class="icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
-    </div><p>${msg}</p></div>`;
+    </div><p>Sin datos de árbitros para esta liga.</p></div>`;
     return;
   }
 
+  const referees = byLeague.map(r => ({ r, stats: pickRefStats(r, _arbWindow) }));
+
   const svgRef = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>`;
 
-  const scopeLabel  = _arbScope === "season" ? "Temporada actual" : "Histórico";
-  const windowLabel = _arbWindow === "5" ? " · Últimos 5" : _arbWindow === "10" ? " · Últimos 10" : "";
+  const windowLabel = _arbWindow === "5" ? "Últimos 5 partidos" : _arbWindow === "10" ? "Últimos 10 partidos" : "Histórico completo";
   const leagueLabel = _arbLeague === "all"
-    ? `${referees.length} árbitros (todas las ligas)${windowLabel}`
-    : `${referees.length} árbitros · ${APP.leagues[_arbLeague]?.name || _arbLeague}${windowLabel}`;
+    ? `${referees.length} árbitros · todas las ligas`
+    : `${referees.length} árbitros · ${APP.leagues[_arbLeague]?.name || _arbLeague}`;
+
+  const hasFallback = referees.some(({ stats }) => stats._fallback);
+  const fallbackNote = hasFallback
+    ? `<p style="color:var(--yellow);font-size:.82rem;margin-bottom:14px;">
+        ⚠ Datos de ventana reducida no disponibles para esta liga — mostrando histórico general.
+       </p>`
+    : "";
 
   box.innerHTML = `
   <div class="section-title" style="margin-bottom:16px;">
-    ${svgRef} Perfil Disciplinario <small>${leagueLabel} · ${scopeLabel}${windowLabel}</small>
+    ${svgRef} Perfil Disciplinario <small>${leagueLabel} · ${windowLabel}</small>
   </div>
-  <p style="color:var(--muted);font-size:.85rem;margin-bottom:18px;">
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">
     Datos históricos para identificar árbitros "over" o "under" en mercados disciplinarios.
-    Mínimo 3 partidos pitados en la ventana seleccionada.
   </p>
+  ${fallbackNote}
   <div class="table-wrap">
     <table id="arbitrosTable">
       <thead>
@@ -129,7 +115,7 @@ function renderArbitros() {
     </table>
   </div>
   <div class="disclaimer" style="margin-top:14px;">
-    Los datos se basan en el registro histórico disponible. Fuente: football-data.co.uk
+    Fuente: football-data.co.uk · Datos con árbitros disponibles: Premier League, Championship, Serie A.
   </div>`;
 
   setTimeout(() => initAllTables(box), 50);
