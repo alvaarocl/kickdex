@@ -202,12 +202,12 @@ function _setupProgressBar(overlay) {
 
 // ── Mouse glow cursor ───────────────────────────────────────
 function _setupMouseGlow(overlay) {
-  // Must live INSIDE the overlay so it renders above the overlay's opaque background
-  let glow = overlay.querySelector("#lp-mouse-glow");
+  // z-index:10001 → above the overlay (9999) and its children
+  let glow = document.getElementById("lp-mouse-glow");
   if (!glow) {
     glow = document.createElement("div");
     glow.id = "lp-mouse-glow";
-    overlay.appendChild(glow);
+    document.body.appendChild(glow);
   }
   _lpMouseGlowBound = e => {
     glow.style.left    = e.clientX + "px";

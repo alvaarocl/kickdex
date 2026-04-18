@@ -1613,18 +1613,18 @@ tbody td b { font-family: var(--font-data); }
 
 /* ── Mouse glow ─────────────────────────────────────────── */
 #lp-mouse-glow {
-  position: fixed; pointer-events: none; z-index: 10000;
-  width: 520px; height: 520px;
+  position: fixed; pointer-events: none; z-index: 10001;
+  width: 600px; height: 600px;
   border-radius: 50%;
   background: radial-gradient(circle,
-    rgba(46,230,166,.18) 0%,
-    rgba(91,214,255,.10) 35%,
-    rgba(46,230,166,.04) 60%,
+    rgba(46,230,166,.30) 0%,
+    rgba(56,189,248,.18) 30%,
+    rgba(46,230,166,.06) 60%,
     transparent 75%);
   transform: translate(-50%, -50%);
-  transition: left 55ms linear, top 55ms linear, opacity .5s ease;
+  transition: left 40ms linear, top 40ms linear, opacity .35s ease;
   opacity: 0;
-  mix-blend-mode: screen;
+  will-change: left, top;
 }
 
 /* ── Button ripple ──────────────────────────────────────── */
