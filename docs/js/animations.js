@@ -127,6 +127,7 @@ function triggerAnimations(container) {
 let _lpScrollHandler  = null;
 let _lpRevealEls      = [];
 let _lpMouseGlowBound = null;
+let _lpRevealObserver = null;
 
 /**
  * Initialize all landing page animations.
@@ -145,6 +146,10 @@ function initLandingAnimations() {
     overlay.removeEventListener("mousemove", _lpMouseGlowBound);
     _lpMouseGlowBound = null;
   }
+  if (_lpRevealObserver) {
+    _lpRevealObserver.disconnect();
+    _lpRevealObserver = null;
+  }
   _lpRevealEls = [];
 
   _setupSmoothScroll(overlay);
@@ -157,8 +162,7 @@ function initLandingAnimations() {
   _setupClickParticles(overlay);
   _setupActiveNavHighlight(overlay);
 
-  // Trigger initial check after a short paint delay
-  setTimeout(() => _checkReveal(overlay), 120);
+  // IntersectionObserver fires automatically; no manual check needed.
 }
 
 // ── Smooth scroll for ALL in-page anchor links ─────────────
@@ -286,13 +290,13 @@ function _setupNavbarScroll(overlay) {
     if (orb2) orb2.style.transform = `translateY(${-y * 0.07}px)`;
     if (orb3) orb3.style.transform = `translateY(${y * 0.05}px)`;
 
-    _checkReveal(overlay);
+    _checkReveal();
   };
 
   overlay.addEventListener("scroll", _lpScrollHandler, { passive: true });
 }
 
-// ── Scroll-reveal via scroll event ─────────────────────────
+// ── Scroll-reveal via IntersectionObserver ──────────────────
 function _setupScrollReveal(overlay) {
   const groups = [
     // Leagues section
@@ -324,36 +328,28 @@ function _setupScrollReveal(overlay) {
 
   _lpRevealEls = [];
 
+  _lpRevealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("lp-in");
+        _lpRevealObserver.unobserve(entry.target);
+      }
+    });
+  }, { root: overlay, rootMargin: "0px 0px -30px 0px", threshold: 0.08 });
+
   groups.forEach(({ sel, base, stagger, variant }) => {
     overlay.querySelectorAll(sel).forEach((el, i) => {
-      if (el.classList.contains("lp-reveal")) return; // already registered
+      if (el.classList.contains("lp-reveal")) return;
       el.classList.add("lp-reveal");
       if (variant) el.classList.add(`lp-reveal--${variant}`);
       el.style.setProperty("--lp-d", `${base + i * stagger}ms`);
       _lpRevealEls.push(el);
+      _lpRevealObserver.observe(el);
     });
   });
 }
 
-/**
- * Check all registered reveal elements and fire lp-in when in viewport.
- */
-function _checkReveal(overlay) {
-  if (!_lpRevealEls.length) return;
-  const oRect  = overlay.getBoundingClientRect();
-  const bottom = oRect.height + 40;
-
-  _lpRevealEls = _lpRevealEls.filter(el => {
-    if (el.classList.contains("lp-in")) return false;
-    const rect = el.getBoundingClientRect();
-    const elTop = rect.top - oRect.top;
-    if (elTop < bottom && rect.bottom > oRect.top) {
-      el.classList.add("lp-in");
-      return false;
-    }
-    return true;
-  });
-}
+function _checkReveal() { /* no-op: IntersectionObserver handles reveal */ }
 
 // ── Parallax placeholder (handled in scroll handler above) ──
 function _setupParallax() {}

@@ -84,9 +84,14 @@ function renderArbitros() {
     .filter(({ stats }) => stats !== null);
 
   if (referees.length === 0) {
+    const noRefLeagues = ["SP1","SP2","D1","D2","F1","F2","N1","B1","P1","T1","G1","SC0","SC1"];
+    const isNoRefLeague = _arbLeague !== "all" && noRefLeagues.includes(_arbLeague);
+    const msg = isNoRefLeague
+      ? `La fuente de datos (football-data.co.uk) no incluye árbitros para ${APP.leagues[_arbLeague]?.name || _arbLeague}. Disponible para: Premier League, Championship, Serie A.`
+      : "Sin datos de árbitros para esta combinación de filtros.";
     box.innerHTML = `<div class="state-box"><div class="icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
-    </div><p>Sin datos de árbitros para esta combinación de filtros</p></div>`;
+    </div><p>${msg}</p></div>`;
     return;
   }
 
