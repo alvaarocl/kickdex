@@ -45,3 +45,4 @@ data_processor.py
 data_updater.py
 player_engine.py
 news_engine.py
+kickdex/
