@@ -84,6 +84,25 @@ def main():
     meta_txt = f"{n_partidos:,} partidos · actualizado {upd}"
     st.markdown(header_html(CURRENT_SEASON_LABEL, meta_txt), unsafe_allow_html=True)
 
+    # ── Scroll suave al cambiar de tab ────────────────────────────────────────
+    import streamlit.components.v1 as _components
+    _components.html("""
+    <script>
+    (function() {
+      function watchTabs() {
+        var tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+        tabs.forEach(function(t) {
+          if (t._kx) return; t._kx = true;
+          t.addEventListener('click', function() {
+            setTimeout(function() { window.parent.scrollTo({top:0,behavior:'smooth'}); }, 80);
+          });
+        });
+      }
+      [200, 600, 1200].forEach(function(d) { setTimeout(watchTabs, d); });
+    })();
+    </script>
+    """, height=0)
+
     # ── Tabs principales ──────────────────────────────────────────────────────
     tab_labels = [
         t("tab_inicio"),

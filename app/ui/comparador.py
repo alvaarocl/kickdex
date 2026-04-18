@@ -167,22 +167,50 @@ def render(df, teams, df_players):
         st.markdown(f'<div class="players-col-title">{away}</div>', unsafe_allow_html=True)
         st.dataframe(a_p[["gls", "ast", "sh", "sot"]], use_container_width=True)
 
-    # Calculadora Maestra SQL
-    from app.engine.query_engine import QueryEngine
-    from app.data.database import SessionLocal
-    db = SessionLocal()
-    qe = QueryEngine(db)
-    
+    # ── Calculadora Maestra ──────────────────────────────────────────────────
     st.divider()
-    st.markdown('<div class="card" style="border-color:var(--brand);"><div class="section-title">🔍 KICKDEX Terminal — Calculadora SQL</div>', unsafe_allow_html=True)
-    q_team = st.selectbox("Analizar Equipo (SQL)", teams, key="q_sql")
-    if st.button("EJECUTAR CÁLCULO PRO"):
-        res = qe.get_team_stats(q_team)
-        if res:
-            st.success(f"Resultados para {q_team} (Últimos {res['n_matches']} partidos)")
-            mc1, mc2, mc3 = st.columns(3)
-            mc1.metric("Goles Marcados", f"{res['avg_goals_scored']:.2f}")
-            mc2.metric("Goles Encajados", f"{res['avg_goals_conceded']:.2f}")
-            mc3.metric("Win Rate", f"{res['win_pct']:.1f}%")
-    st.markdown('</div>', unsafe_allow_html=True)
-    db.close()
+    st.markdown('<div class="calc-title">🔍 KICKDEX Terminal — Calculadora Maestra</div>', unsafe_allow_html=True)
+
+    with st.container():
+        ccol1, ccol2, ccol3 = st.columns([3, 1, 1])
+        q_team  = ccol1.selectbox("Equipo",     teams,                                  key="q_sql",   label_visibility="collapsed")
+        q_venue = ccol2.selectbox("Campo",      ["Todos", "Local", "Visitante"],         key="q_venue", label_visibility="collapsed")
+        q_n     = ccol3.selectbox("Últimos N",  [5, 10, 20, 38], index=1,               key="q_n",     label_visibility="collapsed")
+
+        if st.button("⚡ EJECUTAR CÁLCULO PRO", key="calc_run"):
+            from app.engine.query_engine import QueryEngine
+            from app.data.database import SessionLocal
+            db = SessionLocal()
+            try:
+                qe = QueryEngine(db)
+                venue_map = {"Todos": "All", "Local": "Home", "Visitante": "Away"}
+                res = qe.get_team_stats(q_team, venue=venue_map[q_venue], last_n=q_n)
+                if res:
+                    st.success(f"**{q_team}** — Últimos {res['n_matches']} partidos ({q_venue})")
+                    mc1, mc2, mc3, mc4 = st.columns(4)
+                    mc1.metric("Goles Marcados",  f"{res['avg_goals_scored']:.2f}")
+                    mc2.metric("Goles Encajados", f"{res['avg_goals_conceded']:.2f}")
+                    mc3.metric("Win Rate",        f"{res['win_pct']:.1f}%")
+                    mc4.metric("Córners/p",       f"{res.get('avg_corners', 0):.1f}")
+
+                    if res.get("raw_corners"):
+                        import plotly.graph_objects as go
+                        fig_c = go.Figure(go.Bar(
+                            x=[f"P{i+1}" for i in range(len(res["raw_corners"]))],
+                            y=res["raw_corners"], marker_color="#2EE6A6", opacity=0.7,
+                        ))
+                        fig_c.update_layout(
+                            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                            font=dict(color="#8b9ab0", size=10),
+                            margin=dict(l=10, r=10, t=10, b=10), height=120,
+                            yaxis=dict(gridcolor="rgba(255,255,255,.05)"),
+                            xaxis=dict(gridcolor="rgba(255,255,255,.02)"),
+                        )
+                        st.markdown("**Córners por partido:**")
+                        st.plotly_chart(fig_c, use_container_width=True, config={"displayModeBar": False})
+                else:
+                    st.info(f"Sin datos SQL para **{q_team}**. Los datos SQL se populan al importar los CSVs a la base de datos.")
+            except Exception as e:
+                st.error(f"Error en cálculo: {e}")
+            finally:
+                db.close()
