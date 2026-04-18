@@ -162,7 +162,8 @@ function initLandingAnimations() {
   _setupClickParticles(overlay);
   _setupActiveNavHighlight(overlay);
 
-  // IntersectionObserver fires automatically; no manual check needed.
+  // Initial check: reveal elements already in viewport on load (desktop + mobile)
+  setTimeout(_checkReveal, 150);
 }
 
 // ── Smooth scroll for ALL in-page anchor links ─────────────
@@ -329,11 +330,13 @@ function _setupScrollReveal(overlay) {
 
   _lpRevealEls = [];
 
+  // IntersectionObserver: works on mobile (touch scroll)
   _lpRevealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add("lp-in");
         _lpRevealObserver.unobserve(entry.target);
+        _lpRevealEls = _lpRevealEls.filter(e => e !== entry.target);
       }
     });
   }, { root: overlay, rootMargin: "0px 0px -30px 0px", threshold: 0.08 });
@@ -350,7 +353,21 @@ function _setupScrollReveal(overlay) {
   });
 }
 
-function _checkReveal() { /* no-op: IntersectionObserver handles reveal */ }
+// Desktop fallback: getBoundingClientRect vs viewport (fires on overlay scroll event)
+function _checkReveal() {
+  if (!_lpRevealEls.length) return;
+  const vh = window.innerHeight;
+  _lpRevealEls = _lpRevealEls.filter(el => {
+    if (el.classList.contains("lp-in")) return false;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < vh - 30 && rect.bottom > 0) {
+      el.classList.add("lp-in");
+      if (_lpRevealObserver) _lpRevealObserver.unobserve(el);
+      return false;
+    }
+    return true;
+  });
+}
 
 // ── Parallax placeholder (handled in scroll handler above) ──
 function _setupParallax() {}
