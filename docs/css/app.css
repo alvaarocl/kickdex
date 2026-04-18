@@ -1586,13 +1586,127 @@ tbody td b { font-family: var(--font-data); }
 
 @keyframes lp-fade-in  { from { opacity:0 } to { opacity:1 } }
 @keyframes lp-slide-up { from { opacity:0; transform:translateY(30px) } to { opacity:1; transform:none } }
+@keyframes lp-slide-left { from { opacity:0; transform:translateX(-32px) } to { opacity:1; transform:none } }
+@keyframes lp-slide-right { from { opacity:0; transform:translateX(32px) } to { opacity:1; transform:none } }
+@keyframes lp-scale-in { from { opacity:0; transform:scale(.88) } to { opacity:1; transform:none } }
 @keyframes lp-cta-pulse{ 0%,100%{ box-shadow:0 8px 40px -8px var(--brand-glow) } 50%{ box-shadow:0 16px 60px -4px rgba(46,230,166,.8) } }
 @keyframes lp-orb-drift{ 0%,100%{ transform:translate(0,0) scale(1) } 50%{ transform:translate(20px,-28px) scale(1.07) } }
 @keyframes lp-bar-grow { from { width:0 } }
 @keyframes lp-blink    { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes lp-ripple   { 0%{ transform:scale(0);opacity:.55 } 100%{ transform:scale(4);opacity:0 } }
+@keyframes lp-click-particle { 0%{ transform:translate(-50%,-50%) scale(1);opacity:.7 } 100%{ transform:translate(-50%,-50%) scale(0);opacity:0 } }
+@keyframes lp-progress-glow { 0%,100%{ opacity:1 } 50%{ opacity:.6 } }
+@keyframes lp-badge-scan { 0%{ background-position:-200% center } 100%{ background-position:200% center } }
 
 @media (prefers-reduced-motion: reduce) {
   .lp-overlay * { animation: none !important; transition: none !important; }
+}
+
+/* ── Scroll progress bar ────────────────────────────────── */
+#lp-progress-bar {
+  position: fixed; top: 0; left: 0; height: 2px; z-index: 10001;
+  background: var(--grad-brand);
+  width: 0%; transition: width .1s linear;
+  box-shadow: 0 0 12px var(--brand-glow);
+  pointer-events: none;
+}
+
+/* ── Mouse glow ─────────────────────────────────────────── */
+#lp-mouse-glow {
+  position: fixed; pointer-events: none; z-index: 9998;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,230,166,.06) 0%, rgba(91,214,255,.03) 50%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: left 80ms linear, top 80ms linear, opacity .4s;
+  opacity: 0;
+}
+
+/* ── Button ripple ──────────────────────────────────────── */
+.lp-cta-primary, .lp-cta-ghost, .lp-nav-cta {
+  position: relative; overflow: hidden;
+}
+.lp-cta-primary:active { transform: translateY(1px) scale(.98); }
+.lp-cta-ghost:active   { transform: scale(.97); }
+.lp-nav-cta:active     { transform: scale(.97); }
+
+.lp-ripple-circle {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  width: 8px; height: 8px; margin: -4px 0 0 -4px;
+  background: rgba(255,255,255,.35);
+  animation: lp-ripple .6s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.lp-cta-primary .lp-ripple-circle { background: rgba(2,26,18,.25); }
+
+/* ── Click particle (global) ────────────────────────────── */
+.lp-click-dot {
+  position: fixed; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--brand); pointer-events: none; z-index: 10000;
+  animation: lp-click-particle .55s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+/* ── Enhanced reveal variants ───────────────────────────── */
+.lp-reveal {
+  opacity: 0;
+  transition:
+    opacity .55s cubic-bezier(.2,.8,.2,1) var(--lp-d, 0ms),
+    transform .55s cubic-bezier(.2,.8,.2,1) var(--lp-d, 0ms);
+}
+.lp-reveal:not(.lp-reveal--scale):not(.lp-reveal--fade):not(.lp-reveal--left):not(.lp-reveal--right) {
+  transform: translateY(28px);
+}
+.lp-reveal--scale  { transform: scale(.9); }
+.lp-reveal--fade   { transform: none; }
+.lp-reveal--left   { transform: translateX(-28px); }
+.lp-reveal--right  { transform: translateX(28px); }
+.lp-reveal--up     { transform: translateY(28px); }
+
+.lp-reveal.lp-in   { opacity:1; transform:none; }
+
+/* ── Nav link active indicator ──────────────────────────── */
+.lp-nav-links a {
+  position: relative;
+}
+.lp-nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 1.5px; border-radius: 2px;
+  background: var(--brand);
+  transition: width .25s cubic-bezier(.2,.8,.2,1);
+}
+.lp-nav-links a:hover::after,
+.lp-nav-links a.lp-nav-active::after { width: 100%; }
+
+/* ── Feat card hover lift ───────────────────────────────── */
+.lp-feat-card {
+  transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, border-color .25s;
+}
+.lp-feat-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 20px 60px -12px rgba(46,230,166,.12), 0 0 0 1px rgba(46,230,166,.15);
+  border-color: rgba(46,230,166,.2) !important;
+}
+
+/* ── Smooth scroll hint on hero ─────────────────────────── */
+.lp-scroll-hint {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; margin-top: 56px; color: var(--muted2);
+  font-size: .75rem; letter-spacing: .5px;
+  animation: lp-fade-in .8s 2s ease both;
+}
+.lp-scroll-hint-arrow {
+  width: 20px; height: 30px; border: 1.5px solid var(--border2);
+  border-radius: 12px; display: flex; justify-content: center;
+  padding-top: 5px;
+}
+.lp-scroll-hint-dot {
+  width: 3px; height: 7px; border-radius: 3px;
+  background: var(--muted2);
+  animation: lp-hint-scroll 1.8s .5s ease-in-out infinite;
+}
+@keyframes lp-hint-scroll {
+  0%   { transform: translateY(0);   opacity:.7 }
+  50%  { transform: translateY(8px); opacity:.2 }
+  100% { transform: translateY(0);   opacity:.7 }
 }
 
 /* ── Base overlay ──────────────────────────────────────── */
@@ -1949,24 +2063,7 @@ tbody td b { font-family: var(--font-data); }
 @keyframes lp-alert-glow { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 20px -2px rgba(245,185,60,.4)} }
 @keyframes lp-scan        { 0%{top:-2px} 100%{top:100%} }
 
-/* ── Scroll-reveal: state-machine via .lp-in ───────────── */
-.lp-reveal {
-  opacity: 0;
-  transform: translateY(26px);
-  transition:
-    opacity   .65s cubic-bezier(.16,1,.3,1) var(--lp-d, 0ms),
-    transform .65s cubic-bezier(.16,1,.3,1) var(--lp-d, 0ms);
-  will-change: opacity, transform;
-}
-.lp-reveal.lp-in        { opacity: 1; transform: none; }
-.lp-reveal--scale       { transform: scale(.92) translateY(12px); }
-.lp-reveal--scale.lp-in { opacity: 1; transform: none; }
-.lp-reveal--fade        { transform: none; }
-.lp-reveal--fade.lp-in  { opacity: 1; }
-
-@media (prefers-reduced-motion: reduce) {
-  .lp-reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
-}
+/* lp-reveal rules are defined in the LANDING section above */
 
 /* ── Navbar: base transition, enhanced on scroll ───────── */
 .lp-nav {

@@ -124,8 +124,9 @@ function triggerAnimations(container) {
 // LANDING PAGE ANIMATIONS
 // ═══════════════════════════════════════════════════════════
 
-let _lpScrollHandler = null;
-let _lpRevealEls     = [];
+let _lpScrollHandler  = null;
+let _lpRevealEls      = [];
+let _lpMouseGlowBound = null;
 
 /**
  * Initialize all landing page animations.
@@ -140,31 +141,133 @@ function initLandingAnimations() {
     overlay.removeEventListener("scroll", _lpScrollHandler);
     _lpScrollHandler = null;
   }
+  if (_lpMouseGlowBound) {
+    overlay.removeEventListener("mousemove", _lpMouseGlowBound);
+    _lpMouseGlowBound = null;
+  }
   _lpRevealEls = [];
 
   _setupSmoothScroll(overlay);
   _setupScrollReveal(overlay);
   _setupNavbarScroll(overlay);
   _setupMockupAnimation();
+  _setupButtonRipples(overlay);
+  _setupMouseGlow(overlay);
+  _setupProgressBar(overlay);
+  _setupClickParticles(overlay);
+  _setupActiveNavHighlight(overlay);
 
   // Trigger initial check after a short paint delay
   setTimeout(() => _checkReveal(overlay), 120);
 }
 
-// ── Smooth scroll for in-page nav links ────────────────────
+// ── Smooth scroll for ALL in-page anchor links ─────────────
 function _setupSmoothScroll(overlay) {
-  overlay.querySelectorAll('a[href^="#lp-"]').forEach(a => {
+  overlay.querySelectorAll('a[href^="#"]').forEach(a => {
+    if (a._lpScroll) return; // already bound
+    a._lpScroll = true;
     a.addEventListener("click", e => {
-      const id     = a.getAttribute("href").slice(1);
+      const href = a.getAttribute("href");
+      if (!href || href === "#") return;
+      const id     = href.slice(1);
       const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();
-      const oRect = overlay.getBoundingClientRect();
-      const tRect = target.getBoundingClientRect();
+      const oRect   = overlay.getBoundingClientRect();
+      const tRect   = target.getBoundingClientRect();
       const scrollTo = overlay.scrollTop + (tRect.top - oRect.top) - 68;
       overlay.scrollTo({ top: scrollTo, behavior: "smooth" });
     });
   });
+}
+
+// ── Scroll progress bar ─────────────────────────────────────
+function _setupProgressBar(overlay) {
+  let bar = document.getElementById("lp-progress-bar");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "lp-progress-bar";
+    overlay.appendChild(bar);
+  }
+  overlay.addEventListener("scroll", () => {
+    const max  = overlay.scrollHeight - overlay.clientHeight;
+    const pct  = max > 0 ? (overlay.scrollTop / max) * 100 : 0;
+    bar.style.width = pct + "%";
+  }, { passive: true });
+}
+
+// ── Mouse glow cursor ───────────────────────────────────────
+function _setupMouseGlow(overlay) {
+  let glow = document.getElementById("lp-mouse-glow");
+  if (!glow) {
+    glow = document.createElement("div");
+    glow.id = "lp-mouse-glow";
+    document.body.appendChild(glow);
+  }
+  _lpMouseGlowBound = e => {
+    glow.style.left    = e.clientX + "px";
+    glow.style.top     = e.clientY + "px";
+    glow.style.opacity = "1";
+  };
+  overlay.addEventListener("mousemove", _lpMouseGlowBound, { passive: true });
+  overlay.addEventListener("mouseleave", () => { glow.style.opacity = "0"; }, { passive: true });
+}
+
+// ── Button ripple effect ────────────────────────────────────
+function _setupButtonRipples(overlay) {
+  const btns = overlay.querySelectorAll(".lp-cta-primary, .lp-cta-ghost, .lp-nav-cta");
+  btns.forEach(btn => {
+    if (btn._lpRipple) return;
+    btn._lpRipple = true;
+    btn.addEventListener("click", e => {
+      const rect   = btn.getBoundingClientRect();
+      const circle = document.createElement("span");
+      circle.className = "lp-ripple-circle";
+      circle.style.left = (e.clientX - rect.left) + "px";
+      circle.style.top  = (e.clientY - rect.top)  + "px";
+      btn.appendChild(circle);
+      setTimeout(() => circle.remove(), 650);
+    });
+  });
+}
+
+// ── Click particle (subtle dot on every click in landing) ──
+function _setupClickParticles(overlay) {
+  overlay.addEventListener("click", e => {
+    // Skip if clicking a button (ripple already handles it)
+    if (e.target.closest(".lp-cta-primary, .lp-nav-cta")) return;
+    const dot = document.createElement("div");
+    dot.className = "lp-click-dot";
+    dot.style.left = e.clientX + "px";
+    dot.style.top  = e.clientY + "px";
+    document.body.appendChild(dot);
+    setTimeout(() => dot.remove(), 600);
+  }, { passive: true });
+}
+
+// ── Highlight active nav link based on scroll position ─────
+function _setupActiveNavHighlight(overlay) {
+  const sections = [
+    { id: "lp-leagues",  href: "#lp-leagues"  },
+    { id: "lp-features", href: "#lp-features" },
+    { id: "lp-how",      href: "#lp-how"      },
+  ];
+  const navLinks = overlay.querySelectorAll(".lp-nav-links a");
+
+  overlay.addEventListener("scroll", () => {
+    const oRect = overlay.getBoundingClientRect();
+    let active = null;
+    sections.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top - oRect.top < oRect.height * 0.5) active = id;
+    });
+    navLinks.forEach(a => {
+      const href = a.getAttribute("href");
+      a.classList.toggle("lp-nav-active", !!active && href === "#" + active);
+    });
+  }, { passive: true });
 }
 
 // ── Navbar scroll state ─────────────────────────────────────
@@ -173,7 +276,6 @@ function _setupNavbarScroll(overlay) {
 
   _lpScrollHandler = () => {
     const y = overlay.scrollTop;
-
     if (nav) nav.classList.toggle("lp-nav--scrolled", y > 30);
 
     // Parallax orbs
@@ -190,40 +292,41 @@ function _setupNavbarScroll(overlay) {
   overlay.addEventListener("scroll", _lpScrollHandler, { passive: true });
 }
 
-// ── Scroll-reveal via scroll event (reliable for fixed containers) ──
+// ── Scroll-reveal via scroll event ─────────────────────────
 function _setupScrollReveal(overlay) {
   const groups = [
     // Leagues section
-    { sel: "#lp-leagues .lp-section-eyebrow", base: 0,   stagger: 0   },
-    { sel: "#lp-leagues .lp-section-h2",      base: 80,  stagger: 0   },
-    { sel: ".lp-league-pill",                 base: 0,   stagger: 45,  variant: "scale" },
+    { sel: "#lp-leagues .lp-section-eyebrow", base: 0,   stagger: 0,   variant: "fade" },
+    { sel: "#lp-leagues .lp-section-h2",      base: 60,  stagger: 0                    },
+    { sel: ".lp-league-pill",                 base: 0,   stagger: 35,  variant: "scale" },
 
     // Features section
-    { sel: "#lp-features .lp-section-eyebrow", base: 0,   stagger: 0  },
-    { sel: "#lp-features .lp-section-h2",      base: 70,  stagger: 0  },
-    { sel: "#lp-features .lp-section-sub",     base: 120, stagger: 0  },
-    { sel: ".lp-feat-card",                    base: 0,   stagger: 75 },
+    { sel: "#lp-features .lp-section-eyebrow", base: 0,   stagger: 0,  variant: "fade" },
+    { sel: "#lp-features .lp-section-h2",      base: 60,  stagger: 0                   },
+    { sel: "#lp-features .lp-section-sub",     base: 110, stagger: 0,  variant: "fade" },
+    { sel: ".lp-feat-card",                    base: 0,   stagger: 65                  },
 
     // How it works
-    { sel: "#lp-how .lp-section-eyebrow",      base: 0,   stagger: 0   },
-    { sel: "#lp-how .lp-section-h2",           base: 70,  stagger: 0   },
-    { sel: ".lp-step",                         base: 0,   stagger: 130, variant: "up" },
-    { sel: ".lp-step-arrow",                   base: 180, stagger: 0,   variant: "fade" },
+    { sel: "#lp-how .lp-section-eyebrow",      base: 0,   stagger: 0,   variant: "fade" },
+    { sel: "#lp-how .lp-section-h2",           base: 60,  stagger: 0                    },
+    { sel: ".lp-step",                         base: 0,   stagger: 110, variant: "up"   },
+    { sel: ".lp-step-arrow",                   base: 150, stagger: 0,   variant: "fade" },
 
     // Trust bar
-    { sel: ".lp-trust-item",                   base: 0,   stagger: 55  },
+    { sel: ".lp-trust-item",                   base: 0,   stagger: 45                  },
 
     // Final CTA
-    { sel: ".lp-final-h2",                      base: 0,   stagger: 0   },
-    { sel: ".lp-final-sub",                     base: 90,  stagger: 0   },
-    { sel: ".lp-final-section .lp-cta-primary", base: 170, stagger: 0,  variant: "scale" },
-    { sel: ".lp-final-disclaimer",              base: 240, stagger: 0,  variant: "fade"  },
+    { sel: ".lp-final-h2",                      base: 0,   stagger: 0                   },
+    { sel: ".lp-final-sub",                     base: 80,  stagger: 0,  variant: "fade" },
+    { sel: ".lp-final-section .lp-cta-primary", base: 150, stagger: 0,  variant: "scale"},
+    { sel: ".lp-final-disclaimer",              base: 210, stagger: 0,  variant: "fade" },
   ];
 
   _lpRevealEls = [];
 
   groups.forEach(({ sel, base, stagger, variant }) => {
     overlay.querySelectorAll(sel).forEach((el, i) => {
+      if (el.classList.contains("lp-reveal")) return; // already registered
       el.classList.add("lp-reveal");
       if (variant) el.classList.add(`lp-reveal--${variant}`);
       el.style.setProperty("--lp-d", `${base + i * stagger}ms`);
@@ -233,22 +336,20 @@ function _setupScrollReveal(overlay) {
 }
 
 /**
- * Check all registered reveal elements and add lp-in to those in viewport.
- * Uses getBoundingClientRect relative to overlay bounds — works correctly
- * for position:fixed overflow-y:auto containers.
+ * Check all registered reveal elements and fire lp-in when in viewport.
  */
 function _checkReveal(overlay) {
   if (!_lpRevealEls.length) return;
   const oRect  = overlay.getBoundingClientRect();
-  const bottom = oRect.height + 40; // 40px grace below fold
+  const bottom = oRect.height + 40;
 
   _lpRevealEls = _lpRevealEls.filter(el => {
-    if (el.classList.contains("lp-in")) return false; // already triggered
+    if (el.classList.contains("lp-in")) return false;
     const rect = el.getBoundingClientRect();
     const elTop = rect.top - oRect.top;
     if (elTop < bottom && rect.bottom > oRect.top) {
       el.classList.add("lp-in");
-      return false; // remove from future checks
+      return false;
     }
     return true;
   });
