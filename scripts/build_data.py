@@ -289,7 +289,26 @@ def build_value_patterns(df) -> list:
         return []
 
 
-def build_referees(df) -> list:
+def _ref_stats(sub_df, min_matches=3):
+    """Compute per-match referee stats from a subset of matches. Returns None if too few rows."""
+    import pandas as pd
+    n = len(sub_df)
+    if n < min_matches:
+        return None
+    def _col_sum(col):
+        return pd.to_numeric(sub_df.get(col, pd.Series(0, index=sub_df.index)), errors="coerce").fillna(0).sum()
+    yellows = _col_sum("HY") + _col_sum("AY")
+    reds    = _col_sum("HR") + _col_sum("AR")
+    fouls   = _col_sum("HF") + _col_sum("AF")
+    return {
+        "matches":           n,
+        "yellows_per_match": round(float(yellows) / n, 2),
+        "reds_per_match":    round(float(reds)    / n, 2),
+        "fouls_per_match":   round(float(fouls)   / n, 2),
+    }
+
+
+def build_referees(df, df_current=None) -> list:
     import pandas as pd
     if "Referee" not in df.columns or "Div" not in df.columns:
         return []
@@ -298,35 +317,47 @@ def build_referees(df) -> list:
     if rdf.empty:
         return []
 
-    for col in ["HY", "AY", "HR", "AR", "HF", "AF"]:
-        if col in rdf.columns:
-            rdf[col] = pd.to_numeric(rdf[col], errors="coerce").fillna(0)
+    if df_current is not None and not df_current.empty and "Referee" in df_current.columns:
+        rdf_curr = df_current.dropna(subset=["Referee", "Div"]).copy()
+        rdf_curr["Referee"] = rdf_curr["Referee"].str.strip()
+    else:
+        rdf_curr = pd.DataFrame(columns=rdf.columns)
 
-    rdf["Total_Yellows"] = rdf.get("HY", pd.Series(0, index=rdf.index)) + rdf.get("AY", pd.Series(0, index=rdf.index))
-    rdf["Total_Reds"]    = rdf.get("HR", pd.Series(0, index=rdf.index)) + rdf.get("AR", pd.Series(0, index=rdf.index))
-    rdf["Total_Fouls"]   = rdf.get("HF", pd.Series(0, index=rdf.index)) + rdf.get("AF", pd.Series(0, index=rdf.index))
+    # Sort by date so head(N) = most recent N
+    date_col = "Date" if "Date" in rdf.columns else None
+    if date_col:
+        rdf = rdf.sort_values(date_col, ascending=False)
+        if not rdf_curr.empty:
+            rdf_curr = rdf_curr.sort_values(date_col, ascending=False)
 
-    stats = rdf.groupby(["Div", "Referee"]).agg(
-        matches=("Div", "count"),
-        Total_Yellows=("Total_Yellows", "sum"),
-        Total_Reds=("Total_Reds", "sum"),
-        Total_Fouls=("Total_Fouls", "sum"),
-    ).reset_index()
+    results = []
+    for (div, referee), grp in rdf.groupby(["Div", "Referee"], sort=False):
+        overall = _ref_stats(grp)
+        if overall is None:
+            continue  # skip refs with < 3 matches total
 
-    stats = stats[stats["matches"] >= 3].copy()
-    if stats.empty:
-        return []
+        grp_curr = rdf_curr[(rdf_curr["Div"] == div) & (rdf_curr["Referee"] == referee)] if not rdf_curr.empty else pd.DataFrame()
 
-    stats["yellows_per_match"] = (stats["Total_Yellows"] / stats["matches"]).round(2)
-    stats["reds_per_match"]    = (stats["Total_Reds"]    / stats["matches"]).round(2)
-    stats["fouls_per_match"]   = (stats["Total_Fouls"]   / stats["matches"]).round(2)
+        record = {
+            "name":    referee,
+            "league":  div,
+            # top-level legacy fields (used by old frontend code)
+            "matches":           overall["matches"],
+            "yellows_per_match": overall["yellows_per_match"],
+            "reds_per_match":    overall["reds_per_match"],
+            "fouls_per_match":   overall["fouls_per_match"],
+            # windowed blocks
+            "overall":        overall,
+            "last10":         _ref_stats(grp.head(10)),
+            "last5":          _ref_stats(grp.head(5)),
+            "season":         _ref_stats(grp_curr) if not grp_curr.empty else None,
+            "season_last10":  _ref_stats(grp_curr.head(10)) if not grp_curr.empty else None,
+            "season_last5":   _ref_stats(grp_curr.head(5))  if not grp_curr.empty else None,
+        }
+        results.append(record)
 
-    stats = stats.sort_values(["Div", "yellows_per_match"], ascending=[True, False]).reset_index(drop=True)
-    return (
-        stats[["Referee", "Div", "matches", "yellows_per_match", "reds_per_match", "fouls_per_match"]]
-        .rename(columns={"Referee": "name", "Div": "league"})
-        .to_dict("records")
-    )
+    results.sort(key=lambda r: (r["league"], -r["yellows_per_match"]))
+    return results
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -373,7 +404,7 @@ def main():
     write_json(build_players(df_players), "players.json")
     write_json(build_players_detail(df_players), "players_detail.json")
     write_json(build_value_patterns(df), "value_patterns.json")
-    write_json(build_referees(df), "referees.json")
+    write_json(build_referees(df, df_current), "referees.json")
 
     print("\n[7/7] leagues.json, fixtures.json...")
     write_json(build_leagues(df, teams), "leagues.json")

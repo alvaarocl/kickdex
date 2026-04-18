@@ -12,6 +12,14 @@ function initJugadores() {
   document.getElementById("jug-team").addEventListener("change", () => {
     populatePlayerSelect();
   });
+
+  const jugWindow = document.getElementById("jug-window");
+  if (jugWindow) {
+    jugWindow.addEventListener("change", () => {
+      const player = document.getElementById("jug-player").value;
+      if (player) runJugadores();
+    });
+  }
 }
 
 function populatePlayerSelect() {
@@ -45,11 +53,15 @@ function runJugadores() {
 
   if (player) {
     // Single player detail
-    const detail = APP.playersDetail[team]?.[player];
-    if (!detail || detail.length === 0) {
+    const allDetail = APP.playersDetail[team]?.[player];
+    if (!allDetail || allDetail.length === 0) {
       box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos para este jugador</p></div>`;
       return;
     }
+    const windowVal = document.getElementById("jug-window")?.value || "all";
+    const detail = windowVal === "5"  ? allDetail.slice(0, 5)
+                 : windowVal === "10" ? allDetail.slice(0, 10)
+                 : allDetail;
     box.innerHTML = buildPlayerDetail(team, player, detail);
     setTimeout(() => {
       drawPlayerSparklines(player, detail);

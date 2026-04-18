@@ -5,7 +5,8 @@
 "use strict";
 
 let _arbLeague = "all";
-let _arbWindow = 0; // 0 = histórico completo
+let _arbScope  = "overall"; // "overall" | "season"
+let _arbWindow = "all";     // "all" | "10" | "5"
 
 function initArbitros() {
   const sel = document.getElementById("arb-league-filter");
@@ -24,10 +25,18 @@ function initArbitros() {
     });
   }
 
-  const winSel = document.getElementById("arb-window-filter");
-  if (winSel) {
-    winSel.addEventListener("change", e => {
-      _arbWindow = parseInt(e.target.value) || 0;
+  const scopeSel = document.getElementById("arb-scope");
+  if (scopeSel) {
+    scopeSel.addEventListener("change", e => {
+      _arbScope = e.target.value;
+      renderArbitros();
+    });
+  }
+
+  const windowSel = document.getElementById("arb-window");
+  if (windowSel) {
+    windowSel.addEventListener("change", e => {
+      _arbWindow = e.target.value;
       renderArbitros();
     });
   }
@@ -35,41 +44,67 @@ function initArbitros() {
   renderArbitros();
 }
 
+/**
+ * Resolve the right stats block from a referee record given current scope/window.
+ * Returns {matches, yellows_per_match, reds_per_match, fouls_per_match} or null.
+ */
+function pickRefStats(r, scope, window_) {
+  // Key mapping: scope × window → JSON field name
+  let key;
+  if (scope === "season") {
+    key = window_ === "5" ? "season_last5" : window_ === "10" ? "season_last10" : "season";
+  } else {
+    key = window_ === "5" ? "last5" : window_ === "10" ? "last10" : "overall";
+  }
+
+  const block = r[key];
+  // If the new windowed fields don't exist (old JSON), fall back to legacy top-level fields
+  if (!block) {
+    if (scope === "season") return null; // no season data in old format
+    return {
+      matches:           r.matches           ?? 0,
+      yellows_per_match: r.yellows_per_match ?? 0,
+      reds_per_match:    r.reds_per_match    ?? 0,
+      fouls_per_match:   r.fouls_per_match   ?? 0,
+    };
+  }
+  return block;
+}
+
 function renderArbitros() {
   const box = document.getElementById("arbitros-result");
   if (!box) return;
 
   const all = APP.referees || [];
-  let referees = _arbLeague === "all" ? all : all.filter(r => r.league === _arbLeague);
+  const byLeague = _arbLeague === "all" ? all : all.filter(r => r.league === _arbLeague);
 
-  // Window filter: show only referees with enough matches, sorted by "recency" proxy
-  if (_arbWindow > 0) {
-    referees = referees
-      .filter(r => r.matches >= _arbWindow)
-      .sort((a, b) => b.yellows_per_match - a.yellows_per_match);
-  }
+  // Resolve stats for each referee under current scope/window; skip those with no data
+  const referees = byLeague
+    .map(r => ({ r, stats: pickRefStats(r, _arbScope, _arbWindow) }))
+    .filter(({ stats }) => stats !== null);
 
   if (referees.length === 0) {
     box.innerHTML = `<div class="state-box"><div class="icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
-    </div><p>Sin datos de árbitros para esta liga</p></div>`;
+    </div><p>Sin datos de árbitros para esta combinación de filtros</p></div>`;
     return;
   }
 
   const svgRef = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>`;
 
-  const windowLabel = _arbWindow > 0 ? ` · mín. ${_arbWindow} partidos` : " · histórico completo";
+  const scopeLabel  = _arbScope === "season" ? "Temporada actual" : "Histórico";
+  const windowLabel = _arbWindow === "5" ? " · Últimos 5" : _arbWindow === "10" ? " · Últimos 10" : "";
   const leagueLabel = _arbLeague === "all"
     ? `${referees.length} árbitros (todas las ligas)${windowLabel}`
     : `${referees.length} árbitros · ${APP.leagues[_arbLeague]?.name || _arbLeague}${windowLabel}`;
 
   box.innerHTML = `
   <div class="section-title" style="margin-bottom:16px;">
-    ${svgRef} Perfil Disciplinario <small>${leagueLabel}</small>
+    ${svgRef} Perfil Disciplinario <small>${leagueLabel} · ${scopeLabel}${windowLabel}</small>
   </div>
   <p style="color:var(--muted);font-size:.85rem;margin-bottom:18px;">
     Datos históricos para identificar árbitros "over" o "under" en mercados disciplinarios.
-    Mínimo 3 partidos pitados.
+    Mínimo 3 partidos pitados en la ventana seleccionada.
   </p>
   <div class="table-wrap">
     <table id="arbitrosTable">
@@ -80,11 +115,11 @@ function renderArbitros() {
           <th title="Amarillas por partido">Amar./p</th>
           <th title="Rojas por partido">Rojas/p</th>
           <th title="Faltas por partido">Faltas/p</th>
-          <th title="Tendencia disciplinaria">Tendencia</th>
+          <th title="Tendencia disciplinaria" data-nosort>Tendencia</th>
         </tr>
       </thead>
       <tbody>
-        ${referees.map(r => buildRefereeRow(r)).join("")}
+        ${referees.map(({ r, stats }) => buildRefereeRow(r, stats)).join("")}
       </tbody>
     </table>
   </div>
@@ -95,12 +130,12 @@ function renderArbitros() {
   setTimeout(() => initAllTables(box), 50);
 }
 
-function buildRefereeRow(r) {
-  const name    = r.name    || "—";
-  const matches = r.matches || 0;
-  const yp      = r.yellows_per_match ?? 0;
-  const rp      = r.reds_per_match    ?? 0;
-  const fp      = r.fouls_per_match   ?? 0;
+function buildRefereeRow(r, stats) {
+  const name = r.name || "—";
+  const yp   = stats.yellows_per_match ?? 0;
+  const rp   = stats.reds_per_match    ?? 0;
+  const fp   = stats.fouls_per_match   ?? 0;
+  const pj   = stats.matches           ?? 0;
 
   const ypColor = yp >= 5.5 ? "var(--red)" : yp >= 4.5 ? "var(--yellow)" : yp >= 3.5 ? "var(--text)" : "var(--green)";
   const fpColor = fp >= 28  ? "var(--red)" : fp <= 22  ? "var(--green)"  : "var(--text)";
@@ -117,10 +152,10 @@ function buildRefereeRow(r) {
   return `
   <tr>
     <td><b>${name}</b></td>
-    <td class="muted">${matches}</td>
-    <td style="color:${ypColor};font-weight:600;">${fmt(yp, 2)}</td>
-    <td>${fmt(rp, 2)}</td>
-    <td style="color:${fpColor}">${fmt(fp, 1)}</td>
+    <td class="muted" data-sort="${pj}">${pj}</td>
+    <td style="color:${ypColor};font-weight:600;" data-sort="${yp}">${fmt(yp, 2)}</td>
+    <td data-sort="${rp}">${fmt(rp, 2)}</td>
+    <td style="color:${fpColor}" data-sort="${fp}">${fmt(fp, 1)}</td>
     <td><span class="${badgeCls}" style="font-size:.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">${badge}</span></td>
   </tr>`;
 }

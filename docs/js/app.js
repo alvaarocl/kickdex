@@ -502,48 +502,133 @@ function generateAlerts(homeStats, awayStats, h2hSummary) {
   return alerts.slice(0, 8);
 }
 
-// ── Table sorting ──────────────────────────────────────────────────────────
+// ── Table sorting — multi-criterion (click = single, shift+click = add) ────
+
+const _tableSorts = new WeakMap(); // tableEl → [{col, dir, label}, ...]
+
+function _thLabel(th) {
+  return th.getAttribute("title") || th.textContent.replace(/[⇅↑↓]/g, "").trim();
+}
+
+function _cellValue(td) {
+  if (!td) return null;
+  const raw = td.dataset.sort ?? td.textContent;
+  const num = parseFloat(String(raw).replace(/[%+,\s]/g, ""));
+  return isNaN(num) ? String(raw).trim().toLowerCase() : num;
+}
+
+function _compare(a, b) {
+  if (a == null && b == null) return 0;
+  if (a == null) return 1;
+  if (b == null) return -1;
+  if (typeof a === "number" && typeof b === "number") return a - b;
+  return String(a).localeCompare(String(b), "es");
+}
+
+function _applySort(tableEl) {
+  const sorts = _tableSorts.get(tableEl) || [];
+  const tbody = tableEl.querySelector("tbody");
+  if (!tbody || sorts.length === 0) return;
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  rows.sort((a, b) => {
+    for (const s of sorts) {
+      const av = _cellValue(a.cells[s.col]);
+      const bv = _cellValue(b.cells[s.col]);
+      const cmp = _compare(av, bv);
+      if (cmp !== 0) return s.dir === "asc" ? cmp : -cmp;
+    }
+    return 0;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+function _renderHeaderIcons(tableEl) {
+  const sorts = _tableSorts.get(tableEl) || [];
+  tableEl.querySelectorAll("thead th").forEach((th, col) => {
+    if (th.dataset.nosort !== undefined) return;
+    // Remove old sort indicators
+    th.querySelectorAll(".sort-icon, .sort-badge").forEach(el => el.remove());
+    th.classList.remove("sorted");
+
+    const s = sorts.find(s => s.col === col);
+    const icon = document.createElement("span");
+    icon.className = "sort-icon";
+    if (s) {
+      icon.textContent = s.dir === "asc" ? "↑" : "↓";
+      th.classList.add("sorted");
+      if (sorts.length > 1) {
+        const badge = document.createElement("span");
+        badge.className = "sort-badge";
+        badge.textContent = sorts.indexOf(s) + 1;
+        th.appendChild(badge);
+      }
+    } else {
+      icon.textContent = "⇅";
+    }
+    th.appendChild(icon);
+  });
+}
+
+function _renderSortChips(tableEl) {
+  const sorts = _tableSorts.get(tableEl) || [];
+  // Find or create chip container just before table's parent (.table-wrap)
+  const wrap = tableEl.closest(".table-wrap") || tableEl.parentElement;
+  let panel = wrap.previousElementSibling;
+  if (!panel || !panel.classList.contains("sort-chips")) {
+    panel = document.createElement("div");
+    panel.className = "sort-chips";
+    wrap.parentElement.insertBefore(panel, wrap);
+  }
+  panel.innerHTML = "";
+  if (sorts.length === 0) return;
+
+  sorts.forEach((s, i) => {
+    const chip = document.createElement("span");
+    chip.className = "sort-chip";
+    chip.innerHTML = `${s.label} ${s.dir === "asc" ? "↑" : "↓"} <span class="x" title="Quitar criterio">×</span>`;
+    chip.querySelector(".x").addEventListener("click", () => {
+      const arr = _tableSorts.get(tableEl);
+      arr.splice(i, 1);
+      _applySort(tableEl);
+      _renderSortChips(tableEl);
+      _renderHeaderIcons(tableEl);
+    });
+    panel.appendChild(chip);
+  });
+}
 
 function initTableSort(tableEl) {
   if (!tableEl) return;
-  const headers = tableEl.querySelectorAll("thead th");
-  let lastCol = -1, ascending = true;
+  if (_tableSorts.has(tableEl)) return; // idempotente
+  _tableSorts.set(tableEl, []);
+  _renderHeaderIcons(tableEl);
 
-  headers.forEach((th, col) => {
-    if (!th.querySelector(".sort-icon")) {
-      const icon = document.createElement("span");
-      icon.className = "sort-icon";
-      icon.textContent = "⇅";
-      th.appendChild(icon);
-    }
+  tableEl.querySelectorAll("thead th").forEach((th, col) => {
+    if (th.dataset.nosort !== undefined) return;
 
-    th.addEventListener("click", () => {
-      ascending = lastCol === col ? !ascending : true;
-      lastCol = col;
-      
-      headers.forEach(h => {
-        h.classList.remove("sorted");
-        const ic = h.querySelector(".sort-icon");
-        if (ic) ic.textContent = "⇅";
-      });
-      th.classList.add("sorted");
-      const ic = th.querySelector(".sort-icon");
-      if (ic) ic.textContent = ascending ? "↑" : "↓";
+    th.style.cursor = "pointer";
+    th.addEventListener("click", e => {
+      const sorts = _tableSorts.get(tableEl);
+      const idx   = sorts.findIndex(s => s.col === col);
 
-      const tbody = tableEl.querySelector("tbody");
-      if (!tbody) return;
-      const rows = Array.from(tbody.querySelectorAll("tr"));
-
-      rows.sort((a, b) => {
-        const aVal = a.cells[col].textContent.trim().replace(/[%+]/g, "");
-        const bVal = b.cells[col].textContent.trim().replace(/[%+]/g, "");
-        const aNum = parseFloat(aVal);
-        const bNum = parseFloat(bVal);
-        return ascending 
-          ? (isNaN(aNum) ? aVal.localeCompare(bVal) : aNum - bNum)
-          : (isNaN(aNum) ? bVal.localeCompare(aVal) : bNum - aNum);
-      });
-      rows.forEach(r => tbody.appendChild(r));
+      if (e.shiftKey) {
+        // Shift+click: add/toggle this column as secondary criterion
+        if (idx >= 0) {
+          sorts[idx].dir = sorts[idx].dir === "asc" ? "desc" : "asc";
+        } else {
+          sorts.push({ col, dir: "desc", label: _thLabel(th) });
+        }
+      } else {
+        // Plain click: single-column sort (toggle dir if already active)
+        if (sorts.length === 1 && idx === 0) {
+          sorts[0].dir = sorts[0].dir === "asc" ? "desc" : "asc";
+        } else {
+          _tableSorts.set(tableEl, [{ col, dir: "desc", label: _thLabel(th) }]);
+        }
+      }
+      _applySort(tableEl);
+      _renderSortChips(tableEl);
+      _renderHeaderIcons(tableEl);
     });
   });
 }

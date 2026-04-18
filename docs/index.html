@@ -566,6 +566,14 @@
         <label for="jug-player" data-i18n="jug_player">Jugador</label>
         <select id="jug-player"><option value="">— Todos —</option></select>
       </div>
+      <div class="field" style="max-width:180px;">
+        <label for="jug-window">Ventana</label>
+        <select id="jug-window">
+          <option value="all" selected>Todos los partidos</option>
+          <option value="10">Últimos 10</option>
+          <option value="5">Últimos 5</option>
+        </select>
+      </div>
       <button class="btn btn-primary" id="jug-run">
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -682,14 +690,19 @@
           <option value="all" data-i18n="league_all">Todas las ligas</option>
         </select>
       </div>
-      <div class="field" style="max-width:220px;">
-        <label for="arb-window-filter">Ventana</label>
-        <select id="arb-window-filter">
-          <option value="0">Histórico completo</option>
-          <option value="5">Mín. 5 partidos</option>
-          <option value="10">Mín. 10 partidos</option>
-          <option value="20">Mín. 20 partidos</option>
-          <option value="38">Mín. 38 partidos</option>
+      <div class="field" style="max-width:180px;">
+        <label for="arb-scope">Rango</label>
+        <select id="arb-scope">
+          <option value="overall" selected>Histórico</option>
+          <option value="season">Temporada actual</option>
+        </select>
+      </div>
+      <div class="field" style="max-width:180px;">
+        <label for="arb-window">Ventana</label>
+        <select id="arb-window">
+          <option value="all" selected>Todos los partidos</option>
+          <option value="10">Últimos 10</option>
+          <option value="5">Últimos 5</option>
         </select>
       </div>
     </div>
