@@ -163,11 +163,22 @@ function closeLanding() {
   localStorage.setItem("kdx_seen", "1");
 }
 
+function _restartHeroAnims(landing) {
+  const sel = ".lp-hero-content,.lp-badge,.lp-h1,.lp-hero-sub,.lp-hero-actions,.lp-hero-stats,.lp-hero-visual";
+  landing.querySelectorAll(sel).forEach(el => {
+    el.style.animation = "none";
+    void el.offsetWidth; // force reflow
+    el.style.animation = "";
+  });
+}
+
 function openLanding() {
   const landing = document.getElementById("landing-overlay");
   if (!landing) return;
   landing.style.display = "block";
   landing.scrollTop = 0;
+  void landing.offsetWidth; // force reflow so CSS animations restart
+  _restartHeroAnims(landing);
   setTimeout(() => {
     animateCounters();
     if (typeof initLandingAnimations === "function") initLandingAnimations();
@@ -178,6 +189,8 @@ function initLanding() {
   const landing = document.getElementById("landing-overlay");
   if (landing) {
     landing.style.display = "block";
+    void landing.offsetWidth; // force reflow so CSS animations restart
+    _restartHeroAnims(landing);
     setTimeout(() => {
       animateCounters();
       if (typeof initLandingAnimations === "function") initLandingAnimations();
