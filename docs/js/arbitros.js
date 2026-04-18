@@ -5,11 +5,11 @@
 "use strict";
 
 let _arbLeague = "all";
+let _arbWindow = 0; // 0 = histórico completo
 
 function initArbitros() {
   const sel = document.getElementById("arb-league-filter");
   if (sel) {
-    // Populate leagues that have referee data
     const leaguesInData = [...new Set((APP.referees || []).map(r => r.league))].sort();
     leaguesInData.forEach(code => {
       const ld = APP.leagues[code];
@@ -23,6 +23,15 @@ function initArbitros() {
       renderArbitros();
     });
   }
+
+  const winSel = document.getElementById("arb-window-filter");
+  if (winSel) {
+    winSel.addEventListener("change", e => {
+      _arbWindow = parseInt(e.target.value) || 0;
+      renderArbitros();
+    });
+  }
+
   renderArbitros();
 }
 
@@ -31,7 +40,14 @@ function renderArbitros() {
   if (!box) return;
 
   const all = APP.referees || [];
-  const referees = _arbLeague === "all" ? all : all.filter(r => r.league === _arbLeague);
+  let referees = _arbLeague === "all" ? all : all.filter(r => r.league === _arbLeague);
+
+  // Window filter: show only referees with enough matches, sorted by "recency" proxy
+  if (_arbWindow > 0) {
+    referees = referees
+      .filter(r => r.matches >= _arbWindow)
+      .sort((a, b) => b.yellows_per_match - a.yellows_per_match);
+  }
 
   if (referees.length === 0) {
     box.innerHTML = `<div class="state-box"><div class="icon">
@@ -42,9 +58,10 @@ function renderArbitros() {
 
   const svgRef = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>`;
 
+  const windowLabel = _arbWindow > 0 ? ` · mín. ${_arbWindow} partidos` : " · histórico completo";
   const leagueLabel = _arbLeague === "all"
-    ? `${referees.length} árbitros (todas las ligas)`
-    : `${referees.length} árbitros · ${APP.leagues[_arbLeague]?.name || _arbLeague}`;
+    ? `${referees.length} árbitros (todas las ligas)${windowLabel}`
+    : `${referees.length} árbitros · ${APP.leagues[_arbLeague]?.name || _arbLeague}${windowLabel}`;
 
   box.innerHTML = `
   <div class="section-title" style="margin-bottom:16px;">

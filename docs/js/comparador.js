@@ -299,21 +299,66 @@ function buildPlayerComparison(home, away) {
 
 // ── Master Calculator (JS Version) ────────────────────────
 
-function buildMasterCalculatorJS(home, away) {
+function _calcRow(label, hVal, aVal, format, higherIsBetter) {
+  const h = hVal ?? 0;
+  const a = aVal ?? 0;
+  const hBetter = higherIsBetter ? h > a : h < a;
+  const aBetter = higherIsBetter ? a > h : a < h;
+  const hStyle  = hBetter ? "color:var(--brand);font-weight:700;" : "";
+  const aStyle  = aBetter ? "color:#fb7185;font-weight:700;" : "";
+  const fmtVal  = v => format === "pct" ? (v * 100).toFixed(1) + "%" : v.toFixed(format);
   return `
-  <div class="card stagger-item" style="margin-bottom:40px; border: 1px solid var(--brand-dim);">
-    <div class="section-title">🔍 KICKDEX Terminal — Calculadora Multidimensional</div>
-    <p class="muted" style="margin-bottom:20px;">Análisis profundo por equipo y jugador (Versión Web Ligera)</p>
-    
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-      <div class="calc-box" style="background:rgba(255,255,255,0.02); padding:15px; border-radius:8px;">
-        <h4 style="color:var(--brand); font-size:0.85rem; margin-top:0;">ANÁLISIS EQUIPO: ${home}</h4>
-        <div id="calc-result-home">Selecciona métrica para calcular...</div>
-      </div>
-      <div class="calc-box" style="background:rgba(255,255,255,0.02); padding:15px; border-radius:8px;">
-        <h4 style="color:#fb7185; font-size:0.85rem; margin-top:0;">ANÁLISIS EQUIPO: ${away}</h4>
-        <div id="calc-result-away">Selecciona métrica para calcular...</div>
-      </div>
+  <tr>
+    <td style="color:var(--muted);font-size:.8rem;">${label}</td>
+    <td style="text-align:right;${hStyle}">${fmtVal(h)}</td>
+    <td style="text-align:right;${aStyle}">${fmtVal(a)}</td>
+  </tr>`;
+}
+
+function buildMasterCalculatorJS(home, away) {
+  const hd = APP.teamStats[home] || {};
+  const ad = APP.teamStats[away] || {};
+  const hH = hd.home || {};
+  const hA = hd.away || {};
+  const aH = ad.home || {};
+  const aA = ad.away || {};
+
+  const rows = [
+    _calcRow("Win Rate (local/visitante)",   hH.win_rate,           aA.win_rate,           "pct", true),
+    _calcRow("Goles marcados/p",             hH.avg_goals,          aA.avg_goals,          1,     true),
+    _calcRow("Goles encajados/p",            hH.avg_goals_against,  aA.avg_goals_against,  1,     false),
+    _calcRow("xG proxy/p",                   hH.avg_xg_proxy,       aA.avg_xg_proxy,       2,     true),
+    _calcRow("Tiros/p",                      hH.avg_shots,          aA.avg_shots,          1,     true),
+    _calcRow("Tiros a puerta/p",             hH.avg_shots_on,       aA.avg_shots_on,       1,     true),
+    _calcRow("Córners/p",                    hH.avg_corners,        aA.avg_corners,        1,     true),
+    _calcRow("Tarjetas/p",                   hH.avg_cards,          aA.avg_cards,          1,     false),
+    _calcRow("Faltas/p",                     hH.avg_fouls,          aA.avg_fouls,          1,     false),
+    _calcRow("Over 2.5",                     hH.over25_rate,        aA.over25_rate,        "pct", true),
+    _calcRow("BTTS",                         hH.btts_rate,          aA.btts_rate,          "pct", true),
+    _calcRow("Portería a cero",              hH.clean_sheet_rate,   aA.clean_sheet_rate,   "pct", true),
+  ];
+
+  const hMatches = hH.matches_analyzed || 0;
+  const aMatches = aA.matches_analyzed || 0;
+
+  return `
+  <div class="card stagger-item" style="margin-bottom:40px; border:1px solid var(--brand-dim);">
+    <div class="section-title">🔍 KICKDEX Terminal — Calculadora Maestra</div>
+    <p style="color:var(--muted);font-size:.82rem;margin-bottom:18px;">
+      Análisis completo: <b style="color:var(--brand)">${home}</b> (como local, ${hMatches} partidos)
+      vs <b style="color:#fb7185">${away}</b> (como visitante, ${aMatches} partidos)
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Métrica</th>
+            <th style="text-align:right;color:var(--brand);">${home}</th>
+            <th style="text-align:right;color:#fb7185;">${away}</th>
+          </tr>
+        </thead>
+        <tbody>${rows.join("")}</tbody>
+      </table>
     </div>
   </div>`;
 }

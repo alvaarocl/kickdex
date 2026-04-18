@@ -175,9 +175,8 @@ function openLanding() {
 }
 
 function initLanding() {
-  const seen    = localStorage.getItem("kdx_seen");
   const landing = document.getElementById("landing-overlay");
-  if (!seen && landing) {
+  if (landing) {
     landing.style.display = "block";
     setTimeout(() => {
       animateCounters();

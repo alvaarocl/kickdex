@@ -664,11 +664,21 @@
       <p class="section-desc" data-i18n="arb_subtitle">Perfil disciplinario histórico. Identifica árbitros con tendencia a sacar más o menos tarjetas.</p>
     </div>
 
-    <div class="controls" style="margin-bottom:18px;">
+    <div class="controls" style="margin-bottom:18px;display:flex;gap:16px;flex-wrap:wrap;">
       <div class="field" style="max-width:260px;">
         <label for="arb-league-filter" data-i18n="cmp_league">Liga</label>
         <select id="arb-league-filter">
           <option value="all" data-i18n="league_all">Todas las ligas</option>
+        </select>
+      </div>
+      <div class="field" style="max-width:220px;">
+        <label for="arb-window-filter">Ventana</label>
+        <select id="arb-window-filter">
+          <option value="0">Histórico completo</option>
+          <option value="5">Mín. 5 partidos</option>
+          <option value="10">Mín. 10 partidos</option>
+          <option value="20">Mín. 20 partidos</option>
+          <option value="38">Mín. 38 partidos</option>
         </select>
       </div>
     </div>
