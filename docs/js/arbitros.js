@@ -5,7 +5,7 @@
 "use strict";
 
 let _arbLeague = "all";
-let _arbWindow = "all"; // "all" | "10" | "5"
+let _arbWindow = "season";
 
 function initArbitros() {
   const sel = document.getElementById("arb-league-filter");
@@ -41,16 +41,24 @@ function initArbitros() {
  * Always returns data — falls back to overall if windowed block is null.
  */
 function pickRefStats(r, window_) {
-  const key = window_ === "5" ? "last5" : window_ === "10" ? "last10" : "overall";
+  const keyMap = {
+    "5": "last5", "10": "last10", "all": "overall",
+    "season": "season", "season_last10": "season_last10", "season_last5": "season_last5",
+  };
+  const key = keyMap[window_] || "overall";
   const block = r[key];
 
   if (block) return { ...block, _fallback: false };
 
-  // Fall back to overall block or legacy flat fields
+  // Season fallback: if no season data, use overall
+  if (window_.startsWith("season")) {
+    const overall = r["overall"];
+    if (overall) return { ...overall, _fallback: true };
+  }
+
   const overall = r["overall"];
   if (overall) return { ...overall, _fallback: window_ !== "all" };
 
-  // Legacy flat format
   return {
     matches:           r.matches           ?? 0,
     yellows_per_match: r.yellows_per_match ?? 0,
@@ -78,15 +86,21 @@ function renderArbitros() {
 
   const svgRef = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>`;
 
-  const windowLabel = _arbWindow === "5" ? "Últimos 5 partidos" : _arbWindow === "10" ? "Últimos 10 partidos" : "Histórico completo";
+  const windowLabelMap = {
+    "season": "Esta temporada", "season_last10": "Esta temp. — Últ. 10",
+    "season_last5": "Esta temp. — Últ. 5",
+    "all": "Histórico completo", "10": "Histórico — Últ. 10", "5": "Histórico — Últ. 5",
+  };
+  const windowLabel = windowLabelMap[_arbWindow] || "Esta temporada";
   const leagueLabel = _arbLeague === "all"
     ? `${referees.length} árbitros · todas las ligas`
     : `${referees.length} árbitros · ${APP.leagues[_arbLeague]?.name || _arbLeague}`;
 
   const hasFallback = referees.some(({ stats }) => stats._fallback);
+  const isSeason = _arbWindow.startsWith("season");
   const fallbackNote = hasFallback
     ? `<p style="color:var(--yellow);font-size:.82rem;margin-bottom:14px;">
-        ⚠ Datos de ventana reducida no disponibles para esta liga — mostrando histórico general.
+        ⚠ ${isSeason ? "Algunos árbitros no tienen partidos esta temporada — mostrando histórico." : "Ventana reducida no disponible — mostrando histórico general."}
        </p>`
     : "";
 

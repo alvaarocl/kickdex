@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260420e" />
+  <link rel="stylesheet" href="css/app.css?v=20260420f" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
@@ -690,9 +690,12 @@
       <div class="field" style="max-width:180px;">
         <label for="arb-window">Ventana</label>
         <select id="arb-window">
-          <option value="all" selected>Todos los partidos</option>
-          <option value="10">Últimos 10</option>
-          <option value="5">Últimos 5</option>
+          <option value="season" selected>Esta temporada</option>
+          <option value="season_last10">Esta temp. — Últ. 10</option>
+          <option value="season_last5">Esta temp. — Últ. 5</option>
+          <option value="all">Histórico completo</option>
+          <option value="10">Histórico — Últ. 10</option>
+          <option value="5">Histórico — Últ. 5</option>
         </select>
       </div>
     </div>
@@ -719,13 +722,13 @@
   </div>
 </footer>
 
-<script src="js/animations.js?v=20260420e"></script>
-<script src="js/app.js?v=20260420e"></script>
-<script src="js/comparador.js?v=20260420e"></script>
-<script src="js/h2h.js?v=20260420e"></script>
-<script src="js/jugadores.js?v=20260420e"></script>
-<script src="js/valor.js?v=20260420e"></script>
-<script src="js/inicio.js?v=20260420e"></script>
-<script src="js/arbitros.js?v=20260420e"></script>
+<script src="js/animations.js?v=20260420f"></script>
+<script src="js/app.js?v=20260420f"></script>
+<script src="js/comparador.js?v=20260420f"></script>
+<script src="js/h2h.js?v=20260420f"></script>
+<script src="js/jugadores.js?v=20260420f"></script>
+<script src="js/valor.js?v=20260420f"></script>
+<script src="js/inicio.js?v=20260420f"></script>
+<script src="js/arbitros.js?v=20260420f"></script>
 </body>
 </html>
