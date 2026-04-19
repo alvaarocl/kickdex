@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260419d" />
+  <link rel="stylesheet" href="css/app.css?v=20260420e" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
@@ -600,7 +600,13 @@
 
     <!-- Sub-panel: calculadora -->
     <div class="sub-panel active" id="sub-manual">
-      <div class="controls">
+      <div class="controls" style="flex-wrap:wrap;gap:14px 18px;">
+        <div class="field" style="width:100%;padding-bottom:4px;">
+          <label for="valLeagueFilter" data-i18n="cmp_league">Liga</label>
+          <select id="valLeagueFilter">
+            <option value="all" data-i18n="league_all">Todas</option>
+          </select>
+        </div>
         <div class="field">
           <label for="val-home" data-i18n="cmp_home">Equipo Local</label>
           <select id="val-home"><option value="">— Selecciona equipo —</option></select>
@@ -713,13 +719,13 @@
   </div>
 </footer>
 
-<script src="js/animations.js?v=20260419d"></script>
-<script src="js/app.js?v=20260419d"></script>
-<script src="js/comparador.js?v=20260419d"></script>
-<script src="js/h2h.js?v=20260419d"></script>
-<script src="js/jugadores.js?v=20260419d"></script>
-<script src="js/valor.js?v=20260419d"></script>
-<script src="js/inicio.js?v=20260419d"></script>
-<script src="js/arbitros.js?v=20260419d"></script>
+<script src="js/animations.js?v=20260420e"></script>
+<script src="js/app.js?v=20260420e"></script>
+<script src="js/comparador.js?v=20260420e"></script>
+<script src="js/h2h.js?v=20260420e"></script>
+<script src="js/jugadores.js?v=20260420e"></script>
+<script src="js/valor.js?v=20260420e"></script>
+<script src="js/inicio.js?v=20260420e"></script>
+<script src="js/arbitros.js?v=20260420e"></script>
 </body>
 </html>

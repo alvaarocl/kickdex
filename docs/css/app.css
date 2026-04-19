@@ -1617,20 +1617,23 @@ tbody td b { font-family: var(--font-data); }
   pointer-events: none;
 }
 
-/* ── Mouse glow — transform-only (GPU composited, no layout thrash) ── */
+/* ── Mouse glow — ambient light BEHIND content ── */
 #lp-mouse-glow {
-  position: fixed; left: 0; top: 0; pointer-events: none; z-index: 10001;
-  width: 560px; height: 560px;
+  position: fixed; left: 0; top: 0; pointer-events: none;
+  z-index: 0;
+  width: 900px; height: 900px;
   border-radius: 50%;
   background: radial-gradient(circle,
-    rgba(46,230,166,.16) 0%,
-    rgba(56,189,248,.08) 38%,
-    rgba(46,230,166,.03) 65%,
-    transparent 80%);
+    rgba(46,230,166,.09) 0%,
+    rgba(46,230,166,.05) 25%,
+    rgba(46,230,166,.02) 50%,
+    transparent 72%);
   transform: translate(-50%, -50%);
-  transition: opacity .4s ease;
+  transition: opacity .6s ease;
   opacity: 0;
   will-change: transform;
+  mix-blend-mode: screen;
+  filter: blur(40px);
 }
 
 /* ── Button ripple ──────────────────────────────────────── */
@@ -1717,7 +1720,7 @@ tbody td b { font-family: var(--font-data); }
   position: fixed; inset: 0; z-index: 9999;
   background: var(--bg);
   overflow-y: auto; overflow-x: hidden;
-  scroll-behavior: smooth;
+  /* scroll-behavior handled by rAF in animations.js to avoid conflicts */
   animation: lp-fade-in .3s ease both;
 }
 .lp-container {
@@ -2267,4 +2270,230 @@ tbody td b { font-family: var(--font-data); }
   font-size: .62rem;
   font-weight: 700;
   vertical-align: middle;
+}
+
+/* ══════════════════════════════════════════════════════════
+   F3 — Extra scroll-linked animations
+══════════════════════════════════════════════════════════ */
+
+/* Text reveal: split words */
+.lp-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(4px);
+  transition:
+    opacity .55s cubic-bezier(.16,1,.3,1) var(--lp-wd, 0ms),
+    transform .55s cubic-bezier(.16,1,.3,1) var(--lp-wd, 0ms),
+    filter .55s cubic-bezier(.16,1,.3,1) var(--lp-wd, 0ms);
+}
+.lp-words-in .lp-word {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+/* Hero scroll-linked fade + scale */
+.lp-overlay {
+  --lp-hero-p: 0;
+}
+.lp-hero-content {
+  will-change: opacity, transform;
+  opacity: calc(1 - var(--lp-hero-p) * 0.85);
+  transform: scale(calc(1 - var(--lp-hero-p) * 0.06)) translateY(calc(var(--lp-hero-p) * -24px));
+}
+.lp-hero-visual {
+  opacity: calc(1 - var(--lp-hero-p) * 0.75);
+  transform: translateY(calc(var(--lp-hero-p) * -30px));
+}
+.lp-hero-grid {
+  will-change: transform;
+}
+
+/* Steps progress line */
+.lp-steps {
+  position: relative;
+  --lp-steps-p: 0;
+}
+.lp-steps-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, transparent 0%, var(--border2) 8%, var(--border2) 92%, transparent 100%);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.lp-steps-line::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 calc(100% - var(--lp-steps-p) * 100%) 0;
+  background: linear-gradient(to bottom, var(--brand) 0%, rgba(46,230,166,.2) 100%);
+  box-shadow: 0 0 10px var(--brand-glow);
+  transition: inset .15s linear;
+}
+.lp-step { position: relative; z-index: 1; }
+.lp-step-arrow { position: relative; z-index: 1; }
+@media (max-width: 860px) {
+  .lp-steps-line { display: none; } /* mobile stacks vertically without centered line */
+}
+
+/* Final CTA aura — intensifies as you approach */
+.lp-final-section {
+  --lp-final-p: 0;
+  position: relative;
+  isolation: isolate;
+}
+.lp-final-section::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 900px; height: 900px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(calc(0.4 + var(--lp-final-p) * 0.8));
+  background: radial-gradient(circle,
+    rgba(46,230,166, calc(0.18 * var(--lp-final-p))) 0%,
+    rgba(56,189,248, calc(0.09 * var(--lp-final-p))) 40%,
+    transparent 72%);
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: -1;
+  transition: transform .3s ease;
+}
+
+/* Feat card tilt — leave transition only for non-tilt props */
+.lp-feat-card {
+  transform-style: preserve-3d;
+}
+
+/* ══════════════════════════════════════════════════════════
+   F4 — Mobile optimization (comprehensive)
+══════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  /* App: tabs scroll horizontally, no wrap */
+  .tabs-nav {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 6px 10px 0;
+  }
+  .tabs-nav::-webkit-scrollbar { display: none; }
+  .tab-btn { flex-shrink: 0; white-space: nowrap; }
+
+  /* Tap targets */
+  .btn, .tab-btn, .sub-btn, .seg-btn, .lang-btn,
+  .fx-analyze-btn, .lp-cta-primary, .lp-cta-ghost, .lp-nav-cta {
+    min-height: 44px;
+  }
+  select, input[type="text"], input[type="number"] {
+    min-height: 44px;
+    font-size: 16px; /* prevent iOS zoom on focus */
+  }
+
+  /* Controls full-width and simpler */
+  .controls { padding: 12px; gap: 10px; }
+  .controls .field { max-width: 100% !important; flex: 1 1 100%; }
+}
+
+@media (max-width: 680px) {
+  /* Landing nav — hide text links, keep CTA */
+  .lp-nav-inner { padding: 12px 16px; gap: 8px; }
+  .lp-nav-cta { padding: 10px 16px; font-size: .82rem; }
+
+  /* Hero padding */
+  .lp-hero { padding-top: 120px !important; padding-bottom: 40px !important; }
+  .lp-hero-content { text-align: center; align-items: center; }
+  .lp-hero-actions { justify-content: center; }
+  .lp-hero-actions .lp-cta-primary,
+  .lp-hero-actions .lp-cta-ghost { width: 100%; justify-content: center; }
+  .lp-h1 { font-size: clamp(2rem, 9vw, 2.8rem) !important; line-height: 1.08 !important; }
+  .lp-hero-sub { font-size: 1rem !important; }
+
+  /* Hero stats — stack 3 items horizontally but auto-shrink */
+  .lp-hero-stats { max-width: 100%; margin: 0 auto; }
+  .lp-stat { padding: 14px 8px; }
+  .lp-stat-num { font-size: 1.2rem; }
+  .lp-stat-label { font-size: .62rem; }
+
+  /* Section padding on landing */
+  .lp-section { padding: 60px 0 !important; }
+  .lp-section-h2 { font-size: clamp(1.45rem, 6vw, 2rem) !important; }
+  .lp-section-sub { font-size: .92rem !important; }
+
+  /* Features grid: 1 col handled at 580px already, ensure gap */
+  .lp-features-grid { gap: 14px !important; }
+  .lp-feat-card { padding: 20px !important; }
+
+  /* Steps stack */
+  .lp-steps { flex-direction: column; gap: 18px; }
+  .lp-step { width: 100%; }
+
+  /* Final CTA button full-width */
+  .lp-final-section .lp-cta-primary { width: 100%; max-width: 360px; }
+
+  /* App: section headers tighter */
+  .section-h2 { font-size: 1.1rem; }
+  .section-desc { font-size: .8rem; }
+
+  /* Match header */
+  .match-header { padding: 18px 14px; }
+  .match-header .teams { font-size: 1.05rem; flex-wrap: wrap; justify-content: center; }
+
+  /* Tables: smaller padding */
+  thead th, tbody td { padding: 10px 12px; font-size: .78rem; }
+  thead th { font-size: .6rem; letter-spacing: .8px; }
+
+  /* Chart boxes */
+  .chart-box { padding: 14px; }
+  .chart-box canvas { height: 220px !important; }
+
+  /* H2H summary boxes */
+  .h2h-summary { gap: 6px; }
+  .h2h-box { padding: 10px 6px; }
+  .h2h-box .val { font-size: 1.3rem; }
+  .h2h-box .lbl { font-size: .6rem; }
+
+  /* Comparador grid: stack cards */
+  .grid-2 { grid-template-columns: 1fr !important; }
+
+  /* Fixture cards */
+  .fx-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .fx-card-row { flex-direction: column; gap: 8px; }
+  .fx-analyze-btn { width: 100%; justify-content: center; padding: 12px; }
+
+  /* Players comparison 1 col handled already */
+}
+
+@media (max-width: 440px) {
+  .lp-h1 { font-size: 1.9rem !important; }
+  .lp-badge { font-size: .68rem; padding: 4px 10px; }
+  .lp-nav-brand { font-size: .95rem; }
+  .h2h-summary { grid-template-columns: repeat(3, 1fr); }
+  .h2h-box .val { font-size: 1.15rem; }
+}
+
+/* Touch-device tweaks — disable hover-only effects that feel stuck on mobile */
+@media (hover: none) {
+  .lp-feat-card:hover,
+  .lp-step:hover,
+  .lp-league-pill:hover,
+  .fx-card:hover {
+    transform: none !important;
+    border-color: var(--border) !important;
+    box-shadow: none !important;
+  }
+  .lp-feat-card { transform: none !important; }
+  #lp-mouse-glow { display: none; }
+}
+
+/* Safe-area for iPhone notch / home indicator */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .lp-overlay { padding-bottom: env(safe-area-inset-bottom); }
+  .tabs-nav { padding-top: calc(8px + env(safe-area-inset-top, 0px)); }
 }

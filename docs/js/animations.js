@@ -158,6 +158,8 @@ function initLandingAnimations() {
   _lpRevealEls = [];
 
   _setupSmoothScroll(overlay);
+  _setupTextReveal(overlay);
+  _setupStepsLine(overlay);
   _setupScrollReveal(overlay);
   _setupNavbarScroll(overlay);
   _setupMockupAnimation();
@@ -165,6 +167,7 @@ function initLandingAnimations() {
   _setupMouseGlow(overlay);
   _setupProgressBar(overlay);
   _setupActiveNavHighlight(overlay);
+  _setupTiltCards(overlay);
   setTimeout(() => _setupLpCounters(overlay), 700);
 
   // Initial check: reveal elements already in viewport on load (desktop + mobile)
@@ -172,6 +175,22 @@ function initLandingAnimations() {
 }
 
 // ── Smooth scroll for ALL in-page anchor links ─────────────
+// Custom rAF easing — avoids conflicts with CSS scroll-behavior and browser flags
+function _smoothScrollTo(el, targetY, duration = 900) {
+  const startY = el.scrollTop;
+  const diff   = targetY - startY;
+  if (Math.abs(diff) < 2) return;
+  const start  = performance.now();
+  // easeInOutCubic
+  const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    el.scrollTop = startY + diff * ease(t);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
 function _setupSmoothScroll(overlay) {
   overlay.querySelectorAll('a[href^="#"]').forEach(a => {
     if (a._lpScroll) return; // already bound
@@ -185,8 +204,8 @@ function _setupSmoothScroll(overlay) {
       e.preventDefault();
       const oRect   = overlay.getBoundingClientRect();
       const tRect   = target.getBoundingClientRect();
-      const scrollTo = overlay.scrollTop + (tRect.top - oRect.top) - 68;
-      overlay.scrollTo({ top: scrollTo, behavior: "smooth" });
+      const targetY = overlay.scrollTop + (tRect.top - oRect.top) - 68;
+      _smoothScrollTo(overlay, targetY, 900);
     });
   });
 }
@@ -209,10 +228,13 @@ function _setupProgressBar(overlay) {
 // ── Mouse glow — lerp via transform (GPU composited, no layout thrash) ──
 function _setupMouseGlow(overlay) {
   let glow = document.getElementById("lp-mouse-glow");
+  if (glow && glow.parentElement !== overlay) {
+    glow.remove(); glow = null;
+  }
   if (!glow) {
     glow = document.createElement("div");
     glow.id = "lp-mouse-glow";
-    document.body.appendChild(glow);
+    overlay.appendChild(glow); // inside overlay so stacking is behind content
   }
 
   let tx = 0, ty = 0, cx = 0, cy = 0, glowVisible = false;
@@ -356,6 +378,43 @@ function _setupNavbarScroll(overlay) {
         if (orb2) orb2.style.transform = `translateY(${-y * 0.07}px)`;
         if (orb3) orb3.style.transform = `translateY(${y * 0.05}px)`;
 
+        // Hero scroll-linked fade+scale (0 → 1 over first 500px)
+        const heroProgress = Math.min(y / 500, 1);
+        overlay.style.setProperty("--lp-hero-p", heroProgress.toFixed(3));
+
+        // Hero grid parallax (background-position)
+        const grid = overlay.querySelector(".lp-hero-grid");
+        if (grid) grid.style.transform = `translateY(${y * 0.35}px)`;
+
+        // Steps progress line — fill as user scrolls through #lp-how
+        const howSec = overlay.querySelector("#lp-how");
+        const stepsLine = overlay.querySelector(".lp-steps-line");
+        if (howSec && stepsLine) {
+          const r = howSec.getBoundingClientRect();
+          const vh = overlay.clientHeight;
+          const startPoint = vh * 0.6;   // start filling when section top enters 60% vh
+          const endPoint   = vh * 0.2;   // full when section top reaches 20% vh
+          let p = 0;
+          if (r.top < startPoint) {
+            p = (startPoint - r.top) / Math.max(startPoint - endPoint, 1);
+            p = Math.max(0, Math.min(1, p));
+          }
+          stepsLine.style.setProperty("--lp-steps-p", p.toFixed(3));
+        }
+
+        // Final CTA aura intensity — 0→1 as user approaches final section
+        const finalSec = overlay.querySelector(".lp-final-section");
+        if (finalSec) {
+          const fr = finalSec.getBoundingClientRect();
+          const vh = overlay.clientHeight;
+          let fp = 0;
+          if (fr.top < vh) {
+            fp = (vh - fr.top) / vh;
+            fp = Math.max(0, Math.min(1, fp));
+          }
+          finalSec.style.setProperty("--lp-final-p", fp.toFixed(3));
+        }
+
         _checkReveal();
         ticking = false;
       });
@@ -419,6 +478,21 @@ function _setupScrollReveal(overlay) {
       _lpRevealObserver.observe(el);
     });
   });
+
+  // Safety net: if IO never fires (e.g., user already scrolled past, root hierarchy quirk),
+  // force-reveal anything still pending after 2s so content is never stuck invisible.
+  setTimeout(() => {
+    _lpRevealEls.forEach(el => {
+      if (!el.classList.contains("lp-in")) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 1.5) {
+          el.classList.add("lp-in");
+          if (_lpRevealObserver) _lpRevealObserver.unobserve(el);
+        }
+      }
+    });
+    _lpRevealEls = _lpRevealEls.filter(e => !e.classList.contains("lp-in"));
+  }, 2000);
 }
 
 // Desktop fallback: getBoundingClientRect vs viewport (fires on overlay scroll event)
@@ -454,4 +528,63 @@ function _setupMockupAnimation() {
   if (alert) {
     alert.style.animation = "lp-slide-up .4s ease 800ms both, lp-alert-glow 2.5s 1.2s ease-in-out infinite";
   }
+}
+
+// ── Text reveal — split h2 into words that stagger in on scroll ──
+function _setupTextReveal(overlay) {
+  const targets = overlay.querySelectorAll(".lp-section-h2, .lp-final-h2, .lp-h1");
+  targets.forEach(el => {
+    if (el.dataset.lpWordsplit === "1") return;
+    el.dataset.lpWordsplit = "1";
+    const raw = el.innerHTML;
+    // Split only plain text nodes (preserve inline spans like gradients)
+    const parts = raw.split(/(<[^>]+>)/g);
+    const wrapped = parts.map(part => {
+      if (part.startsWith("<")) return part;
+      return part.replace(/(\S+)/g, '<span class="lp-word">$1</span>');
+    }).join("");
+    el.innerHTML = wrapped;
+    el.querySelectorAll(".lp-word").forEach((w, i) => {
+      w.style.setProperty("--lp-wd", `${i * 60}ms`);
+    });
+  });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("lp-words-in");
+        io.unobserve(entry.target);
+      }
+    });
+  }, { root: overlay, threshold: 0.2 });
+
+  targets.forEach(el => io.observe(el));
+}
+
+// ── Inject the vertical progress line into .lp-steps (desktop) ──
+function _setupStepsLine(overlay) {
+  const steps = overlay.querySelector(".lp-steps");
+  if (!steps || steps.querySelector(".lp-steps-line")) return;
+  const line = document.createElement("div");
+  line.className = "lp-steps-line";
+  steps.prepend(line);
+}
+
+// ── Subtle 3D tilt on feature cards (desktop pointer only) ──
+function _setupTiltCards(overlay) {
+  if (window.matchMedia("(hover: none)").matches) return; // skip on touch
+  const cards = overlay.querySelectorAll(".lp-feat-card");
+  cards.forEach(card => {
+    if (card._lpTilt) return;
+    card._lpTilt = true;
+    card.addEventListener("mousemove", e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(900px) rotateX(${-y * 4}deg) rotateY(${x * 4}deg) translateY(-4px)`;
+    });
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "";
+    });
+  });
 }

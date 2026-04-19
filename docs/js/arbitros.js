@@ -10,6 +10,7 @@ let _arbWindow = "all"; // "all" | "10" | "5"
 function initArbitros() {
   const sel = document.getElementById("arb-league-filter");
   if (sel) {
+    while (sel.options.length > 1) sel.remove(1);
     const leaguesInData = [...new Set((APP.referees || []).map(r => r.league))].sort();
     leaguesInData.forEach(code => {
       const ld = APP.leagues[code];

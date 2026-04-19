@@ -1,0 +1,458 @@
+[
+  {
+    "name": "Soto Grado",
+    "league": "SP1",
+    "matches": 142,
+    "yellows_per_match": 4.2,
+    "reds_per_match": 0.15,
+    "fouls_per_match": 16.51,
+    "overall": {
+      "matches": 142,
+      "yellows_per_match": 4.2,
+      "reds_per_match": 0.15,
+      "fouls_per_match": 16.51
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Gil Manzano",
+    "league": "SP1",
+    "matches": 155,
+    "yellows_per_match": 4.18,
+    "reds_per_match": 0.2,
+    "fouls_per_match": 17.35,
+    "overall": {
+      "matches": 155,
+      "yellows_per_match": 4.18,
+      "reds_per_match": 0.2,
+      "fouls_per_match": 17.35
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Iglesias Villanueva",
+    "league": "SP1",
+    "matches": 122,
+    "yellows_per_match": 4.18,
+    "reds_per_match": 0.16,
+    "fouls_per_match": 17.21,
+    "overall": {
+      "matches": 122,
+      "yellows_per_match": 4.18,
+      "reds_per_match": 0.16,
+      "fouls_per_match": 17.21
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Martinez Munuera",
+    "league": "SP1",
+    "matches": 145,
+    "yellows_per_match": 3.94,
+    "reds_per_match": 0.14,
+    "fouls_per_match": 16.62,
+    "overall": {
+      "matches": 145,
+      "yellows_per_match": 3.94,
+      "reds_per_match": 0.14,
+      "fouls_per_match": 16.62
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Hernandez Hernandez",
+    "league": "SP1",
+    "matches": 136,
+    "yellows_per_match": 3.94,
+    "reds_per_match": 0.14,
+    "fouls_per_match": 16.62,
+    "overall": {
+      "matches": 136,
+      "yellows_per_match": 3.94,
+      "reds_per_match": 0.14,
+      "fouls_per_match": 16.62
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Alberola Rojas",
+    "league": "SP1",
+    "matches": 112,
+    "yellows_per_match": 3.92,
+    "reds_per_match": 0.13,
+    "fouls_per_match": 16.34,
+    "overall": {
+      "matches": 112,
+      "yellows_per_match": 3.92,
+      "reds_per_match": 0.13,
+      "fouls_per_match": 16.34
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Diaz de Mera",
+    "league": "SP1",
+    "matches": 76,
+    "yellows_per_match": 3.92,
+    "reds_per_match": 0.09,
+    "fouls_per_match": 16.97,
+    "overall": {
+      "matches": 76,
+      "yellows_per_match": 3.92,
+      "reds_per_match": 0.09,
+      "fouls_per_match": 16.97
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Cuadra Fernandez",
+    "league": "SP1",
+    "matches": 118,
+    "yellows_per_match": 3.9,
+    "reds_per_match": 0.12,
+    "fouls_per_match": 16.27,
+    "overall": {
+      "matches": 118,
+      "yellows_per_match": 3.9,
+      "reds_per_match": 0.12,
+      "fouls_per_match": 16.27
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Figueroa Vazquez",
+    "league": "SP1",
+    "matches": 97,
+    "yellows_per_match": 3.9,
+    "reds_per_match": 0.11,
+    "fouls_per_match": 16.7,
+    "overall": {
+      "matches": 97,
+      "yellows_per_match": 3.9,
+      "reds_per_match": 0.11,
+      "fouls_per_match": 16.7
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Melero Lopez",
+    "league": "SP1",
+    "matches": 93,
+    "yellows_per_match": 3.89,
+    "reds_per_match": 0.11,
+    "fouls_per_match": 16.67,
+    "overall": {
+      "matches": 93,
+      "yellows_per_match": 3.89,
+      "reds_per_match": 0.11,
+      "fouls_per_match": 16.67
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Gonzalez Gonzalez",
+    "league": "SP1",
+    "matches": 105,
+    "yellows_per_match": 3.89,
+    "reds_per_match": 0.12,
+    "fouls_per_match": 16.57,
+    "overall": {
+      "matches": 105,
+      "yellows_per_match": 3.89,
+      "reds_per_match": 0.12,
+      "fouls_per_match": 16.57
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Jaime Latre",
+    "league": "SP1",
+    "matches": 88,
+    "yellows_per_match": 3.88,
+    "reds_per_match": 0.1,
+    "fouls_per_match": 16.82,
+    "overall": {
+      "matches": 88,
+      "yellows_per_match": 3.88,
+      "reds_per_match": 0.1,
+      "fouls_per_match": 16.82
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Trujillo Suarez",
+    "league": "SP1",
+    "matches": 82,
+    "yellows_per_match": 3.88,
+    "reds_per_match": 0.1,
+    "fouls_per_match": 16.59,
+    "overall": {
+      "matches": 82,
+      "yellows_per_match": 3.88,
+      "reds_per_match": 0.1,
+      "fouls_per_match": 16.59
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Ortiz Arias",
+    "league": "SP1",
+    "matches": 89,
+    "yellows_per_match": 3.87,
+    "reds_per_match": 0.1,
+    "fouls_per_match": 16.63,
+    "overall": {
+      "matches": 89,
+      "yellows_per_match": 3.87,
+      "reds_per_match": 0.1,
+      "fouls_per_match": 16.63
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Del Cerro Grande",
+    "league": "SP1",
+    "matches": 165,
+    "yellows_per_match": 3.85,
+    "reds_per_match": 0.15,
+    "fouls_per_match": 16.67,
+    "overall": {
+      "matches": 165,
+      "yellows_per_match": 3.85,
+      "reds_per_match": 0.15,
+      "fouls_per_match": 16.67
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Pizarro Gomez",
+    "league": "SP1",
+    "matches": 108,
+    "yellows_per_match": 3.84,
+    "reds_per_match": 0.11,
+    "fouls_per_match": 16.3,
+    "overall": {
+      "matches": 108,
+      "yellows_per_match": 3.84,
+      "reds_per_match": 0.11,
+      "fouls_per_match": 16.3
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Munuera Montero",
+    "league": "SP1",
+    "matches": 130,
+    "yellows_per_match": 3.8,
+    "reds_per_match": 0.13,
+    "fouls_per_match": 15.77,
+    "overall": {
+      "matches": 130,
+      "yellows_per_match": 3.8,
+      "reds_per_match": 0.13,
+      "fouls_per_match": 15.77
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "De Burgos Bengoetxea",
+    "league": "SP1",
+    "matches": 138,
+    "yellows_per_match": 3.78,
+    "reds_per_match": 0.13,
+    "fouls_per_match": 15.8,
+    "overall": {
+      "matches": 138,
+      "yellows_per_match": 3.78,
+      "reds_per_match": 0.13,
+      "fouls_per_match": 15.8
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Prieto Iglesias",
+    "league": "SP2",
+    "matches": 98,
+    "yellows_per_match": 4.2,
+    "reds_per_match": 0.16,
+    "fouls_per_match": 18.16,
+    "overall": {
+      "matches": 98,
+      "yellows_per_match": 4.2,
+      "reds_per_match": 0.16,
+      "fouls_per_match": 18.16
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Quintero Gonzalez",
+    "league": "SP2",
+    "matches": 87,
+    "yellows_per_match": 4.2,
+    "reds_per_match": 0.14,
+    "fouls_per_match": 17.7,
+    "overall": {
+      "matches": 87,
+      "yellows_per_match": 4.2,
+      "reds_per_match": 0.14,
+      "fouls_per_match": 17.7
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Perez Pallas",
+    "league": "SP2",
+    "matches": 95,
+    "yellows_per_match": 4.11,
+    "reds_per_match": 0.15,
+    "fouls_per_match": 17.68,
+    "overall": {
+      "matches": 95,
+      "yellows_per_match": 4.11,
+      "reds_per_match": 0.15,
+      "fouls_per_match": 17.68
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Cabanero Martinez",
+    "league": "SP2",
+    "matches": 84,
+    "yellows_per_match": 4.11,
+    "reds_per_match": 0.13,
+    "fouls_per_match": 16.9,
+    "overall": {
+      "matches": 84,
+      "yellows_per_match": 4.11,
+      "reds_per_match": 0.13,
+      "fouls_per_match": 16.9
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Acuna Castrillo",
+    "league": "SP2",
+    "matches": 73,
+    "yellows_per_match": 4.08,
+    "reds_per_match": 0.11,
+    "fouls_per_match": 17.12,
+    "overall": {
+      "matches": 73,
+      "yellows_per_match": 4.08,
+      "reds_per_match": 0.11,
+      "fouls_per_match": 17.12
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  },
+  {
+    "name": "Muniz Ruiz",
+    "league": "SP2",
+    "matches": 78,
+    "yellows_per_match": 4.0,
+    "reds_per_match": 0.12,
+    "fouls_per_match": 16.79,
+    "overall": {
+      "matches": 78,
+      "yellows_per_match": 4.0,
+      "reds_per_match": 0.12,
+      "fouls_per_match": 16.79
+    },
+    "last10": null,
+    "last5": null,
+    "season": null,
+    "season_last10": null,
+    "season_last5": null
+  }
+]

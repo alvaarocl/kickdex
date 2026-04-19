@@ -187,7 +187,7 @@ function openLanding() {
 
 function initLanding() {
   const landing = document.getElementById("landing-overlay");
-  if (landing && !localStorage.getItem("kdx_seen")) {
+  if (landing) {
     landing.style.display = "block";
     void landing.offsetWidth; // force reflow so CSS animations restart
     _restartHeroAnims(landing);
@@ -223,9 +223,17 @@ const APP = {
 
 // ── Data fetching ──────────────────────────────────────────────────────────
 const DATA_BASE = "./data/";
+// Cache-bust: reuses the asset version embedded in index.html script tags so any
+// bump in index.html also refreshes the JSON data files.
+const _DATA_VERSION = (() => {
+  const s = document.querySelector('script[src*="app.js?v="]');
+  const m = s && s.src.match(/v=([^&]+)/);
+  return m ? m[1] : Date.now().toString();
+})();
 
 async function fetchJSON(file) {
-  const res = await fetch(DATA_BASE + file);
+  const sep = file.includes("?") ? "&" : "?";
+  const res = await fetch(DATA_BASE + file + sep + "v=" + _DATA_VERSION);
   if (!res.ok) throw new Error(`HTTP ${res.status} loading ${file}`);
   return res.json();
 }
@@ -317,6 +325,8 @@ function initSegControls() {
   const populateLeagueSelect = (id) => {
     const sel = document.getElementById(id);
     if (!sel || sel.tagName !== "SELECT") return;
+    // Idempotent: keep only the first default option ("Todas"), remove the rest
+    while (sel.options.length > 1) sel.remove(1);
     Object.entries(APP.leagues).forEach(([code, data]) => {
       const opt = document.createElement("option");
       opt.value = code;
@@ -327,7 +337,7 @@ function initSegControls() {
 
   populateLeagueSelect("cmpLeagueFilter");
   populateLeagueSelect("h2hLeagueFilter");
-  populateLeagueSelect("inicioLeagueFilter");
+  populateLeagueSelect("valLeagueFilter");
 
   const cmpFilter = document.getElementById("cmpLeagueFilter");
   if (cmpFilter) {
@@ -345,9 +355,17 @@ function initSegControls() {
     });
   }
 
+  const valFilter = document.getElementById("valLeagueFilter");
+  if (valFilter) {
+    valFilter.addEventListener("change", e => {
+      const teams = getTeamsByLeague(e.target.value);
+      ["val-home","val-away"].forEach(id => populateSelect(id, teams));
+    });
+  }
+
   const inicioFilter = document.getElementById("inicioLeagueFilter");
   if (inicioFilter) {
-    // Populate only leagues that actually have fixture data
+    while (inicioFilter.options.length > 1) inicioFilter.remove(1);
     const fxLeagues = new Set([
       ...(APP.fixtures?.upcoming || []).map(f => f.league),
       ...(APP.fixtures?.recent   || []).map(f => f.league),

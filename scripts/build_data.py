@@ -356,7 +356,24 @@ def build_referees(df, df_current=None) -> list:
         }
         results.append(record)
 
-    results.sort(key=lambda r: (r["league"], -r["yellows_per_match"]))
+    # Merge manual overrides (e.g. SP1/SP2 refs not provided by football-data.co.uk)
+    manual_path = Path("DATOS") / "referees_manual.json"
+    if manual_path.exists():
+        try:
+            import json as _json
+            manual = _json.loads(manual_path.read_text(encoding="utf-8"))
+            existing = {(r["name"], r["league"]) for r in results}
+            added = 0
+            for r in manual:
+                key = (r.get("name"), r.get("league"))
+                if key not in existing:
+                    results.append(r)
+                    added += 1
+            print(f"     Merged {added} manual referees from {manual_path}")
+        except Exception as e:
+            print(f"  Warning: could not merge manual referees: {e}")
+
+    results.sort(key=lambda r: (r["league"], -r.get("yellows_per_match", 0)))
     return results
 
 
