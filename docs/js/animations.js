@@ -327,23 +327,40 @@ function _setupActiveNavHighlight(overlay) {
   }, { passive: true });
 }
 
-// ── Navbar scroll state ─────────────────────────────────────
+// ── Navbar scroll state + auto-hide ─────────────────────────
 function _setupNavbarScroll(overlay) {
   const nav = document.getElementById("lpNav");
+  let lastY = 0;
+  let ticking = false;
 
   _lpScrollHandler = () => {
-    const y = overlay.scrollTop;
-    if (nav) nav.classList.toggle("lp-nav--scrolled", y > 30);
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = overlay.scrollTop;
+        if (nav) {
+          nav.classList.toggle("lp-nav--scrolled", y > 40);
+          // Hide nav when scrolling down past 120px, show when scrolling up
+          if (y > lastY && y > 120) {
+            nav.classList.add("lp-nav--hidden");
+          } else {
+            nav.classList.remove("lp-nav--hidden");
+          }
+        }
+        lastY = y;
 
-    // Parallax orbs
-    const orb1 = overlay.querySelector(".lp-orb-1");
-    const orb2 = overlay.querySelector(".lp-orb-2");
-    const orb3 = overlay.querySelector(".lp-orb-3");
-    if (orb1) orb1.style.transform = `translateY(${y * 0.1}px)`;
-    if (orb2) orb2.style.transform = `translateY(${-y * 0.07}px)`;
-    if (orb3) orb3.style.transform = `translateY(${y * 0.05}px)`;
+        // Parallax orbs
+        const orb1 = overlay.querySelector(".lp-orb-1");
+        const orb2 = overlay.querySelector(".lp-orb-2");
+        const orb3 = overlay.querySelector(".lp-orb-3");
+        if (orb1) orb1.style.transform = `translateY(${y * 0.1}px)`;
+        if (orb2) orb2.style.transform = `translateY(${-y * 0.07}px)`;
+        if (orb3) orb3.style.transform = `translateY(${y * 0.05}px)`;
 
-    _checkReveal();
+        _checkReveal();
+        ticking = false;
+      });
+      ticking = true;
+    }
   };
 
   overlay.addEventListener("scroll", _lpScrollHandler, { passive: true });
