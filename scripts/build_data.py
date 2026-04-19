@@ -217,11 +217,11 @@ def build_fixtures(df) -> dict:
     import pandas as pd
     from datetime import datetime, timedelta
     from pathlib import Path
-    from app.config import CURRENT_SEASON_CODE, DATA_DIR
+    from app.config import CURRENT_SEASON_CODE, DATA_DIR, LEAGUES
 
     recent = []
     upcoming = []
-    leagues = {"SP1": "La Liga", "SP2": "Segunda División"}
+    leagues = LEAGUES
     cutoff = pd.Timestamp(datetime.utcnow() - timedelta(days=7))
     now = pd.Timestamp(datetime.utcnow())
 

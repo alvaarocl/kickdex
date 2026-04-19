@@ -22,7 +22,7 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: pip install pandas numpy requests
+        run: pip install pandas numpy requests soccerdata || pip install pandas numpy requests
 
       - name: Build static data
         run: python scripts/build_data.py

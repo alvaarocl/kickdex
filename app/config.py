@@ -29,8 +29,8 @@ ROLLING_WINDOW_OPTIONS = [3, 5, 10]
 MIN_MATCHES_FOR_STATS = 3        # Mínimo de partidos para mostrar métricas
 
 # ── Value Detection ───────────────────────────────────────────────────────────
-MIN_SAMPLE_VALUE = 30            # Partidos mínimos para considerar un patrón de valor
-MIN_ACCURACY_VALUE = 0.60        # Acierto mínimo (60%) para mostrar como value
+MIN_SAMPLE_VALUE = 15            # Partidos mínimos para considerar un patrón de valor
+MIN_ACCURACY_VALUE = 0.55        # Acierto mínimo (55%) para mostrar como value
 VALUE_EDGE_THRESHOLD = 0.03      # Diferencia mínima (3%) para marcar como verde
 
 # ── Descarga de datos ─────────────────────────────────────────────────────────

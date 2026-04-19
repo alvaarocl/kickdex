@@ -6,7 +6,6 @@ Descarga estadísticas avanzadas de jugadores para La Liga y Segunda División.
 import logging
 from pathlib import Path
 import pandas as pd
-import soccerdata as sd
 from app.config import DATA_DIR, CURRENT_SEASON_LABEL
 
 logger = logging.getLogger(__name__)
@@ -17,17 +16,20 @@ def update_players() -> bool:
     Guarda en datos/jugadores_raw.csv.
     """
     try:
+        try:
+            import soccerdata as sd
+        except ImportError:
+            logger.warning("soccerdata no instalado — saltando scraping de jugadores FBref")
+            return False
+
         data_path = Path(DATA_DIR)
         data_path.mkdir(exist_ok=True)
         output_file = data_path / "jugadores_raw.csv"
 
         logger.info("Iniciando scraping de jugadores desde FBref (La Liga)...")
-        
-        # SoccerData: FBref scraper
-        # Nota: La temporada en soccerdata suele ser "2526" o "2025-2026"
-        # Usamos el código de la temporada actual de config
-        season = CURRENT_SEASON_LABEL.replace("/", "-") # e.g. "2025-2026"
-        
+
+        season = CURRENT_SEASON_LABEL.replace("/", "-")  # e.g. "2025-2026"
+
         fbref = sd.FBref(leagues=['ESP-La Liga', 'ESP-Segunda Division'], seasons=season)
         
         # Obtener stats de disparos (shooting) como base para scouting
