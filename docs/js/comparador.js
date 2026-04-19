@@ -258,7 +258,14 @@ function buildPlayerComparison(home, away) {
   const homePlayers = (APP.players || {})[home] || [];
   const awayPlayers = (APP.players || {})[away] || [];
 
-  if (!homePlayers.length && !awayPlayers.length) return "";
+  if (!homePlayers.length && !awayPlayers.length) {
+    return `<div class="card stagger-item" style="margin-bottom:20px;">
+      <div class="section-title">📊 Comparativa de Jugadores Pro</div>
+      <p style="color:var(--muted);font-size:.85rem;line-height:1.6;">
+        Datos de jugadores no disponibles aún para esta liga. Se actualizarán automáticamente en el próximo build diario (6:00 UTC).
+      </p>
+    </div>`;
+  }
 
   function playerTable(players, teamName) {
     if (!players.length) {
