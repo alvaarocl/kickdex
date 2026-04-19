@@ -165,20 +165,26 @@ function buildH2HTable(team1, team2, matches) {
 }
 
 /**
- * Parse "2-1 (HomeTeam)" or "HomeTeam 2-1 AwayTeam" style results.
- * Returns { hg, ag, winner: "t1"|"t2"|"draw" } or null.
+ * Parse "HomeTeam 2-1 AwayTeam" results from h2h.json.
+ * Returns { hg, ag, t1g, t2g, winner: "t1"|"t2"|"draw" } or null.
+ * hg/ag = home/away goals; t1g/t2g = goals attributed to team1/team2 regardless of who was home.
  */
 function parseResult(result, team1, team2) {
   if (!result) return null;
-  const m = result.match(/(\d+)[–\-](\d+)/);
+  const m = result.match(/^(.+?)\s+(\d+)[–\-](\d+)\s+(.+)$/);
   if (!m) return null;
-  const hg = parseInt(m[1]);
-  const ag = parseInt(m[2]);
+  const homeTeamInResult = m[1].trim();
+  const hg = parseInt(m[2]);
+  const ag = parseInt(m[3]);
+  // Determine which team was home in this specific match
+  const team1IsHome = homeTeamInResult === team1;
+  const t1g = team1IsHome ? hg : ag;
+  const t2g = team1IsHome ? ag : hg;
   let winner;
-  if (hg > ag) winner = "t1";
-  else if (hg < ag) winner = "t2";
+  if (t1g > t2g) winner = "t1";
+  else if (t1g < t2g) winner = "t2";
   else winner = "draw";
-  return { hg, ag, winner };
+  return { hg, ag, t1g, t2g, winner };
 }
 
 function drawH2HChart(team1, team2, matches) {
@@ -194,8 +200,8 @@ function drawH2HChart(team1, team2, matches) {
     const r = parseResult(m.result, team1, team2);
     if (!r) return;
     labels.push(m.date ? m.date.slice(0, 7) : "—");
-    goalsH.push(r.hg);
-    goalsA.push(r.ag);
+    goalsH.push(r.t1g);
+    goalsA.push(r.t2g);
   });
 
   h2hGoalsChart = new Chart(ctx, {

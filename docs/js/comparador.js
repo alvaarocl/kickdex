@@ -13,7 +13,6 @@ function initComparador() {
 function runComparador() {
   const home    = document.getElementById("cmp-home").value;
   const away    = document.getElementById("cmp-away").value;
-  const window_ = parseInt(document.getElementById("cmp-window").value) || 10;
   const box     = document.getElementById("cmp-result");
 
   if (!home || !away) {
@@ -47,7 +46,6 @@ function runComparador() {
 
   setTimeout(() => {
     drawRadar(home, away, homeData, awayData);
-    if (typeof initAllTables === "function") initAllTables(box);
     if (typeof triggerAnimations === "function") triggerAnimations(box);
     initAllTables(box);
   }, 50);

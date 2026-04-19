@@ -187,7 +187,7 @@ function openLanding() {
 
 function initLanding() {
   const landing = document.getElementById("landing-overlay");
-  if (landing) {
+  if (landing && !localStorage.getItem("kdx_seen")) {
     landing.style.display = "block";
     void landing.offsetWidth; // force reflow so CSS animations restart
     _restartHeroAnims(landing);
@@ -504,12 +504,64 @@ function generateAlerts(homeStats, awayStats, h2hSummary) {
   if (!hH || !aA) return alerts;
 
   const add = (strength, type, text) => alerts.push({ strength, type, text });
+  const homeName = homeStats._name || "Local";
+  const awayName = awayStats._name || "Visitante";
 
+  // Goals volume
   const avgGoals = ((hH.avg_goals ?? 0) + (aA.avg_goals ?? 0)) / 2;
-  if (avgGoals >= 2.2) add("HIGH", "GOALS", `⚽ Muchos goles esperados — promedio combinado ${avgGoals.toFixed(1)}`);
-  
+  if (avgGoals >= 2.2) add("HIGH",   "GOALS", `⚽ Partido con muchos goles esperados — media combinada ${avgGoals.toFixed(1)}`);
+  if (avgGoals <= 1.3) add("HIGH",   "GOALS", `🔒 Partido bajo en goles esperado — media combinada ${avgGoals.toFixed(1)}`);
+
+  // Over/Under 2.5
   const over25 = ((hH.over25_rate ?? 0) + (aA.over25_rate ?? 0)) / 2;
-  if (over25 >= 0.65) add("HIGH", "OVER_UNDER", `📈 Tendencia Over 2.5 — ${pct(over25)}`);
+  if (over25 >= 0.65) add("HIGH",   "OVER_UNDER", `📈 Fuerte tendencia Over 2.5 — ${pct(over25)} de los partidos`);
+  if (over25 <= 0.30) add("HIGH",   "OVER_UNDER", `📉 Fuerte tendencia Under 2.5 — solo ${pct(over25)} superan 2.5 goles`);
+
+  // BTTS
+  const btts = ((hH.btts_rate ?? 0) + (aA.btts_rate ?? 0)) / 2;
+  if (btts >= 0.62) add("HIGH",   "BTTS", `🎯 Alta probabilidad BTTS — ${pct(btts)} de partidos con ambos marcando`);
+  if (btts <= 0.28) add("MEDIUM", "BTTS", `🛡️ Poca probabilidad BTTS — ${pct(btts)} de partidos con ambos marcando`);
+
+  // Clean sheets
+  const hCS = hH.clean_sheet_rate ?? 0;
+  const aCS = aA.clean_sheet_rate ?? 0;
+  if (hCS >= 0.45) add("MEDIUM", "DEFENSE", `🧤 ${homeName} en casa — portería a cero en ${pct(hCS)} de sus partidos`);
+  if (aCS >= 0.40) add("MEDIUM", "DEFENSE", `🧤 ${awayName} fuera — portería a cero en ${pct(aCS)} de sus partidos`);
+
+  // Defensive fragility
+  const hGA = hH.avg_goals_against ?? 0;
+  const aGA = aA.avg_goals_against ?? 0;
+  if (hGA >= 2.0) add("MEDIUM", "DEFENSE", `⚠️ ${homeName} encaja ${hGA.toFixed(1)} goles/partido en casa`);
+  if (aGA >= 2.0) add("MEDIUM", "DEFENSE", `⚠️ ${awayName} encaja ${aGA.toFixed(1)} goles/partido fuera`);
+
+  // Dominant home form
+  if ((hH.win_rate ?? 0) >= 0.65) add("HIGH", "FORM", `🏠 ${homeName} dominante en casa — ${pct(hH.win_rate)} victorias`);
+  if ((aA.win_rate ?? 0) >= 0.55) add("HIGH", "FORM", `✈️ ${awayName} fuerte fuera — ${pct(aA.win_rate)} victorias`);
+
+  // Form streaks from match log
+  const streak = (log, res) => {
+    let n = 0;
+    for (const m of (log || [])) { if ((m.result || "").toUpperCase() === res) n++; else break; }
+    return n;
+  };
+  const hWins = streak(hH.match_log, "W");
+  const aWins = streak(aA.match_log, "W");
+  const hLoss = streak(hH.match_log, "L");
+  const aLoss = streak(aA.match_log, "L");
+  if (hWins >= 4) add("HIGH",   "FORM", `🔥 ${homeName} en racha — ${hWins} victorias seguidas en casa`);
+  if (aWins >= 3) add("HIGH",   "FORM", `🔥 ${awayName} en racha — ${aWins} victorias seguidas fuera`);
+  if (hLoss >= 3) add("MEDIUM", "FORM", `📉 ${homeName} en mala racha — ${hLoss} derrotas seguidas en casa`);
+  if (aLoss >= 3) add("MEDIUM", "FORM", `📉 ${awayName} en mala racha — ${aLoss} derrotas seguidas fuera`);
+
+  // H2H patterns
+  if (h2hSummary && h2hSummary.total >= 4) {
+    if ((h2hSummary.over25_rate ?? 0) >= 0.65)
+      add("MEDIUM", "H2H", `📊 H2H: Over 2.5 en ${pct(h2hSummary.over25_rate)} de sus enfrentamientos directos`);
+    if ((h2hSummary.btts_rate ?? 0) >= 0.60)
+      add("MEDIUM", "H2H", `📊 H2H: BTTS en ${pct(h2hSummary.btts_rate)} de sus enfrentamientos directos`);
+    if ((h2hSummary.over25_rate ?? 1) <= 0.30)
+      add("MEDIUM", "H2H", `📊 H2H: muy pocos goles — Over 2.5 solo en ${pct(h2hSummary.over25_rate)} de sus duelos`);
+  }
 
   const order = { HIGH: 0, MEDIUM: 1, LOW: 2 };
   alerts.sort((a, b) => order[a.strength] - order[b.strength]);

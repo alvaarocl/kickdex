@@ -74,6 +74,14 @@ function renderInicio(leagueFilter) {
       const cmpPanel = document.getElementById("tab-comparador");
       if (cmpPanel) cmpPanel.classList.add("active");
 
+      // Reset league filter to "all" so both teams are available in the selects
+      const leagueFilter = document.getElementById("cmpLeagueFilter");
+      if (leagueFilter) leagueFilter.value = "all";
+      if (typeof populateSelect === "function") {
+        populateSelect("cmp-home", APP.teams);
+        populateSelect("cmp-away", APP.teams);
+      }
+
       // Pre-load teams in selects
       const homeEl = document.getElementById("cmp-home");
       const awayEl = document.getElementById("cmp-away");
