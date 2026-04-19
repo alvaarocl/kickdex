@@ -128,6 +128,7 @@ let _lpScrollHandler  = null;
 let _lpRevealEls      = [];
 let _lpMouseGlowBound = null;
 let _lpRevealObserver = null;
+let _lpGlowRaf        = null;
 
 /**
  * Initialize all landing page animations.
@@ -150,6 +151,10 @@ function initLandingAnimations() {
     _lpRevealObserver.disconnect();
     _lpRevealObserver = null;
   }
+  if (_lpGlowRaf) {
+    cancelAnimationFrame(_lpGlowRaf);
+    _lpGlowRaf = null;
+  }
   _lpRevealEls = [];
 
   _setupSmoothScroll(overlay);
@@ -159,8 +164,8 @@ function initLandingAnimations() {
   _setupButtonRipples(overlay);
   _setupMouseGlow(overlay);
   _setupProgressBar(overlay);
-  _setupClickParticles(overlay);
   _setupActiveNavHighlight(overlay);
+  setTimeout(() => _setupLpCounters(overlay), 700);
 
   // Initial check: reveal elements already in viewport on load (desktop + mobile)
   setTimeout(_checkReveal, 150);
@@ -201,22 +206,45 @@ function _setupProgressBar(overlay) {
   }, { passive: true });
 }
 
-// ── Mouse glow cursor ───────────────────────────────────────
+// ── Mouse glow — lerp via transform (GPU composited, no layout thrash) ──
 function _setupMouseGlow(overlay) {
-  // z-index:10001 → above the overlay (9999) and its children
   let glow = document.getElementById("lp-mouse-glow");
   if (!glow) {
     glow = document.createElement("div");
     glow.id = "lp-mouse-glow";
     document.body.appendChild(glow);
   }
+
+  let tx = 0, ty = 0, cx = 0, cy = 0, glowVisible = false;
+
+  function lerpGlow() {
+    cx += (tx - cx) * 0.11;
+    cy += (ty - cy) * 0.11;
+    glow.style.transform = `translate(calc(${cx}px - 50%), calc(${cy}px - 50%))`;
+    if (Math.abs(tx - cx) > 0.3 || Math.abs(ty - cy) > 0.3) {
+      _lpGlowRaf = requestAnimationFrame(lerpGlow);
+    } else {
+      _lpGlowRaf = null;
+    }
+  }
+
   _lpMouseGlowBound = e => {
-    glow.style.left    = e.clientX + "px";
-    glow.style.top     = e.clientY + "px";
-    glow.style.opacity = "1";
+    tx = e.clientX;
+    ty = e.clientY;
+    if (!glowVisible) {
+      cx = tx; cy = ty;
+      glow.style.transform = `translate(calc(${cx}px - 50%), calc(${cy}px - 50%))`;
+      glow.style.opacity   = "1";
+      glowVisible = true;
+    }
+    if (!_lpGlowRaf) _lpGlowRaf = requestAnimationFrame(lerpGlow);
   };
+
   overlay.addEventListener("mousemove", _lpMouseGlowBound, { passive: true });
-  overlay.addEventListener("mouseleave", () => { glow.style.opacity = "0"; }, { passive: true });
+  overlay.addEventListener("mouseleave", () => {
+    glow.style.opacity = "0";
+    glowVisible = false;
+  }, { passive: true });
 }
 
 // ── Button ripple effect ────────────────────────────────────
@@ -237,18 +265,41 @@ function _setupButtonRipples(overlay) {
   });
 }
 
-// ── Click particle (subtle dot on every click in landing) ──
-function _setupClickParticles(overlay) {
-  overlay.addEventListener("click", e => {
-    // Skip if clicking a button (ripple already handles it)
-    if (e.target.closest(".lp-cta-primary, .lp-nav-cta")) return;
-    const dot = document.createElement("div");
-    dot.className = "lp-click-dot";
-    dot.style.left = e.clientX + "px";
-    dot.style.top  = e.clientY + "px";
-    document.body.appendChild(dot);
-    setTimeout(() => dot.remove(), 600);
-  }, { passive: true });
+// ── LP Hero stat counters (data-counter / data-suffix / data-abbrev) ──
+function _setupLpCounters(overlay) {
+  const els = overlay.querySelectorAll(".lp-stat-num[data-counter]");
+  if (!els.length) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      io.unobserve(entry.target);
+      const el     = entry.target;
+      const target = parseFloat(el.dataset.counter) || 0;
+      const suffix = el.dataset.suffix || "";
+      const abbrev = el.dataset.abbrev === "true";
+      const dur    = 1400;
+      const start  = performance.now();
+
+      function tick(now) {
+        const t    = Math.min((now - start) / dur, 1);
+        const ease = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+        const val  = target * ease;
+        let display;
+        if (abbrev && val >= 1000) {
+          const k = val / 1000;
+          display = (k >= 10 ? Math.round(k) : k.toFixed(1).replace(/\.0$/, "")) + "K";
+        } else {
+          display = Math.round(val).toString();
+        }
+        el.textContent = display + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { root: overlay, threshold: 0.6 });
+
+  els.forEach(el => io.observe(el));
 }
 
 // ── Highlight active nav link based on scroll position ─────
