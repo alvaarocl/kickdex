@@ -44,7 +44,7 @@ jobs:
 
       - name: Update referee data
         env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY || secrets.API_FOOTBALL_KEY }}
           REFEREE_DAYS_BACK: ${{ github.event.inputs.referee_days_back || '14' }}
           REFEREE_MAX_FIXTURES: ${{ github.event.inputs.referee_max_fixtures || '70' }}
           REFEREE_LEAGUES: ${{ github.event.inputs.referee_leagues || 'SP1 SP2' }}
