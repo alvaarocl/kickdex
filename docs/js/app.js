@@ -215,6 +215,8 @@ const APP = {
   h2h:         {},
   players:     {},
   playersDetail: {},
+  playerCoverage: {},
+  dataStatus:   {},
   valuePatterns: [],
   referees:    [],
   meta:        {},
@@ -243,13 +245,15 @@ async function loadAllData() {
   if (metaEl) metaEl.innerHTML = `<span class="spinner"></span> Cargando datos...`;
 
   try {
-    const [meta, teams, teamStats, h2h, players, playersDetail, valuePatterns, leagues, fixtures, referees] = await Promise.all([
+    const [meta, teams, teamStats, h2h, players, playersDetail, playerCoverage, dataStatus, valuePatterns, leagues, fixtures, referees] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
       fetchJSON("h2h.json"),
       fetchJSON("players.json").catch(() => ({})),
       fetchJSON("players_detail.json").catch(() => ({})),
+      fetchJSON("player_coverage.json").catch(() => ({})),
+      fetchJSON("data_status.json").catch(() => ({})),
       fetchJSON("value_patterns.json").catch(() => []),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("fixtures.json").catch(() => ({ recent: [], upcoming: [] })),
@@ -262,6 +266,8 @@ async function loadAllData() {
     APP.h2h            = h2h;
     APP.players        = players;
     APP.playersDetail  = playersDetail;
+    APP.playerCoverage = playerCoverage;
+    APP.dataStatus     = dataStatus;
     APP.valuePatterns  = valuePatterns;
     APP.leagues        = leagues;
     APP.fixtures       = fixtures;
@@ -299,6 +305,25 @@ function getTeamsByLeague(leagueCode) {
   return (ld && ld.teams && ld.teams.length) ? ld.teams : APP.teams;
 }
 
+function getPlayerLeagueCodes() {
+  const byLeague = APP.playerCoverage?.by_league || {};
+  const codes = Object.keys(byLeague).filter(code => (byLeague[code]?.player_rows || 0) > 0);
+  if (codes.length) return codes.sort();
+
+  const playerTeams = new Set(Object.keys(APP.playersDetail || APP.players || {}));
+  return Object.entries(APP.leagues || {})
+    .filter(([, data]) => (data.teams || []).some(team => playerTeams.has(team)))
+    .map(([code]) => code)
+    .sort();
+}
+
+function getPlayerTeamsByLeague(leagueCode) {
+  const playerTeams = new Set(Object.keys(APP.playersDetail || APP.players || {}));
+  if (!leagueCode || leagueCode === "all") return Array.from(playerTeams).sort();
+  const teams = APP.leagues?.[leagueCode]?.teams || [];
+  return teams.filter(team => playerTeams.has(team));
+}
+
 function populateSelect(id, teams) {
   const sel = document.getElementById(id);
   if (!sel) return;
@@ -315,10 +340,8 @@ function populateSelect(id, teams) {
 function populateAllSelects() {
   const cmpTeams = getTeamsByLeague("all");
   ["cmp-home","cmp-away","val-home","val-away"].forEach(id => populateSelect(id, cmpTeams));
-  ["h2h-t1","h2h-t2"].forEach(id => populateSelect(id, APP.teams));
   // Jugadores: solo mostrar equipos con datos de jugadores reales
-  const jugTeams = Object.keys(APP.playersDetail || {}).sort();
-  populateSelect("jug-team", jugTeams);
+  populateSelect("jug-team", getPlayerTeamsByLeague("all"));
 }
 
 function initSegControls() {
@@ -336,22 +359,35 @@ function initSegControls() {
   };
 
   populateLeagueSelect("cmpLeagueFilter");
-  populateLeagueSelect("h2hLeagueFilter");
   populateLeagueSelect("valLeagueFilter");
+
+  const jugLeagueFilter = document.getElementById("jugLeagueFilter");
+  if (jugLeagueFilter) {
+    while (jugLeagueFilter.options.length > 1) jugLeagueFilter.remove(1);
+    getPlayerLeagueCodes().forEach(code => {
+      const ld = APP.leagues[code];
+      if (!ld) return;
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = ld.name;
+      jugLeagueFilter.appendChild(opt);
+    });
+    jugLeagueFilter.addEventListener("change", e => {
+      populateSelect("jug-team", getPlayerTeamsByLeague(e.target.value));
+      const playerSel = document.getElementById("jug-player");
+      if (playerSel) while (playerSel.options.length > 1) playerSel.remove(1);
+      const result = document.getElementById("jug-result");
+      if (result) {
+        result.innerHTML = `<div class="state-box"><div class="icon">👤</div><p>Selecciona un equipo para ver sus jugadores</p></div>`;
+      }
+    });
+  }
 
   const cmpFilter = document.getElementById("cmpLeagueFilter");
   if (cmpFilter) {
     cmpFilter.addEventListener("change", e => {
       const teams = getTeamsByLeague(e.target.value);
       ["cmp-home","cmp-away"].forEach(id => populateSelect(id, teams));
-    });
-  }
-
-  const h2hFilter = document.getElementById("h2hLeagueFilter");
-  if (h2hFilter) {
-    h2hFilter.addEventListener("change", e => {
-      const teams = getTeamsByLeague(e.target.value);
-      ["h2h-t1","h2h-t2"].forEach(id => populateSelect(id, teams));
     });
   }
 

@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260420g" />
+  <link rel="stylesheet" href="css/app.css?v=20260429a" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
@@ -400,14 +400,6 @@
     <span data-i18n="tab_comparador">Comparador</span>
   </button>
 
-  <button class="tab-btn" data-tab="h2h" role="tab" aria-selected="false" aria-controls="tab-h2h">
-    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
-      <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
-    </svg>
-    <span data-i18n="tab_h2h">H2H</span>
-  </button>
-
   <button class="tab-btn" data-tab="jugadores" role="tab" aria-selected="false" aria-controls="tab-jugadores">
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -505,50 +497,16 @@
 
   </section>
 
-  <!-- ── H2H ────────────────────────────────────────── -->
-  <section class="tab-panel" id="tab-h2h" role="tabpanel">
-
-    <div class="controls" style="flex-wrap:wrap;gap:14px 18px;">
-      <!-- Division filter -->
-      <div class="field" style="width:100%;padding-bottom:4px;">
-        <label for="h2hLeagueFilter" data-i18n="cmp_league">Liga</label>
-        <select id="h2hLeagueFilter">
-          <option value="all" data-i18n="league_all">Todas las ligas</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="h2h-t1" data-i18n="h2h_team1">Equipo 1</label>
-        <select id="h2h-t1"><option value="">— Selecciona equipo —</option></select>
-      </div>
-      <div class="field">
-        <label for="h2h-t2" data-i18n="h2h_team2">Equipo 2</label>
-        <select id="h2h-t2"><option value="">— Selecciona equipo —</option></select>
-      </div>
-      <button class="btn btn-primary" id="h2h-run">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
-          <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
-        </svg>
-        <span data-i18n="h2h_run">Ver H2H</span>
-      </button>
-    </div>
-
-    <div id="h2h-result" class="state-box">
-      <div class="icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4">
-          <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
-          <path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
-        </svg>
-      </div>
-      <p data-i18n="h2h_prompt">Selecciona dos equipos para ver su historial</p>
-    </div>
-
-  </section>
-
   <!-- ── JUGADORES ──────────────────────────────────── -->
   <section class="tab-panel" id="tab-jugadores" role="tabpanel">
 
-    <div class="controls">
+    <div class="controls" style="flex-wrap:wrap;gap:14px 18px;">
+      <div class="field" style="width:100%;padding-bottom:4px;">
+        <label for="jugLeagueFilter" data-i18n="cmp_league">Liga</label>
+        <select id="jugLeagueFilter">
+          <option value="all" data-i18n="league_all">Todas las ligas con jugadores</option>
+        </select>
+      </div>
       <div class="field">
         <label for="jug-team" data-i18n="jug_team">Equipo</label>
         <select id="jug-team"><option value="">— Selecciona equipo —</option></select>
@@ -556,6 +514,21 @@
       <div class="field">
         <label for="jug-player" data-i18n="jug_player">Jugador</label>
         <select id="jug-player"><option value="">— Todos —</option></select>
+      </div>
+      <div class="field">
+        <label for="jug-search">Buscar</label>
+        <input type="search" id="jug-search" placeholder="Nombre del jugador">
+      </div>
+      <div class="field" style="max-width:180px;">
+        <label for="jug-sort">Ordenar por</label>
+        <select id="jug-sort">
+          <option value="sh" selected>Disparos</option>
+          <option value="sot">Tiros a puerta</option>
+          <option value="gls">Goles</option>
+          <option value="ast">Asistencias</option>
+          <option value="min">Minutos</option>
+          <option value="crdy">Tarjetas</option>
+        </select>
       </div>
       <div class="field" style="max-width:180px;">
         <label for="jug-window">Ventana</label>
@@ -722,13 +695,13 @@
   </div>
 </footer>
 
-<script src="js/animations.js?v=20260420g"></script>
-<script src="js/app.js?v=20260420g"></script>
-<script src="js/comparador.js?v=20260420g"></script>
-<script src="js/h2h.js?v=20260420g"></script>
-<script src="js/jugadores.js?v=20260420g"></script>
-<script src="js/valor.js?v=20260420g"></script>
-<script src="js/inicio.js?v=20260420g"></script>
-<script src="js/arbitros.js?v=20260420g"></script>
+<script src="js/animations.js?v=20260429a"></script>
+<script src="js/app.js?v=20260429a"></script>
+<script src="js/comparador.js?v=20260429a"></script>
+<script src="js/h2h.js?v=20260429a"></script>
+<script src="js/jugadores.js?v=20260429a"></script>
+<script src="js/valor.js?v=20260429a"></script>
+<script src="js/inicio.js?v=20260429a"></script>
+<script src="js/arbitros.js?v=20260429a"></script>
 </body>
 </html>

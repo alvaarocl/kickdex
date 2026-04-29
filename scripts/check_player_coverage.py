@@ -54,6 +54,12 @@ def _coverage_from_static_json() -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--fail-under", type=float, default=None, help="Fail if any league coverage is below this rate.")
+    parser.add_argument(
+        "--required-leagues",
+        nargs="*",
+        default=None,
+        help="Optional league codes that must be present and pass --fail-under.",
+    )
     args = parser.parse_args()
 
     coverage = _read_json("player_coverage.json", None) or _coverage_from_static_json()
@@ -62,7 +68,10 @@ def main() -> int:
     print(f"player_rows={coverage.get('total_player_rows', 0)}")
 
     failed = False
-    for code, info in sorted((coverage.get("by_league") or {}).items()):
+    by_league = coverage.get("by_league") or {}
+    required = set(args.required_leagues or by_league.keys())
+
+    for code, info in sorted(by_league.items()):
         rate = info.get("coverage_rate")
         rate_text = "n/a" if rate is None else f"{rate:.1%}"
         print(
@@ -70,8 +79,13 @@ def main() -> int:
             f"{info.get('teams_with_players', 0):>2}/{info.get('expected_teams', 0):<2} teams "
             f"{rate_text:>6} rows={info.get('player_rows', 0)}"
         )
-        if args.fail_under is not None and rate is not None and rate < args.fail_under:
+        if code in required and args.fail_under is not None and (rate is None or rate < args.fail_under):
             failed = True
+
+    missing_required = sorted(required - set(by_league))
+    if missing_required:
+        print(f"missing_required_leagues={','.join(missing_required)}")
+        failed = True
 
     return 1 if failed else 0
 

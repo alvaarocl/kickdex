@@ -21,6 +21,7 @@ from scripts.build_data import (
     OUTPUT_DIR,
     build_player_coverage,
     build_player_coverage_from_json,
+    build_data_status,
     build_players,
     build_players_detail,
     write_json,
@@ -63,6 +64,7 @@ def main() -> int:
 
     coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
     write_json(coverage, "player_coverage.json")
+    write_json(build_data_status(coverage, source="update_player_data"), "data_status.json")
 
     print(
         "Player update complete: "

@@ -137,6 +137,21 @@ def build_player_coverage_from_json(leagues: dict) -> dict:
     return coverage
 
 
+def build_data_status(coverage: dict, source: str = "build_data") -> dict:
+    by_league = coverage.get("by_league") or {}
+    return {
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "source": source,
+        "players": {
+            "total_teams_with_players": coverage.get("total_teams_with_players", 0),
+            "total_player_rows": coverage.get("total_player_rows", 0),
+            "covered_leagues": sorted(by_league.keys()),
+            "league_count": len(by_league),
+            "all_covered": all((info.get("coverage_rate") or 0) >= 1 for info in by_league.values()) if by_league else False,
+        },
+    }
+
+
 # ── Builders ──────────────────────────────────────────────────────────────────
 
 def build_meta(df, df_current) -> dict:
@@ -235,6 +250,7 @@ def build_players(df_players) -> dict:
                 "sot":  _safe(last["sot"].mean()),
                 "gls":  _safe(last["gls"].mean()),
                 "ast":  _safe(last["ast"].mean()),
+                "min":  _safe(last["min"].mean()),
                 "fls":  _safe(last["fls"].mean()),
                 "crdy": _safe(last["crdy"].mean()),
             })
@@ -265,6 +281,7 @@ def build_players_detail(df_players) -> dict:
                     "sot":  _safe(r.get("sot", 0)),
                     "gls":  _safe(r.get("gls", 0)),
                     "ast":  _safe(r.get("ast", 0)),
+                    "min":  _safe(r.get("min", 0)),
                     "fls":  _safe(r.get("fls", 0)),
                     "crdy": _safe(r.get("crdy", 0)),
                 })
@@ -517,6 +534,7 @@ def main():
     write_player_json(build_players_detail(df_players), "players_detail.json")
     coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
     write_json(coverage, "player_coverage.json")
+    write_json(build_data_status(coverage), "data_status.json")
     write_json(build_value_patterns(df), "value_patterns.json")
     write_json(build_referees(df, df_current), "referees.json")
 

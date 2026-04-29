@@ -40,12 +40,15 @@ function runComparador() {
   const probs      = calcProbabilities(homeData, awayData, h2hSummary);
   const alerts     = generateAlerts(homeData, awayData, h2hSummary);
 
-  box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary)
+  box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary, h2hData)
     + buildPlayerComparison(home, away)
     + buildMasterCalculatorJS(home, away);
 
   setTimeout(() => {
     drawRadar(home, away, homeData, awayData);
+    if (h2hData?.matches?.length && typeof drawH2HChart === "function") {
+      drawH2HChart(h2hData.team1, h2hData.team2, h2hData.matches);
+    }
     if (typeof triggerAnimations === "function") triggerAnimations(box);
     initAllTables(box);
   }, 50);
@@ -53,7 +56,7 @@ function runComparador() {
 
 // ── Main HTML builder ──────────────────────────────────────
 
-function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary) {
+function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary, h2hData) {
   const hH = homeData.home || {};
   const aA = awayData.away || {};
 
@@ -122,7 +125,7 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
     </div>
   </div>
 
-  ${h2hSummary ? buildH2HMiniSection(h2hSummary) : ""}
+  ${buildH2HIntegratedSection(home, away, h2hData, h2hSummary)}
   `;
 }
 
@@ -231,6 +234,22 @@ function buildH2HMiniSection(summary) {
       <div class="h2h-box"><div class="val">${fmt(summary.avg_goals)}</div><div class="lbl">Goles/p</div></div>
       <div class="h2h-box"><div class="val">${pct(summary.over25_rate)}</div><div class="lbl">O2.5</div></div>
     </div>
+  </div>`;
+}
+
+function buildH2HIntegratedSection(home, away, h2hData, h2hSummary) {
+  if (h2hData?.matches?.length && typeof buildH2HHTML === "function") {
+    return `
+    <div class="stagger-item" style="margin-bottom:20px;">
+      <div class="section-title">H2H completo <small>integrado en el comparador</small></div>
+      ${buildH2HHTML(h2hData.team1, h2hData.team2, h2hData)}
+    </div>`;
+  }
+  if (h2hSummary) return buildH2HMiniSection(h2hSummary);
+  return `
+  <div class="card stagger-item" style="margin-bottom:20px;">
+    <div class="section-title">H2H completo</div>
+    <p class="muted" style="font-size:.85rem;">Sin historial disponible entre ${home} y ${away}.</p>
   </div>`;
 }
 

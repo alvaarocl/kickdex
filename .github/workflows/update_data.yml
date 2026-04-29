@@ -2,9 +2,13 @@ name: Update Data
 
 on:
   schedule:
-    - cron: '0 6 * * *'    # Diario a las 6:00 UTC
-    - cron: '0 6 * * 3'    # Miercoles extra
+    - cron: '10 6 * * *'   # Diario a las 6:10 UTC
+    - cron: '10 13 * * *'  # Refresco diario a las 13:10 UTC
   workflow_dispatch:
+
+concurrency:
+  group: update-data-main
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -32,7 +36,7 @@ jobs:
         run: python scripts/update_player_data.py
 
       - name: Check player coverage
-        run: python scripts/check_player_coverage.py
+        run: python scripts/check_player_coverage.py --fail-under 1.0 --required-leagues SP1 E0 I1 D1 F1
 
       - name: Commit updated data
         run: |

@@ -1,5 +1,5 @@
-/**
- * jugadores.js — Tab "Jugadores": per-player stats, sparklines, detail table
+﻿/**
+ * jugadores.js â€” Tab "Jugadores": per-player stats, sparklines, detail table
  */
 
 "use strict";
@@ -11,6 +11,16 @@ function initJugadores() {
 
   document.getElementById("jug-team").addEventListener("change", () => {
     populatePlayerSelect();
+  });
+
+  ["jug-search", "jug-sort"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", () => {
+      const team = document.getElementById("jug-team").value;
+      const player = document.getElementById("jug-player").value;
+      if (team && !player) runJugadores();
+    });
   });
 
   const jugWindow = document.getElementById("jug-window");
@@ -43,7 +53,7 @@ function runJugadores() {
   const box    = document.getElementById("jug-result");
 
   if (!team) {
-    box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Selecciona un equipo</p></div>`;
+    box.innerHTML = `<div class="state-box"><div class="icon">âš ï¸</div><p>Selecciona un equipo</p></div>`;
     return;
   }
 
@@ -55,7 +65,7 @@ function runJugadores() {
     // Single player detail
     const allDetail = APP.playersDetail[team]?.[player];
     if (!allDetail || allDetail.length === 0) {
-      box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos para este jugador</p></div>`;
+      box.innerHTML = `<div class="state-box"><div class="icon">ðŸ“­</div><p>Sin datos para este jugador</p></div>`;
       return;
     }
     const windowVal = document.getElementById("jug-window")?.value || "all";
@@ -75,9 +85,9 @@ function runJugadores() {
     }, 50);
   } else {
     // All players summary
-    const players = APP.players[team];
+    const players = filterAndSortPlayers(APP.players[team] || []);
     if (!players || players.length === 0) {
-      box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos de jugadores para este equipo</p></div>`;
+      box.innerHTML = `<div class="state-box"><div class="icon">ðŸ“­</div><p>Sin datos de jugadores para este equipo</p></div>`;
       return;
     }
     box.innerHTML = buildTeamPlayersHTML(team, players);
@@ -101,19 +111,24 @@ function runJugadores() {
   }
 }
 
-// ── Team overview ──────────────────────────────────────────────────────────
+// â”€â”€ Team overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function buildTeamPlayersHTML(team, players) {
   const svgUser = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+  const leagueCode = getLeagueForTeam(team);
+  const leagueName = APP.leagues?.[leagueCode]?.name || "Liga";
+  const updatedAt = APP.dataStatus?.updated_at ? new Date(APP.dataStatus.updated_at).toLocaleString("es-ES") : "actualizacion diaria";
   return `
   <div class="section-title" style="margin-bottom:16px;">
-    ${svgUser} ${team} <small>${players.length} jugadores · temporada actual</small>
+    ${svgUser} ${team} <small>${leagueName} · ${players.length} jugadores · actualizado ${updatedAt}</small>
   </div>
+  ${buildTeamPlayerSummary(players)}
   <div class="table-wrap">
     <table id="playersTable">
       <thead>
         <tr>
           <th>Jugador</th>
+          <th title="Minutos por partido">Min/p</th>
           <th title="Disparos">Disp/p</th>
           <th title="Disparos a puerta">SoT/p</th>
           <th title="Goles">Goles/p</th>
@@ -129,24 +144,24 @@ function buildTeamPlayersHTML(team, players) {
     </table>
   </div>`;
 }
-
 function buildPlayerRow(team, p) {
   const sparkId = `spark-${sanitizeId(team)}-${sanitizeId(p.player)}`;
   return `
   <tr>
     <td><b>${p.player}</b></td>
+    <td>${fmt(p.min, 0)}</td>
     <td>${fmt(p.sh, 1)}</td>
     <td>${fmt(p.sot, 1)}</td>
     <td>${fmt(p.gls, 2)}</td>
     <td>${fmt(p.ast, 2)}</td>
     <td>${fmt(p.fls, 1)}</td>
-    <td>${p.crdy != null ? fmt(p.crdy, 2) : "—"}</td>
+    <td>${p.crdy != null ? fmt(p.crdy, 2) : "â€”"}</td>
     <td><canvas id="${sparkId}" width="80" height="30" style="display:block;"></canvas></td>
   </tr>`;
 }
 
 function drawTeamSparklines(team) {
-  const players = APP.players[team];
+  const players = filterAndSortPlayers(APP.players[team] || []);
   if (!players) return;
 
   players.forEach(p => {
@@ -162,7 +177,7 @@ function drawTeamSparklines(team) {
   });
 }
 
-// ── Single player detail ───────────────────────────────────────────────────
+// â”€â”€ Single player detail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function buildPlayerDetail(team, player, detail) {
   const avg = aggregatePlayerStats(detail);
@@ -173,7 +188,7 @@ function buildPlayerDetail(team, player, detail) {
   return `
   <div style="margin-bottom:12px;">
     <button class="btn btn-ghost" id="jug-back-btn" style="font-size:.82rem;padding:6px 14px;">
-      ← Volver al equipo
+      â† Volver al equipo
     </button>
   </div>
   <div class="card" style="margin-bottom:20px;">
@@ -185,10 +200,10 @@ function buildPlayerDetail(team, player, detail) {
       ${miniCard("Asist/p",      fmt(avg.ast, 2), "var(--purple)")}
     </div>
     <div class="grid-4">
+      ${miniCard("Min/p",        fmt(avg.min, 0), "var(--text)")}
       ${miniCard("Faltas/p",     fmt(avg.fls, 1), "var(--orange)")}
       ${miniCard("Tarj. Am./p",  fmt(avg.crdy, 2), "var(--yellow)")}
-      ${miniCard("Partidos",     detail.length, "var(--muted)")}
-      ${miniCard("Minutas +90",  detail.filter(d => d.gls > 0).length + " con goles", "var(--text)")}
+      ${miniCard("Registros",    detail.length, "var(--muted)")}
     </div>
   </div>
 
@@ -205,7 +220,7 @@ function buildPlayerDetail(team, player, detail) {
   </div>
 
   <!-- Per-game table -->
-  <div class="section-title">${svgList} Detalle por partido <small>últimos ${detail.length}</small></div>
+  <div class="section-title">${svgList} Detalle disponible <small>${detail.length} registros</small></div>
   <div class="table-wrap">
     <table>
       <thead>
@@ -213,6 +228,7 @@ function buildPlayerDetail(team, player, detail) {
           <th>Fecha</th>
           <th>Goles</th>
           <th>Asist</th>
+          <th>Min</th>
           <th>Disp</th>
           <th>SoT</th>
           <th>Faltas</th>
@@ -223,12 +239,13 @@ function buildPlayerDetail(team, player, detail) {
         ${detail.map(d => `
         <tr>
           <td class="muted">${d.date}</td>
-          <td>${d.gls > 0 ? `<b style="color:var(--green)">${d.gls}</b>` : d.gls ?? "—"}</td>
-          <td>${d.ast > 0 ? `<b style="color:var(--blue)">${d.ast}</b>` : d.ast ?? "—"}</td>
-          <td>${d.sh ?? "—"}</td>
-          <td>${d.sot ?? "—"}</td>
-          <td>${d.fls ?? "—"}</td>
-          <td>${d.crdy > 0 ? `<b style="color:var(--yellow)">${d.crdy}</b>` : d.crdy ?? "—"}</td>
+          <td>${d.gls > 0 ? `<b style="color:var(--green)">${d.gls}</b>` : d.gls ?? "â€”"}</td>
+          <td>${d.ast > 0 ? `<b style="color:var(--blue)">${d.ast}</b>` : d.ast ?? "â€”"}</td>
+          <td>${d.min ?? "â€”"}</td>
+          <td>${d.sh ?? "â€”"}</td>
+          <td>${d.sot ?? "â€”"}</td>
+          <td>${d.fls ?? "â€”"}</td>
+          <td>${d.crdy > 0 ? `<b style="color:var(--yellow)">${d.crdy}</b>` : d.crdy ?? "â€”"}</td>
         </tr>`).join("")}
       </tbody>
     </table>
@@ -247,7 +264,7 @@ function drawPlayerSparklines(player, detail) {
   if (sotCtx) sparkCharts["sparkSot"] = new Chart(sotCtx, lineConfig(labels, sot, "rgba(41,182,246,.9)", "SoT"));
 }
 
-// ── Chart helpers ──────────────────────────────────────────────────────────
+// â”€â”€ Chart helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function sparklineConfig(data, color) {
   return {
@@ -304,7 +321,7 @@ function lineConfig(labels, data, color, label) {
   };
 }
 
-// ── Utilities ──────────────────────────────────────────────────────────────
+// â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function aggregatePlayerStats(detail) {
   const n = detail.length || 1;
@@ -314,6 +331,7 @@ function aggregatePlayerStats(detail) {
     sot:  sum("sot")  / n,
     gls:  sum("gls")  / n,
     ast:  sum("ast")  / n,
+    min:  sum("min")  / n,
     fls:  sum("fls")  / n,
     crdy: sum("crdy") / n,
   };
@@ -329,4 +347,33 @@ function miniCard(label, value, color) {
 
 function sanitizeId(str) {
   return str.replace(/[^a-z0-9]/gi, "_");
+}
+
+function filterAndSortPlayers(players) {
+  const q = (document.getElementById("jug-search")?.value || "").trim().toLowerCase();
+  const sortKey = document.getElementById("jug-sort")?.value || "sh";
+  return (players || [])
+    .filter(p => !q || String(p.player || "").toLowerCase().includes(q))
+    .slice()
+    .sort((a, b) => (Number(b[sortKey]) || 0) - (Number(a[sortKey]) || 0));
+}
+
+function getLeagueForTeam(team) {
+  for (const [code, data] of Object.entries(APP.leagues || {})) {
+    if ((data.teams || []).includes(team)) return code;
+  }
+  return null;
+}
+
+function buildTeamPlayerSummary(players) {
+  const topGoals = players.slice().sort((a, b) => (b.gls || 0) - (a.gls || 0))[0];
+  const topShots = players.slice().sort((a, b) => (b.sh || 0) - (a.sh || 0))[0];
+  const topSot = players.slice().sort((a, b) => (b.sot || 0) - (a.sot || 0))[0];
+  return `
+  <div class="grid-4" style="margin-bottom:16px;">
+    ${miniCard("Jugadores", players.length, "var(--text)")}
+    ${miniCard("Goles/p lider", topGoals ? `${topGoals.player} · ${fmt(topGoals.gls, 2)}` : "—", "var(--green)")}
+    ${miniCard("Disparos/p lider", topShots ? `${topShots.player} · ${fmt(topShots.sh, 1)}` : "—", "var(--blue)")}
+    ${miniCard("SoT/p lider", topSot ? `${topSot.player} · ${fmt(topSot.sot, 1)}` : "—", "var(--purple)")}
+  </div>`;
 }

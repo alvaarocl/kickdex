@@ -7,7 +7,9 @@
 let h2hGoalsChart = null;
 
 function initH2H() {
-  document.getElementById("h2h-run").addEventListener("click", runH2H);
+  const btn = document.getElementById("h2h-run");
+  if (!btn) return;
+  btn.addEventListener("click", runH2H);
 }
 
 function runH2H() {
