@@ -20,7 +20,6 @@ from app.engine.metrics import (
     get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics
 )
 from app.engine.smart_alerts import generate_alerts, AlertStrength
-from app.engine.value_detector import scan_value_patterns
 from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, ROLLING_WINDOW_DEFAULT
 
 OUTPUT_DIR = ROOT / "docs" / "data"
@@ -207,7 +206,7 @@ def build_h2h(df, teams: list) -> dict:
                 "date": row["Date"].strftime("%Y-%m-%d") if hasattr(row["Date"], "strftime") else str(row["Date"]),
                 "result": row["Resultado"],
             }
-            for col, key in [("B365H", "b365h"), ("B365D", "b365d"), ("B365A", "b365a"), ("Liga", "league")]:
+            for col, key in [("Liga", "league")]:
                 if col in row.index:
                     v = row[col]
                     try:
@@ -355,14 +354,6 @@ def build_fixtures(df) -> dict:
                 "home": str(row.get("HomeTeam", "")),
                 "away": str(row.get("AwayTeam", "")),
             }
-            for odds_col, key in [("B365H","odds_home"),("B365D","odds_draw"),("B365A","odds_away"),
-                                   ("B365>2.5","odds_over25"),("B365<2.5","odds_under25")]:
-                v = row.get(odds_col)
-                try:
-                    item[key] = round(float(v), 2) if pd.notna(v) else None
-                except Exception:
-                    item[key] = None
-
             if has_score:
                 item["home_score"] = int(row["FTHG"])
                 item["away_score"] = int(row["FTAG"])
@@ -375,37 +366,6 @@ def build_fixtures(df) -> dict:
     recent.sort(key=lambda x: x["date"], reverse=True)
     upcoming.sort(key=lambda x: x["date"])
     return {"recent": recent[:20], "upcoming": upcoming[:20]}
-
-
-def build_value_patterns(df) -> list:
-    try:
-        df_proc = calculate_rolling_metrics(df)
-        patterns = scan_value_patterns(df_proc)
-        if patterns.empty:
-            return []
-        return patterns.head(25).to_dict("records")
-    except Exception as e:
-        print(f"  Warning value patterns: {e}")
-        return []
-
-
-def _ref_stats(sub_df, min_matches=3):
-    """Compute per-match referee stats from a subset of matches. Returns None if too few rows."""
-    import pandas as pd
-    n = len(sub_df)
-    if n < min_matches:
-        return None
-    def _col_sum(col):
-        return pd.to_numeric(sub_df.get(col, pd.Series(0, index=sub_df.index)), errors="coerce").fillna(0).sum()
-    yellows = _col_sum("HY") + _col_sum("AY")
-    reds    = _col_sum("HR") + _col_sum("AR")
-    fouls   = _col_sum("HF") + _col_sum("AF")
-    return {
-        "matches":           n,
-        "yellows_per_match": round(float(yellows) / n, 2),
-        "reds_per_match":    round(float(reds)    / n, 2),
-        "fouls_per_match":   round(float(fouls)   / n, 2),
-    }
 
 
 def build_referees(df, df_current=None) -> list:
@@ -527,15 +487,14 @@ def main():
     print("\n[5/6] h2h.json...")
     write_json(build_h2h(df, teams), "h2h.json")
 
-    # 6. Players + Value + Leagues + Fixtures + Referees
-    print("\n[6/7] players.json, players_detail.json, value_patterns.json, referees.json...")
+    # 6. Players + Leagues + Fixtures + Referees
+    print("\n[6/7] players.json, players_detail.json, referees.json...")
     leagues = build_leagues(df, teams)
     write_player_json(build_players(df_players), "players.json")
     write_player_json(build_players_detail(df_players), "players_detail.json")
     coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
     write_json(coverage, "player_coverage.json")
     write_json(build_data_status(coverage), "data_status.json")
-    write_json(build_value_patterns(df), "value_patterns.json")
     write_json(build_referees(df, df_current), "referees.json")
 
     print("\n[7/7] leagues.json, fixtures.json...")

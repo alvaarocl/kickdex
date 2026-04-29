@@ -112,12 +112,7 @@ function buildFixtureCard(f, isResult) {
         <span class="${awayWon ? "fx-score-win" : ""}">${f.away_score}</span>
       </div>`;
   } else {
-    const odds = [];
-    if (f.odds_home  != null) odds.push(`<div class="fx-odd"><span>1</span><strong>${f.odds_home}</strong></div>`);
-    if (f.odds_draw  != null) odds.push(`<div class="fx-odd"><span>X</span><strong>${f.odds_draw}</strong></div>`);
-    if (f.odds_away  != null) odds.push(`<div class="fx-odd"><span>2</span><strong>${f.odds_away}</strong></div>`);
-    if (f.odds_over25 != null) odds.push(`<div class="fx-odd"><span>O2.5</span><strong>${f.odds_over25}</strong></div>`);
-    if (odds.length) mainContent = `<div class="fx-odds">${odds.join("")}</div>`;
+    mainContent = `<div class="fx-meta">Datos de calendario y forma disponibles en el comparador</div>`;
   }
 
   const analyzeBtn = !isResult

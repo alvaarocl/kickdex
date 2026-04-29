@@ -9,12 +9,12 @@ Este documento detalla la hoja de ruta para situar a KICKDEX como la terminal de
 - **Métricas:** xG (Expected Goals), xA (Expected Assists), PSxG (Post-Shot xG).
 - **UI:** Implementación de "Shot Maps" interactivos.
 
-## 📅 SPRINT 2: Inteligencia de Mercado (The Odds Terminal)
-- **Objetivo:** Integrar la dinámica real de las casas de apuestas.
+## 📅 SPRINT 2: Inteligencia de Datos
+- **Objetivo:** Mejorar la frescura y cobertura de estadísticas propias.
 - **Funciones:** 
-    - Dropping Odds Tracker (Tendencias de cuotas).
-    - Cálculo de Margen de la Casa (Overround).
-    - Market Sentiment Index (Flujo de Smart Money).
+    - Monitor de actualización por liga.
+    - Control de cobertura por equipo y jugador.
+    - Índice de forma reciente y contexto H2H.
 
 ## 📅 SPRINT 3: Visualización Táctica (Momentum Charts)
 - **Objetivo:** Pasar de tablas estáticas a gráficos de flujo dinámicos.
@@ -27,14 +27,14 @@ Este documento detalla la hoja de ruta para situar a KICKDEX como la terminal de
 - **Objetivo:** Notificaciones proactivas al usuario.
 - **Funciones:**
     - Integración con Bot de Telegram.
-    - Scanner de Valor 24/7 (Alertas EV > 10%).
+    - Alertas de datos 24/7 sobre cambios de forma, lesiones y cobertura.
     - Daily Scouting Report en PDF para Fantasy.
 
 ---
 
 ## 🛠️ ESTRATEGIA TÉCNICA
 1. **Datos:** Migración de CSV a SQLite/PostgreSQL.
-2. **APIs:** Integración de The Odds API y API-Football.
+2. **APIs:** Integración de fuentes deportivas y API-Football.
 3. **UI:** Dashboard unificado de alto rendimiento (React).
 
 *Documento generado: Abril 2026*

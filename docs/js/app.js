@@ -9,11 +9,11 @@
 const I18N = {
   es: {
     tab_inicio: "Inicio", tab_comparador: "Comparador", tab_h2h: "H2H",
-    tab_jugadores: "Jugadores", tab_valor: "Value Bets", tab_arbitros: "Árbitros",
+    tab_jugadores: "Jugadores", tab_arbitros: "Árbitros",
     arb_title: "Árbitros", arb_subtitle: "Perfil disciplinario histórico. Identifica árbitros con tendencia a sacar más o menos tarjetas.",
     league_all: "Todas", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendario y Partidos",
-    inicio_subtitle: "Próximos partidos con cuotas Bet365. Pulsa «Analizar» para ver el análisis completo.",
+    inicio_subtitle: "Próximos partidos y resultados recientes. Pulsa «Analizar» para ver el análisis completo.",
     inicio_filter: "Filtrar por liga",
     inicio_upcoming: "Próxima jornada",
     inicio_today: "Partidos de hoy",
@@ -30,35 +30,30 @@ const I18N = {
     h2h_prompt: "Selecciona dos equipos para ver su historial",
     jug_team: "Equipo", jug_player: "Jugador", jug_run: "Ver Stats",
     jug_prompt: "Selecciona un equipo para ver las estadísticas de sus jugadores",
-    val_sub_calc: "Calculadora EV", val_sub_patterns: "Patrones históricos",
-    val_odd_home: "Cuota 1 — Local", val_odd_draw: "Cuota X — Empate",
-    val_odd_away: "Cuota 2 — Visitante", val_odd_over: "Cuota Over 2.5",
-    val_odd_btts: "Cuota BTTS", val_run: "Calcular valor",
-    val_prompt: "Selecciona equipos e introduce las cuotas de tu casa de apuestas",
     landing_title: "La terminal de datos del fútbol",
     landing_subtitle: "22 años de historia. 15.000+ partidos. Análisis profesional 100% gratuito.",
     landing_cta: "⚡ EMPEZAR A ANALIZAR",
     landing_f1_title: "Calendario en Vivo",
-    landing_f1_body: "Partidos de hoy y próxima jornada de La Liga y Segunda, con cuotas Bet365.",
+    landing_f1_body: "Partidos de hoy, próxima jornada y resultados recientes agrupados por liga.",
     landing_f2_title: "Análisis Pre-Partido",
     landing_f2_body: "Forma reciente, H2H, Smart Alerts y probabilidades Poisson para cualquier partido.",
     landing_f3_title: "Historial Completo",
-    landing_f3_body: "Todos los enfrentamientos directos desde 2004 con cuotas y división.",
+    landing_f3_body: "Todos los enfrentamientos directos desde 2004 con resultados, goles y división.",
     landing_f4_title: "Player Scouting",
-    landing_f4_body: "Estadísticas de cada jugador y buscador de oportunidades en player props.",
+    landing_f4_body: "Estadísticas de cada jugador, rankings por equipo y análisis por métricas.",
     landing_footer: "Uso educativo · Datos: football-data.co.uk + FBref",
-    disclaimer: "Esta herramienta es exclusivamente informativa y no constituye asesoramiento de apuestas. Las probabilidades son estimaciones matemáticas basadas en datos históricos. El juego puede crear adicción — juega con responsabilidad.",
-    odds: "Cuotas", home: "Local", draw: "Empate", away: "Visitante",
+    disclaimer: "Esta herramienta es exclusivamente informativa. Las probabilidades son estimaciones matemáticas basadas en datos históricos.",
+    home: "Local", draw: "Empate", away: "Visitante",
     player: "Jugador", shots: "Tiros", shots_on: "A Puerta",
     goals: "Goles", assists: "Asist.", matches: "PJ",
   },
   en: {
     tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
-    tab_jugadores: "Players", tab_valor: "Value Bets", tab_arbitros: "Referees",
+    tab_jugadores: "Players", tab_arbitros: "Referees",
     arb_title: "Referees", arb_subtitle: "Historical disciplinary profile. Identify referees with a tendency to show more or fewer cards.",
     league_all: "All", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendar & Matches",
-    inicio_subtitle: "Upcoming matches with Bet365 odds. Click «Analyze» for the full breakdown.",
+    inicio_subtitle: "Upcoming matches and recent results. Click «Analyze» for the full breakdown.",
     inicio_filter: "Filter by league",
     inicio_upcoming: "Next matchday",
     inicio_today: "Today's matches",
@@ -75,25 +70,20 @@ const I18N = {
     h2h_prompt: "Select two teams to see their head-to-head history",
     jug_team: "Team", jug_player: "Player", jug_run: "See Stats",
     jug_prompt: "Select a team to view player statistics",
-    val_sub_calc: "EV Calculator", val_sub_patterns: "Historical Patterns",
-    val_odd_home: "Odds 1 — Home", val_odd_draw: "Odds X — Draw",
-    val_odd_away: "Odds 2 — Away", val_odd_over: "Odds Over 2.5",
-    val_odd_btts: "Odds BTTS", val_run: "Calculate value",
-    val_prompt: "Select teams and enter odds from your bookmaker",
     landing_title: "The football data terminal",
     landing_subtitle: "22 years of history. 15,000+ matches. Pro-level analytics, 100% free.",
     landing_cta: "⚡ START ANALYZING",
     landing_f1_title: "Live Calendar",
-    landing_f1_body: "Today's and next matchday fixtures for La Liga and Segunda, with Bet365 odds.",
+    landing_f1_body: "Today's matches, upcoming fixtures and recent results grouped by league.",
     landing_f2_title: "Pre-Match Analysis",
     landing_f2_body: "Recent form, H2H, Smart Alerts and Poisson probabilities for every match.",
     landing_f3_title: "Full History",
-    landing_f3_body: "Every head-to-head since 2004 with odds and division.",
+    landing_f3_body: "Every head-to-head since 2004 with results, goals and division.",
     landing_f4_title: "Player Scouting",
-    landing_f4_body: "Per-player stats and player-prop opportunity finder.",
+    landing_f4_body: "Per-player stats, team rankings and metric-based analysis.",
     landing_footer: "Educational use · Data: football-data.co.uk + FBref",
-    disclaimer: "This tool is for informational purposes only and does not constitute betting advice. Probabilities are mathematical estimates based on historical data. Gambling can be addictive — play responsibly.",
-    odds: "Odds", home: "Home", draw: "Draw", away: "Away",
+    disclaimer: "This tool is for informational purposes only. Probabilities are mathematical estimates based on historical data.",
+    home: "Home", draw: "Draw", away: "Away",
     player: "Player", shots: "Shots", shots_on: "On Target",
     goals: "Goals", assists: "Assists", matches: "MP",
   },
@@ -217,7 +207,6 @@ const APP = {
   playersDetail: {},
   playerCoverage: {},
   dataStatus:   {},
-  valuePatterns: [],
   referees:    [],
   meta:        {},
   loaded:      false,
@@ -245,7 +234,7 @@ async function loadAllData() {
   if (metaEl) metaEl.innerHTML = `<span class="spinner"></span> Cargando datos...`;
 
   try {
-    const [meta, teams, teamStats, h2h, players, playersDetail, playerCoverage, dataStatus, valuePatterns, leagues, fixtures, referees] = await Promise.all([
+    const [meta, teams, teamStats, h2h, players, playersDetail, playerCoverage, dataStatus, leagues, fixtures, referees] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -254,7 +243,6 @@ async function loadAllData() {
       fetchJSON("players_detail.json").catch(() => ({})),
       fetchJSON("player_coverage.json").catch(() => ({})),
       fetchJSON("data_status.json").catch(() => ({})),
-      fetchJSON("value_patterns.json").catch(() => []),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("fixtures.json").catch(() => ({ recent: [], upcoming: [] })),
       fetchJSON("referees.json").catch(() => []),
@@ -268,7 +256,6 @@ async function loadAllData() {
     APP.playersDetail  = playersDetail;
     APP.playerCoverage = playerCoverage;
     APP.dataStatus     = dataStatus;
-    APP.valuePatterns  = valuePatterns;
     APP.leagues        = leagues;
     APP.fixtures       = fixtures;
     APP.referees       = referees;
@@ -278,8 +265,6 @@ async function loadAllData() {
     populateAllSelects();
     initSegControls();
     initModules();
-
-    if (typeof renderPatterns === "function") renderPatterns();
 
   } catch (err) {
     console.error("Error loading data:", err);
@@ -339,7 +324,7 @@ function populateSelect(id, teams) {
 
 function populateAllSelects() {
   const cmpTeams = getTeamsByLeague("all");
-  ["cmp-home","cmp-away","val-home","val-away"].forEach(id => populateSelect(id, cmpTeams));
+  ["cmp-home","cmp-away"].forEach(id => populateSelect(id, cmpTeams));
   // Jugadores: solo mostrar equipos con datos de jugadores reales
   populateSelect("jug-team", getPlayerTeamsByLeague("all"));
 }
@@ -359,8 +344,6 @@ function initSegControls() {
   };
 
   populateLeagueSelect("cmpLeagueFilter");
-  populateLeagueSelect("valLeagueFilter");
-
   const jugLeagueFilter = document.getElementById("jugLeagueFilter");
   if (jugLeagueFilter) {
     while (jugLeagueFilter.options.length > 1) jugLeagueFilter.remove(1);
@@ -388,14 +371,6 @@ function initSegControls() {
     cmpFilter.addEventListener("change", e => {
       const teams = getTeamsByLeague(e.target.value);
       ["cmp-home","cmp-away"].forEach(id => populateSelect(id, teams));
-    });
-  }
-
-  const valFilter = document.getElementById("valLeagueFilter");
-  if (valFilter) {
-    valFilter.addEventListener("change", e => {
-      const teams = getTeamsByLeague(e.target.value);
-      ["val-home","val-away"].forEach(id => populateSelect(id, teams));
     });
   }
 
@@ -449,7 +424,6 @@ function initModules() {
   if (typeof initComparador === "function") initComparador();
   if (typeof initH2H        === "function") initH2H();
   if (typeof initJugadores  === "function") initJugadores();
-  if (typeof initValor      === "function") initValor();
   if (typeof initArbitros   === "function") initArbitros();
 }
 

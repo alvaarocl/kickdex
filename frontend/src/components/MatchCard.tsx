@@ -6,10 +6,9 @@ interface MatchCardProps {
   away: string;
   score?: string;
   minute?: number;
-  odds?: { h: number; d: number; a: number };
 }
 
-export const MatchCard: React.FC<MatchCardProps> = ({ home, away, score, minute, odds }) => {
+export const MatchCard: React.FC<MatchCardProps> = ({ home, away, score, minute }) => {
   return (
     <div className="bg-[#0b0f1a] border border-[#1a2236] p-5 rounded-2xl hover:border-[#00d4aa] transition-all group">
       <div className="flex justify-between items-start mb-4">
@@ -32,21 +31,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ home, away, score, minute,
           <span className="font-semibold text-lg">{away}</span>
         </div>
       </div>
-
-      {odds && (
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { label: '1', val: odds.h },
-            { label: 'X', val: odds.d },
-            { label: '2', val: odds.a }
-          ].map((o, i) => (
-            <div key={i} className="bg-[#1a2236] p-2 rounded-lg text-center group-hover:bg-[#252e44] transition-colors">
-              <div className="text-[#8b9ab0] text-[9px] font-bold">{o.label}</div>
-              <div className="text-sm font-mono font-bold text-[#e8eaf6]">{o.val.toFixed(2)}</div>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="text-[#8b9ab0] text-xs">Datos históricos disponibles en el comparador</div>
     </div>
   );
 };

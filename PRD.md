@@ -13,25 +13,25 @@
 
 ### Diferenciación Competitiva
 
-Somos la **alternativa 100% gratuita, moderna y en tiempo real** a plataformas de pago como **ValueStats.com**.
+Somos la **alternativa 100% gratuita, moderna y en tiempo real** a plataformas de pago como **plataformas de an?lisis estad?stico.com**.
 
-**Objetivo Diferenciador:** No solo mostrar datos históricos estáticos, sino crear un **"radar de apuestas y rendimiento"** que cruce:
+**Objetivo Diferenciador:** No solo mostrar datos históricos estáticos, sino crear un **"radar de an?lisis y rendimiento"** que cruce:
 - Estadísticas avanzadas (xG, tiros, posesión)
-- Cuotas de casas de apuestas en tiempo real
+- Cuotas de fuentes externas en tiempo real
 - Datos de partidos en vivo
 
-Permitiendo a los usuarios encontrar **"Value Bets"** (apuestas de valor) y oportunidades en **Fantasy Football** sin pagar suscripciones premium.
+Permitiendo a los usuarios encontrar **"Value Bets"** (an?lisis de valor) y oportunidades en **Fantasy Football** sin pagar suscripciones premium.
 
 ---
 
 ## 👥 Públic Objetivo (User Personas)
 
 ### 1. El Apostador Inteligente ("Value Hunter")
-- **Descripción:** No apuesta por impulso. Busca discrepancias entre lo que dicen las casas de apuestas (cuotas) y lo que dicen las matemáticas (xG, tiros, rachas).
+- **Descripción:** No an?lisis por impulso. Busca discrepancias entre lo que dicen las fuentes externas (datos externos) y lo que dicen las matemáticas (xG, tiros, rachas).
 - **Necesidades:**
   - Comparar equipos rápidamente
-  - Identificar cuotas sobrevaloradas/subvaloradas
-  - Recibir alertas de caídas de cuotas
+  - Identificar tendencias estad?sticas relevantes
+  - Recibir alertas de caídas de datos externos
   - Acceso a probabilidades matemáticas precisas
 
 ### 2. El Manager de Fantasy (Biwenger, Sorare, Marca)
@@ -84,7 +84,7 @@ Permitiendo a los usuarios encontrar **"Value Bets"** (apuestas de valor) y opor
 4. Filtros por rango de minutos, últimos N partidos
 
 ### 3. Detección de Valor en Cuotas (Visión Futura)
-**Descripción:** Observar un partido en directo o pre-partido, ver la probabilidad matemática de victoria generada por la app y contrastarla automáticamente con las cuotas.
+**Descripción:** Observar un partido en directo o pre-partido, ver la probabilidad matemática de victoria generada por la app y contrastarla automáticamente con las datos externos.
 
 **Flujo:**
 1. Usuario abre un partido
@@ -92,35 +92,35 @@ Permitiendo a los usuarios encontrar **"Value Bets"** (apuestas de valor) y opor
    - Probabilidad matemática de victoria local (basada en xG, historial)
    - Probabilidad matemática de empate
    - Probabilidad matemática de victoria visitante
-3. Sistema compara contra cuotas de Bet365, Bwin, etc.
-4. Marca en VERDE si hay "Value" (cuota paga más que probabilidad real)
-5. Alerta si cae drásticamente la cuota (dinero del mercado)
+3. Sistema compara contra datos externos de Bet365, Bwin, etc.
+4. Marca en VERDE si hay "Value" (dato externo paga más que probabilidad real)
+5. Alerta si cae drásticamente la dato externo (dinero del mercado)
 
 ---
 
-## 🎬 Análisis de Competencia (Benchmark: ValueStats)
+## 🎬 Análisis de Competencia (Benchmark: plataformas de an?lisis estad?stico)
 
 Para entender lo que estamos construyendo, hemos analizado el núcleo de **valuestats.com**. Nuestra plataforma debe replicar y superar los siguientes pilares que ellos monetizan:
 
 ### 1. Motor de Tendencias Automáticas ("Trends")
-**Qué hace ValueStats:**
+**Qué hace plataformas de an?lisis estad?stico:**
 - Detecta patrones rentables automáticamente
 - Ejemplo: "El Equipo A ha tenido -2.5 goles en sus últimos 5 partidos como local"
 - Ejemplo: "El Equipo B recibe +1.5 tarjetas amarillas como visitante"
 
 **Nuestro Objetivo:** 
-Implementar un generador inteligente que expulse frases de valor para el apostador en lenguaje natural.
+Implementar un generador inteligente que expulse insights estad?sticos en lenguaje natural en lenguaje natural.
 
 ### 2. Comparador de Cuotas (Odds Comparison)
-**Qué hace ValueStats:**
-- Rastreador que compara cuotas (1-X-2 y otros mercados) entre casas principales
+**Qué hace plataformas de an?lisis estad?stico:**
+- Rastreador que compara datos externos (1-X-2 y otros mercados) entre casas principales
 - Cubre: Bet365, Betfair, Bwin, WilliamHill, 888Sport
 
 **Nuestro Objetivo:**
-Integración en tiempo real de APIs de cuotas (Fase 2 del roadmap).
+Integración en tiempo real de APIs de datos externos (Fase 2 del roadmap).
 
 ### 3. Live Match Tracker (Directo)
-**Qué hace ValueStats:**
+**Qué hace plataformas de an?lisis estad?stico:**
 - Sigue partidos en vivo
 - Actualiza rendimiento ofensivo/defensivo de equipos
 - Estadísticas individuales de jugadores al minuto (faltas, tarjetas, sustituciones, goles)
@@ -129,7 +129,7 @@ Integración en tiempo real de APIs de cuotas (Fase 2 del roadmap).
 Implementar gráficos de momentum y actualizaciones en tiempo real (Fase 2).
 
 ### 4. Base de Datos Global
-**Qué hace ValueStats:**
+**Qué hace plataformas de an?lisis estad?stico:**
 - Cubre desde grandes ligas europeas (Premier, La Liga, Champions) hasta ligas menores y sudamericanas
 - Listados de máximos goleadores y próximos partidos
 
@@ -157,7 +157,7 @@ Expandir cobertura gradualmente desde Liga Española → Ligas Top 5 → Ligas M
   - Información de bajas/lesiones (si disponible)
 
 #### A2. Generador de Tendencias (Smart Alerts)
-- **Descripción:** Algoritmo que lee la base de datos y expulsa frases de valor
+- **Descripción:** Algoritmo que lee la base de datos y expulsa insights estad?sticos
 - **Ejemplo de salida:**
   - "Hay un 80% de probabilidad de que ambos equipos marquen basándonos en los últimos 10 partidos"
   - "El equipo visitante ha concedido +2 goles en el 70% de partidos como visitante"
@@ -183,19 +183,19 @@ Expandir cobertura gradualmente desde Liga Española → Ligas Top 5 → Ligas M
 ### **Pila B: Real-Time Odds & Value Detection (Cuotas en Vivo)**
 
 #### B1. Integración de Cuotas API
-- **Descripción:** Conexión en tiempo real para mostrar cuotas del mercado
-- **Tipos de cuotas a mostrar:**
+- **Descripción:** Conexión en tiempo real para mostrar datos externos del mercado
+- **Tipos de datos externos a mostrar:**
   - 1X2 (Victoria local / Empate / Victoria visitante)
   - Over/Under de goles
   - Ambos marcan (GG - Both Teams to Score)
   - Goles exactos
-- **Casas de apuestas:** Bet365, Bwin, Betfair, WilliamHill, 888Sport
+- **Casas de an?lisis:** Bet365, Bwin, Betfair, WilliamHill, 888Sport
 - **Actualización:** Cada 5-10 minutos (fase actual), cada minuto (fase 2)
 
 #### B2. Buscador de Valor (The "Edge")
 - **Descripción:** El corazón de la app. El sistema debe comparar:
   - **Probabilidad Matemática** = basada en histórico de stats (xG, form)
-  - **Probabilidad Implícita** = derivada de la cuota de la casa
+  - **Probabilidad Implícita** = derivada de la dato externo de la casa
 - **Indicador Visual:**
   - 🟢 **VERDE:** Value Bet encontrado (casa paga MÁS de lo que debería)
   - 🔴 **ROJO:** Apuesta de riesgo (casa paga MENOS de lo que debería)
@@ -205,10 +205,10 @@ Expandir cobertura gradualmente desde Liga Española → Ligas Top 5 → Ligas M
   - Si (Prob. Implícita < Prob. Matemática) → VALUE
 
 #### B3. Seguimiento de Caídas de Cuotas (Dropping Odds)
-- **Descripción:** Alertas visuales si la cuota cae drásticamente
-- **Indicador:** Si la cuota de un equipo en Bet365 cae >5% en últimas 2 horas
+- **Descripción:** Alertas visuales si la dato externo cae drásticamente
+- **Indicador:** Si la dato externo de un equipo en Bet365 cae >5% en últimas 2 horas
 - **Interpretación:** Dinero del mercado se mueve hacia esa opción (información privilegiada del mercado)
-- **Visualización:** Gráfico de línea que muestra evolución de cuota en tiempo real
+- **Visualización:** Gráfico de línea que muestra evolución de dato externo en tiempo real
 
 ---
 
@@ -234,7 +234,7 @@ Expandir cobertura gradualmente desde Liga Española → Ligas Top 5 → Ligas M
   - Substituciones
   - Goles (marcador en vivo)
 - **Frecuencia:** Actualización cada 30-60 segundos
-- **Propósito:** Apoyar a usuarios que hacen apuestas en directo (In-Play Betting)
+- **Propósito:** Apoyar a usuarios que hacen an?lisis en directo (In-Play Betting)
 
 ---
 
@@ -247,7 +247,7 @@ Expandir cobertura gradualmente desde Liga Española → Ligas Top 5 → Ligas M
   - Registros obligatorios
   - Anuncios tipo banner molestos
   - Pop-ups intrusivos
-- **Monetización Futura:** Freemium (datos avanzados/API) o afiliación de apuestas (sin obligar a usar la plataforma)
+- **Monetización Futura:** Freemium (datos avanzados/API) o afiliación de an?lisis (sin obligar a usar la plataforma)
 
 #### D2. Diseño Pro-Analista
 - **Modo Oscuro:** Obligatorio por defecto
@@ -293,7 +293,7 @@ Expandir cobertura gradualmente desde Liga Española → Ligas Top 5 → Ligas M
 ### **FASE 2: Expansión a Tiempo Real (El Siguiente Gran Paso)** 📋 Planned
 **Timeline:** Año 2 (Ene 2027 - Dic 2027)
 
-**Objetivo:** Integrar datos en tiempo real y cuotas vivas para crear ventaja competitiva real
+**Objetivo:** Integrar datos en tiempo real y datos externos vivas para crear ventaja competitiva real
 
 **Realidad del Mercado:** Para lograr un "100% tiempo real", el sistema deberá transicionar de extraer datos gratuitos (que tienen retraso de 1-2 días) a consumir webhooks de una API deportiva profesional.
 
@@ -304,19 +304,19 @@ Expandir cobertura gradualmente desde Liga Española → Ligas Top 5 → Ligas M
    - Gráfico de momentum en tiempo real
 
 2. **Integración de Cuotas (Odds API)**
-   - Módulo que rastree cuotas de pre-partido y en directo
+   - Módulo que rastree datos externos de pre-partido y en directo
    - Cobertura de Bet365, Bwin, Betfair, WilliamHill, 888Sport
-   - Histórico de movimientos de cuotas
+   - Histórico de movimientos de datos externos
 
 3. **Motor de Value Detection**
    - Cálculo automático de probabilidades matemáticas
-   - Comparación contra cuotas del mercado
+   - Comparación contra datos externos del mercado
    - Alertas visuales cuando hay "Value Bets"
    - Ranking de mejores oportunidades del día
 
 4. **Push Notifications**
    - Alertas cuando se detecta Value
-   - Alertas de caídas de cuotas significativas
+   - Alertas de caídas de datos externos significativas
    - Notificaciones de cambios en equipo/lesiones
 
 **Stack Técnico a Agregar:**
@@ -464,13 +464,13 @@ Opcionales (si no existen, se crean con NaN):
 - ✅ HTTPS obligatorio (SSL/TLS)
 - ✅ No almacenar datos sensibles (contraseñas) en Fase 1
 - ✅ Respetar ToS de fuentes de datos (football-data.co.uk)
-- ✅ Respetar APIs de cuotas (rate limits)
+- ✅ Respetar APIs de datos externos (rate limits)
 - ✅ GDPR: Privacidad de usuario (no tracking sin consentimiento)
 - ✅ Afiliación responsable: Advertencia de riesgos de juego
 
 ### Disclaimer
 La plataforma debe mostrar claramente:
-- "Las apuestas conllevan riesgo. Juega responsablemente."
+- "Las an?lisis conllevan riesgo. Juega responsablemente."
 - "KICKDEX proporciona análisis histórico, no garantías de futuro."
 - "No somos asesores financieros. Haz tus propias investigaciones."
 
@@ -491,7 +491,7 @@ La plataforma debe mostrar claramente:
 - [ ] Crear perfiles de jugadores detallados
 
 ### Priority 3 (Semana 5+)
-- [ ] Preparar integración con API de cuotas (pruebas)
+- [ ] Preparar integración con API de datos externos (pruebas)
 - [ ] Diseñar arquitectura para Fase 2
 - [ ] Crear documentación para desarrolladores
 - [ ] Plan de monetización (freemium model)
@@ -510,21 +510,21 @@ La plataforma debe mostrar claramente:
 ## 📚 Apéndices
 
 ### A. Referencias y Benchmarks
-- **Competencia Directa:** ValueStats.com, WhoScored, Understat
+- **Competencia Directa:** plataformas de an?lisis estad?stico.com, WhoScored, Understat
 - **Datos Históricos:** football-data.co.uk
 - **APIs de Referencia:** Odds API, Flashscore API
 
 ### B. Glosario
 - **xG (Expected Goals):** Goles esperados basados en calidad de ocasiones
-- **Value Bet:** Apuesta donde la cuota paga más que la probabilidad real
+- **Value Bet:** Apuesta donde la dato externo paga más que la probabilidad real
 - **H2H (Head-to-Head):** Enfrentamientos históricos entre dos equipos
 - **Smart Alert:** Tendencia automática detectada por el sistema
 - **Live Pressure:** Gráfico de presión/momentum en tiempo real
-- **Odds Dropping:** Caída significativa de cuota (=dinero fluyendo)
+- **Odds Dropping:** Caída significativa de dato externo (=dinero fluyendo)
 
 ### C. Casos de Uso Expandidos
 
-#### Caso 1: Usuario "Value Hunter" busca apuesta
+#### Caso 1: Usuario "Value Hunter" busca an?lisis
 1. Entra a KICKDEX
 2. Ve calendario de hoy (Real Madrid vs Barcelona)
 3. Clica en el partido
@@ -533,7 +533,7 @@ La plataforma debe mostrar claramente:
 6. Sistema calcula prob. matemática: 55% Madrid gana
 7. Cuota de Bet365: 1.90 (prob. implícita = 52%)
 8. 🟢 Marcado como VALUE ✓
-9. Usuario coloca apuesta
+9. Usuario coloca an?lisis
 
 #### Caso 2: Manager de Fantasy busca diferencial
 1. Abre Fantasy League

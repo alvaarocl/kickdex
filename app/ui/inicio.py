@@ -1,14 +1,12 @@
 """
-Tab 🏠 Inicio — Calendario Premium.
-Replica exactamente las cards y badges de la web estática.
+Tab Inicio — calendario y resultados.
 """
 
 from __future__ import annotations
 import streamlit as st
 import pandas as pd
 from app.data.fixtures import Fixture, get_upcoming_fixtures, get_recent_results, get_todays_fixtures
-from app.i18n import t
-from app.engine.api_manager import ExternalAPIManager
+from app.config import LEAGUES
 
 def _fixture_card_html(fx: Fixture, is_result: bool = False) -> str:
     league_cls = fx.league_code.lower()
@@ -29,15 +27,7 @@ def _fixture_card_html(fx: Fixture, is_result: bool = False) -> str:
             <span class="{'fx-score-win' if away_win else ''}">{fx.away_score}</span>
         </div>"""
     else:
-        odds_html = ""
-        if fx.odds_home:
-            odds_html = f"""
-            <div class="fx-odds">
-                <div class="fx-odd"><span>1</span><strong>{fx.odds_home:.2f}</strong></div>
-                <div class="fx-odd"><span>X</span><strong>{fx.odds_draw:.2f}</strong></div>
-                <div class="fx-odd"><span>2</span><strong>{fx.odds_away:.2f}</strong></div>
-            </div>"""
-        main_content = odds_html
+        main_content = '<div class="fx-meta">Datos disponibles en el comparador</div>'
 
     return f"""
     <div class="fx-card">
@@ -57,38 +47,7 @@ def _fixture_card_html(fx: Fixture, is_result: bool = False) -> str:
 
 def render() -> None:
     st.markdown('<h2 class="section-h2">Calendario y Partidos</h2>', unsafe_allow_html=True)
-    st.markdown('<p class="section-desc">Próximos partidos con cuotas en tiempo real. Análisis profesional.</p>', unsafe_allow_html=True)
-
-    # ── Inteligencia de Mercado (Live) ──
-    api = ExternalAPIManager()
-    st.markdown('<div class="fx-section-title">📊 Intelligence: Mercado en Tiempo Real</div>', unsafe_allow_html=True)
-    
-    odds_data = api.get_live_odds()
-    if odds_data:
-        # Replicar el grid de la web estática para live market si fuera posible, 
-        # pero usaremos las cards premium de fixtures para consistencia.
-        # Por ahora, mostrar los primeros 3 partidos live de la API
-        cols = st.columns(3)
-        for i, match in enumerate(odds_data[:3]):
-            with cols[i]:
-                bookie = match['bookmakers'][0] if match['bookmakers'] else None
-                if bookie:
-                    outcomes = bookie['markets'][0]['outcomes']
-                    h = next(x['price'] for x in outcomes if x['name'] == match['home_team'])
-                    d = next(x['price'] for x in outcomes if x['name'] == 'Draw')
-                    a = next(x['price'] for x in outcomes if x['name'] == match['away_team'])
-                    
-                    st.markdown(f"""
-                    <div class="fx-card" style="border-color: var(--brand);">
-                        <div class="fx-row"><span class="fx-league-badge sp1">LIVE MARKET</span></div>
-                        <div class="fx-team" style="margin-top:10px;">{match['home_team']} vs {match['away_team']}</div>
-                        <div class="fx-odds">
-                            <div class="fx-odd"><span>1</span><strong>{h:.2f}</strong></div>
-                            <div class="fx-odd"><span>X</span><strong>{d:.2f}</strong></div>
-                            <div class="fx-odd"><span>2</span><strong>{a:.2f}</strong></div>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+    st.markdown('<p class="section-desc">Próximos partidos, resultados recientes y acceso rápido al comparador.</p>', unsafe_allow_html=True)
 
     # ── Filtros ──
     options = ["all"] + list(LEAGUES.keys())

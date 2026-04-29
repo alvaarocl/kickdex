@@ -47,13 +47,6 @@ def test_over25_prob_range():
     assert 0.0 <= probs.over25 <= 1.0
 
 
-def test_implied_odds_above_one():
-    probs = calculate_probabilities(BALANCED, BALANCED)
-    odds = probs.implied_odds()
-    for key, val in odds.items():
-        assert val > 1.0, f"Implied odds for {key}={val} should be > 1"
-
-
 def test_h2h_weighting_influences_result():
     """Con H2H donde el visitante domina, las probabilidades deben ajustarse."""
     away_dominant_h2h = {"total": 10, "wins_team1": 2, "draws": 2, "wins_team2": 6,

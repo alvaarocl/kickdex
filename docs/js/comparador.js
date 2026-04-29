@@ -195,9 +195,6 @@ function buildMatchLog(log) {
 }
 
 function buildProbSection(home, away, probs) {
-  const impliedH = probs.home > 0 ? (1 / probs.home).toFixed(2) : "—";
-  const impliedD = probs.draw > 0 ? (1 / probs.draw).toFixed(2) : "—";
-  const impliedA = probs.away > 0 ? (1 / probs.away).toFixed(2) : "—";
   const maxP = Math.max(probs.home, probs.draw, probs.away);
   const homeWin = probs.home === maxP ? "winner" : "";
   const drawWin = probs.draw === maxP ? "winner" : "";
@@ -207,9 +204,9 @@ function buildProbSection(home, away, probs) {
   <div class="card stagger-item" style="margin-bottom:20px;">
     <div class="section-title">Probabilidades KICKDEX</div>
     <div class="prob-1x2">
-      <div class="prob-1x2-box ${homeWin}"><div class="prob-1x2-label">1</div><div class="prob-1x2-pct">${(probs.home*100).toFixed(1)}%</div><div class="prob-1x2-odds">≈ ${impliedH}</div></div>
-      <div class="prob-1x2-box ${drawWin}"><div class="prob-1x2-label">X</div><div class="prob-1x2-pct">${(probs.draw*100).toFixed(1)}%</div><div class="prob-1x2-odds">≈ ${impliedD}</div></div>
-      <div class="prob-1x2-box ${awayWin}"><div class="prob-1x2-label">2</div><div class="prob-1x2-pct">${(probs.away*100).toFixed(1)}%</div><div class="prob-1x2-odds">≈ ${impliedA}</div></div>
+      <div class="prob-1x2-box ${homeWin}"><div class="prob-1x2-label">1</div><div class="prob-1x2-pct">${(probs.home*100).toFixed(1)}%</div></div>
+      <div class="prob-1x2-box ${drawWin}"><div class="prob-1x2-label">X</div><div class="prob-1x2-pct">${(probs.draw*100).toFixed(1)}%</div></div>
+      <div class="prob-1x2-box ${awayWin}"><div class="prob-1x2-label">2</div><div class="prob-1x2-pct">${(probs.away*100).toFixed(1)}%</div></div>
     </div>
     <div style="border-top:1px solid var(--border);padding-top:16px;">
       ${probRow("Over 2.5 goles", probs.over25, "var(--blue)")}

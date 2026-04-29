@@ -109,7 +109,7 @@ function renderArbitros() {
     ${svgRef} Perfil Disciplinario <small>${leagueLabel} · ${windowLabel}</small>
   </div>
   <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">
-    Datos históricos para identificar árbitros "over" o "under" en mercados disciplinarios.
+    Datos históricos para identificar perfiles disciplinarios altos o bajos.
   </p>
   ${fallbackNote}
   <div class="table-wrap">

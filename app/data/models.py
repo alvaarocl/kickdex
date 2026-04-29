@@ -48,11 +48,6 @@ class Match(Base):
     hr = Column(Integer) # Home Red Cards
     ar = Column(Integer) # Away Red Cards
     
-    # Odds
-    b365h = Column(Float)
-    b365d = Column(Float)
-    b365a = Column(Float)
-    
     # Relaciones
     home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_matches")
     away_team = relationship("Team", foreign_keys=[away_team_id], back_populates="away_matches")

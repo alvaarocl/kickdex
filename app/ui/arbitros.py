@@ -165,9 +165,9 @@ def render(df: pd.DataFrame) -> None:
     n_under = int((filtered["Amarillas/Part."] <= 3.0).sum()) if "Amarillas/Part." in filtered.columns else 0
 
     st.info(
-        f"💡 **Análisis de valor — {league_label} · {window_label}**\n\n"
-        f"- **Árbitros 'Over'** (≥4.5 am/p): **{n_over}**. Ideales para partidos de alta rivalidad.\n"
-        f"- **Árbitros 'Under'** (≤3.0 am/p): **{n_under}**. Dejan jugar, pocas interrupciones.\n"
+        f"💡 **Resumen disciplinario — {league_label} · {window_label}**\n\n"
+        f"- **Árbitros con ≥4.5 am/p**: **{n_over}**. Perfil de alta intervención disciplinaria.\n"
+        f"- **Árbitros con ≤3.0 am/p**: **{n_under}**. Perfil de menor intervención disciplinaria.\n"
         f"- Árbitros con >0.3 pen/p tienen mayor impacto en el resultado final.\n"
         f"- Dataset curado La Liga/Segunda: 24 colegiados con stats 2021-2025 (se fusiona con CSV cuando hay muestra)."
     )

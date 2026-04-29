@@ -4,7 +4,7 @@ description: Plataforma Big Data de fútbol — rebrand de Analista Pro a KICKDE
 type: project
 ---
 
-Proyecto rebrandeado de "Analista Pro" a **KICKDEX**: terminal de datos de fútbol gratuito, alternativa a ValueStats.com. Cubre La Liga + Segunda División con 18,249 partidos históricos desde 2004.
+Proyecto rebrandeado de "Analista Pro" a **KICKDEX**: terminal de datos de fútbol gratuito, alternativa a plataformas de an?lisis estad?stico.com. Cubre La Liga + Segunda División con 18,249 partidos históricos desde 2004.
 
 **Why:** REBRANDING.md creado el 2026-04-15 con estudio de mercado completo, estudio de marca, nombre nuevo, paleta refinada y checklist de migración de 23 archivos.
 
@@ -35,7 +35,7 @@ Proyecto rebrandeado de "Analista Pro" a **KICKDEX**: terminal de datos de fútb
 - `REBRANDING.md` → source of truth del rebrand completo
 - `docs/index.html` → frontend principal (GitHub Pages)
 - `docs/css/app.css` → 1433 líneas, sistema de diseño
-- `docs/js/` → app.js, comparador.js, h2h.js, jugadores.js, valor.js, animations.js
+- `docs/js/` → app.js, comparador.js, h2h.js, jugadores.js, jugadores.js, animations.js
 - `PRD.md`, `PLAN.md` → product requirements y plan técnico
 - `app/config.py`, `main.py`, `.streamlit/config.toml` → config backend
 

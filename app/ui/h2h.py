@@ -1,6 +1,6 @@
 """
 Tab 2 — Historial H2H.
-Muestra todos los enfrentamientos históricos entre dos equipos con cuotas.
+Muestra todos los enfrentamientos históricos entre dos equipos.
 """
 
 import streamlit as st
@@ -134,23 +134,11 @@ def render(df: pd.DataFrame, teams: list[str]) -> None:
     display = h2h_display.rename(columns={
         "Date": t("date"),
         "Resultado": t("result"),
-        "B365H": f"{t('odds')} {t('home')}",
-        "B365D": f"{t('odds')} {t('draw')}",
-        "B365A": f"{t('odds')} {t('away')}",
         "Liga": t("league"),
     })
 
     col_config = {
         t("date"): st.column_config.DateColumn(t("date"), format="DD/MM/YYYY"),
-        f"{t('odds')} {t('home')}": st.column_config.NumberColumn(
-            f"{t('odds')} {t('home')}", format="%.2f"
-        ),
-        f"{t('odds')} {t('draw')}": st.column_config.NumberColumn(
-            f"{t('odds')} {t('draw')}", format="%.2f"
-        ),
-        f"{t('odds')} {t('away')}": st.column_config.NumberColumn(
-            f"{t('odds')} {t('away')}", format="%.2f"
-        ),
     }
 
     st.dataframe(

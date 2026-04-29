@@ -28,11 +28,6 @@ ROLLING_WINDOW_DEFAULT = 5       # Últimos N partidos para forma reciente
 ROLLING_WINDOW_OPTIONS = [3, 5, 10]
 MIN_MATCHES_FOR_STATS = 3        # Mínimo de partidos para mostrar métricas
 
-# ── Value Detection ───────────────────────────────────────────────────────────
-MIN_SAMPLE_VALUE = 15            # Partidos mínimos para considerar un patrón de valor
-MIN_ACCURACY_VALUE = 0.55        # Acierto mínimo (55%) para mostrar como value
-VALUE_EDGE_THRESHOLD = 0.03      # Diferencia mínima (3%) para marcar como verde
-
 # ── Descarga de datos ─────────────────────────────────────────────────────────
 FOOTBALL_DATA_BASE_URL = "https://www.football-data.co.uk/mmz4281"
 DATA_DIR = "datos"               # lowercase, consistente en todos los módulos
@@ -169,7 +164,6 @@ APP_TAGLINE = "The football data terminal."
 
 # ── Disclaimer ────────────────────────────────────────────────────────────────
 DISCLAIMER = (
-    "Las apuestas conllevan riesgo. Juega responsablemente. "
-    "KICKDEX proporciona análisis histórico, no garantías de resultados futuros. "
-    "Si el juego te causa problemas, llama al 900 200 225 (gratuito, 24h)."
+    "KICKDEX proporciona análisis histórico y modelos estadísticos informativos, "
+    "no garantías de resultados futuros."
 )

@@ -11,15 +11,14 @@ DEFAULT_LANG = "es"
 TRANSLATIONS: dict[str, dict[str, str]] = {
     # ── Global / Nav ─────────────────────────────────────────────────────────
     "app_tagline": {
-        "es": "Big Data · Value Bets · Player Scouting · 100% Gratuito",
-        "en": "Big Data · Value Bets · Player Scouting · 100% Free",
+        "es": "Big Data · Comparadores · Player Scouting · 100% Gratuito",
+        "en": "Big Data · Comparisons · Player Scouting · 100% Free",
     },
     "tab_inicio": {"es": "🏠 Inicio", "en": "🏠 Home"},
     "tab_comparador": {"es": "⚡ Comparador", "en": "⚡ Match Analysis"},
     "tab_h2h": {"es": "📚 H2H Histórico", "en": "📚 Head-to-Head"},
     "tab_jugadores": {"es": "⚽ Jugadores", "en": "⚽ Players"},
     "tab_arbitros": {"es": "⚖️ Árbitros", "en": "⚖️ Referees"},
-    "tab_value": {"es": "💎 Value Bets", "en": "💎 Value Bets"},
 
     # ── Sidebar ──────────────────────────────────────────────────────────────
     "sidebar_tool": {
@@ -51,8 +50,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
     "landing_f1_title": {"es": "📅 Calendario en Vivo", "en": "📅 Live Calendar"},
     "landing_f1_body": {
-        "es": "Partidos de hoy y próxima jornada de La Liga y Segunda, con cuotas Bet365.",
-        "en": "Today's and next matchday fixtures for La Liga and Segunda, with Bet365 odds.",
+        "es": "Partidos de hoy, próxima jornada y resultados recientes agrupados por liga.",
+        "en": "Today's matches, upcoming fixtures and recent results grouped by league.",
     },
     "landing_f2_title": {"es": "⚡ Análisis Pre-Partido", "en": "⚡ Pre-Match Analysis"},
     "landing_f2_body": {
@@ -61,13 +60,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
     "landing_f3_title": {"es": "📚 Historial Completo", "en": "📚 Full History"},
     "landing_f3_body": {
-        "es": "Todos los enfrentamientos directos desde 2004 con cuotas y división.",
-        "en": "Every head-to-head since 2004 with odds and division.",
+        "es": "Todos los enfrentamientos directos desde 2004 con resultados, goles y división.",
+        "en": "Every head-to-head since 2004 with results, goals and division.",
     },
     "landing_f4_title": {"es": "⚽ Player Scouting", "en": "⚽ Player Scouting"},
     "landing_f4_body": {
-        "es": "Estadísticas de cada jugador y buscador de oportunidades en player props.",
-        "en": "Per-player stats and player-prop opportunity finder.",
+        "es": "Estadísticas de cada jugador, rankings por equipo y análisis por métricas.",
+        "en": "Per-player stats, team rankings and metric-based analysis.",
     },
     "landing_footer": {
         "es": "Uso educativo · Datos: football-data.co.uk + FBref",
@@ -77,8 +76,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     # ── Inicio ───────────────────────────────────────────────────────────────
     "inicio_title": {"es": "🏠 Calendario y Partidos", "en": "🏠 Calendar & Matches"},
     "inicio_subtitle": {
-        "es": "Próximos partidos con cuotas Bet365. Pulsa «Analizar» para ver el análisis completo.",
-        "en": "Upcoming matches with Bet365 odds. Click «Analyze» to get the full breakdown.",
+        "es": "Próximos partidos y resultados recientes. Pulsa «Analizar» para ver el análisis completo.",
+        "en": "Upcoming matches and recent results. Click «Analyze» to get the full breakdown.",
     },
     "inicio_today": {"es": "📆 Partidos de Hoy", "en": "📆 Today's Matches"},
     "inicio_upcoming": {"es": "🗓️ Próxima Jornada", "en": "🗓️ Next Matchday"},
@@ -93,7 +92,6 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "league_all": {"es": "Todas", "en": "All"},
     "league_sp1": {"es": "La Liga", "en": "La Liga"},
     "league_sp2": {"es": "Segunda", "en": "Segunda"},
-    "odds": {"es": "Cuotas", "en": "Odds"},
     "time": {"es": "Hora", "en": "Time"},
     "home": {"es": "Local", "en": "Home"},
     "draw": {"es": "Empate", "en": "Draw"},
@@ -128,9 +126,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "cmp_radar": {"es": "📡 Comparativa Visual", "en": "📡 Visual Comparison"},
     "cmp_probs": {"es": "🎯 Probabilidades Matemáticas", "en": "🎯 Mathematical Probabilities"},
     "cmp_btts": {"es": "🔵 Ambos marcan", "en": "🔵 Both teams score"},
-    "cmp_fair_odds": {
-        "es": "Cuotas justas estimadas",
-        "en": "Estimated fair odds",
+    "cmp_estimated_probs": {
+        "es": "Probabilidades estimadas",
+        "en": "Estimated probabilities",
     },
     "cmp_alerts": {"es": "🔔 Smart Alerts", "en": "🔔 Smart Alerts"},
     "cmp_no_alerts": {

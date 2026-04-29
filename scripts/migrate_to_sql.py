@@ -76,9 +76,6 @@ def migrate():
                     ast=int(row["AST"]) if pd.notna(row.get("AST")) else 0,
                     hc=int(row["HC"]) if pd.notna(row.get("HC")) else 0,
                     ac=int(row["AC"]) if pd.notna(row.get("AC")) else 0,
-                    b365h=float(row["B365H"]) if pd.notna(row.get("B365H")) else None,
-                    b365d=float(row["B365D"]) if pd.notna(row.get("B365D")) else None,
-                    b365a=float(row["B365A"]) if pd.notna(row.get("B365A")) else None,
                 )
                 db.add(match)
             db.commit()

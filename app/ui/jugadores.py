@@ -1,6 +1,6 @@
 """
 Tab 3 — Player Scouting.
-Perfiles individuales de jugadores y buscador de Player Props.
+Perfiles individuales de jugadores y análisis por métricas.
 """
 
 import streamlit as st
@@ -27,26 +27,26 @@ def _sparkline(values: list[float], color: str = "#00d4aa") -> go.Figure:
     return fig
 
 
-def _player_props_search(df_players: pd.DataFrame) -> None:
-    """Sección de búsqueda de oportunidades en Player Props."""
+def _metric_search(df_players: pd.DataFrame) -> None:
+    """Sección de búsqueda por consistencia estadística."""
     st.markdown("---")
-    st.markdown("#### 🔍 Buscador de Player Props")
-    st.caption("Encuentra jugadores que superen una línea estadística con alta consistencia")
+    st.markdown("#### 🔍 Buscador por Métrica")
+    st.caption("Encuentra jugadores que superen un umbral estadístico con alta consistencia")
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        market = st.selectbox("Mercado", ["Tiros Totales", "Tiros a Puerta", "Faltas", "Tarjetas"], key="pp_market")
+        metric = st.selectbox("Métrica", ["Tiros Totales", "Tiros a Puerta", "Faltas", "Tarjetas"], key="pp_metric")
     with col2:
-        line = st.number_input("Línea (superar)", min_value=0.5, max_value=8.0, step=0.5, value=1.5, key="pp_line")
+        line = st.number_input("Umbral (superar)", min_value=0.5, max_value=8.0, step=0.5, value=1.5, key="pp_line")
     with col3:
         min_games = st.slider("Mínimo partidos", 3, 15, 5, key="pp_min_games")
     with col4:
         min_pct = st.slider("% Mínimo acierto", 50, 100, 65, key="pp_min_pct")
 
     col_map = {"Tiros Totales": "sh", "Tiros a Puerta": "sot", "Faltas": "fls", "Tarjetas": "crdy"}
-    metric_col = col_map[market]
+    metric_col = col_map[metric]
 
-    if st.button("🔍 BUSCAR OPORTUNIDADES", type="primary"):
+    if st.button("🔍 BUSCAR JUGADORES", type="primary"):
         results = []
         for (player, team), grp in df_players.groupby(["player", "team"]):
             grp_sorted = grp.sort_values("date", ascending=False).head(min_games)
@@ -65,7 +65,7 @@ def _player_props_search(df_players: pd.DataFrame) -> None:
                 "Jugador": player,
                 "Equipo": team,
                 "% Acierto": f"{pct:.0f}%",
-                f"Media {market}": f"{avg:.2f}",
+                f"Media {metric}": f"{avg:.2f}",
                 "Último": f"{float(grp_sorted.iloc[0][metric_col]):.1f}",
                 "Últimos 5": " ".join(
                     "✅" if float(v) > line else "❌" for v in last5
@@ -75,7 +75,7 @@ def _player_props_search(df_players: pd.DataFrame) -> None:
 
         if results:
             results_df = pd.DataFrame(results).sort_values("_pct", ascending=False).drop(columns=["_pct"])
-            st.success(f"✅ {len(results_df)} oportunidades encontradas")
+            st.success(f"✅ {len(results_df)} jugadores encontrados")
             st.dataframe(results_df, hide_index=True, use_container_width=True)
         else:
             st.info("No se encontraron jugadores que cumplan los criterios.")
@@ -178,5 +178,5 @@ def render(df_players: pd.DataFrame) -> None:
             top_fls["Media Faltas"] = top_fls["Media Faltas"].round(2)
             st.dataframe(top_fls, hide_index=True, use_container_width=True)
 
-    # ── Player Props search ───────────────────────────────────────────────────
-    _player_props_search(df_players)
+    # ── Búsqueda por métrica ──────────────────────────────────────────────────
+    _metric_search(df_players)

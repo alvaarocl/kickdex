@@ -147,9 +147,6 @@ header[data-testid="stHeader"], [data-testid="stSidebarNav"], #MainMenu, footer,
 .fx-league-badge.sp2 { background: rgba(91,214,255,.1); color: var(--brand2); }
 .fx-team { font-weight: 700; color: #fff; font-size: .95rem; }
 .fx-score { font-family: monospace; font-weight: 800; color: var(--brand); background: rgba(46,230,166,.1); padding: 2px 8px; border-radius: 4px; }
-.fx-odds { display: flex; gap: 8px; margin-top: 10px; }
-.fx-odd { background: var(--bg2); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; font-family: monospace; font-size: .75rem; text-align: center; }
-.fx-odd span { display: block; font-size: .6rem; color: var(--muted); }
 
 /* ── Árbitros badges ── */
 .ref-badge-high { background: rgba(255,90,110,.12); color: #FF5A6E; border: 1px solid rgba(255,90,110,.3); padding: 2px 8px; border-radius: 20px; font-size: .65rem; font-weight: 800; }

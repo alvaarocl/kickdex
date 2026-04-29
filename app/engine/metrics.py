@@ -227,7 +227,7 @@ def calculate_player_percentiles(df_players: pd.DataFrame) -> pd.DataFrame:
 def get_h2h(df: pd.DataFrame, team1: str, team2: str) -> pd.DataFrame | None:
     """
     Devuelve todos los enfrentamientos entre team1 y team2, ordenados por fecha desc.
-    Incluye resultado y cuotas Bet365 si están disponibles.
+    Incluye resultado y liga si están disponibles.
     """
     mask = (
         ((df["HomeTeam"] == team1) & (df["AwayTeam"] == team2)) |
@@ -245,7 +245,7 @@ def get_h2h(df: pd.DataFrame, team1: str, team2: str) -> pd.DataFrame | None:
     )
 
     cols = ["Date", "Resultado"]
-    for c in ["B365H", "B365D", "B365A", "Liga"]:
+    for c in ["Liga"]:
         if c in h2h.columns:
             cols.append(c)
 

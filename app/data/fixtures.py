@@ -2,7 +2,7 @@
 Fetcher de partidos próximos y resultados recientes.
 
 Estrategia: football-data.co.uk actualiza los CSVs por temporada (SP1_2526.csv,
-SP2_2526.csv) añadiendo los fixtures de la próxima jornada con cuotas pero sin
+SP2_2526.csv) añadiendo los fixtures de la próxima jornada sin
 resultado (FTHG/FTAG NaN) 2-3 días antes del partido. Este módulo:
 
 1. Re-descarga los CSVs actuales con TTL corto (1h).
@@ -46,11 +46,6 @@ class Fixture:
     time: str                 # "21:00" o ""
     home: str                 # normalizado
     away: str                 # normalizado
-    odds_home: float | None
-    odds_draw: float | None
-    odds_away: float | None
-    odds_over25: float | None
-    odds_under25: float | None
     home_score: int | None    # None si no jugado
     away_score: int | None
 
@@ -110,10 +105,6 @@ def _row_to_fixture(row: pd.Series, league_code: str) -> Fixture | None:
         if not isinstance(home, str) or not isinstance(away, str):
             return None
 
-        def _f(col):
-            v = row.get(col)
-            return float(v) if pd.notna(v) else None
-
         def _i(col):
             v = row.get(col)
             return int(v) if pd.notna(v) else None
@@ -125,11 +116,6 @@ def _row_to_fixture(row: pd.Series, league_code: str) -> Fixture | None:
             time=str(row.get("Time", "") or "").strip(),
             home=home,
             away=away,
-            odds_home=_f("B365H"),
-            odds_draw=_f("B365D"),
-            odds_away=_f("B365A"),
-            odds_over25=_f("B365>2.5"),
-            odds_under25=_f("B365<2.5"),
             home_score=_i("FTHG"),
             away_score=_i("FTAG"),
         )

@@ -110,13 +110,12 @@ def main():
         t("tab_h2h"),
         t("tab_jugadores"),
         t("tab_arbitros"),
-        t("tab_valor"),
     ]
     
     # Usamos st.tabs nativo pero estilizado via CSS para que se vea igual que la web
     st_tabs = st.tabs(tab_labels)
     
-    from app.ui import inicio, comparador, h2h, jugadores, valor, arbitros
+    from app.ui import inicio, comparador, h2h, jugadores, arbitros
 
     with st_tabs[0]:
         inicio.render()
@@ -128,8 +127,6 @@ def main():
         jugadores.render(df_players)
     with st_tabs[4]:
         arbitros.render(df)
-    with st_tabs[5]:
-        valor.render(df, teams)
 
 
 if __name__ == "__main__":

@@ -12,48 +12,31 @@ from app.data.models import Team, Match, PlayerStat
 from pydantic import BaseModel
 from datetime import date
 
-from app.engine.api_manager import ExternalAPIManager
-from app.engine.backtester import Backtester
 from app.engine.metrics import calculate_player_percentiles
-from app.engine.smart_alerts import generate_alerts
-from app.engine.probability import calculate_probabilities
 import pandas as pd
 
 app = FastAPI(title="KICKDEX API", version="2.0.0")
-api_manager = ExternalAPIManager()
 
-# ─── Endpoints de Mercado (Live) ──────────────────────────────────────────────
 
-@app.get("/market/odds")
-def get_live_market_odds(sport: str = "soccer_spain_la_liga"):
-    return api_manager.get_live_odds(sport)
+class TeamSchema(BaseModel):
+    id: int
+    name: str
+    league: str | None = None
 
-@app.get("/market/live")
-def get_live_scores():
-    return api_manager.get_live_scores()
+    class Config:
+        from_attributes = True
+
+
+class MatchSchema(BaseModel):
+    id: int
+    date: date
+    home_team: str
+    away_team: str
+    fthg: int | None = None
+    ftag: int | None = None
+    ftr: str | None = None
 
 # ─── Endpoints de Análisis Pro ────────────────────────────────────────────────
-
-@app.get("/analysis/backtest")
-def run_historical_backtest(
-    market: str, 
-    metric: str, 
-    threshold: float, 
-    min_odds: float = 1.1, 
-    max_odds: float = 5.0,
-    db: Session = Depends(get_db)
-):
-    """Ejecuta un backtest masivo sobre la base de datos SQL."""
-    # Convertimos la DB SQL a DF temporalmente para el motor actual
-    # TODO: Refactorizar Backtester para usar SQL puro
-    query = db.query(Match).all()
-    df = pd.DataFrame([{ "Date": m.date, "HomeTeam": m.home_team.name, "AwayTeam": m.away_team.name,
-                         "FTHG": m.fthg, "FTAG": m.ftag, "FTR": m.ftr, 
-                         "B365H": m.b365h, "B365D": m.b365d, "B365A": m.b365a } for m in query])
-    
-    tester = Backtester(df)
-    result = tester.run_strategy(market, threshold, metric, min_odds, max_odds)
-    return result.get_summary()
 
 @app.get("/scouting/players")
 def get_player_scouting(min_minutes: int = 500, db: Session = Depends(get_db)):

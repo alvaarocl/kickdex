@@ -36,19 +36,6 @@ class MatchProbabilities:
             "btts": self.btts,
         }
 
-    def implied_odds(self) -> dict:
-        """Cuotas justas derivadas de las probabilidades (sin margen de casa)."""
-        def _safe_inv(p):
-            return round(1 / p, 2) if p > 0.01 else 99.0
-        return {
-            "home": _safe_inv(self.home),
-            "draw": _safe_inv(self.draw),
-            "away": _safe_inv(self.away),
-            "over25": _safe_inv(self.over25),
-            "btts": _safe_inv(self.btts),
-        }
-
-
 def _poisson_prob(lam: float, k: int) -> float:
     """P(X = k) para distribución de Poisson con parámetro lam."""
     if lam <= 0:

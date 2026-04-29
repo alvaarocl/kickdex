@@ -15,7 +15,7 @@ Antes de construir, hay que entender qué tenemos y qué está mal.
 
 | Módulo | Archivo | Por qué vale |
 |--------|---------|--------------|
-| Rolling Metrics (EV) | `data_processor.py` | Algoritmo sólido: shift(1), find_value_opportunities, EV calculation |
+| Rolling Metrics (tendencia) | `data_processor.py` | Algoritmo sólido: shift(1), find_value_opportunities, tendencia calculation |
 | Descarga histórica | `data_updater.py` | Funcional: descarga SP1/SP2 desde 2004 |
 | Scraping jugadores | `player_engine.py` | Integración FBref via soccerdata |
 | H2H histórico | `app.py` (Tab 2) | Lógica correcta, bien filtrada |
@@ -24,7 +24,7 @@ Antes de construir, hay que entender qué tenemos y qué está mal.
 
 | Problema | Archivo | Impacto |
 |----------|---------|---------|
-| **Cuotas simuladas aleatoriamente** | `data_processor.py:115` | Los EV calculados con cuotas fake son inútiles y engañosos |
+| **Cuotas simuladas aleatoriamente** | `data_processor.py:115` | Los tendencia calculados con datos externos fake son inútiles y engañosos |
 | **Dos apps descoordinadas** | `app.py` y `app_new.py` | 3 de 5 tabs en `app_new.py` dicen "coming soon" |
 | **Fechas hardcodeadas** | `app.py:107,190` | `'2025-08-01'` deja de funcionar cada temporada |
 | **Case sensitivity** | `DATOS/` vs `datos/` | Rota en Linux/Mac |
@@ -44,7 +44,7 @@ Antes de construir, hay que entender qué tenemos y qué está mal.
 No empezamos de cero (se pierde el trabajo de data_processor.py), pero sí rehacemos la estructura completa.
 
 ```
-MANTENER:   Lógica de data_processor.py (rolling metrics, EV detection)
+MANTENER:   Lógica de data_processor.py (rolling metrics, tendencia detection)
 REHACER:    Estructura de archivos, organización en módulos, app principal
 ELIMINAR:   app_new.py (se absorbe en nueva app), news_engine.py (reemplazar)
 AÑADIR:     Capa de servicios, config centralizada, tests, Smart Alerts engine
@@ -66,15 +66,15 @@ kickdex/
 │   ├── engine/
 │   │   ├── __init__.py
 │   │   ├── metrics.py          ← Rolling metrics, forma reciente (de data_processor.py)
-│   │   ├── value_detector.py   ← EV calculation (de data_processor.py)
-│   │   ├── smart_alerts.py     ← Generador de frases de tendencia (NUEVO)
-│   │   └── probability.py      ← Cálculo de probabilidades matemáticas (NUEVO)
+│   │   ├── trend_detector.py   ← tendencia calculation (de data_processor.py)
+│   │   ├── smart_alerts.py     ← Generador de frases de tendencia (NUtendenciaO)
+│   │   └── probability.py      ← Cálculo de probabilidades matemáticas (NUtendenciaO)
 │   └── ui/
 │       ├── __init__.py
 │       ├── comparador.py       ← Tab de comparativa de equipos
 │       ├── h2h.py              ← Tab de historial H2H
 │       ├── jugadores.py        ← Tab de player scouting
-│       └── valor.py            ← Tab de value detection
+│       └── jugadores.py            ← Tab de statistical trend detection
 │
 ├── 📁 datos/                   ← CSVs históricos (lowercase, consistente)
 │   ├── SP1_0405.csv
@@ -83,7 +83,7 @@ kickdex/
 │
 ├── 📁 tests/                   ← Tests unitarios
 │   ├── test_metrics.py
-│   ├── test_value_detector.py
+│   ├── test_trend_detector.py
 │   └── test_smart_alerts.py
 │
 ├── main.py                     ← Punto de entrada único (streamlit run main.py)
@@ -125,7 +125,7 @@ CONFIGURACIÓN:
 BACKEND:
 ├── FastAPI              — API REST para separar backend/frontend
 ├── SQLite → PostgreSQL  — Persistencia real
-├── Redis                — Caché de cuotas en tiempo real
+├── Redis                — Caché de datos externos en tiempo real
 └── APScheduler          — Jobs de actualización automática
 
 APIs EXTERNAS:
@@ -166,8 +166,8 @@ ROLLING_WINDOW_DEFAULT = 5
 
 **S0-03 — Migrar `data_processor.py` → `app/engine/metrics.py`**
 - Mantener `FootballDataProcessor` (lógica válida)
-- Eliminar `_ensure_odds_columns()` con cuotas random (peligroso)
-- Separar `find_value_opportunities()` → `app/engine/value_detector.py`
+- Eliminar `_ensure_odds_columns()` con datos externos random (peligroso)
+- Separar `find_statistical_trends()` → `app/engine/trend_detector.py`
 
 **S0-04 — Migrar `data_updater.py` → `app/data/updater.py`**
 - Añadir encoding correcto (`latin1` para archivos antiguos)
@@ -235,7 +235,7 @@ def validate_dataframe(df: pd.DataFrame) -> DataValidationResult:
 
 ### SPRINT 2: Engine de Métricas y Smart Alerts
 **Duración:** 7-10 días  
-**Objetivo:** El corazón analítico de la app — métricas fiables + frases de valor
+**Objetivo:** El corazón analítico de la app — métricas fiables + insights estad?sticos
 
 #### Tareas
 
@@ -248,7 +248,7 @@ def validate_dataframe(df: pd.DataFrame) -> DataValidationResult:
   - `btts_rate`: % partidos donde ambos marcan
   - `over25_rate`: % partidos con más de 2.5 goles
 
-**S2-02 — `smart_alerts.py` — El Generador de Tendencias (NUEVO)**
+**S2-02 — `smart_alerts.py` — El Generador de Tendencias (NUtendenciaO)**
 
 Este es uno de los módulos más valiosos del PRD. Genera frases en lenguaje natural.
 
@@ -288,7 +288,7 @@ def generate_match_alerts(home_stats: dict, away_stats: dict, h2h_stats: dict) -
     """
 ```
 
-**S2-03 — `probability.py` — Probabilidades Matemáticas (NUEVO)**
+**S2-03 — `probability.py` — Probabilidades Matemáticas (NUtendenciaO)**
 ```python
 def calculate_match_probabilities(home_stats: dict, away_stats: dict, h2h_stats: dict) -> dict:
     """
@@ -327,7 +327,7 @@ def test_btts_alert_strength():
 
 ### SPRINT 3: UI/UX Profesional
 **Duración:** 7-10 días  
-**Objetivo:** Interfaz que parezca ValueStats, no un script universitario
+**Objetivo:** Interfaz que parezca plataformas de an?lisis estad?stico, no un script universitario
 
 #### Tareas
 
@@ -393,7 +393,7 @@ Detalles de implementación:
 - Mantener lógica actual (funciona bien)
 - Añadir: resumen estadístico (X victorias locales, Y empates, Z visitante)
 - Añadir: gráfico de timeline de resultados
-- Añadir: cuotas históricas con tendencia
+- Añadir: datos externos históricas con tendencia
 
 **S3-04 — Tab 3: Player Scouting (Rehacer)**
 
@@ -418,7 +418,7 @@ Layout objetivo:
 └──────────────────────────────────────────────────────┘
 ```
 
-**S3-05 — Tab 4: Value Detection (NUEVO)**
+**S3-05 — Tab 4: Value Detection (NUtendenciaO)**
 
 Este es el diferenciador principal del PRD.
 
@@ -426,18 +426,18 @@ Este es el diferenciador principal del PRD.
 ┌──────────────────────────────────────────────────────┐
 │  🎯 RADAR DE VALUE BETS — Jornada 32                  │
 ├──────────────────────────────────────────────────────┤
-│  Partido              Prob.Mat.  Cuota  Implied  EV   │
+│  Partido              Prob.Mat.  Cuota  Implied  tendencia   │
 │  ──────────────────────────────────────────────────  │
 │  🟢 Real Madrid (W)    52%      1.80    55.5%  +12%  │
 │  🟢 Barça Over 2.5     65%      1.75    57.1%  +8%   │
 │  ⚪ Atlético (W)       45%      2.10    47.6%  -3%   │
 │  🔴 Sevilla (W)        25%      1.90    52.6%  -28%  │
 ├──────────────────────────────────────────────────────┤
-│  ⚠️ Las apuestas conllevan riesgo. Juega responsable │
+│  ⚠️ Las an?lisis conllevan riesgo. Juega responsable │
 └──────────────────────────────────────────────────────┘
 ```
 
-Nota: Las cuotas en esta fase vienen de los CSVs históricos (cuotas de los partidos ya jugados para validar el algoritmo), no de una API en tiempo real. El objetivo de Fase 1 es validar que el algoritmo de probabilidades funciona ANTES de conectar cuotas reales.
+Nota: Las datos externos en esta fase vienen de los CSVs históricos (datos externos de los partidos ya jugados para validar el algoritmo), no de una API en tiempo real. El objetivo de Fase 1 es validar que el algoritmo de probabilidades funciona ANTES de conectar datos externos reales.
 
 **Criterio de éxito:** App visualmente profesional en modo oscuro. Tablas ordenables. Smart Alerts visibles y con color. Probabilidades en cada partido. Sin errores de UX obvios.
 
@@ -449,19 +449,19 @@ Nota: Las cuotas en esta fase vienen de los CSVs históricos (cuotas de los part
 
 #### Tareas
 
-**S4-01 — Refactorizar `value_detector.py` (de `data_processor.py`)**
-- Mantener `find_value_opportunities()` — lógica sólida
-- **ELIMINAR** la dependencia de cuotas simuladas — si no hay cuotas reales en el CSV, no calcular EV
-- Añadir: filtro por temporada (solo calcular con datos de la temporada donde hay cuotas reales)
+**S4-01 — Refactorizar `trend_detector.py` (de `data_processor.py`)**
+- Mantener `find_statistical_trends()` — lógica sólida
+- **ELIMINAR** la dependencia de datos externos simuladas — si no hay datos externos reales en el CSV, no calcular tendencia
+- Añadir: filtro por temporada (solo calcular con datos de la temporada donde hay datos externos reales)
 - Añadir: backtesting — "si hubieras apostado €10 en cada Value Bet, habrías ganado X"
 
 **S4-02 — Value Score por partido**
 ```python
 def calculate_value_score(match_row: pd.Series, team_stats: dict) -> ValueScore:
     """
-    Para un partido con cuotas (B365H, B365D, B365A):
+    Para un partido con datos externos (B365H, B365D, B365A):
     1. Calcula probabilidades matemáticas del motor
-    2. Calcula probabilidades implícitas de las cuotas
+    2. Calcula probabilidades implícitas de las datos externos
     3. Detecta discrepancias (value)
     4. Devuelve: home_value, draw_value, away_value, over25_value, btts_value
     """
@@ -469,13 +469,13 @@ def calculate_value_score(match_row: pd.Series, team_stats: dict) -> ValueScore:
 
 **S4-03 — Backtesting de la temporada**
 ```
-Usando datos históricos de temporadas con cuotas reales (SP1_2324.csv tiene B365H/D/A):
+Usando datos históricos de temporadas con datos externos reales (SP1_2324.csv tiene B365H/D/A):
 - Validar: cuando el modelo dice "Value Bet", ¿ganó el apostador históricamente?
 - Mostrar en UI: "Rendimiento histórico del modelo: +X% ROI en 2023/24"
 - Transparencia total — si el modelo no predice bien, que se vea
 ```
 
-**Criterio de éxito:** El scanner de value funciona con datos históricos reales de temporadas anteriores (las que tienen cuotas en el CSV). ROI histórico calculado y visible en UI.
+**Criterio de éxito:** El scanner de value funciona con datos históricos reales de temporadas anteriores (las que tienen datos externos en el CSV). ROI histórico calculado y visible en UI.
 
 ---
 
@@ -490,7 +490,7 @@ Usando datos históricos de temporadas con cuotas reales (SP1_2324.csv tiene B36
 tests/
 ├── test_metrics.py       — Anti-leakage, rolling window correcto
 ├── test_smart_alerts.py  — Alertas se generan con las condiciones correctas
-├── test_value_detector.py — EV calculado correctamente
+├── test_trend_detector.py — tendencia calculado correctamente
 ├── test_probability.py   — Probabilidades suman 100%, rango válido
 ├── test_data_loader.py   — Carga sin errores, normalización correcta
 └── test_h2h.py           — H2H correcto, sin duplicados
@@ -527,9 +527,9 @@ Una vez el MVP funcione bien, estos son los pasos para la Fase 2.
 Plan:
 1. Registrarse en The Odds API (500 requests/mes gratuitas)
 2. Crear app/data/odds_fetcher.py
-3. Cachear cuotas en SQLite para no gastar requests
-4. Mostrar cuotas reales en Tab 4 (Value Detection)
-5. Marcar claramente cuándo las cuotas son "en tiempo real" vs "históricas"
+3. Cachear datos externos en SQLite para no gastar requests
+4. Mostrar datos externos reales en Tab 4 (Value Detection)
+5. Marcar claramente cuándo las datos externos son "en tiempo real" vs "históricas"
 ```
 
 ### 4.2 Datos de Partidos en Vivo
@@ -557,7 +557,7 @@ Razones para migrar:
 Plan de migración:
 - Mantener backend Python (FastAPI)
 - Reemplazar solo la capa de presentación (React + TailwindCSS)
-- Reutilizar todos los engines (metrics, smart_alerts, value_detector)
+- Reutilizar todos los engines (metrics, smart_alerts, trend_detector)
 ```
 
 ---
@@ -591,7 +591,7 @@ SPRINT 0 → SPRINT 1 → SPRINT 2 → SPRINT 3 → SPRINT 4 → SPRINT 5
 Estos son los estándares mínimos que deben cumplirse antes de dar por completado cualquier sprint:
 
 ### Datos
-- [ ] No hay cuotas simuladas/aleatorias en ningún cálculo visible
+- [ ] No hay datos externos simuladas/aleatorias en ningún cálculo visible
 - [ ] Nombres de equipos normalizados consistentemente
 - [ ] Ninguna columna de fecha hardcodeada con año concreto
 - [ ] La carpeta de datos es `datos/` (lowercase) en todos los archivos
@@ -612,7 +612,7 @@ Estos son los estándares mínimos que deben cumplirse antes de dar por completa
 - [ ] Cada métrica explica su base de cálculo (tooltip o caption)
 - [ ] Si no hay suficiente muestra (<10 partidos), no se muestra la métrica
 - [ ] Las probabilidades matemáticas suman 100% (home + draw + away)
-- [ ] El EV solo se calcula cuando hay cuotas reales, nunca simuladas
+- [ ] El tendencia solo se calcula cuando hay datos externos reales, nunca simuladas
 
 ---
 
@@ -636,7 +636,7 @@ El scraping de DuckDuckGo + trafilatura es frágil (se rompe si cambia el HTML d
 
 Antes de empezar a codificar, completar esto:
 
-- [ ] **Verificar datos disponibles**: ¿Qué CSVs hay en `datos/`? ¿Tienen columnas de cuotas (B365H)?
+- [ ] **Verificar datos disponibles**: ¿Qué CSVs hay en `datos/`? ¿Tienen columnas de datos externos (B365H)?
 - [ ] **Verificar que `player_engine.py` funciona**: Ejecutar `python player_engine.py` y confirmar que genera `datos/jugadores_raw.csv`
 - [ ] **Instalar dependencias faltantes**: `pip install plotly pytest python-dotenv`
 - [ ] **Crear branch de desarrollo**: `git checkout -b refactor/arquitectura-nueva` (si hay git)

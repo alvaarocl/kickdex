@@ -26,7 +26,6 @@ logger = logging.getLogger(__name__)
 REQUIRED_COLS = ["Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "Div"]
 OPTIONAL_COLS = [
     "HS", "AS", "HST", "AST", "HF", "AF", "HC", "AC", "HY", "AY", "HR", "AR",
-    "B365H", "B365D", "B365A", "B365>2.5", "B365<2.5",
     "HTHG", "HTAG",
 ]
 

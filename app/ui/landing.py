@@ -44,11 +44,11 @@ _LANDING_HTML = """
       </div>
     </div>
     <div class="landing-feat">
-      <div class="landing-feat-icon">💎</div>
-      <div class="landing-feat-title">Value Bets</div>
+      <div class="landing-feat-icon">📊</div>
+      <div class="landing-feat-title">Datos y Tendencias</div>
       <div class="landing-feat-body">
-        Detecta ineficiencias en cuotas Bet365 con nuestro modelo matemático.
-        Kelly Criterion + EV para optimizar cada apuesta.
+        Consulta forma reciente, patrones H2H, volumen de goles y métricas
+        comparables para estudiar cualquier enfrentamiento.
       </div>
     </div>
     <div class="landing-feat">
@@ -79,8 +79,8 @@ _LANDING_HTML = """
       <div class="landing-feat-icon">🏠</div>
       <div class="landing-feat-title">Calendario en Vivo</div>
       <div class="landing-feat-body">
-        Fixtures con cuotas Bet365 actualizadas, organizados por liga y jornada
-        para las 11 competiciones cubiertas.
+        Fixtures, resultados recientes y próxima jornada organizados por liga
+        para las competiciones cubiertas.
       </div>
     </div>
   </div>
@@ -123,7 +123,7 @@ def render():
     st.markdown(
         '<div class="landing-footer">'
         'KICKDEX &nbsp;·&nbsp; football-data.co.uk &nbsp;·&nbsp; FBref &nbsp;·&nbsp; '
-        'Las apuestas conllevan riesgo. Juega responsablemente.'
+        'Análisis estadístico informativo basado en datos históricos.'
         '</div>',
         unsafe_allow_html=True,
     )

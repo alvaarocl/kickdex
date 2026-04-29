@@ -141,14 +141,11 @@ function buildH2HTable(team1, team2, matches) {
       res.winner === "t2" ? `<span class="tag tag-l">${m.result}</span>` :
       `<span class="tag tag-d">${m.result}</span>`;
 
-    const odds = [m.b365h, m.b365d, m.b365a].filter(Boolean).map(o => `<span class="badge-fair">${o}</span>`).join(" ");
-
     return `
     <tr>
       <td class="muted">${m.date || "—"}</td>
       <td>${resultTag}</td>
       <td class="muted">${m.league || "—"}</td>
-      <td>${odds || `<span class="muted">—</span>`}</td>
     </tr>`;
   }).join("");
 
@@ -159,7 +156,6 @@ function buildH2HTable(team1, team2, matches) {
         <th>Fecha</th>
         <th>Resultado</th>
         <th>Liga</th>
-        <th>Cuotas B365</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
