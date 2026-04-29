@@ -189,8 +189,8 @@ def main() -> None:
     parser.add_argument(
         "--max-fixtures",
         type=int,
-        default=80,
-        help="Maximum new fixtures to enrich with statistics in one run. Keep <=80 for API-Football free tier.",
+        default=70,
+        help="Maximum new fixtures to enrich with statistics in one run. Keep <=70 for API-Football free tier.",
     )
     args = parser.parse_args()
     update_referees(args.days_back, args.leagues, args.sleep, args.max_fixtures)

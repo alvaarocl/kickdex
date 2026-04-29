@@ -13,7 +13,7 @@ on:
       referee_max_fixtures:
         description: 'Max new fixtures to enrich with referee stats'
         required: false
-        default: '80'
+        default: '70'
 
 concurrency:
   group: update-data-main
@@ -42,7 +42,7 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           REFEREE_DAYS_BACK: ${{ github.event.inputs.referee_days_back || '14' }}
-          REFEREE_MAX_FIXTURES: ${{ github.event.inputs.referee_max_fixtures || '80' }}
+          REFEREE_MAX_FIXTURES: ${{ github.event.inputs.referee_max_fixtures || '70' }}
         run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES"
 
       - name: Build static data
