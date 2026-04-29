@@ -35,10 +35,12 @@ jobs:
         run: python scripts/update_referee_data.py --days-back 7
 
       - name: Build static data
+        env:
+          KICKDEX_SKIP_PLAYER_DOWNLOADS: "1"
         run: python scripts/build_data.py
 
       - name: Update player data
-        run: python scripts/update_player_data.py
+        run: python scripts/update_player_data.py --skip-scrape
 
       - name: Check player coverage
         run: python scripts/check_player_coverage.py --fail-under 1.0 --required-leagues SP1 E0 I1 D1 F1

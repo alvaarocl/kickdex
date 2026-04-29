@@ -6,6 +6,7 @@ Lógica inteligente: temporadas antiguas solo si no existen; actual, siempre.
 
 import json
 import logging
+import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -65,10 +66,13 @@ def update_data(force_current: bool = True) -> dict:
 
     # 1. Actualizar jugadores (FBref via soccerdata)
     players_updated = False
-    try:
-        players_updated = update_players()
-    except Exception as e:
-        logger.error("Error al actualizar jugadores: %s", e)
+    if os.getenv("KICKDEX_SKIP_PLAYER_DOWNLOADS") == "1":
+        logger.info("Saltando scraping de jugadores por KICKDEX_SKIP_PLAYER_DOWNLOADS=1")
+    else:
+        try:
+            players_updated = update_players()
+        except Exception as e:
+            logger.error("Error al actualizar jugadores: %s", e)
 
     last_update = _load_last_update(data_dir)
     seasons = _season_codes()
