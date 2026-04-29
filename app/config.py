@@ -23,6 +23,21 @@ LEAGUES = {
     "N1": "Eredivisie",
 }
 
+# Free-tier API-Football league ids. Used only when APIFOOTBALL_KEY is set.
+APIFOOTBALL_LEAGUE_IDS = {
+    "SP1": 140,  # La Liga
+    "SP2": 141,  # Segunda Division
+    "E0": 39,   # Premier League
+    "E1": 40,   # Championship
+    "I1": 135,  # Serie A
+    "I2": 136,  # Serie B
+    "D1": 78,   # Bundesliga
+    "D2": 79,   # 2. Bundesliga
+    "F1": 61,   # Ligue 1
+    "F2": 62,   # Ligue 2
+    "N1": 88,   # Eredivisie
+}
+
 # ── Parámetros de análisis ────────────────────────────────────────────────────
 ROLLING_WINDOW_DEFAULT = 5       # Últimos N partidos para forma reciente
 ROLLING_WINDOW_OPTIONS = [3, 5, 10]

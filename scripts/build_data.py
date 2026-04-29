@@ -368,20 +368,103 @@ def build_fixtures(df) -> dict:
     return {"recent": recent[:20], "upcoming": upcoming[:20]}
 
 
+def _normalise_referee_frame(df, source: str = "csv"):
+    import pandas as pd
+    if df is None or df.empty:
+        return pd.DataFrame()
+    out = df.copy()
+    if "referee" in out.columns and "Referee" not in out.columns:
+        out["Referee"] = out["referee"]
+    if "league" in out.columns and "Div" not in out.columns:
+        out["Div"] = out["league"]
+    if "date" in out.columns and "Date" not in out.columns:
+        out["Date"] = out["date"]
+    if "Date" in out.columns:
+        out["Date"] = pd.to_datetime(out["Date"], errors="coerce")
+    out = out.dropna(subset=[c for c in ["Referee", "Div"] if c in out.columns])
+    if out.empty or "Referee" not in out.columns or "Div" not in out.columns:
+        return pd.DataFrame()
+    out["Referee"] = out["Referee"].astype(str).str.strip()
+    out["Div"] = out["Div"].astype(str).str.strip()
+    def _num_col(name: str):
+        if name in out.columns:
+            return pd.to_numeric(out[name], errors="coerce").fillna(0)
+        return pd.Series(0.0, index=out.index)
+
+    has_incremental_cols = any(c in out.columns for c in ["yellow_cards", "red_cards", "fouls", "penalties"])
+    if has_incremental_cols:
+        out["_Y"] = _num_col("yellow_cards")
+        out["_R"] = _num_col("red_cards")
+        out["_F"] = _num_col("fouls")
+        out["_P"] = _num_col("penalties")
+    else:
+        for col in ["HY", "AY", "HR", "AR", "HF", "AF"]:
+            if col not in out.columns:
+                out[col] = 0
+        out["_Y"] = _num_col("HY") + _num_col("AY")
+        out["_R"] = _num_col("HR") + _num_col("AR")
+        out["_F"] = _num_col("HF") + _num_col("AF")
+        out["_P"] = pd.Series(0.0, index=out.index)
+    if "_source" not in out.columns:
+        out["_source"] = source
+    else:
+        out["_source"] = out["_source"].fillna(source)
+    return out
+
+
+def _load_incremental_referees():
+    import pandas as pd
+    from app.config import DATA_DIR
+    path = Path(DATA_DIR) / "referees_matches.csv"
+    if not path.exists():
+        return pd.DataFrame()
+    try:
+        return _normalise_referee_frame(pd.read_csv(path, low_memory=False), "api-football")
+    except Exception as e:
+        print(f"  Warning: could not read {path}: {e}")
+        return pd.DataFrame()
+
+
+def _ref_stats(grp):
+    import pandas as pd
+    if grp is None or grp.empty:
+        return None
+    g = _normalise_referee_frame(grp, "csv")
+    if g.empty:
+        return None
+    matches = int(len(g))
+    if matches < 3:
+        return None
+    return {
+        "matches": matches,
+        "yellows_per_match": _safe(pd.to_numeric(g["_Y"], errors="coerce").fillna(0).sum() / matches),
+        "reds_per_match": _safe(pd.to_numeric(g["_R"], errors="coerce").fillna(0).sum() / matches),
+        "fouls_per_match": _safe(pd.to_numeric(g["_F"], errors="coerce").fillna(0).sum() / matches),
+        "penalties_per_match": _safe(pd.to_numeric(g["_P"], errors="coerce").fillna(0).sum() / matches),
+        "last_match": g["Date"].max().strftime("%Y-%m-%d") if "Date" in g.columns and pd.notna(g["Date"].max()) else None,
+        "source": "api-football" if (g.get("_source") == "api-football").any() else "football-data",
+    }
+
+
 def build_referees(df, df_current=None) -> list:
     import pandas as pd
     if "Referee" not in df.columns or "Div" not in df.columns:
         return []
-    rdf = df.dropna(subset=["Referee", "Div"]).copy()
-    rdf["Referee"] = rdf["Referee"].str.strip()
+    rdf = _normalise_referee_frame(df, "football-data")
+    incremental = _load_incremental_referees()
+    if not incremental.empty:
+        rdf = pd.concat([rdf, incremental], ignore_index=True)
     if rdf.empty:
         return []
 
     if df_current is not None and not df_current.empty and "Referee" in df_current.columns:
-        rdf_curr = df_current.dropna(subset=["Referee", "Div"]).copy()
-        rdf_curr["Referee"] = rdf_curr["Referee"].str.strip()
+        rdf_curr = _normalise_referee_frame(df_current, "football-data")
     else:
         rdf_curr = pd.DataFrame(columns=rdf.columns)
+    if not incremental.empty and "Date" in incremental.columns:
+        from app.config import CURRENT_SEASON_START
+        inc_curr = incremental[incremental["Date"] >= pd.Timestamp(CURRENT_SEASON_START)].copy()
+        rdf_curr = pd.concat([rdf_curr, inc_curr], ignore_index=True)
 
     # Sort by date so head(N) = most recent N
     date_col = "Date" if "Date" in rdf.columns else None
@@ -406,6 +489,9 @@ def build_referees(df, df_current=None) -> list:
             "yellows_per_match": overall["yellows_per_match"],
             "reds_per_match":    overall["reds_per_match"],
             "fouls_per_match":   overall["fouls_per_match"],
+            "penalties_per_match": overall.get("penalties_per_match"),
+            "last_match":        overall.get("last_match"),
+            "source":            overall.get("source"),
             # windowed blocks
             "overall":        overall,
             "last10":         _ref_stats(grp.head(10)),

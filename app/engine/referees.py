@@ -5,7 +5,10 @@ La Liga y Segunda: combina datos CSV con dataset curado cuando hay escasez.
 """
 
 import logging
+from pathlib import Path
 import pandas as pd
+
+from app.config import CURRENT_SEASON_START, DATA_DIR, LEAGUES
 
 logger = logging.getLogger(__name__)
 
@@ -72,13 +75,15 @@ def get_referee_stats(
         window: Últimos N partidos por árbitro. None = histórico completo.
         min_matches: Mínimo de partidos para incluir al árbitro.
     """
-    from app.config import LEAGUES
-
     working = df.copy()
     if league_code and "_league_code" in working.columns:
         working = working[working["_league_code"] == league_code]
 
     csv_stats = pd.DataFrame()
+
+    incremental = _load_incremental_referee_matches(DATA_DIR)
+    if league_code and not incremental.empty:
+        incremental = incremental[incremental["Div"] == league_code]
 
     if "Referee" in working.columns:
         rdf = working.dropna(subset=["Referee"]).copy()
@@ -107,11 +112,17 @@ def get_referee_stats(
                     pen_a = pd.to_numeric(rdf[pa], errors="coerce").fillna(0)
                     break
             rdf["_P"] = pen_h + pen_a
+            if not incremental.empty:
+                rdf = pd.concat([rdf, incremental], ignore_index=True)
 
             if "_league_code" in rdf.columns:
                 rdf["Liga"] = rdf["_league_code"].map(LEAGUES).fillna(rdf["_league_code"])
+            elif "Div" in rdf.columns:
+                rdf["Liga"] = rdf["Div"].map(LEAGUES).fillna(rdf["Div"])
             else:
                 rdf["Liga"] = "—"
+            if "Div" in rdf.columns:
+                rdf["Liga"] = rdf["Liga"].fillna(rdf["Div"].map(LEAGUES).fillna(rdf["Div"]))
 
             if window:
                 rdf = rdf.sort_values("Date")
@@ -139,6 +150,31 @@ def get_referee_stats(
                 agg["Penaltis/Part."]  = (agg["_TP"] / agg["Partidos"]).round(2)
                 agg["_source"] = "csv"
                 csv_stats = agg.drop(columns=["_TY", "_TR", "_TF", "_TP"])
+    elif not incremental.empty:
+        rdf = incremental.copy()
+        rdf["Liga"] = rdf["Div"].map(LEAGUES).fillna(rdf["Div"])
+        if window:
+            rdf = rdf.sort_values("Date")
+            rdf = (
+                rdf.groupby("Referee", group_keys=False)
+                .apply(lambda g: g.tail(window))
+                .reset_index(drop=True)
+            )
+        agg = rdf.groupby("Referee").agg(
+            Partidos=("Div", "count"),
+            _TY=("_Y", "sum"),
+            _TR=("_R", "sum"),
+            _TF=("_F", "sum"),
+            _TP=("_P", "sum"),
+            Liga=("Liga", lambda x: x.mode()[0] if not x.empty else "—"),
+        ).reset_index()
+        agg = agg[agg["Partidos"] >= min_matches].copy()
+        if not agg.empty:
+            agg["Amarillas/Part."] = (agg["_TY"] / agg["Partidos"]).round(2)
+            agg["Rojas/Part."] = (agg["_TR"] / agg["Partidos"]).round(2)
+            agg["Faltas/Part."] = (agg["_TF"] / agg["Partidos"]).round(2)
+            agg["Penaltis/Part."] = (agg["_TP"] / agg["Partidos"]).round(2)
+            csv_stats = agg.drop(columns=["_TY", "_TR", "_TF", "_TP"])
 
     # Curated dataset para ligas españolas
     curated = _build_curated_df()
@@ -168,3 +204,31 @@ def get_referee_stats(
     cols = ["Referee", "Liga", "Partidos", "Amarillas/Part.", "Rojas/Part.", "Faltas/Part.", "Penaltis/Part.", "Perfil"]
     result = result[[c for c in cols if c in result.columns]]
     return result.sort_values("Amarillas/Part.", ascending=False).reset_index(drop=True)
+
+
+def _load_incremental_referee_matches(data_dir: str) -> pd.DataFrame:
+    path = Path(data_dir) / "referees_matches.csv"
+    if not path.exists():
+        return pd.DataFrame()
+    try:
+        df = pd.read_csv(path, low_memory=False)
+    except Exception as e:
+        logger.warning("No se pudo cargar %s: %s", path, e)
+        return pd.DataFrame()
+    required = {"referee", "league"}
+    if not required.issubset(df.columns):
+        return pd.DataFrame()
+    out = pd.DataFrame()
+    out["Referee"] = df["referee"].astype(str).str.strip()
+    out["Div"] = df["league"].astype(str).str.strip()
+    out["Date"] = pd.to_datetime(df.get("date"), errors="coerce")
+    out = out[out["Date"] >= pd.Timestamp(CURRENT_SEASON_START)]
+    def _num(name: str):
+        if name in df.columns:
+            return pd.to_numeric(df[name], errors="coerce").fillna(0)
+        return pd.Series(0.0, index=df.index)
+    out["_Y"] = _num("yellow_cards")
+    out["_R"] = _num("red_cards")
+    out["_F"] = _num("fouls")
+    out["_P"] = _num("penalties")
+    return out.dropna(subset=["Referee", "Div", "Date"])

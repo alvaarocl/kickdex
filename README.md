@@ -77,6 +77,7 @@ pytest tests/ -v
 
 - **Resultados históricos:** [football-data.co.uk](https://www.football-data.co.uk) (gratuito, SP1 + SP2 desde 2004)
 - **Stats de jugadores:** FBref via [soccerdata](https://github.com/probberechts/soccerdata)
+- **Árbitros:** football-data/manual como fallback gratuito; si configuras el secreto `APIFOOTBALL_KEY`, el workflow añade partidos recientes a `datos/referees_matches.csv`.
 
 ---
 

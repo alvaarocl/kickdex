@@ -169,7 +169,7 @@ def render(df: pd.DataFrame) -> None:
         f"- **Árbitros con ≥4.5 am/p**: **{n_over}**. Perfil de alta intervención disciplinaria.\n"
         f"- **Árbitros con ≤3.0 am/p**: **{n_under}**. Perfil de menor intervención disciplinaria.\n"
         f"- Árbitros con >0.3 pen/p tienen mayor impacto en el resultado final.\n"
-        f"- Dataset curado La Liga/Segunda: 24 colegiados con stats 2021-2025 (se fusiona con CSV cuando hay muestra)."
+        f"- Fuente prioritaria: partidos actualizados por API-Football gratuita si hay clave; fallback CSV/manual cuando falte muestra."
     )
 
     st.markdown(f'<div class="disclaimer">{DISCLAIMER}</div>', unsafe_allow_html=True)

@@ -130,7 +130,7 @@ function renderArbitros() {
     </table>
   </div>
   <div class="disclaimer" style="margin-top:14px;">
-    Fuente: football-data.co.uk · Datos con árbitros disponibles: Premier League, Championship, Serie A.
+    Fuente: API-Football si hay clave gratuita; fallback football-data.co.uk/manual cuando no hay feed reciente.
   </div>`;
 
   setTimeout(() => initAllTables(box), 50);
