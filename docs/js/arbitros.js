@@ -1,5 +1,5 @@
 /**
- * arbitros.js — Tab "Árbitros": referee disciplinary profile by league
+ * arbitros.js - Tab "Arbitros": referee disciplinary profile by league.
  */
 
 "use strict";
@@ -36,87 +36,86 @@ function initArbitros() {
   renderArbitros();
 }
 
-/**
- * Resolve stats block for a referee given current window.
- * Always returns data — falls back to overall if windowed block is null.
- */
 function pickRefStats(r, window_) {
   const keyMap = {
-    "5": "last5", "10": "last10", "all": "overall",
-    "season": "season", "season_last10": "season_last10", "season_last5": "season_last5",
+    "5": "last5",
+    "10": "last10",
+    "all": "overall",
+    "season": "season",
+    "season_last10": "season_last10",
+    "season_last5": "season_last5",
   };
   const key = keyMap[window_] || "overall";
   const block = r[key];
 
-  if (block) return { ...block, _fallback: false };
+  if (block) return { ...block, _available: true };
 
-  // Season fallback: if no season data, use overall
-  if (window_.startsWith("season")) {
-    const overall = r["overall"];
-    if (overall) return { ...overall, _fallback: true };
-  }
+  const overall = r.overall;
+  if (window_ === "all" && overall) return { ...overall, _available: true };
 
-  const overall = r["overall"];
-  if (overall) return { ...overall, _fallback: window_ !== "all" };
-
-  return {
-    matches:           r.matches           ?? 0,
-    yellows_per_match: r.yellows_per_match ?? 0,
-    reds_per_match:    r.reds_per_match    ?? 0,
-    fouls_per_match:   r.fouls_per_match   ?? 0,
-    _fallback: window_ !== "all",
-  };
+  return null;
 }
 
 function renderArbitros() {
   const box = document.getElementById("arbitros-result");
   if (!box) return;
 
-  const all      = APP.referees || [];
+  const all = APP.referees || [];
   const byLeague = _arbLeague === "all" ? all : all.filter(r => r.league === _arbLeague);
 
   if (byLeague.length === 0) {
     box.innerHTML = `<div class="state-box"><div class="icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
-    </div><p>Sin datos de árbitros para esta liga.</p></div>`;
+    </div><p>Sin datos de arbitros para esta liga.</p></div>`;
     return;
   }
-
-  const referees = byLeague.map(r => ({ r, stats: pickRefStats(r, _arbWindow) }));
 
   const svgRef = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>`;
 
   const windowLabelMap = {
-    "season": "Esta temporada", "season_last10": "Esta temp. — Últ. 10",
-    "season_last5": "Esta temp. — Últ. 5",
-    "all": "Histórico completo", "10": "Histórico — Últ. 10", "5": "Histórico — Últ. 5",
+    "season": "Esta temporada",
+    "season_last10": "Esta temp. - ult. 10",
+    "season_last5": "Esta temp. - ult. 5",
+    "all": "Historico completo",
+    "10": "Historico - ult. 10",
+    "5": "Historico - ult. 5",
   };
   const windowLabel = windowLabelMap[_arbWindow] || "Esta temporada";
-  const leagueLabel = _arbLeague === "all"
-    ? `${referees.length} árbitros · todas las ligas`
-    : `${referees.length} árbitros · ${APP.leagues[_arbLeague]?.name || _arbLeague}`;
+  const leagueName = _arbLeague === "all" ? "todas las ligas" : (APP.leagues[_arbLeague]?.name || _arbLeague);
 
-  const hasFallback = referees.some(({ stats }) => stats._fallback);
-  const isSeason = _arbWindow.startsWith("season");
-  const fallbackNote = hasFallback
+  const referees = byLeague
+    .map(r => ({ r, stats: pickRefStats(r, _arbWindow) }))
+    .filter(({ stats }) => stats && Number(stats.matches || 0) > 0);
+
+  if (referees.length === 0) {
+    box.innerHTML = `<div class="state-box"><div class="icon">
+      ${svgRef}
+    </div><p>No hay datos de arbitros para <b>${leagueName}</b> en la ventana <b>${windowLabel}</b>.</p>
+    <p class="muted" style="margin-top:8px;">Prueba con "Historico completo" para ver el perfil agregado disponible.</p></div>`;
+    return;
+  }
+
+  const leagueLabel = `${referees.length} arbitros - ${leagueName}`;
+  const unavailableCount = byLeague.length - referees.length;
+  const unavailableNote = unavailableCount > 0
     ? `<p style="color:var(--yellow);font-size:.82rem;margin-bottom:14px;">
-        ⚠ ${isSeason ? "Algunos árbitros no tienen partidos esta temporada — mostrando histórico." : "Ventana reducida no disponible — mostrando histórico general."}
+        ${unavailableCount} arbitros omitidos: no hay datos para "${windowLabel}".
        </p>`
     : "";
 
   box.innerHTML = `
   <div class="section-title" style="margin-bottom:16px;">
-    ${svgRef} Perfil Disciplinario <small>${leagueLabel} · ${windowLabel}</small>
+    ${svgRef} Perfil Disciplinario <small>${leagueLabel} - ${windowLabel}</small>
   </div>
   <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">
-    Datos históricos para identificar perfiles disciplinarios altos o bajos.
+    La columna PJ corresponde a la ventana seleccionada, no al total historico.
   </p>
-  ${fallbackNote}
+  ${unavailableNote}
   <div class="table-wrap">
     <table id="arbitrosTable">
       <thead>
         <tr>
-          <th>Árbitro</th>
+          <th>Arbitro</th>
           <th title="Partidos pitados">PJ</th>
           <th title="Amarillas por partido">Amar./p</th>
           <th title="Rojas por partido">Rojas/p</th>
@@ -137,14 +136,14 @@ function renderArbitros() {
 }
 
 function buildRefereeRow(r, stats) {
-  const name = r.name || "—";
-  const yp   = stats.yellows_per_match ?? 0;
-  const rp   = stats.reds_per_match    ?? 0;
-  const fp   = stats.fouls_per_match   ?? 0;
-  const pj   = stats.matches           ?? 0;
+  const name = r.name || "-";
+  const yp = stats.yellows_per_match ?? 0;
+  const rp = stats.reds_per_match ?? 0;
+  const fp = stats.fouls_per_match ?? 0;
+  const pj = stats.matches ?? 0;
 
   const ypColor = yp >= 5.5 ? "var(--red)" : yp >= 4.5 ? "var(--yellow)" : yp >= 3.5 ? "var(--text)" : "var(--green)";
-  const fpColor = fp >= 28  ? "var(--red)" : fp <= 22  ? "var(--green)"  : "var(--text)";
+  const fpColor = fp >= 28 ? "var(--red)" : fp <= 22 ? "var(--green)" : "var(--text)";
 
   let badge, badgeCls;
   if (yp >= 5.0) {
