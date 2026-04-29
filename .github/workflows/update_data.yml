@@ -2,9 +2,9 @@ name: Update Data
 
 on:
   schedule:
-    - cron: '0 6 * * *'    # Diario a las 6:00 UTC (resultados noche anterior)
-    - cron: '0 6 * * 3'    # Miércoles extra: jornadas europeas entre semana
-  workflow_dispatch:         # Lanzado manualmente desde GitHub
+    - cron: '0 6 * * *'    # Diario a las 6:00 UTC
+    - cron: '0 6 * * 3'    # Miercoles extra
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,12 +23,16 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: |
-          pip install pandas numpy requests
-          pip install soccerdata || echo "soccerdata optional — jugadores usarán datos existentes"
+        run: pip install -r requirements.txt
 
       - name: Build static data
         run: python scripts/build_data.py
+
+      - name: Update player data
+        run: python scripts/update_player_data.py
+
+      - name: Check player coverage
+        run: python scripts/check_player_coverage.py
 
       - name: Commit updated data
         run: |

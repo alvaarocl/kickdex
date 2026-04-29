@@ -6,6 +6,7 @@ Salida: docs/data/*.json
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -20,7 +21,7 @@ from app.engine.metrics import (
 )
 from app.engine.smart_alerts import generate_alerts, AlertStrength
 from app.engine.value_detector import scan_value_patterns
-from app.config import CURRENT_SEASON_LABEL, ROLLING_WINDOW_DEFAULT
+from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, ROLLING_WINDOW_DEFAULT
 
 OUTPUT_DIR = ROOT / "docs" / "data"
 
@@ -58,6 +59,82 @@ def write_json(data, filename: str):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"), default=str)
     print(f"  OK {filename}  ({path.stat().st_size / 1024:.1f} KB)")
+
+
+def _read_existing_json(filename: str):
+    path = OUTPUT_DIR / filename
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def write_player_json(data, filename: str):
+    """Preserve existing player JSON if the fresh scrape has lower coverage."""
+    existing = _read_existing_json(filename)
+    existing_teams = len(existing) if isinstance(existing, dict) else 0
+    new_teams = len(data) if isinstance(data, dict) else 0
+    if existing_teams > 0 and new_teams < existing_teams:
+        print(f"  KEEP {filename}  (nuevo: {new_teams} equipos, existente: {existing_teams})")
+        return
+    write_json(data, filename)
+
+
+def build_player_coverage(df_players, leagues: dict) -> dict:
+    coverage = {
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "total_teams_with_players": 0,
+        "total_player_rows": 0,
+        "by_league": {},
+    }
+    if df_players is None or df_players.empty:
+        return coverage
+    coverage["total_teams_with_players"] = int(df_players["team"].nunique())
+    coverage["total_player_rows"] = int(len(df_players))
+    if "league" in df_players.columns:
+        for code, grp in df_players.groupby("league"):
+            league_code = str(code)
+            league_info = leagues.get(league_code) or {}
+            expected = set(league_info.get("teams", []))
+            covered = set(grp["team"].dropna().astype(str))
+            coverage["by_league"][league_code] = {
+                "name": league_info.get("name", league_code),
+                "teams_with_players": len(covered),
+                "expected_teams": len(expected),
+                "coverage_rate": round(len(covered & expected) / len(expected), 3) if expected else None,
+                "missing_teams": sorted(expected - covered),
+                "player_rows": int(len(grp)),
+            }
+    return coverage
+
+
+def build_player_coverage_from_json(leagues: dict) -> dict:
+    players = _read_existing_json("players.json")
+    coverage = {
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "total_teams_with_players": 0,
+        "total_player_rows": 0,
+        "by_league": {},
+    }
+    if not isinstance(players, dict):
+        return coverage
+    covered_teams = set(players.keys())
+    coverage["total_teams_with_players"] = len(covered_teams)
+    coverage["total_player_rows"] = sum(len(v) for v in players.values() if isinstance(v, list))
+    for code, info in leagues.items():
+        expected = set(info.get("teams", []))
+        matched = expected & covered_teams
+        coverage["by_league"][code] = {
+            "name": info.get("name", code),
+            "teams_with_players": len(matched),
+            "expected_teams": len(expected),
+            "coverage_rate": round(len(matched) / len(expected), 3) if expected else None,
+            "missing_teams": sorted(expected - covered_teams),
+            "player_rows": sum(len(players.get(team, [])) for team in matched),
+        }
+    return coverage
 
 
 # ── Builders ──────────────────────────────────────────────────────────────────
@@ -177,7 +254,11 @@ def build_players_detail(df_players) -> dict:
             rows = []
             for _, r in pg.sort_values("date", ascending=False).head(20).iterrows():
                 date_val = r.get("date")
-                date_str = date_val.strftime("%Y-%m-%d") if hasattr(date_val, "strftime") else str(date_val)
+                try:
+                    import pandas as pd
+                    date_str = date_val.strftime("%Y-%m-%d") if pd.notna(date_val) and hasattr(date_val, "strftime") else str(date_val or "")
+                except Exception:
+                    date_str = str(date_val or "")
                 rows.append({
                     "date": date_str,
                     "sh":   _safe(r.get("sh", 0)),
@@ -196,6 +277,8 @@ def build_leagues(df, teams: list) -> dict:
     """Mapeo liga → equipos para el filtro de división en el frontend."""
     import pandas as pd
     from app.config import CURRENT_SEASON_START, LEAGUES
+    if df is None or df.empty or "Date" not in df.columns:
+        return {}
     current = df[df["Date"] >= CURRENT_SEASON_START]
     result = {}
     for code, name in LEAGUES.items():
@@ -388,19 +471,30 @@ def main():
 
     # 1. Descargar/actualizar CSVs
     print("\n[1/6] Actualizando CSVs...")
-    try:
-        result = update_data(force_current=True)
-        print(f"     {len(result['downloaded'])} descargados, {len(result['skipped'])} saltados")
-    except Exception as e:
-        print(f"  Warning: {e}")
+    if os.getenv("KICKDEX_SKIP_DOWNLOADS") == "1":
+        print("     Saltado por KICKDEX_SKIP_DOWNLOADS=1")
+    else:
+        try:
+            result = update_data(force_current=True)
+            print(
+                f"     {len(result['downloaded'])} descargados, "
+                f"{len(result['skipped'])} saltados, {len(result['failed'])} fallidos"
+            )
+        except Exception as e:
+            print(f"  Warning: {e}")
 
     # 2. Cargar datos
     print("\n[2/6] Cargando datos...")
     invalidate_cache()
     df = load_matches()
     df_players = load_players()
+    if df.empty or "Date" not in df.columns:
+        print("\nERROR: no hay CSVs historicos validos en datos/.")
+        print("       Se conservan los JSON existentes en docs/data/ para no romper GitHub Pages.")
+        print("       Descarga o copia los CSVs football-data en datos/ y vuelve a ejecutar este script.")
+        return 1
     teams = get_team_list(df, recent_only=True)
-    df_current = df[df["Date"] >= "2025-08-01"]
+    df_current = df[df["Date"] >= CURRENT_SEASON_START]
     print(f"     {len(df):,} partidos · {len(teams)} equipos · {len(df_players):,} registros jugadores")
 
     # 3. Meta
@@ -418,20 +512,24 @@ def main():
 
     # 6. Players + Value + Leagues + Fixtures + Referees
     print("\n[6/7] players.json, players_detail.json, value_patterns.json, referees.json...")
-    write_json(build_players(df_players), "players.json")
-    write_json(build_players_detail(df_players), "players_detail.json")
+    leagues = build_leagues(df, teams)
+    write_player_json(build_players(df_players), "players.json")
+    write_player_json(build_players_detail(df_players), "players_detail.json")
+    coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
+    write_json(coverage, "player_coverage.json")
     write_json(build_value_patterns(df), "value_patterns.json")
     write_json(build_referees(df, df_current), "referees.json")
 
     print("\n[7/7] leagues.json, fixtures.json...")
-    write_json(build_leagues(df, teams), "leagues.json")
+    write_json(leagues, "leagues.json")
     write_json(build_fixtures(df), "fixtures.json")
 
     print("\n" + "=" * 60)
     print("✓ BUILD COMPLETADO")
     print("=" * 60)
     print(f"Archivos en: {OUTPUT_DIR.resolve()}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

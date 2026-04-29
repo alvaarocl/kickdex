@@ -19,8 +19,16 @@ env/
 
 # Datos generados (no versionar CSVs grandes, solo el README de datos)
 datos/*.csv
+datos/players/*.csv
+datos/jugadores/*.csv
+datos/soccerdata/
 datos/.last_update.json
 !datos/.gitkeep
+DATOS/*.csv
+DATOS/players/*.csv
+DATOS/jugadores/*.csv
+DATOS/.last_update.json
+!DATOS/.gitkeep
 
 # Archivos del sistema
 .DS_Store

@@ -4,10 +4,13 @@ Descarga estadísticas avanzadas de jugadores para todas las ligas configuradas.
 """
 
 import logging
+import json
+import os
 import time
 from pathlib import Path
 import pandas as pd
 from app.config import DATA_DIR, CURRENT_SEASON_LABEL
+from app.data.loader import normalize_team_name
 
 logger = logging.getLogger(__name__)
 
@@ -26,41 +29,164 @@ FBREF_LEAGUES = {
     "N1":  "NED-Eredivisie",
 }
 
-def update_players() -> bool:
+SOCCERDATA_CUSTOM_LEAGUES = {
+    "ESP-Segunda Division": {"FBref": "Segunda División", "season_start": "Aug", "season_end": "Jun"},
+    "ENG-Championship": {"FBref": "Championship", "season_start": "Aug", "season_end": "May"},
+    "ITA-Serie B": {"FBref": "Serie B", "season_start": "Aug", "season_end": "May"},
+    "GER-2. Bundesliga": {"FBref": "2. Bundesliga", "season_start": "Aug", "season_end": "May"},
+    "FRA-Ligue 2": {"FBref": "Ligue 2", "season_start": "Aug", "season_end": "May"},
+    "NED-Eredivisie": {"FBref": "Eredivisie", "season_start": "Aug", "season_end": "May"},
+}
+
+
+def _ensure_soccerdata_config(data_path: Path) -> None:
+    config_dir = data_path / "soccerdata" / "config"
+    config_dir.mkdir(parents=True, exist_ok=True)
+    league_dict_path = config_dir / "league_dict.json"
+    existing = {}
+    if league_dict_path.exists():
+        try:
+            existing = json.loads(league_dict_path.read_text(encoding="utf-8"))
+        except Exception:
+            existing = {}
+    merged = {**existing, **SOCCERDATA_CUSTOM_LEAGUES}
+    league_dict_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def update_players(leagues: list[str] | None = None) -> bool:
     """
     Descarga estadísticas de jugadores de la temporada actual desde FBref
     para todas las ligas configuradas. Guarda en datos/jugadores_raw.csv.
     """
     try:
+        data_path = Path(DATA_DIR)
+        data_path.mkdir(exist_ok=True)
+        os.environ.setdefault("SOCCERDATA_DIR", str(data_path / "soccerdata"))
+        _ensure_soccerdata_config(data_path)
+
         try:
             import soccerdata as sd
         except ImportError:
             logger.warning("soccerdata no instalado — saltando scraping de jugadores FBref")
             return False
 
-        data_path = Path(DATA_DIR)
-        data_path.mkdir(exist_ok=True)
+        per_league_path = data_path / "players"
+        per_league_path.mkdir(exist_ok=True)
         output_file = data_path / "jugadores_raw.csv"
 
         season = CURRENT_SEASON_LABEL.replace("/", "-")  # e.g. "2025-2026"
         all_frames = []
 
+        def _flatten_columns(df: pd.DataFrame) -> pd.DataFrame:
+            df = df.copy()
+            cols = []
+            for col in df.columns:
+                if isinstance(col, tuple):
+                    parts = [str(p).strip() for p in col if str(p).strip() and not str(p).startswith("Unnamed")]
+                    cols.append("_".join(parts).lower())
+                else:
+                    cols.append(str(col).strip().lower())
+            df.columns = cols
+            return df
+
+        def _normalise_match_logs(df: pd.DataFrame, league_code: str) -> pd.DataFrame:
+            df = _flatten_columns(df.reset_index())
+            rename = {
+                "performance_gls": "gls",
+                "performance_ast": "ast",
+                "performance_sh": "sh",
+                "performance_sot": "sot",
+                "performance_crdy": "crdy",
+                "performance_crdr": "crdr",
+                "performance_fls": "fls",
+                "playing_time_min": "min",
+            }
+            df = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
+            if "date" not in df.columns and "game" in df.columns:
+                df["date"] = df["game"].astype(str).str.extract(r"(\d{4}-\d{2}-\d{2})", expand=False)
+            for required in ("team", "player"):
+                if required not in df.columns:
+                    raise ValueError(f"FBref no devolvio columna requerida: {required}")
+            out = pd.DataFrame()
+            out["league"] = league_code
+            out["date"] = pd.to_datetime(df.get("date"), errors="coerce")
+            out["team"] = df["team"].apply(normalize_team_name)
+            out["player"] = df["player"].astype(str).str.strip()
+            for col in ["min", "gls", "ast", "sh", "sot", "fls", "crdy", "crdr"]:
+                out[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0) if col in df.columns else 0.0
+            return out[(out["team"].astype(bool)) & (out["player"].astype(bool))]
+
+        def _normalise_season_stats(fbref, league_code: str) -> pd.DataFrame:
+            frames = {}
+            for stat_type in ("standard", "shooting", "misc"):
+                raw = fbref.read_player_season_stats(stat_type=stat_type)
+                if raw is None or raw.empty:
+                    continue
+                frame = _flatten_columns(raw.reset_index())
+                frames[stat_type] = frame
+
+            if "standard" not in frames:
+                return pd.DataFrame()
+
+            keys = ["league", "season", "team", "player"]
+            df = frames["standard"]
+            for stat_type in ("shooting", "misc"):
+                if stat_type in frames:
+                    keep = [c for c in frames[stat_type].columns if c in keys or c not in df.columns]
+                    df = df.merge(frames[stat_type][keep], on=keys, how="left")
+
+            for required in ("team", "player"):
+                if required not in df.columns:
+                    raise ValueError(f"FBref no devolvio columna requerida: {required}")
+
+            def _num(col):
+                if col not in df.columns:
+                    return pd.Series(0.0, index=df.index)
+                return pd.to_numeric(df[col], errors="coerce").fillna(0.0)
+
+            mp = _num("playing time_mp")
+            mp = mp.mask(mp <= 0, 1)
+
+            out = pd.DataFrame()
+            out["league"] = league_code
+            out["date"] = pd.Timestamp.utcnow().date().isoformat()
+            out["team"] = df["team"].apply(normalize_team_name)
+            out["player"] = df["player"].astype(str).str.strip()
+            out["min"] = (_num("playing time_min") / mp).round(2)
+            out["gls"] = (_num("performance_gls") / mp).round(3)
+            out["ast"] = (_num("performance_ast") / mp).round(3)
+            out["sh"] = (_num("standard_sh") / mp).round(3)
+            out["sot"] = (_num("standard_sot") / mp).round(3)
+            out["fls"] = (_num("performance_fls") / mp).round(3)
+            out["crdy"] = (_num("performance_crdy") / mp).round(3)
+            out["crdr"] = (_num("performance_crdr") / mp).round(3)
+            return out[(out["team"].astype(bool)) & (out["player"].astype(bool))]
+
+        selected_leagues = {code.upper() for code in leagues} if leagues else set(FBREF_LEAGUES)
+
         for code, fbref_name in FBREF_LEAGUES.items():
+            if code not in selected_leagues:
+                continue
             try:
                 logger.info("  Descargando jugadores %s (%s)...", code, fbref_name)
                 fbref = sd.FBref(leagues=[fbref_name], seasons=season)
-                df_shooting = fbref.read_player_match_stats(stat_type='shooting')
-                if df_shooting.empty:
+                df = _normalise_season_stats(fbref, code)
+                if df.empty:
                     logger.warning("  Sin datos para %s", fbref_name)
                     continue
-                df = df_shooting.reset_index()
-                df.columns = [str(c).lower().strip() for c in df.columns]
                 df["league"] = code
+                df.to_csv(per_league_path / f"{code}.csv", index=False, encoding="utf-8")
                 all_frames.append(df)
-                logger.info("  ✓ %s — %d registros", code, len(df))
+                logger.info("  OK %s - %d registros", code, len(df))
                 time.sleep(2)  # respetar rate limit de FBref
             except Exception as e:
                 logger.warning("  Error %s: %s", code, e)
+                cached = per_league_path / f"{code}.csv"
+                if cached.exists():
+                    try:
+                        all_frames.append(pd.read_csv(cached, low_memory=False))
+                        logger.info("  Usando cache local de jugadores para %s", code)
+                    except Exception as cache_error:
+                        logger.warning("  Cache local invalida para %s: %s", code, cache_error)
                 continue
 
         if not all_frames:
@@ -69,7 +195,7 @@ def update_players() -> bool:
 
         combined = pd.concat(all_frames, ignore_index=True)
         combined.to_csv(output_file, index=False, encoding="utf-8")
-        logger.info("✓ %d registros totales de jugadores en %s", len(combined), output_file)
+        logger.info("OK %d registros totales de jugadores en %s", len(combined), output_file)
         return True
 
     except Exception as e:
