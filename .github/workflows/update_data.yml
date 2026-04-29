@@ -14,6 +14,10 @@ on:
         description: 'Max new fixtures to enrich with referee stats'
         required: false
         default: '70'
+      referee_leagues:
+        description: 'League codes to fetch referee data for'
+        required: false
+        default: 'SP1 SP2'
 
 concurrency:
   group: update-data-main
@@ -43,7 +47,8 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           REFEREE_DAYS_BACK: ${{ github.event.inputs.referee_days_back || '14' }}
           REFEREE_MAX_FIXTURES: ${{ github.event.inputs.referee_max_fixtures || '70' }}
-        run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES"
+          REFEREE_LEAGUES: ${{ github.event.inputs.referee_leagues || 'SP1 SP2' }}
+        run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES" --leagues $REFEREE_LEAGUES
 
       - name: Build static data
         env:
