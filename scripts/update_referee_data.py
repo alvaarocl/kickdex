@@ -128,7 +128,7 @@ def _fixture_row(fixture: dict[str, Any], stats: list[dict[str, Any]], league_co
     }
 
 
-def update_referees(days_back: int, leagues: list[str], sleep_seconds: float) -> int:
+def update_referees(days_back: int, leagues: list[str], sleep_seconds: float, max_fixtures: int | None = None) -> int:
     key = os.getenv("APIFOOTBALL_KEY") or os.getenv("API_FOOTBALL_KEY")
     if not key:
         print("APIFOOTBALL_KEY no configurada; se mantiene fallback gratuito football-data/manual.")
@@ -141,6 +141,9 @@ def update_referees(days_back: int, leagues: list[str], sleep_seconds: float) ->
     rows: list[dict[str, Any]] = []
 
     for code in leagues:
+        if max_fixtures is not None and len(rows) >= max_fixtures:
+            print(f"STOP max fixtures reached: {max_fixtures}")
+            break
         api_id = APIFOOTBALL_LEAGUE_IDS.get(code)
         if not api_id:
             print(f"SKIP {code}: sin id API-Football")
@@ -159,6 +162,9 @@ def update_referees(days_back: int, leagues: list[str], sleep_seconds: float) ->
         ).get("response") or []
 
         for fixture in fixtures:
+            if max_fixtures is not None and len(rows) >= max_fixtures:
+                print(f"STOP max fixtures reached: {max_fixtures}")
+                break
             fixture_id = str((fixture.get("fixture") or {}).get("id") or "")
             if not fixture_id or fixture_id in existing:
                 continue
@@ -180,8 +186,14 @@ def main() -> None:
     parser.add_argument("--days-back", type=int, default=21)
     parser.add_argument("--leagues", nargs="*", default=list(APIFOOTBALL_LEAGUE_IDS.keys()))
     parser.add_argument("--sleep", type=float, default=0.35)
+    parser.add_argument(
+        "--max-fixtures",
+        type=int,
+        default=80,
+        help="Maximum new fixtures to enrich with statistics in one run. Keep <=80 for API-Football free tier.",
+    )
     args = parser.parse_args()
-    update_referees(args.days_back, args.leagues, args.sleep)
+    update_referees(args.days_back, args.leagues, args.sleep, args.max_fixtures)
 
 
 if __name__ == "__main__":

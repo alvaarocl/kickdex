@@ -45,7 +45,7 @@ MIN_MATCHES_FOR_STATS = 3        # Mínimo de partidos para mostrar métricas
 
 # ── Descarga de datos ─────────────────────────────────────────────────────────
 FOOTBALL_DATA_BASE_URL = "https://www.football-data.co.uk/mmz4281"
-DATA_DIR = "datos"               # lowercase, consistente en todos los módulos
+DATA_DIR = "DATOS"
 SEASONS_RANGE = range(4, 27)     # 04/05 → 26/27
 
 # ── Normalización de nombres de equipos ──────────────────────────────────────

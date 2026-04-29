@@ -5,6 +5,15 @@ on:
     - cron: '10 6 * * *'   # Diario a las 6:10 UTC
     - cron: '10 13 * * *'  # Refresco diario a las 13:10 UTC
   workflow_dispatch:
+    inputs:
+      referee_days_back:
+        description: 'Days back to fetch referee data from API-Football'
+        required: false
+        default: '14'
+      referee_max_fixtures:
+        description: 'Max new fixtures to enrich with referee stats'
+        required: false
+        default: '80'
 
 concurrency:
   group: update-data-main
@@ -32,7 +41,9 @@ jobs:
       - name: Update referee data
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python scripts/update_referee_data.py --days-back 7
+          REFEREE_DAYS_BACK: ${{ github.event.inputs.referee_days_back || '14' }}
+          REFEREE_MAX_FIXTURES: ${{ github.event.inputs.referee_max_fixtures || '80' }}
+        run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES"
 
       - name: Build static data
         env:
@@ -50,5 +61,6 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/data/
+          test ! -f DATOS/referees_matches.csv || git add DATOS/referees_matches.csv
           git diff --staged --quiet || git commit -m "chore: update data $(date -u +%Y-%m-%d) [skip ci]"
           git push

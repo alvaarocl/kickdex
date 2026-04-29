@@ -25,6 +25,7 @@ datos/soccerdata/
 datos/.last_update.json
 !datos/.gitkeep
 DATOS/*.csv
+!DATOS/referees_matches.csv
 DATOS/players/*.csv
 DATOS/jugadores/*.csv
 DATOS/.last_update.json
