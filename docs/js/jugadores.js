@@ -11,12 +11,16 @@ function initJugadores() {
 
   document.getElementById("jug-team").addEventListener("change", () => {
     populatePlayerSelect();
+    updatePlayerSuggestions();
   });
+
+  initPlayerSearch();
 
   ["jug-search", "jug-sort"].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.addEventListener("input", () => {
+      if (id === "jug-search") updatePlayerSuggestions();
       const team = document.getElementById("jug-team").value;
       const player = document.getElementById("jug-player").value;
       if (team && !player) runJugadores();
@@ -32,6 +36,32 @@ function initJugadores() {
   }
 }
 
+function initPlayerSearch() {
+  const search = document.getElementById("jug-search");
+  if (!search) return;
+
+  let box = document.getElementById("jug-search-suggestions");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "jug-search-suggestions";
+    box.className = "player-suggestions";
+    search.parentElement?.appendChild(box);
+  }
+
+  search.setAttribute("autocomplete", "off");
+  search.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    const first = box.querySelector(".player-suggestion");
+    if (!first) return;
+    e.preventDefault();
+    selectPlayerSuggestion(first.dataset.team, first.dataset.player);
+  });
+
+  document.addEventListener("click", e => {
+    if (!box.contains(e.target) && e.target !== search) box.hidden = true;
+  });
+}
+
 function populatePlayerSelect() {
   const team = document.getElementById("jug-team").value;
   const sel  = document.getElementById("jug-player");
@@ -45,6 +75,87 @@ function populatePlayerSelect() {
     opt.value = p; opt.textContent = p;
     sel.appendChild(opt);
   });
+}
+
+function updatePlayerSuggestions() {
+  const search = document.getElementById("jug-search");
+  const box = document.getElementById("jug-search-suggestions");
+  if (!search || !box) return;
+
+  const q = normalizePlayerText(search.value);
+  if (q.length < 2) {
+    box.hidden = true;
+    box.innerHTML = "";
+    return;
+  }
+
+  const candidates = getPlayerSearchCandidates();
+  const matches = candidates
+    .map(item => ({ ...item, score: scorePlayerMatch(item.player, q) }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score || a.player.localeCompare(b.player, "es"))
+    .slice(0, 8);
+
+  if (!matches.length) {
+    box.hidden = false;
+    box.innerHTML = `<div class="player-suggestion-empty">Sin coincidencias</div>`;
+    return;
+  }
+
+  box.hidden = false;
+  box.innerHTML = matches.map(item => `
+    <button type="button" class="player-suggestion" data-team="${escAttr(item.team)}" data-player="${escAttr(item.player)}">
+      <span>${escHtml(item.player)}</span>
+      <small>${escHtml(item.team)} · ${escHtml(item.league || "Liga")}</small>
+    </button>
+  `).join("");
+
+  box.querySelectorAll(".player-suggestion").forEach(btn => {
+    btn.addEventListener("click", () => selectPlayerSuggestion(btn.dataset.team, btn.dataset.player));
+  });
+}
+
+function getPlayerSearchCandidates() {
+  const selectedTeam = document.getElementById("jug-team")?.value || "";
+  const leagueFilter = document.getElementById("jugLeagueFilter")?.value || "all";
+  const teams = selectedTeam
+    ? [selectedTeam]
+    : getPlayerTeamsByLeague(leagueFilter);
+
+  const result = [];
+  teams.forEach(team => {
+    const players = APP.playersDetail?.[team] ? Object.keys(APP.playersDetail[team]) : [];
+    const leagueCode = getLeagueForTeam(team);
+    const league = APP.leagues?.[leagueCode]?.name || leagueCode || "";
+    players.forEach(player => result.push({ team, player, league }));
+  });
+  return result;
+}
+
+function scorePlayerMatch(player, query) {
+  const name = normalizePlayerText(player);
+  if (!name) return 0;
+  if (name === query) return 100;
+  if (name.startsWith(query)) return 90;
+  if (name.includes(query)) return 70;
+  const parts = name.split(" ");
+  if (parts.some(part => part.startsWith(query))) return 60;
+  return 0;
+}
+
+function selectPlayerSuggestion(team, player) {
+  if (!team || !player) return;
+  const teamSel = document.getElementById("jug-team");
+  const playerSel = document.getElementById("jug-player");
+  const search = document.getElementById("jug-search");
+  const box = document.getElementById("jug-search-suggestions");
+
+  if (teamSel) teamSel.value = team;
+  populatePlayerSelect();
+  if (playerSel) playerSel.value = player;
+  if (search) search.value = player;
+  if (box) box.hidden = true;
+  runJugadores();
 }
 
 function runJugadores() {
@@ -181,6 +292,7 @@ function drawTeamSparklines(team) {
 
 function buildPlayerDetail(team, player, detail) {
   const avg = aggregatePlayerStats(detail);
+  const hasMatchLog = hasPlayerMatchLog(detail);
   const svgUser = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
   const svgGls  = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 2a14.5 14.5 0 0 0 0 20A14.5 14.5 0 0 0 12 2z"/><path d="M2 12h20"/></svg>`;
   const svgShot = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
@@ -203,11 +315,11 @@ function buildPlayerDetail(team, player, detail) {
       ${miniCard("Min/p",        fmt(avg.min, 0), "var(--text)")}
       ${miniCard("Faltas/p",     fmt(avg.fls, 1), "var(--orange)")}
       ${miniCard("Tarj. Am./p",  fmt(avg.crdy, 2), "var(--yellow)")}
-      ${miniCard("Registros",    detail.length, "var(--muted)")}
+      ${miniCard(hasMatchLog ? "Registros" : "Datos", hasMatchLog ? detail.length : "Prom. temporada", "var(--muted)")}
     </div>
   </div>
 
-  <!-- Sparkline charts -->
+  ${hasMatchLog ? `
   <div class="grid-2" style="margin-bottom:20px;">
     <div class="chart-box">
       <div class="section-title">${svgGls} Goles por partido</div>
@@ -219,7 +331,6 @@ function buildPlayerDetail(team, player, detail) {
     </div>
   </div>
 
-  <!-- Per-game table -->
   <div class="section-title">${svgList} Detalle disponible <small>${detail.length} registros</small></div>
   <div class="table-wrap">
     <table>
@@ -249,10 +360,15 @@ function buildPlayerDetail(team, player, detail) {
         </tr>`).join("")}
       </tbody>
     </table>
-  </div>`;
+  </div>` : `
+  <div class="card player-data-note">
+    <div class="section-title">${svgList} Promedios de temporada</div>
+    <p>La fuente disponible para este jugador es agregada por temporada, no partido a partido. Por eso no se muestran últimos 5/10 ni una tabla de registros individuales.</p>
+  </div>`}`;
 }
 
 function drawPlayerSparklines(player, detail) {
+  if (!hasPlayerMatchLog(detail)) return;
   const gls  = detail.slice().reverse().map(d => d.gls  ?? 0);
   const sot  = detail.slice().reverse().map(d => d.sot  ?? 0);
   const labels = detail.slice().reverse().map(d => d.date ? d.date.slice(5) : "");
@@ -350,12 +466,39 @@ function sanitizeId(str) {
 }
 
 function filterAndSortPlayers(players) {
-  const q = (document.getElementById("jug-search")?.value || "").trim().toLowerCase();
+  const q = normalizePlayerText(document.getElementById("jug-search")?.value || "");
   const sortKey = document.getElementById("jug-sort")?.value || "sh";
   return (players || [])
-    .filter(p => !q || String(p.player || "").toLowerCase().includes(q))
+    .filter(p => !q || normalizePlayerText(p.player).includes(q))
     .slice()
     .sort((a, b) => (Number(b[sortKey]) || 0) - (Number(a[sortKey]) || 0));
+}
+
+function normalizePlayerText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function hasPlayerMatchLog(detail) {
+  return (detail || []).some(d => {
+    const date = String(d.date || "").trim().toLowerCase();
+    return date && date !== "nat" && date !== "nan" && date !== "none";
+  });
+}
+
+function escAttr(str) {
+  return escHtml(str).replace(/'/g, "&#39;");
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function getLeagueForTeam(team) {

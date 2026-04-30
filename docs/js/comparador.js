@@ -296,13 +296,14 @@ function buildPlayerComparison(home, away) {
         <td class="mono">${fmt(p.gls, 1)}</td>
         <td class="mono">${fmt(p.ast, 1)}</td>
         <td class="mono">${p.fls ? fmt(p.fls, 1) : "—"}</td>
+        <td class="mono">${p.crdy != null ? fmt(p.crdy, 2) : "—"}</td>
       </tr>`).join("");
 
     return `
     <div class="players-col-title">${teamName}</div>
     <div class="table-wrap players-table-wrap" style="overflow-x:auto; max-height:450px; overflow-y:auto;">
       <table>
-        <thead><tr><th>Jugador</th><th>Sh</th><th>SoT</th><th>Gls</th><th>Ast</th><th>Fls</th></tr></thead>
+        <thead><tr><th>Jugador</th><th>Sh</th><th>SoT</th><th>Gls</th><th>Ast</th><th>Fls</th><th>TA</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
