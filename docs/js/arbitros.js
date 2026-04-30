@@ -10,15 +10,23 @@ let _arbWindow = "season";
 function initArbitros() {
   const sel = document.getElementById("arb-league-filter");
   if (sel) {
+    const prev = sel.value;
     while (sel.options.length > 1) sel.remove(1);
-    const leaguesInData = [...new Set((APP.referees || []).map(r => r.league))].sort();
+    const leaguesInData = typeof sortLeagueCodes === "function"
+      ? sortLeagueCodes((APP.referees || []).map(r => r.league))
+      : [...new Set((APP.referees || []).map(r => r.league))].sort();
     leaguesInData.forEach(code => {
-      const ld = APP.leagues[code];
-      const opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = ld ? ld.name : code;
-      sel.appendChild(opt);
+      if (typeof appendLeagueOption === "function" && APP.leagues?.[code]) {
+        appendLeagueOption(sel, code);
+      } else {
+        const ld = APP.leagues[code];
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.textContent = ld ? ld.name : code;
+        sel.appendChild(opt);
+      }
     });
+    if ([...sel.options].some(opt => opt.value === prev)) sel.value = prev;
     sel.addEventListener("change", e => {
       _arbLeague = e.target.value;
       renderArbitros();

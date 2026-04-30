@@ -212,6 +212,69 @@ const APP = {
   loaded:      false,
 };
 
+const LEAGUE_META = {
+  SP1: { country: "España", tier: 1 },
+  SP2: { country: "España", tier: 2 },
+  E0:  { country: "Inglaterra", tier: 1 },
+  E1:  { country: "Inglaterra", tier: 2 },
+  I1:  { country: "Italia", tier: 1 },
+  I2:  { country: "Italia", tier: 2 },
+  D1:  { country: "Alemania", tier: 1 },
+  D2:  { country: "Alemania", tier: 2 },
+  F1:  { country: "Francia", tier: 1 },
+  F2:  { country: "Francia", tier: 2 },
+  N1:  { country: "Países Bajos", tier: 1 },
+};
+
+const LEAGUE_COUNTRY_ORDER = [
+  "España",
+  "Inglaterra",
+  "Italia",
+  "Alemania",
+  "Francia",
+  "Países Bajos",
+];
+
+function getLeagueMeta(code) {
+  return LEAGUE_META[code] || { country: "Otras", tier: 99 };
+}
+
+function compareLeagueCodes(a, b) {
+  const ma = getLeagueMeta(a);
+  const mb = getLeagueMeta(b);
+  const ca = LEAGUE_COUNTRY_ORDER.indexOf(ma.country);
+  const cb = LEAGUE_COUNTRY_ORDER.indexOf(mb.country);
+  const oa = ca === -1 ? LEAGUE_COUNTRY_ORDER.length : ca;
+  const ob = cb === -1 ? LEAGUE_COUNTRY_ORDER.length : cb;
+  if (oa !== ob) return oa - ob;
+  if (ma.tier !== mb.tier) return ma.tier - mb.tier;
+  const na = APP.leagues?.[a]?.name || a;
+  const nb = APP.leagues?.[b]?.name || b;
+  return na.localeCompare(nb, "es", { sensitivity: "base" });
+}
+
+function sortLeagueCodes(codes) {
+  return Array.from(new Set(codes.filter(Boolean))).sort(compareLeagueCodes);
+}
+
+function getLeagueLabel(code) {
+  const name = APP.leagues?.[code]?.name || code;
+  const meta = getLeagueMeta(code);
+  if (!meta.country || meta.country === "Otras") return name;
+  return `${meta.country} · ${meta.tier} · ${name}`;
+}
+
+function appendLeagueOption(sel, code) {
+  const ld = APP.leagues?.[code];
+  if (!sel || !ld) return;
+  const opt = document.createElement("option");
+  const meta = getLeagueMeta(code);
+  opt.value = code;
+  opt.textContent = getLeagueLabel(code);
+  opt.title = meta.country === "Otras" ? `${code} · ${ld.name}` : `${code} · ${meta.country} · ${ld.name}`;
+  sel.appendChild(opt);
+}
+
 // ── Data fetching ──────────────────────────────────────────────────────────
 const DATA_BASE = "./data/";
 // Cache-bust: reuses the asset version embedded in index.html script tags so any
@@ -293,13 +356,13 @@ function getTeamsByLeague(leagueCode) {
 function getPlayerLeagueCodes() {
   const byLeague = APP.playerCoverage?.by_league || {};
   const codes = Object.keys(byLeague).filter(code => (byLeague[code]?.player_rows || 0) > 0);
-  if (codes.length) return codes.sort();
+  if (codes.length) return sortLeagueCodes(codes);
 
   const playerTeams = new Set(Object.keys(APP.playersDetail || APP.players || {}));
-  return Object.entries(APP.leagues || {})
+  const fallbackCodes = Object.entries(APP.leagues || {})
     .filter(([, data]) => (data.teams || []).some(team => playerTeams.has(team)))
-    .map(([code]) => code)
-    .sort();
+    .map(([code]) => code);
+  return sortLeagueCodes(fallbackCodes);
 }
 
 function getPlayerTeamsByLeague(leagueCode) {
@@ -333,28 +396,20 @@ function initSegControls() {
   const populateLeagueSelect = (id) => {
     const sel = document.getElementById(id);
     if (!sel || sel.tagName !== "SELECT") return;
+    const prev = sel.value;
     // Idempotent: keep only the first default option ("Todas"), remove the rest
     while (sel.options.length > 1) sel.remove(1);
-    Object.entries(APP.leagues).forEach(([code, data]) => {
-      const opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = data.name;
-      sel.appendChild(opt);
-    });
+    sortLeagueCodes(Object.keys(APP.leagues || {})).forEach(code => appendLeagueOption(sel, code));
+    if ([...sel.options].some(opt => opt.value === prev)) sel.value = prev;
   };
 
   populateLeagueSelect("cmpLeagueFilter");
   const jugLeagueFilter = document.getElementById("jugLeagueFilter");
   if (jugLeagueFilter) {
+    const prev = jugLeagueFilter.value;
     while (jugLeagueFilter.options.length > 1) jugLeagueFilter.remove(1);
-    getPlayerLeagueCodes().forEach(code => {
-      const ld = APP.leagues[code];
-      if (!ld) return;
-      const opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = ld.name;
-      jugLeagueFilter.appendChild(opt);
-    });
+    getPlayerLeagueCodes().forEach(code => appendLeagueOption(jugLeagueFilter, code));
+    if ([...jugLeagueFilter.options].some(opt => opt.value === prev)) jugLeagueFilter.value = prev;
     jugLeagueFilter.addEventListener("change", e => {
       populateSelect("jug-team", getPlayerTeamsByLeague(e.target.value));
       const playerSel = document.getElementById("jug-player");
@@ -376,18 +431,14 @@ function initSegControls() {
 
   const inicioFilter = document.getElementById("inicioLeagueFilter");
   if (inicioFilter) {
+    const prev = inicioFilter.value;
     while (inicioFilter.options.length > 1) inicioFilter.remove(1);
     const fxLeagues = new Set([
       ...(APP.fixtures?.upcoming || []).map(f => f.league),
       ...(APP.fixtures?.recent   || []).map(f => f.league),
     ]);
-    fxLeagues.forEach(code => {
-      const ld = APP.leagues[code];
-      if (!ld) return;
-      const opt = document.createElement("option");
-      opt.value = code; opt.textContent = ld.name;
-      inicioFilter.appendChild(opt);
-    });
+    sortLeagueCodes(Array.from(fxLeagues)).forEach(code => appendLeagueOption(inicioFilter, code));
+    if ([...inicioFilter.options].some(opt => opt.value === prev)) inicioFilter.value = prev;
     inicioFilter.addEventListener("change", e => {
       if (typeof renderInicio === "function") renderInicio(e.target.value);
     });
