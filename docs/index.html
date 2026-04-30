@@ -14,6 +14,7 @@
   <meta name="twitter:description" content="La terminal de inteligencia futbolística. Sin login, sin ads, sin picks." />
   <meta name="twitter:image" content="og.png" />
   <meta name="theme-color" content="#05070D" />
+  <link rel="canonical" href="https://kickdex.alvarocarpintero.com/" />
   <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
@@ -24,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260430f" />
+  <link rel="stylesheet" href="css/app.css?v=20260501a" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
   <script type="module" src="js/edge.js?v=20260430b" defer></script>
 </head>
@@ -394,6 +395,11 @@
 
 </nav>
 
+<!-- ── Coverage strip (auto-populated) ──────────────────── -->
+<div class="coverage-strip-wrap container">
+  <div class="coverage-strip" id="coverageStrip" hidden></div>
+</div>
+
 <!-- ── Main content ──────────────────────────────────────── -->
 <main class="container" role="main">
 
@@ -461,7 +467,7 @@
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
       </div>
-      <p data-i18n="cmp_prompt">Selecciona dos equipos y pulsa <strong>Analizar</strong></p>
+      <p data-i18n="cmp_prompt">1. Selecciona liga · 2. Selecciona dos equipos · 3. Pulsa <strong>Analizar</strong></p>
     </div>
 
   </section>
@@ -567,17 +573,25 @@
 <footer>
   <div class="container">
     <div class="disclaimer">
-      <div style="margin-bottom:8px;"><a href="methodology.html">Metodologia</a> | <a href="coverage.html">Cobertura</a> | <a href="aviso-legal.html">Aviso legal</a> | <a href="privacidad.html">Privacidad</a> | <a href="cookies.html">Cookies</a> | <a href="terminos.html">Terminos</a></div>
+      <div style="margin-bottom:8px;">
+        <a href="methodology.html" data-i18n="footer_methodology">Methodology</a> |
+        <a href="coverage.html" data-i18n="footer_coverage">Coverage</a> |
+        <a href="aviso-legal.html" data-i18n="footer_legal">Aviso legal</a> |
+        <a href="privacidad.html" data-i18n="footer_privacy">Privacidad</a> |
+        <a href="cookies.html">Cookies</a> |
+        <a href="terminos.html" data-i18n="footer_terms">Términos</a> |
+        <a href="mailto:hola@kickdex.com?subject=KICKDEX%20feedback&amp;body=%5B%20Tipo%3A%20bug%20%2F%20sugerencia%20%5D%0A%0A" data-i18n="footer_feedback">Reportar / sugerir</a>
+      </div>
       <strong>KICKDEX</strong> &nbsp;·&nbsp; <span style="color:var(--brand);font-family:var(--font-data);">Football intelligence, indexed.</span> &nbsp;·&nbsp;
       &gt; RISK NOTICE: edges are estimates, not guarantees. Play responsibly. &nbsp;·&nbsp;
-      Data: <a href="https://www.football-data.co.uk" target="_blank" rel="noopener">football-data.co.uk</a> · FBref.
+      <span data-i18n="footer_data">Data:</span> <a href="https://www.football-data.co.uk" target="_blank" rel="noopener">football-data.co.uk</a> · FBref.
     </div>
   </div>
 </footer>
 
 <script src="js/animations.js?v=20260429a"></script>
-<script src="js/app.js?v=20260430c"></script>
-<script src="js/comparador.js?v=20260430d"></script>
+<script src="js/app.js?v=20260501a"></script>
+<script src="js/comparador.js?v=20260501a"></script>
 <script src="js/h2h.js?v=20260429a"></script>
 <script src="js/jugadores.js?v=20260430e"></script>
 <script src="js/inicio.js?v=20260430d"></script>

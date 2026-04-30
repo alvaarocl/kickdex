@@ -42,7 +42,8 @@ function runComparador() {
 
   box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary, h2hData)
     + buildPlayerComparison(home, away)
-    + buildMasterCalculatorJS(home, away);
+    + buildMasterCalculatorJS(home, away)
+    + buildExportReport(home, away, probs);
 
   setTimeout(() => {
     drawRadar(home, away, homeData, awayData);
@@ -278,7 +279,10 @@ function buildPlayerComparison(home, away) {
     return `<div class="card stagger-item" style="margin-bottom:20px;">
       <div class="section-title">📊 Comparativa de Jugadores Pro</div>
       <p style="color:var(--muted);font-size:.85rem;line-height:1.6;">
-        Datos de jugadores no disponibles aún para esta liga. Se actualizarán automáticamente en el próximo build diario (6:00 UTC).
+        Sin stats de jugadores para esta liga en el feed actual.
+        La cobertura de player scouting depende de FBref/soccerdata, que no incluye todas las divisiones.
+        Consulta <a href="coverage.html" style="color:var(--brand);">cobertura de datos</a>
+        para ver qué ligas tienen player stats.
       </p>
     </div>`;
   }
@@ -382,5 +386,32 @@ function buildMasterCalculatorJS(home, away) {
         <tbody>${rows.join("")}</tbody>
       </table>
     </div>
+  </div>`;
+}
+
+// ── Export report ──────────────────────────────────────────
+
+function buildExportReport(home, away, probs) {
+  // Edge from probabilities for the favored side, computing implied vs model
+  // We don't have live odds in this view, so report uses model probability as headline.
+  const homePct = probs?.home != null ? (probs.home * 100).toFixed(1) : "—";
+  const url = "report.html?"
+    + `home=${encodeURIComponent(home)}`
+    + `&away=${encodeURIComponent(away)}`
+    + `&edge=${encodeURIComponent(homePct)}`
+    + `&caption=${encodeURIComponent(home + " · model probability")}`
+    + `&league=${encodeURIComponent("KICKDEX analysis")}`;
+  return `
+  <div class="card stagger-item" style="margin-bottom:40px; text-align:center; padding:28px 24px;">
+    <div class="section-title" style="justify-content:center;">📄 Match Report</div>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:16px;line-height:1.55;">
+      Genera un report en una página (light mode) con el análisis del partido. Compartible en WhatsApp, X o como PDF.
+    </p>
+    <a href="${url}" target="_blank" rel="noopener"
+       class="btn btn-primary"
+       style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:var(--font-data);">
+      &gt; export report_
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v7H3V3h7"/></svg>
+    </a>
   </div>`;
 }

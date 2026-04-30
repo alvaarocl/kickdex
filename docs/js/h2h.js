@@ -26,6 +26,12 @@ function runH2H() {
     return;
   }
 
+  if (typeof isH2HReady === "function" && !isH2HReady()) {
+    box.innerHTML = `<div class="state-box"><div class="icon"><span class="spinner"></span></div><p>Cargando historial H2H…</p></div>`;
+    document.addEventListener("kdx:h2h-ready", runH2H, { once: true });
+    return;
+  }
+
   const data = getH2H(t1, t2);
   if (!data || !data.matches || data.matches.length === 0) {
     box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin historial disponible entre estos equipos</p></div>`;

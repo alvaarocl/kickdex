@@ -40,14 +40,14 @@
   --gold-soft: rgba(245, 185, 60, 0.12);
   --gold-glow: rgba(245, 185, 60, 0.45);
 
-  /* ── Semantic colors ──────────────────────────────── */
-  --green:     #2EE6A6;   /* Turf */
-  --green2:    #5BD6FF;   /* Signal Blue */
-  --yellow:    #F5B93C;   /* Edge Gold */
-  --red:       #FF5A6E;   /* Red Card */
+  /* ── Semantic aliases (legacy: prefer --brand / --gold / --red) ── */
+  --green:     var(--brand);
+  --green2:    var(--brand2);
+  --yellow:    var(--gold);
+  --red:       #FF5A6E;
+  --blue:      var(--brand2);
   --purple:    #a78bfa;
   --orange:    #fb923c;
-  --blue:      #5BD6FF;
 
   /* ── Gradients ────────────────────────────────────── */
   --grad-brand:  linear-gradient(135deg, #2EE6A6 0%, #5BD6FF 100%);
@@ -2889,6 +2889,63 @@ tbody td b { font-family: var(--font-data); }
 .lp-cta-primary {
   font-family: var(--font-data);
   letter-spacing: -0.01em;
+}
+
+/* — Coverage strip (under tabs) — */
+.coverage-strip-wrap { padding: 8px 0 0; }
+.coverage-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  background: rgba(11, 15, 26, 0.55);
+  width: fit-content;
+  max-width: 100%;
+}
+.coverage-strip strong { color: var(--text2); font-weight: 600; }
+.coverage-strip a { color: var(--brand); text-decoration: none; border-bottom: 1px dashed transparent; }
+.coverage-strip a:hover { border-bottom-color: var(--brand); }
+.coverage-strip__sep { width: 4px; height: 4px; border-radius: 50%; background: var(--muted2); display: inline-block; }
+@media (max-width: 640px) {
+  .coverage-strip { font-size: 10px; gap: 10px; padding: 7px 12px; }
+}
+
+/* — Onboarding microcopy hint — */
+.onboard-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-data);
+  font-size: 11px;
+  color: var(--brand);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-left: 12px;
+  opacity: 0.85;
+}
+.onboard-hint::before { content: "›"; color: var(--brand); }
+
+/* — Fixture edge badge — */
+.fx-edge-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(245, 185, 60, 0.14);
+  color: var(--gold);
+  border: 1px solid rgba(245, 185, 60, 0.26);
 }
 
 /* — Lang toggle inside landing nav — */

@@ -23,7 +23,7 @@ const I18N = {
     loading: "Cargando partidos...",
     cmp_league: "Liga", cmp_home: "Equipo Local", cmp_away: "Equipo Visitante",
     cmp_last: "Ventana", cmp_analyze: "Analizar",
-    cmp_prompt: "Selecciona dos equipos y pulsa Analizar",
+    cmp_prompt: "1. Selecciona liga · 2. Selecciona dos equipos · 3. Pulsa Analizar",
     cmp_players_title: "Comparativa de Jugadores",
     cmp_players_none: "Sin datos de jugadores para este partido",
     h2h_team1: "Equipo 1", h2h_team2: "Equipo 2", h2h_run: "Ver H2H",
@@ -103,6 +103,11 @@ const I18N = {
     footer_legal: "Aviso legal",
     footer_privacy: "Privacidad",
     footer_terms: "Términos",
+    footer_methodology: "Metodología",
+    footer_coverage: "Cobertura",
+    footer_feedback: "Reportar / sugerir",
+    coverage_strip: "Cobertura: ",
+    coverage_strip_updated: "Actualizado",
     cmp_promptTitle: "",
   },
   en: {
@@ -121,7 +126,7 @@ const I18N = {
     loading: "Loading matches...",
     cmp_league: "League", cmp_home: "Home Team", cmp_away: "Away Team",
     cmp_last: "Window", cmp_analyze: "Analyze",
-    cmp_prompt: "Select two teams and click Analyze",
+    cmp_prompt: "1. Pick league · 2. Select two teams · 3. Click Analyze",
     cmp_players_title: "Player Comparison",
     cmp_players_none: "No player data available for this match",
     h2h_team1: "Team 1", h2h_team2: "Team 2", h2h_run: "See H2H",
@@ -201,6 +206,11 @@ const I18N = {
     footer_legal: "Legal notice",
     footer_privacy: "Privacy",
     footer_terms: "Terms",
+    footer_methodology: "Methodology",
+    footer_coverage: "Coverage",
+    footer_feedback: "Report / suggest",
+    coverage_strip: "Coverage: ",
+    coverage_strip_updated: "Updated",
     cmp_promptTitle: "",
   },
 };
@@ -218,6 +228,7 @@ function toggleLang() {
   const label = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
   document.querySelectorAll("#langToggle, #langToggleLp").forEach(b => { b.textContent = label; });
   if (APP.loaded && typeof renderInicio === "function") renderInicio();
+  if (APP.loaded && typeof updateCoverageStrip === "function") updateCoverageStrip();
 }
 
 function applyI18n() {
@@ -458,6 +469,36 @@ function updateLandingMetrics() {
   }
 }
 
+function updateCoverageStrip() {
+  const el = document.getElementById("coverageStrip");
+  if (!el) return;
+
+  const status = APP.dataStatus || {};
+  const players = status.players || {};
+  const updated = status.updated_at;
+  const totalMatches = APP.meta?.total_matches;
+  const upcomingCount = (APP.fixtures?.upcoming || []).length;
+  const playerLeagues = (players.covered_leagues || []).length;
+  const refereeCount = Array.isArray(APP.referees) ? APP.referees.length : 0;
+
+  const parts = [];
+  if (totalMatches) parts.push(`<strong>${(totalMatches / 1000).toFixed(0)}k</strong> partidos`);
+  if (upcomingCount) parts.push(`<strong>${upcomingCount}</strong> próximos`);
+  if (playerLeagues) parts.push(`<strong>${playerLeagues}</strong> ligas con jugadores`);
+  if (refereeCount) parts.push(`<strong>${refereeCount}</strong> árbitros`);
+
+  if (!parts.length) { el.hidden = true; return; }
+
+  const sep = '<span class="coverage-strip__sep"></span>';
+  const updatedLabel = updated
+    ? `${t("coverage_strip_updated")} ${new Date(updated).toLocaleDateString(LANG === "en" ? "en-GB" : "es-ES", { day: "2-digit", month: "short" })}`
+    : "";
+
+  el.innerHTML = parts.join(sep) + (updatedLabel ? `${sep}${updatedLabel}` : "")
+    + `${sep}<a href="coverage.html">${t("footer_coverage") || "Coverage"} →</a>`;
+  el.hidden = false;
+}
+
 function updateHeroEdge() {
   const target = document.getElementById("hero-edge");
   if (!target) return;
@@ -522,11 +563,11 @@ async function loadAllData() {
   if (metaEl) metaEl.innerHTML = `<span class="spinner"></span> Cargando datos...`;
 
   try {
-    const [meta, teams, teamStats, h2h, players, playersDetail, playerCoverage, dataStatus, leagues, fixtures, referees, edges] = await Promise.all([
+    // Critical path: everything except H2H (4.4MB) which loads in background
+    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, leagues, fixtures, referees, edges] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
-      fetchJSON("h2h.json"),
       fetchJSON("players.json").catch(() => ({})),
       fetchJSON("players_detail.json").catch(() => ({})),
       fetchJSON("player_coverage.json").catch(() => ({})),
@@ -540,7 +581,8 @@ async function loadAllData() {
     APP.meta           = meta;
     APP.teams          = teams;
     APP.teamStats      = teamStats;
-    APP.h2h            = h2h;
+    APP.h2h            = {};
+    APP.h2hReady       = false;
     APP.players        = players;
     APP.playersDetail  = playersDetail;
     APP.playerCoverage = playerCoverage;
@@ -554,9 +596,22 @@ async function loadAllData() {
     updateHeader();
     updateLandingMetrics();
     updateHeroEdge();
+    updateCoverageStrip();
     populateAllSelects();
     initSegControls();
     initModules();
+
+    // Background-load H2H (heavy 4.4MB file). Does not block initial render.
+    fetchJSON("h2h.json")
+      .then(h2h => {
+        APP.h2h = h2h || {};
+        APP.h2hReady = true;
+        document.dispatchEvent(new CustomEvent("kdx:h2h-ready"));
+      })
+      .catch(err => {
+        console.warn("H2H load failed:", err);
+        APP.h2hReady = true; // Don't block forever
+      });
 
   } catch (err) {
     console.error("Error loading data:", err);
@@ -748,8 +803,11 @@ function getTeamStats(team) {
 }
 
 function getH2H(t1, t2) {
+  if (!APP.h2h) return null;
   return APP.h2h[`${t1}|${t2}`] || APP.h2h[`${t2}|${t1}`] || null;
 }
+
+function isH2HReady() { return APP.h2hReady === true; }
 
 // ── Probability engine ────────────────────────────────────────────────────
 

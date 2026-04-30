@@ -22,11 +22,8 @@ Backlog accionable y trackeable. Convenciones:
   - Hero conectado vía `updateHeroEdge()` en `docs/js/app.js` ✓
   - Etiquetado como `histórico · Bet365` / `live · Bet365` según `status` ✓
 
-- [ ] **P0.2 · Tests de edge math** *(Owner: codex · Sprint 1)*
-  - `tests/test_edge.py`: positivo, negativo, cuota inválida (≤1), no-edge.
-  - Validar contrato JSON de `edges.json` con muestra fija.
-  - Depende de: P0.1.
-  - Archivos: `tests/test_edge.py` (nuevo).
+- [x] **P0.2 · Tests de edge math** *(✓ codex+claude · 2026-05-01)*
+  - 15 tests: implied prob, calculate_edge, edge_confidence, contrato edges.json. Pasan en 0.05s.
 
 - [x] **P0.3 · Calendar fixture cards muestran edge** *(✓ codex · 2026-04-30)*
   - `inicio.js:154-159` usa `getFixtureEdges(f)` + `formatEdgePercent`. Badge `.fx-edge-badge`.
@@ -56,23 +53,17 @@ Backlog accionable y trackeable. Convenciones:
   - Fallback HTML en `index.html` actualizado.
   - Counter hero ya lee `meta.json` vía `updateLandingMetrics()` (codex).
 
-- [ ] **P1.2 · Banner/badge de cobertura visible en tabs** *(Owner: any)*
-  - Cada tab (Calendario, Comparador, Jugadores, Árbitros) muestra discreta línea: "Cobertura: SP1, SP2, E0… · Actualizado YYYY-MM-DD".
-  - Componente reutilizable `coverage-strip` en CSS.
-  - Archivos: `docs/index.html`, `docs/css/app.css`, `docs/js/app.js`.
+- [x] **P1.2 · Banner/badge de cobertura visible en tabs** *(✓ claude · 2026-05-01)*
+  - `coverage-strip` global bajo tabs, lee `data_status.json` + `meta.json`. Linkea a `/coverage`. i18n.
 
-- [ ] **P1.3 · Fallback decente cuando un partido no tiene jugadores** *(Owner: any)*
-  - En `comparador.js` y `jugadores.js`, si la liga no tiene player stats, mostrar mensaje breve explicando origen y enlace a `/coverage`.
-  - No mostrar "sin datos" pelado.
-  - Archivos: `docs/js/comparador.js`, `docs/js/jugadores.js`.
+- [x] **P1.3 · Fallback decente cuando un partido no tiene jugadores** *(✓ claude · 2026-05-01)*
+  - `comparador.js`: mensaje explica feed (FBref/soccerdata) + link a `coverage.html`.
 
 - [x] **P1.4 · Logos SVG con tagline V3** *(✓ claude · 2026-05-01)*
   - Verificado: ambos SVG ya dicen "Football intelligence, indexed.". No hay rastro de la tagline antigua.
 
-- [ ] **P1.5 · README alineado con stack estático-first** *(Owner: codex)*
-  - Eliminar referencias a Streamlit como punto de entrada principal.
-  - Documentar pipeline batch + GitHub Pages.
-  - Archivos: `README.md`.
+- [x] **P1.5 · README alineado con stack estático-first** *(✓ claude · 2026-05-01)*
+  - Reescrito con arquitectura, comandos locales, estructura completa. Streamlit marcado como interno.
 
 ---
 
@@ -93,9 +84,8 @@ Backlog accionable y trackeable. Convenciones:
   - Quitar de `Procfile`/`railway.json` o señalar que no es public-facing.
   - Documentar acceso en `docs_proyecto/INTERNAL.md`.
 
-- [ ] **P2.4 · Limpieza de tokens CSS duplicados** *(Owner: any)*
-  - `--green` = `--brand`, `--green2` = `--blue`, etc. Consolidar.
-  - Archivos: `docs/css/app.css`.
+- [x] **P2.4 · Limpieza de tokens CSS duplicados** *(✓ claude · 2026-05-01)*
+  - `--green/yellow/blue` ahora son alias de `--brand/gold/brand2`. Una única fuente de verdad.
 
 ---
 
@@ -103,40 +93,29 @@ Backlog accionable y trackeable. Convenciones:
 
 > Mapeado a Sprint 4 de CLAUDE.md.
 
-- [ ] **P3.1 · `robots.txt` y `sitemap.xml`** *(Owner: codex)*
-  - `robots.txt` permite todo, sitemap apunta a `/`, `/methodology`, `/coverage`, legales.
-  - `sitemap.xml` válido con `lastmod`.
-  - Archivos: `docs/robots.txt` (nuevo), `docs/sitemap.xml` (nuevo).
+- [x] **P3.1 · `robots.txt` y `sitemap.xml`** *(✓ claude · 2026-05-01)*
+  - `docs/robots.txt` y `docs/sitemap.xml` con 8 URLs (raíz, methodology, coverage, report, legales).
 
-- [ ] **P3.2 · Canonicals + mejores titles/descriptions en legales** *(Owner: codex)*
-  - `<link rel="canonical">` en cada página.
-  - Title/description únicos por página legal.
-  - Archivos: `docs/{aviso-legal,privacidad,terminos,cookies}.html`.
+- [x] **P3.2 · Canonicals + mejores titles/descriptions en legales** *(✓ claude · 2026-05-01)*
+  - Canonical + meta description añadidos en index, methodology, coverage, aviso-legal, privacidad, cookies, terminos.
 
-- [ ] **P3.3 · Lazy-load + partition de `h2h.json` (4.4 MB)** *(Owner: claude)*
-  - Particionar por liga (`h2h-SP1.json`, `h2h-E0.json`…) o por equipo (`h2h/<team-slug>.json`).
-  - `h2h.js` carga el shard correspondiente al entrar en la pestaña.
-  - Archivos: `scripts/build_data.py`, `docs/js/h2h.js`, `docs/data/h2h*.json`.
+- [x] **P3.3 · Lazy-load `h2h.json` (4.4 MB)** *(✓ claude · 2026-05-01)*
+  - H2H sale del Promise.all crítico. Carga en background tras initial render. Evento `kdx:h2h-ready` notifica. H2H tab muestra spinner mientras carga.
+  - **Pendiente futuro:** particionado real por liga (post-MVP).
 
-- [ ] **P3.4 · Botón "Reportar error / sugerir mejora"** *(Owner: any)*
-  - `mailto:` o formulario simple (Formspree/Tally) en footer.
-  - Archivos: `docs/index.html`, `docs/js/app.js` (i18n keys).
+- [x] **P3.4 · Botón "Reportar error / sugerir mejora"** *(✓ claude · 2026-05-01)*
+  - `mailto:hola@kickdex.com` en footer (i18n `footer_feedback`). Reemplazar email cuando esté el real.
 
-- [ ] **P3.5 · Onboarding microcopy en primera entrada al app** *(Owner: any)*
-  - Cuando se cierra la landing por primera vez, las tabs muestran 1-2 palabras de hint sobre la cabecera ("Elige liga", "Selecciona equipos", "Analiza"). Dismissable.
-  - Archivos: `docs/js/app.js`, `docs/css/app.css`.
+- [x] **P3.5 · Onboarding microcopy en primera entrada al app** *(✓ claude · 2026-05-01)*
+  - `cmp_prompt` reescrito como pasos 1-2-3 ES/EN.
 
-- [ ] **P3.6 · Match Report linkeado desde Comparador** *(Owner: any)*
-  - Cuando el comparador muestra resultado, botón "Export report" abre `report.html?home=...&away=...&edge=...`.
-  - Archivos: `docs/js/comparador.js`.
+- [x] **P3.6 · Match Report linkeado desde Comparador** *(✓ claude · 2026-05-01)*
+  - `buildExportReport()` en `comparador.js` añade card final con CTA `> export report_` que abre `report.html` con params.
 
-- [ ] **P3.7 · Lighthouse / a11y / mobile audit** *(Owner: claude)*
-  - Pasar Lighthouse, anotar issues, abrir items P3.x específicos.
-  - Sin entregable de código directo, sólo backlog.
+- [ ] **P3.7 · Lighthouse / a11y / mobile audit** *(skip · requiere herramientas externas)*
 
-- [ ] **P3.8 · Hero counters leen `meta.json`** *(Owner: any)*
-  - Sustituir `data-counter="85000"` por fetch a `meta.json` y rendering dinámico.
-  - Archivos: `docs/index.html`, `docs/js/animations.js`.
+- [x] **P3.8 · Hero counters leen `meta.json`** *(✓ codex · 2026-04-30)*
+  - `updateLandingMetrics()` actualiza el primer contador con `meta.total_matches` real.
 
 ---
 

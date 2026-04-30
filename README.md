@@ -8,16 +8,39 @@ Brand system V3 → ver `brand/BRAND_GUIDE.md`.
 
 ---
 
-## Arranque rápido (backend Streamlit)
+## Arquitectura
+
+KICKDEX es **estático-first**: el producto público es la carpeta `docs/`, servida por GitHub Pages en `kickdex.alvarocarpintero.com`. El backend Python en `app/` es un **pipeline batch**, no un servidor en producción.
+
+```
+CSVs (football-data.co.uk, FBref) ──► app/data + app/engine ──► scripts/build_data.py ──► docs/data/*.json ──► docs/ (GitHub Pages)
+```
+
+El cron diario en `.github/workflows/` ejecuta el pipeline y commitea los JSONs.
+
+---
+
+## Arranque local (frontend)
+
+Sin dependencias:
+
+```bash
+cd docs && python -m http.server 8080
+# → http://localhost:8080
+```
+
+## Regenerar datos
 
 ```bash
 pip install -r requirements.txt
-streamlit run main.py
+python scripts/build_data.py
 ```
 
-La app se abre en `http://localhost:8501`
+Saltar descargas para iterar rápido:
 
-**Frontend estático:** abre `docs/index.html` directamente en el navegador, o despliega via GitHub Pages.
+```bash
+KICKDEX_SKIP_DOWNLOADS=1 KICKDEX_SKIP_PLAYER_DOWNLOADS=1 python scripts/build_data.py
+```
 
 ---
 
@@ -25,33 +48,45 @@ La app se abre en `http://localhost:8501`
 
 ```
 kickdex/
-├── docs/                    ← Frontend estático (GitHub Pages)
-│   ├── index.html           ← App principal
-│   ├── css/app.css          ← Sistema de diseño KICKDEX
-│   ├── js/                  ← Módulos JS (comparador, h2h, jugadores, árbitros)
-│   └── data/                ← JSON endpoints (generados por scripts/build_data.py)
-├── main.py                  ← Punto de entrada Streamlit
+├── docs/                    ← Producto público (GitHub Pages)
+│   ├── index.html           ← App SPA + landing
+│   ├── methodology.html     ← Cómo funciona el modelo
+│   ├── coverage.html        ← Qué ligas cubrimos
+│   ├── report.html          ← Match report PDF (light mode)
+│   ├── og.html              ← Plantilla OG navegable
+│   ├── og.png               ← OG estático para previews
+│   ├── robots.txt + sitemap.xml
+│   ├── brand/               ← Logos SVG + brand guide
+│   ├── css/app.css          ← Sistema V3 (Edge Number, terminal-status, brand mark)
+│   ├── js/                  ← Vanilla JS modular (sin frameworks)
+│   │   ├── app.js           ← Core: i18n, tabs, datos, hero edge wiring
+│   │   ├── edge.js          ← Componente Edge Number (auto-mount)
+│   │   ├── inicio.js, comparador.js, h2h.js, jugadores.js, arbitros.js
+│   │   └── animations.js
+│   └── data/                ← JSONs generados (no editar a mano)
+│       ├── meta.json, leagues.json, teams.json
+│       ├── fixtures.json, team_stats.json, h2h.json
+│       ├── players.json, players_detail.json, player_coverage.json
+│       ├── referees.json, data_status.json
+│       └── edges.json       ← Edges Bet365 (closing odds)
 ├── app/
-│   ├── config.py            ← Configuración centralizada (temporada, ligas, colores)
-│   ├── data/
-│   │   ├── loader.py        ← Carga y normalización de CSVs
-│   │   └── updater.py       ← Descarga automática desde football-data.co.uk
+│   ├── data/{loader,updater}.py    ← Carga y descarga de CSVs
 │   ├── engine/
-│   │   ├── metrics.py       ← Rolling metrics, forma reciente, H2H
-│   │   ├── probability.py   ← Modelo Poisson para probabilidades
-│   │   └── smart_alerts.py  ← Generador de tendencias en lenguaje natural
-│   └── ui/
-│       ├── styles.py        ← CSS modo oscuro Streamlit
-│       ├── comparador.py    ← Tab: comparativa de partido
-│       ├── h2h.py           ← Tab: historial H2H
-│       ├── jugadores.py     ← Tab: player scouting
-│       └── arbitros.py      ← Tab: perfiles disciplinarios
-├── scripts/build_data.py    ← Pipeline: CSV → JSON para el frontend
-├── tests/                   ← Tests unitarios (pytest)
-├── datos/                   ← CSVs históricos (descargados automáticamente)
-├── REBRANDING.md            ← Estudio de marca completo
-└── .streamlit/config.toml  ← Tema oscuro Streamlit
+│   │   ├── probability.py          ← Poisson bivariante + Dixon-Coles
+│   │   ├── metrics.py              ← Forma reciente, H2H, rolling
+│   │   ├── smart_alerts.py         ← Tendencias en lenguaje natural
+│   │   └── edge.py                 ← implied_probability, calculate_edge
+│   └── og.py                       ← Renderer Pillow para OG
+├── scripts/build_data.py           ← Pipeline CSV → docs/data/*.json
+├── tests/                          ← pytest
+├── DATOS/                          ← CSVs históricos
+├── AGENTS.md                       ← Guía para agentes IA (puntero a CLAUDE.md)
+├── CLAUDE.md                       ← Playbook compartido (sprints, brand, voice)
+├── MVP_BACKLOG.md                  ← Backlog priorizado y trackeable
+└── main.py, Procfile, Dockerfile, railway.json   ← Streamlit interno (NO público)
 ```
+
+> **Nota:** `main.py`, `Procfile`, `Dockerfile`, `railway.json`, `app/ui/`, `app/api/` son artefactos de exploración Streamlit/FastAPI no servidos públicamente. Decisión pendiente sobre si archivarlos o mantenerlos como admin interno (ver `MVP_BACKLOG.md` P2).
 
 ---
 
