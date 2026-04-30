@@ -1553,6 +1553,18 @@ tbody td b { font-family: var(--font-data); }
 .fx-league-badge.sp1 { background: rgba(46,230,166,.12); color: var(--brand); }
 .fx-league-badge.sp2 { background: rgba(91,214,255,.12); color: var(--brand2); }
 .fx-date { color: var(--muted); font-size: .8rem; }
+.fx-edge-badge {
+  margin-left: auto;
+  border: 1px solid rgba(46,230,166,.28);
+  background: rgba(46,230,166,.11);
+  color: var(--brand);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .66rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
 .fx-empty {
   text-align: center; color: var(--muted);
   background: var(--bg2); border: 1px dashed var(--border2);
@@ -2551,6 +2563,7 @@ tbody td b { font-family: var(--font-data); }
   .fx-row { flex-direction: column; align-items: flex-start; gap: 8px; }
   .fx-card { padding: 12px; }
   .fx-card-row { flex-direction: column; gap: 8px; }
+  .fx-edge-badge { margin-left: 0; max-width: 100%; }
   .fx-teams { min-width: 0; width: 100%; align-items: flex-start; }
   .fx-team { overflow-wrap: anywhere; }
   .fx-meta { font-size: .76rem; }

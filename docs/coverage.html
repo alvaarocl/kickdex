@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cobertura de datos - KICKDEX</title>
+  <meta name="description" content="Cobertura real de ligas, temporadas, cuotas, jugadores y arbitros en KICKDEX." />
+  <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
+  <link rel="stylesheet" href="css/app.css?v=20260430f" />
+  <style>
+    .legal-page { max-width: 980px; margin: 0 auto; padding: 56px 20px 80px; }
+    .legal-page h1 { margin-bottom: 12px; font-size: clamp(2rem, 4vw, 4rem); }
+    .legal-page h2 { margin-top: 34px; color: var(--brand); font-size: 1rem; text-transform: uppercase; letter-spacing: .08em; }
+    .coverage-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:12px; margin-top:18px; }
+    .coverage-card { border:1px solid var(--border); border-radius:10px; padding:16px; background:var(--grad-card); }
+    .coverage-card strong { display:block; color:var(--text); margin-bottom:6px; }
+    .coverage-card span, .legal-page p, .legal-page li { color:var(--muted); line-height:1.7; }
+    .legal-page a { color: var(--brand); }
+  </style>
+</head>
+<body>
+  <main class="legal-page">
+    <a href="index.html">&lt; volver a KICKDEX</a>
+    <h1>Cobertura de datos</h1>
+    <p>Esta pagina documenta la cobertura real del MVP. KICKDEX se actualiza por pipeline batch y cada JSON publicado incluye su fecha de actualizacion.</p>
+
+    <h2>Ligas</h2>
+    <div class="coverage-grid">
+      <div class="coverage-card"><strong>Espana</strong><span>La Liga y Segunda: historico profundo, temporada actual, calendario y cuotas historicas cuando football-data las publica.</span></div>
+      <div class="coverage-card"><strong>Inglaterra</strong><span>Premier League y Championship: historico amplio, temporada actual, calendario, jugadores y arbitros con mejor cobertura reciente.</span></div>
+      <div class="coverage-card"><strong>Italia</strong><span>Serie A y Serie B: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
+      <div class="coverage-card"><strong>Alemania</strong><span>Bundesliga y 2. Bundesliga: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
+      <div class="coverage-card"><strong>Francia</strong><span>Ligue 1 y Ligue 2: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
+      <div class="coverage-card"><strong>Paises Bajos</strong><span>Eredivisie: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
+    </div>
+
+    <h2>Jugadores y arbitros</h2>
+    <p>Las estadisticas de jugadores dependen de FBref/soccerdata y pueden fallar si la fuente bloquea descargas o cambia estructura. KICKDEX conserva el ultimo JSON bueno para evitar dejar la pestaña vacia.</p>
+    <p>Los arbitros combinan CSV historico, datos manuales e incrementales cuando hay fuente disponible. La disponibilidad por liga puede variar.</p>
+
+    <h2>Cuotas y edges</h2>
+    <p>Los edges se calculan con cuotas Bet365 ya presentes en los CSV historicos de football-data.co.uk. Para cuotas futuras, el feed debe traer filas futuras con columnas de odds; si no existen, KICKDEX muestra edges historicos recientes y no los etiqueta como live.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metodologia - KICKDEX</title>
+  <meta name="description" content="Como calcula KICKDEX probabilidades, edges y senales de riesgo." />
+  <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
+  <link rel="stylesheet" href="css/app.css?v=20260430f" />
+  <style>
+    .legal-page { max-width: 920px; margin: 0 auto; padding: 56px 20px 80px; }
+    .legal-page h1 { margin-bottom: 12px; font-size: clamp(2rem, 4vw, 4rem); }
+    .legal-page h2 { margin-top: 34px; color: var(--brand); font-size: 1rem; text-transform: uppercase; letter-spacing: .08em; }
+    .legal-page p, .legal-page li { color: var(--muted); line-height: 1.75; }
+    .legal-page a { color: var(--brand); }
+  </style>
+</head>
+<body>
+  <main class="legal-page">
+    <a href="index.html">&lt; volver a KICKDEX</a>
+    <h1>Metodologia</h1>
+    <p>KICKDEX es una herramienta informativa. Sus probabilidades son estimaciones matematicas basadas en datos historicos y no son garantias, picks ni recomendaciones de apuesta.</p>
+
+    <h2>Probabilidades</h2>
+    <p>El comparador usa forma reciente local/visitante, goles a favor, goles en contra, over 2.5, BTTS e historial H2H cuando existe muestra suficiente. Con esos datos estima probabilidades 1X2 mediante un modelo Poisson con ajuste Dixon-Coles para marcadores bajos.</p>
+
+    <h2>Edge</h2>
+    <p>El edge se calcula como: probabilidad del modelo menos probabilidad implicita de la cuota. La probabilidad implicita de una cuota decimal es <code>1 / cuota</code>. Por ejemplo, si el modelo estima 55% y la cuota implica 50%, el edge mostrado es +5.0 puntos porcentuales.</p>
+    <p>Cuando existen cuotas Bet365 en football-data.co.uk, KICKDEX usa columnas de cierre <code>B365CH/B365CD/B365CA</code>; si no estan disponibles usa <code>B365H/B365D/B365A</code>. Si el feed no trae cuotas futuras, el hero muestra el mejor edge historico reciente y lo etiqueta como historico.</p>
+
+    <h2>Control de calidad</h2>
+    <p>El pipeline evita usar el propio partido para calcular la forma: cada edge se calcula con partidos anteriores a la fecha analizada. Tambien se excluyen muestras demasiado pequenas y outliers extremos para que la superficie publica no dependa de una lectura estadistica fragil.</p>
+
+    <h2>Aviso de riesgo</h2>
+    <p>Los edges son estimaciones. Una cuota puede moverse, un modelo puede equivocarse y una ventaja estadistica no implica resultado. KICKDEX no gestiona apuestas, no enlaza casas de apuestas y no promete rentabilidad.</p>
+  </main>
+</body>
+</html>

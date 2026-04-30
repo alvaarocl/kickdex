@@ -65,6 +65,7 @@ const I18N = {
     edge_card_prob_model: "Prob. modelo",
     edge_card_prob_implied: "Prob. implícita",
     edge_card_form_home: "Forma local",
+    edge_card_sample: "Muestra",
     leagues_eyebrow: "Cobertura completa",
     leagues_h2: "Las 10 grandes ligas de Europa",
     features_eyebrow: "Todo en una herramienta",
@@ -162,6 +163,7 @@ const I18N = {
     edge_card_prob_model: "Model prob.",
     edge_card_prob_implied: "Implied prob.",
     edge_card_form_home: "Home form",
+    edge_card_sample: "Sample",
     leagues_eyebrow: "Full coverage",
     leagues_h2: "The 10 top European leagues",
     features_eyebrow: "Everything in one tool",
@@ -336,6 +338,7 @@ const APP = {
   playerCoverage: {},
   dataStatus:   {},
   referees:    [],
+  edges:       { items: [], top: null, stats: {} },
   meta:        {},
   loaded:      false,
 };
@@ -420,12 +423,106 @@ async function fetchJSON(file) {
   return res.json();
 }
 
+function formatPercent(value, decimals = 1) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "—";
+  return `${(num * 100).toFixed(decimals)}%`;
+}
+
+function formatEdgePercent(value, decimals = 1) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "—";
+  return `${num > 0 ? "+" : ""}${num.toFixed(decimals)}%`;
+}
+
+function matchEdgeKey(item) {
+  return [
+    String(item?.league || ""),
+    String(item?.date || ""),
+    String(item?.home || ""),
+    String(item?.away || ""),
+  ].join("|").toLowerCase();
+}
+
+function getFixtureEdges(fixture) {
+  const key = matchEdgeKey(fixture);
+  return (APP.edges?.items || []).filter(edge => matchEdgeKey(edge) === key);
+}
+
+function updateLandingMetrics() {
+  const total = Number(APP.meta?.total_matches);
+  const first = document.querySelector(".lp-stat-num[data-counter]");
+  if (first && Number.isFinite(total) && total > 0) {
+    first.dataset.counter = String(total);
+    first.textContent = total >= 1000 ? `${Math.round(total / 1000)}k+` : `${total}+`;
+  }
+}
+
+function updateHeroEdge() {
+  const target = document.getElementById("hero-edge");
+  if (!target) return;
+
+  const edge = APP.edges?.top || (APP.edges?.items || [])[0];
+  const statusEl = document.getElementById("hero-edge-status");
+  const matchEl = document.getElementById("hero-edge-match");
+  const probEl = document.getElementById("hero-edge-prob");
+  const impliedEl = document.getElementById("hero-edge-implied");
+  const sampleEl = document.getElementById("hero-edge-sample");
+
+  if (!edge) {
+    if (statusEl) statusEl.textContent = "data · sin cuotas";
+    if (matchEl) matchEl.innerHTML = "Sin edges <em>con</em> cuotas";
+    if (probEl) probEl.textContent = "—";
+    if (impliedEl) impliedEl.textContent = "—";
+    if (sampleEl) sampleEl.textContent = "0 evaluados";
+    if (window.KDXEdge?.renderEdgeNumber) {
+      window.KDXEdge.renderEdgeNumber(target, {
+        value: 0,
+        label: "EDGE",
+        caption: "Sin cuotas Bet365 disponibles en el feed actual",
+        size: "xxl",
+        tone: "neutral",
+      });
+    }
+    return;
+  }
+
+  const isLive = edge.status === "upcoming";
+  const sourceLabel = isLive ? "live · Bet365" : "histórico · Bet365";
+  const matchLabel = `${edge.home || "Local"} <em>vs</em> ${edge.away || "Visitante"}`;
+  const caption = `${edge.selection || edge.market_label} · ${edge.market_label || "1X2"} · Bet365 ${edge.odds || "—"}`;
+
+  if (statusEl) statusEl.textContent = sourceLabel;
+  if (matchEl) matchEl.innerHTML = matchLabel;
+  if (probEl) probEl.textContent = formatPercent(edge.probability);
+  if (impliedEl) impliedEl.textContent = formatPercent(edge.implied_probability);
+  if (sampleEl) {
+    const hm = edge.model?.home_matches || 0;
+    const am = edge.model?.away_matches || 0;
+    sampleEl.textContent = `${Math.min(hm, am)} partidos`;
+  }
+
+  if (window.KDXEdge?.renderEdgeNumber) {
+    window.KDXEdge.renderEdgeNumber(target, {
+      value: Number(edge.edge_pct),
+      label: "EDGE",
+      caption,
+      size: "xxl",
+      tone: Number(edge.edge_pct) >= 0 ? "value" : "risk",
+    });
+  } else {
+    target.dataset.edge = String(edge.edge_pct || 0);
+    target.dataset.edgeCaption = caption;
+    target.dataset.edgeTone = Number(edge.edge_pct) >= 0 ? "value" : "risk";
+  }
+}
+
 async function loadAllData() {
   const metaEl = document.getElementById("metaInfo");
   if (metaEl) metaEl.innerHTML = `<span class="spinner"></span> Cargando datos...`;
 
   try {
-    const [meta, teams, teamStats, h2h, players, playersDetail, playerCoverage, dataStatus, leagues, fixtures, referees] = await Promise.all([
+    const [meta, teams, teamStats, h2h, players, playersDetail, playerCoverage, dataStatus, leagues, fixtures, referees, edges] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -437,6 +534,7 @@ async function loadAllData() {
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("fixtures.json").catch(() => ({ recent: [], upcoming: [] })),
       fetchJSON("referees.json").catch(() => []),
+      fetchJSON("edges.json").catch(() => ({ items: [], top: null, stats: {} })),
     ]);
 
     APP.meta           = meta;
@@ -450,9 +548,12 @@ async function loadAllData() {
     APP.leagues        = leagues;
     APP.fixtures       = fixtures;
     APP.referees       = referees;
+    APP.edges          = edges;
     APP.loaded         = true;
 
     updateHeader();
+    updateLandingMetrics();
+    updateHeroEdge();
     populateAllSelects();
     initSegControls();
     initModules();

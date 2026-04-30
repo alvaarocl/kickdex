@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Optional
 
 try:
-    from PIL import Image, ImageDraw, ImageFont
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
 except ImportError as e:
     raise ImportError(
         "Pillow no está instalado. Instala con: pip install Pillow"
@@ -100,7 +100,7 @@ def render_og(
     gdraw = ImageDraw.Draw(glow)
     gdraw.ellipse([-300, -300, 700, 400], fill=(46, 230, 166, 38))
     gdraw.ellipse([700, 350, 1500, 950], fill=(245, 185, 60, 28))
-    glow = glow.filter(__import__("PIL").ImageFilter.GaussianBlur(120))
+    glow = glow.filter(ImageFilter.GaussianBlur(120))
     img.paste(glow, (0, 0), glow)
 
     img.paste(overlay, (0, 0), overlay)

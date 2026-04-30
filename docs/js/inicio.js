@@ -151,6 +151,12 @@ function buildFixtureCard(f, isResult) {
   const leagueCls   = f.league ? f.league.toLowerCase().replace(/\d/g, "") : "other";
   const leagueLabel = APP.leagues?.[f.league]?.name || f.league || "—";
   const dateLabel   = fxDateLabel(f.date, f.time);
+  const fixtureEdges = typeof getFixtureEdges === "function" ? getFixtureEdges(f) : [];
+  const topEdge = fixtureEdges.slice().sort((a, b) => (b.edge_pct || 0) - (a.edge_pct || 0))[0];
+  const edgeBadge = topEdge ? `
+      <span class="fx-edge-badge" title="${escHtml(topEdge.selection)} · Bet365 ${escHtml(topEdge.odds)}">
+        ${typeof formatEdgePercent === "function" ? formatEdgePercent(topEdge.edge_pct) : `+${topEdge.edge_pct}%`} EDGE
+      </span>` : "";
 
   let mainContent = "";
 
@@ -178,6 +184,7 @@ function buildFixtureCard(f, isResult) {
     <div class="fx-row">
       <span class="fx-league-badge ${leagueCls}">${leagueLabel}</span>
       <span class="fx-date">${dateLabel}</span>
+      ${edgeBadge}
     </div>
     <div class="fx-row fx-main">
       <div class="fx-teams">

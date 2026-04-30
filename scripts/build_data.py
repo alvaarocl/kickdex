@@ -20,6 +20,8 @@ from app.data.fixture_download import fetch_fixture_download_calendar
 from app.engine.metrics import (
     get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics
 )
+from app.engine.probability import calculate_probabilities
+from app.engine.edge import calculate_edge, edge_confidence, implied_probability
 from app.engine.smart_alerts import generate_alerts, AlertStrength
 from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, ROLLING_WINDOW_DEFAULT
 
@@ -411,6 +413,162 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     }
 
 
+def _first_decimal(row, columns: tuple[str, ...]) -> float | None:
+    for col in columns:
+        if col not in row.index:
+            continue
+        value = _safe(row.get(col), decimals=3)
+        if value is not None and value > 1:
+            return value
+    return None
+
+
+def _match_status(row, date) -> str:
+    import pandas as pd
+    has_score = pd.notna(row.get("FTHG")) and pd.notna(row.get("FTAG"))
+    if has_score:
+        return "settled"
+    return "upcoming" if date >= pd.Timestamp(datetime.utcnow().date()) else "unknown"
+
+
+def _settled_outcome(row) -> str | None:
+    home_goals = _safe(row.get("FTHG"), decimals=0)
+    away_goals = _safe(row.get("FTAG"), decimals=0)
+    if home_goals is None or away_goals is None:
+        return None
+    if home_goals > away_goals:
+        return "home"
+    if away_goals > home_goals:
+        return "away"
+    return "draw"
+
+
+def build_edges(df) -> dict:
+    """Generate real value edges from the Poisson model and Bet365 odds."""
+    import pandas as pd
+    from app.config import LEAGUES
+
+    empty = {
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "season": CURRENT_SEASON_LABEL,
+        "source": "football-data.co.uk Bet365 closing odds",
+        "status": "empty",
+        "top": None,
+        "items": [],
+        "stats": {"evaluated_matches": 0, "positive_edges": 0, "upcoming_edges": 0, "settled_edges": 0},
+    }
+    required = {"Date", "HomeTeam", "AwayTeam"}
+    if df is None or df.empty or not required.issubset(df.columns):
+        return empty
+
+    data = df.copy()
+    data["Date"] = pd.to_datetime(data["Date"], errors="coerce")
+    data = data.dropna(subset=["Date", "HomeTeam", "AwayTeam"]).sort_values("Date").reset_index(drop=True)
+    if data.empty:
+        return empty
+
+    candidates = data[data["Date"] >= pd.Timestamp(CURRENT_SEASON_START)].copy()
+    markets = (
+        ("home", ("B365CH", "B365H"), "Home"),
+        ("draw", ("B365CD", "B365D"), "Draw"),
+        ("away", ("B365CA", "B365A"), "Away"),
+    )
+
+    items = []
+    evaluated = 0
+    for idx, row in candidates.iterrows():
+        date = row["Date"]
+        league = str(row.get("Div", "") or "")
+        home = str(row.get("HomeTeam", "") or "")
+        away = str(row.get("AwayTeam", "") or "")
+        if not home or not away:
+            continue
+
+        odds = {market: _first_decimal(row, columns) for market, columns, _ in markets}
+        if not any(odds.values()):
+            continue
+
+        league_mask = data["Div"].eq(league) if "Div" in data.columns else True
+        history = data[league_mask & (data["Date"] < date)].copy()
+        home_form = get_recent_form(history, home, venue="Home", n=ROLLING_WINDOW_DEFAULT, season_only=False)
+        away_form = get_recent_form(history, away, venue="Away", n=ROLLING_WINDOW_DEFAULT, season_only=False)
+        if not home_form or not away_form:
+            continue
+        if home_form.get("matches_analyzed", 0) < 3 or away_form.get("matches_analyzed", 0) < 3:
+            continue
+
+        h2h_summary = get_h2h_summary(history, home, away)
+        probabilities = calculate_probabilities(home_form, away_form, h2h_summary).as_dict()
+        status = _match_status(row, date)
+        outcome = _settled_outcome(row)
+        evaluated += 1
+
+        for market, _, label in markets:
+            market_odds = odds.get(market)
+            model_probability = probabilities.get(market)
+            edge_pct = calculate_edge(model_probability, market_odds)
+            if edge_pct is None or edge_pct < 1:
+                continue
+            if edge_pct > 25 or not 0.08 <= float(model_probability) <= 0.80:
+                continue
+            implied = implied_probability(market_odds)
+            selection = home if market == "home" else away if market == "away" else "Empate"
+            items.append({
+                "id": f"{league}-{date.strftime('%Y%m%d')}-{home}-{away}-{market}".replace(" ", "_"),
+                "date": date.strftime("%Y-%m-%d"),
+                "time": str(row.get("Time", "") or "").strip(),
+                "league": league,
+                "league_name": LEAGUES.get(league, league),
+                "home": home,
+                "away": away,
+                "market": market,
+                "market_label": label,
+                "selection": selection,
+                "odds": round(float(market_odds), 2),
+                "probability": _safe(model_probability, decimals=4),
+                "implied_probability": _safe(implied, decimals=4),
+                "edge_pct": round(edge_pct, 2),
+                "status": status,
+                "confidence": edge_confidence(edge_pct, home_form.get("matches_analyzed", 0), away_form.get("matches_analyzed", 0)),
+                "result": {
+                    "home_score": int(row["FTHG"]) if _safe(row.get("FTHG"), decimals=0) is not None else None,
+                    "away_score": int(row["FTAG"]) if _safe(row.get("FTAG"), decimals=0) is not None else None,
+                    "outcome": outcome,
+                    "hit": (outcome == market) if outcome else None,
+                },
+                "model": {
+                    "home_matches": int(home_form.get("matches_analyzed", 0)),
+                    "away_matches": int(away_form.get("matches_analyzed", 0)),
+                },
+            })
+
+    items.sort(key=lambda x: (1 if x["status"] == "upcoming" else 0, x["date"], x["edge_pct"]), reverse=True)
+    upcoming = [item for item in items if item["status"] == "upcoming"]
+    settled = [item for item in items if item["status"] == "settled"]
+    latest_date = max((pd.Timestamp(item["date"]) for item in settled), default=None)
+    recent_settled = [
+        item for item in settled
+        if latest_date is not None and pd.Timestamp(item["date"]) >= latest_date - pd.Timedelta(days=30)
+    ]
+    top_pool = upcoming or recent_settled or settled or items
+    top = max(top_pool, key=lambda x: x["edge_pct"]) if top_pool else None
+    status = "live_edges" if upcoming else "settled_only" if settled else "empty"
+    return {
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "season": CURRENT_SEASON_LABEL,
+        "source": "football-data.co.uk Bet365 closing odds",
+        "status": status,
+        "top": top,
+        "items": items[:300],
+        "stats": {
+            "evaluated_matches": evaluated,
+            "positive_edges": len(items),
+            "upcoming_edges": len(upcoming),
+            "settled_edges": len(settled),
+        },
+    }
+
+
 def _normalise_referee_frame(df, source: str = "csv"):
     import pandas as pd
     if df is None or df.empty:
@@ -693,9 +851,10 @@ def main():
     write_json(build_data_status(coverage), "data_status.json")
     write_json(build_referees(df, df_current), "referees.json")
 
-    print("\n[7/7] leagues.json, fixtures.json...")
+    print("\n[7/7] leagues.json, fixtures.json, edges.json...")
     write_json(leagues, "leagues.json")
     write_json(build_fixtures(df, leagues), "fixtures.json")
+    write_json(build_edges(df), "edges.json")
 
     print("\n" + "=" * 60)
     print("BUILD COMPLETADO")

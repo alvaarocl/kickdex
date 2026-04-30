@@ -24,9 +24,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260430e" />
+  <link rel="stylesheet" href="css/app.css?v=20260430f" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-  <script type="module" src="js/edge.js?v=20260430a" defer></script>
+  <script type="module" src="js/edge.js?v=20260430b" defer></script>
 </head>
 <body>
 
@@ -53,7 +53,7 @@
       <div class="lp-nav-links">
         <a href="#lp-features" data-i18n="nav_features">Características</a>
         <a href="#lp-leagues" data-i18n="nav_leagues">Ligas</a>
-        <a href="#lp-how" data-i18n="nav_how">Methodology</a>
+        <a href="methodology.html" data-i18n="nav_how">Methodology</a>
       </div>
       <button class="lang-btn lang-btn--lp" id="langToggleLp" onclick="toggleLang()" title="Switch language">🇪🇸 ES</button>
       <button class="lp-nav-cta" id="lp-enter-nav">&gt; launch terminal_</button>
@@ -84,7 +84,7 @@
           &gt; launch terminal_
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
-        <a href="#lp-how" class="lp-cta-ghost" data-i18n="hero_cta_secondary">Read methodology</a>
+        <a href="methodology.html" class="lp-cta-ghost" data-i18n="hero_cta_secondary">Read methodology</a>
       </div>
 
       <div class="lp-hero-stats">
@@ -120,20 +120,21 @@
     <div class="lp-hero-visual" aria-hidden="false">
       <div class="lp-edge-card kbd-grid">
         <div class="lp-edge-card__head">
-          <span class="tag-live">live · sample</span>
-          <span class="lp-edge-card__match">Real Madrid <em>vs</em> Barcelona</span>
+          <span class="tag-live" id="hero-edge-status">data · loading</span>
+          <span class="lp-edge-card__match" id="hero-edge-match">KICKDEX <em>vs</em> odds</span>
         </div>
         <div class="lp-edge-card__body">
           <div id="hero-edge"
-               data-edge="12.8"
+               data-edge="0"
                data-edge-label="EDGE"
                data-edge-size="xxl"
-               data-edge-caption="Real Madrid · ML · Bet365 1.92"></div>
+               data-edge-tone="neutral"
+               data-edge-caption="Calculando edge real..."></div>
         </div>
         <div class="lp-edge-card__foot">
-          <div class="lp-edge-row"><span data-i18n="edge_card_prob_model">Prob. modelo</span><b class="num-bracket">54.9%</b></div>
-          <div class="lp-edge-row"><span data-i18n="edge_card_prob_implied">Prob. implícita</span><b class="num-bracket">52.1%</b></div>
-          <div class="lp-edge-row"><span data-i18n="edge_card_form_home">Forma local</span><b><span class="f-w">V</span><span class="f-w">V</span><span class="f-d">E</span><span class="f-w">V</span><span class="f-l">D</span></b></div>
+          <div class="lp-edge-row"><span data-i18n="edge_card_prob_model">Prob. modelo</span><b class="num-bracket" id="hero-edge-prob">—</b></div>
+          <div class="lp-edge-row"><span data-i18n="edge_card_prob_implied">Prob. implícita</span><b class="num-bracket" id="hero-edge-implied">—</b></div>
+          <div class="lp-edge-row"><span data-i18n="edge_card_sample">Muestra</span><b id="hero-edge-sample">—</b></div>
         </div>
       </div>
     </div>
@@ -327,7 +328,7 @@
           <span class="lp-brand-tile" style="width:24px;height:24px;font-size:14px;border-radius:6px;">K</span>
           <span class="lp-brand-word" style="font-size:.95rem;">kickdex<i class="edge-cursor"></i></span>
         </span>
-        <span style="color:var(--muted2);font-size:.8rem;"><a href="aviso-legal.html" style="color:var(--muted);" data-i18n="footer_legal">Aviso legal</a> | <a href="privacidad.html" style="color:var(--muted);" data-i18n="footer_privacy">Privacidad</a> | <a href="cookies.html" style="color:var(--muted);">Cookies</a> | <a href="terminos.html" style="color:var(--muted);" data-i18n="footer_terms">Términos</a></span>
+        <span style="color:var(--muted2);font-size:.8rem;"><a href="methodology.html" style="color:var(--muted);">Metodologia</a> | <a href="coverage.html" style="color:var(--muted);">Cobertura</a> | <a href="aviso-legal.html" style="color:var(--muted);" data-i18n="footer_legal">Aviso legal</a> | <a href="privacidad.html" style="color:var(--muted);" data-i18n="footer_privacy">Privacidad</a> | <a href="cookies.html" style="color:var(--muted);">Cookies</a> | <a href="terminos.html" style="color:var(--muted);" data-i18n="footer_terms">Términos</a></span>
         <span style="color:var(--muted2);font-size:.8rem;"><span data-i18n="footer_data">Datos:</span> <a href="https://www.football-data.co.uk" target="_blank" rel="noopener" style="color:var(--muted);">football-data.co.uk</a> &nbsp;·&nbsp; <a href="https://fbref.com" target="_blank" rel="noopener" style="color:var(--muted);">FBref</a></span>
       </div>
     </div>
@@ -566,7 +567,7 @@
 <footer>
   <div class="container">
     <div class="disclaimer">
-      <div style="margin-bottom:8px;"><a href="aviso-legal.html">Aviso legal</a> | <a href="privacidad.html">Privacidad</a> | <a href="cookies.html">Cookies</a> | <a href="terminos.html">Terminos</a></div>
+      <div style="margin-bottom:8px;"><a href="methodology.html">Metodologia</a> | <a href="coverage.html">Cobertura</a> | <a href="aviso-legal.html">Aviso legal</a> | <a href="privacidad.html">Privacidad</a> | <a href="cookies.html">Cookies</a> | <a href="terminos.html">Terminos</a></div>
       <strong>KICKDEX</strong> &nbsp;·&nbsp; <span style="color:var(--brand);font-family:var(--font-data);">Football intelligence, indexed.</span> &nbsp;·&nbsp;
       &gt; RISK NOTICE: edges are estimates, not guarantees. Play responsibly. &nbsp;·&nbsp;
       Data: <a href="https://www.football-data.co.uk" target="_blank" rel="noopener">football-data.co.uk</a> · FBref.
@@ -575,11 +576,11 @@
 </footer>
 
 <script src="js/animations.js?v=20260429a"></script>
-<script src="js/app.js?v=20260430b"></script>
+<script src="js/app.js?v=20260430c"></script>
 <script src="js/comparador.js?v=20260430d"></script>
 <script src="js/h2h.js?v=20260429a"></script>
 <script src="js/jugadores.js?v=20260430e"></script>
-<script src="js/inicio.js?v=20260430c"></script>
+<script src="js/inicio.js?v=20260430d"></script>
 <script src="js/arbitros.js?v=20260430b"></script>
 </body>
 </html>

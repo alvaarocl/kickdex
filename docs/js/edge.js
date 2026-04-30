@@ -100,5 +100,6 @@ export function mountEdgeNumbers(root = document) {
 }
 
 if (typeof window !== 'undefined') {
+  window.KDXEdge = { renderEdgeNumber, computeEdge, mountEdgeNumbers };
   document.addEventListener('DOMContentLoaded', () => mountEdgeNumbers());
 }
