@@ -46,6 +46,63 @@ const I18N = {
     home: "Local", draw: "Empate", away: "Visitante",
     player: "Jugador", shots: "Tiros", shots_on: "A Puerta",
     goals: "Goles", assists: "Asist.", matches: "PJ",
+
+    // ── V3 brand landing ───────────────────────────────
+    nav_features: "Características",
+    nav_leagues: "Ligas",
+    nav_how: "Methodology",
+    hero_h1_a: "Football intelligence,",
+    hero_h1_b: "indexed.",
+    hero_sub: "Indexamos cada partido, cada jugador y cada cuota en una sola terminal. Si hay edge, lo ves en verde. Si hay riesgo, lo ves en rojo. El resto es ruido.",
+    hero_promise: "Gratis. Independiente. Matemático.",
+    hero_cta_secondary: "Read methodology",
+    hero_stat_1: "partidos históricos",
+    hero_stat_2: "temporadas de datos",
+    hero_stat_3: "ligas europeas",
+    hero_stat_4: "coste siempre",
+    hero_scroll: "Descubre más",
+    edge_card_match_caption: "Real Madrid · ML · Bet365 1.92",
+    edge_card_prob_model: "Prob. modelo",
+    edge_card_prob_implied: "Prob. implícita",
+    edge_card_form_home: "Forma local",
+    leagues_eyebrow: "Cobertura completa",
+    leagues_h2: "Las 10 grandes ligas de Europa",
+    features_eyebrow: "Todo en una herramienta",
+    features_h2: "Análisis profesional, gratis",
+    features_sub: "Las mismas herramientas que usan los analistas deportivos, sin pagar nada.",
+    feat_calendar_title: "Calendario en Vivo",
+    feat_calendar_desc: "Próximas jornadas de las 10 ligas con resultados recientes integradas. Un clic para analizar cualquier partido al instante.",
+    feat_calendar_tag: "Actualizado diariamente",
+    feat_trends_title: "Tendencias",
+    feat_trends_desc: "Compara forma reciente, H2H y probabilidades Poisson para estudiar cada enfrentamiento con contexto histórico.",
+    feat_trends_tag: "Datos históricos y modelo Poisson",
+    feat_h2h_title: "H2H Histórico",
+    feat_h2h_desc: "Todos los enfrentamientos directos desde 2004. Estadísticas, datos y división de cada partido.",
+    feat_compare_title: "Comparador de Equipos",
+    feat_compare_desc: "Forma reciente, tiros, goles, córners y tarjetas lado a lado. Ventanas de 6, 10 o 20 partidos.",
+    feat_scout_title: "Player Scouting",
+    feat_scout_desc: "Estadísticas individuales de jugadores: goles, asistencias, tiros a puerta y minutos jugados por equipo.",
+    feat_ref_title: "Perfil de Árbitros",
+    feat_ref_desc: "Historial disciplinario de árbitros: amarillas, rojas y faltas por partido, con ventanas recientes cuando hay datos actualizados.",
+    how_eyebrow: "Simple y directo",
+    how_h2: "Cómo funciona",
+    how_s1_t: "Elige liga y equipos",
+    how_s1_d: "Selecciona cualquiera de las 10 ligas europeas y los dos equipos del partido que quieres analizar.",
+    how_s2_t: "Obtén el análisis completo",
+    how_s2_d: "Forma reciente, H2H, probabilidades Poisson, smart alerts y comparativa de jugadores en segundos.",
+    how_s3_t: "Analiza el contexto real",
+    how_s3_d: "Cruza probabilidades, forma reciente e histórico para detectar tendencias estadísticas relevantes.",
+    trust_1: "Sin registro ni cuenta",
+    trust_2: "Datos de football-data.co.uk + FBref",
+    trust_3: "Uso exclusivamente educativo",
+    trust_4: "Modelo matemático Poisson bivariante",
+    final_h2: "Read the match before it's played.",
+    final_sub: "Sin login. Sin ads. Sin picks.",
+    footer_data: "Datos:",
+    footer_legal: "Aviso legal",
+    footer_privacy: "Privacidad",
+    footer_terms: "Términos",
+    cmp_promptTitle: "",
   },
   en: {
     tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
@@ -86,6 +143,63 @@ const I18N = {
     home: "Home", draw: "Draw", away: "Away",
     player: "Player", shots: "Shots", shots_on: "On Target",
     goals: "Goals", assists: "Assists", matches: "MP",
+
+    // ── V3 brand landing ───────────────────────────────
+    nav_features: "Features",
+    nav_leagues: "Leagues",
+    nav_how: "Methodology",
+    hero_h1_a: "Football intelligence,",
+    hero_h1_b: "indexed.",
+    hero_sub: "We index every match, every player and every odds line into a single terminal. If there's edge, you see it in green. If there's risk, you see it in red. The rest is noise.",
+    hero_promise: "Free. Independent. Math-first.",
+    hero_cta_secondary: "Read methodology",
+    hero_stat_1: "historical matches",
+    hero_stat_2: "seasons of data",
+    hero_stat_3: "european leagues",
+    hero_stat_4: "cost, always",
+    hero_scroll: "Discover more",
+    edge_card_match_caption: "Real Madrid · ML · Bet365 1.92",
+    edge_card_prob_model: "Model prob.",
+    edge_card_prob_implied: "Implied prob.",
+    edge_card_form_home: "Home form",
+    leagues_eyebrow: "Full coverage",
+    leagues_h2: "The 10 top European leagues",
+    features_eyebrow: "Everything in one tool",
+    features_h2: "Pro-level analytics, free",
+    features_sub: "The same tools sports analysts use, without paying a cent.",
+    feat_calendar_title: "Live Calendar",
+    feat_calendar_desc: "Upcoming fixtures from 10 leagues with recent results built in. One click to analyze any match instantly.",
+    feat_calendar_tag: "Updated daily",
+    feat_trends_title: "Trends",
+    feat_trends_desc: "Compare recent form, H2H and Poisson probabilities to study every match with historical context.",
+    feat_trends_tag: "Historical data + Poisson model",
+    feat_h2h_title: "Historical H2H",
+    feat_h2h_desc: "Every head-to-head since 2004. Stats, data and division for every match.",
+    feat_compare_title: "Team Comparator",
+    feat_compare_desc: "Recent form, shots, goals, corners and cards side by side. Windows of 6, 10 or 20 matches.",
+    feat_scout_title: "Player Scouting",
+    feat_scout_desc: "Individual player stats: goals, assists, shots on target and minutes played per team.",
+    feat_ref_title: "Referee Profile",
+    feat_ref_desc: "Historical disciplinary record: yellows, reds and fouls per match, with recent windows when data is fresh.",
+    how_eyebrow: "Simple and direct",
+    how_h2: "How it works",
+    how_s1_t: "Pick league and teams",
+    how_s1_d: "Choose any of the 10 European leagues and the two teams of the match you want to analyze.",
+    how_s2_t: "Get the full analysis",
+    how_s2_d: "Recent form, H2H, Poisson probabilities, smart alerts and player comparison in seconds.",
+    how_s3_t: "Read the real context",
+    how_s3_d: "Cross probabilities, recent form and history to detect relevant statistical trends.",
+    trust_1: "No signup, no account",
+    trust_2: "Data from football-data.co.uk + FBref",
+    trust_3: "For educational use only",
+    trust_4: "Bivariate Poisson math model",
+    final_h2: "Read the match before it's played.",
+    final_sub: "No login. No ads. No picks.",
+    footer_data: "Data:",
+    footer_legal: "Legal notice",
+    footer_privacy: "Privacy",
+    footer_terms: "Terms",
+    cmp_promptTitle: "",
   },
 };
 
@@ -99,8 +213,8 @@ function toggleLang() {
   LANG = LANG === "es" ? "en" : "es";
   localStorage.setItem("kdx_lang", LANG);
   applyI18n();
-  const lt = document.getElementById("langToggle");
-  if (lt) lt.textContent = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
+  const label = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
+  document.querySelectorAll("#langToggle, #langToggleLp").forEach(b => { b.textContent = label; });
   if (APP.loaded && typeof renderInicio === "function") renderInicio();
 }
 
@@ -111,6 +225,20 @@ function applyI18n() {
     el.textContent = t(key);
   });
   document.documentElement.lang = LANG === "en" ? "en" : "es";
+
+  // Keep both lang toggle buttons in sync
+  const label = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
+  document.querySelectorAll("#langToggle, #langToggleLp").forEach(b => { b.textContent = label; });
+
+  // Localized meta description
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) {
+    metaDesc.setAttribute("content",
+      LANG === "es"
+        ? "La terminal de inteligencia futbolística. Edges en verde, riesgo en rojo, el resto es ruido. Gratis. Independiente. Matemático."
+        : "The football intelligence terminal. Edges in green, risk in red, the rest is noise. Free. Independent. Math-first."
+    );
+  }
 }
 
 // ── Landing ────────────────────────────────────────────────────────────────

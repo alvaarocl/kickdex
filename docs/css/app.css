@@ -2877,3 +2877,22 @@ tbody td b { font-family: var(--font-data); }
   font-family: var(--font-data);
   letter-spacing: -0.01em;
 }
+
+/* — Lang toggle inside landing nav — */
+.lang-btn--lp {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-family: var(--font-data);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+  margin-right: 6px;
+}
+.lang-btn--lp:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
