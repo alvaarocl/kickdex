@@ -149,17 +149,21 @@ def update_referees(days_back: int, leagues: list[str], sleep_seconds: float, ma
             print(f"SKIP {code}: sin id API-Football")
             continue
         print(f"Fetching referees {code} {start} -> {end}")
-        fixtures = _request(
-            "/fixtures",
-            {
-                "league": api_id,
-                "season": season_start.year,
-                "from": start.isoformat(),
-                "to": end.isoformat(),
-                "status": "FT",
-            },
-            key,
-        ).get("response") or []
+        try:
+            fixtures = _request(
+                "/fixtures",
+                {
+                    "league": api_id,
+                    "season": season_start.year,
+                    "from": start.isoformat(),
+                    "to": end.isoformat(),
+                    "status": "FT",
+                },
+                key,
+            ).get("response") or []
+        except Exception as exc:
+            print(f"SKIP {code}: {exc}")
+            continue
 
         for fixture in fixtures:
             if max_fixtures is not None and len(rows) >= max_fixtures:
@@ -168,7 +172,11 @@ def update_referees(days_back: int, leagues: list[str], sleep_seconds: float, ma
             fixture_id = str((fixture.get("fixture") or {}).get("id") or "")
             if not fixture_id or fixture_id in existing:
                 continue
-            stats = _request("/fixtures/statistics", {"fixture": fixture_id}, key).get("response") or []
+            try:
+                stats = _request("/fixtures/statistics", {"fixture": fixture_id}, key).get("response") or []
+            except Exception as exc:
+                print(f"SKIP fixture {fixture_id}: {exc}")
+                continue
             row = _fixture_row(fixture, stats, code)
             if row:
                 rows.append(row)
