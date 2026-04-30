@@ -425,6 +425,47 @@ def _load_incremental_referees():
         return pd.DataFrame()
 
 
+def _load_referee_season_aggregates():
+    import pandas as pd
+    from app.config import DATA_DIR
+    path = Path(DATA_DIR) / "referees_season.csv"
+    if not path.exists():
+        return {}
+    try:
+        raw = pd.read_csv(path, low_memory=False)
+    except Exception as e:
+        print(f"  Warning: could not read {path}: {e}")
+        return {}
+    required = {"league", "referee", "matches", "yellow_cards", "red_cards"}
+    if raw.empty or not required.issubset(raw.columns):
+        return {}
+
+    result = {}
+    for _, row in raw.iterrows():
+        try:
+            matches = int(float(row.get("matches") or 0))
+        except (TypeError, ValueError):
+            matches = 0
+        referee = str(row.get("referee") or "").strip()
+        league = str(row.get("league") or "").strip()
+        if not referee or not league or matches <= 0:
+            continue
+
+        yellow_cards = pd.to_numeric(pd.Series([row.get("yellow_cards")]), errors="coerce").fillna(0).iloc[0]
+        second_yellow_cards = pd.to_numeric(pd.Series([row.get("second_yellow_cards")]), errors="coerce").fillna(0).iloc[0]
+        red_cards = pd.to_numeric(pd.Series([row.get("red_cards")]), errors="coerce").fillna(0).iloc[0]
+        result[(league, referee)] = {
+            "matches": matches,
+            "yellows_per_match": _safe(float(yellow_cards) / matches),
+            "reds_per_match": _safe((float(second_yellow_cards) + float(red_cards)) / matches),
+            "fouls_per_match": None,
+            "penalties_per_match": None,
+            "last_match": None,
+            "source": str(row.get("source") or "statbunker"),
+        }
+    return result
+
+
 def _ref_stats(grp):
     import pandas as pd
     if grp is None or grp.empty:
@@ -452,6 +493,7 @@ def build_referees(df, df_current=None) -> list:
         return []
     rdf = _normalise_referee_frame(df, "football-data")
     incremental = _load_incremental_referees()
+    season_aggregates = _load_referee_season_aggregates()
     if not incremental.empty:
         rdf = pd.concat([rdf, incremental], ignore_index=True)
     if rdf.empty:
@@ -480,6 +522,9 @@ def build_referees(df, df_current=None) -> list:
             continue  # skip refs with < 3 matches total
 
         grp_curr = rdf_curr[(rdf_curr["Div"] == div) & (rdf_curr["Referee"] == referee)] if not rdf_curr.empty else pd.DataFrame()
+        season_stats = season_aggregates.get((div, referee))
+        if season_stats is None and not grp_curr.empty:
+            season_stats = _ref_stats(grp_curr)
 
         record = {
             "name":    referee,
@@ -496,11 +541,33 @@ def build_referees(df, df_current=None) -> list:
             "overall":        overall,
             "last10":         _ref_stats(grp.head(10)),
             "last5":          _ref_stats(grp.head(5)),
-            "season":         _ref_stats(grp_curr) if not grp_curr.empty else None,
+            "season":         season_stats,
             "season_last10":  _ref_stats(grp_curr.head(10)) if not grp_curr.empty else None,
             "season_last5":   _ref_stats(grp_curr.head(5))  if not grp_curr.empty else None,
         }
         results.append(record)
+
+    existing_keys = {(r["league"], r["name"]) for r in results}
+    for (div, referee), season_stats in season_aggregates.items():
+        if (div, referee) in existing_keys:
+            continue
+        results.append({
+            "name": referee,
+            "league": div,
+            "matches": season_stats["matches"],
+            "yellows_per_match": season_stats["yellows_per_match"],
+            "reds_per_match": season_stats["reds_per_match"],
+            "fouls_per_match": season_stats.get("fouls_per_match"),
+            "penalties_per_match": season_stats.get("penalties_per_match"),
+            "last_match": season_stats.get("last_match"),
+            "source": season_stats.get("source"),
+            "overall": season_stats,
+            "last10": None,
+            "last5": None,
+            "season": season_stats,
+            "season_last10": None,
+            "season_last5": None,
+        })
 
     # Merge manual overrides (e.g. SP1/SP2 refs not provided by football-data.co.uk)
     manual_path = Path("DATOS") / "referees_manual.json"

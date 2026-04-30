@@ -129,7 +129,7 @@ function renderArbitros() {
     </table>
   </div>
   <div class="disclaimer" style="margin-top:14px;">
-    Fuente: API-Football si hay clave gratuita; fallback football-data.co.uk/manual cuando no hay feed reciente.
+    Fuente: API-Football si hay acceso a temporada actual; fallback StatBunker/football-data/manual cuando no hay feed partido a partido.
   </div>`;
 
   setTimeout(() => initAllTables(box), 50);
@@ -139,11 +139,13 @@ function buildRefereeRow(r, stats) {
   const name = r.name || "-";
   const yp = stats.yellows_per_match ?? 0;
   const rp = stats.reds_per_match ?? 0;
-  const fp = stats.fouls_per_match ?? 0;
+  const fp = stats.fouls_per_match;
   const pj = stats.matches ?? 0;
 
   const ypColor = yp >= 5.5 ? "var(--red)" : yp >= 4.5 ? "var(--yellow)" : yp >= 3.5 ? "var(--text)" : "var(--green)";
-  const fpColor = fp >= 28 ? "var(--red)" : fp <= 22 ? "var(--green)" : "var(--text)";
+  const fpColor = fp == null ? "var(--muted)" : fp >= 28 ? "var(--red)" : fp <= 22 ? "var(--green)" : "var(--text)";
+  const fpLabel = fp == null ? "n/d" : fmt(fp, 1);
+  const fpSort = fp == null ? -1 : fp;
 
   let badge, badgeCls;
   if (yp >= 5.0) {
@@ -160,7 +162,7 @@ function buildRefereeRow(r, stats) {
     <td class="muted" data-sort="${pj}">${pj}</td>
     <td style="color:${ypColor};font-weight:600;" data-sort="${yp}">${fmt(yp, 2)}</td>
     <td data-sort="${rp}">${fmt(rp, 2)}</td>
-    <td style="color:${fpColor}" data-sort="${fp}">${fmt(fp, 1)}</td>
+    <td style="color:${fpColor}" data-sort="${fpSort}">${fpLabel}</td>
     <td><span class="${badgeCls}" style="font-size:.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">${badge}</span></td>
   </tr>`;
 }

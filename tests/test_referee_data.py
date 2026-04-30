@@ -58,3 +58,41 @@ def test_build_referees_uses_incremental_file(tmp_path, monkeypatch):
     assert by_name["Test Ref"]["source"] == "api-football"
     assert by_name["Test Ref"]["last5"]["matches"] == 3
     assert by_name["Test Ref"]["yellows_per_match"] == 4.0
+
+
+def test_build_referees_uses_season_aggregate_file(tmp_path, monkeypatch):
+    data_dir = tmp_path / "datos"
+    data_dir.mkdir()
+    (data_dir / "referees_season.csv").write_text(
+        "\n".join(
+            [
+                "league,league_name,referee,matches,yellow_cards,second_yellow_cards,red_cards,source,updated_at",
+                "SP1,La Liga,Season Ref,10,52,2,1,statbunker,2026-04-30T00:00:00Z",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr("app.config.DATA_DIR", str(data_dir))
+
+    base = pd.DataFrame(
+        {
+            "Date": pd.to_datetime(["2024-04-01", "2024-04-08", "2024-04-15"]),
+            "Div": ["E0", "E0", "E0"],
+            "Referee": ["Base Ref", "Base Ref", "Base Ref"],
+            "HY": [2, 2, 2],
+            "AY": [1, 1, 1],
+            "HR": [0, 0, 0],
+            "AR": [0, 0, 0],
+            "HF": [10, 10, 10],
+            "AF": [12, 12, 12],
+        }
+    )
+
+    refs = build_referees(base, base)
+    by_name = {r["name"]: r for r in refs}
+
+    assert by_name["Season Ref"]["source"] == "statbunker"
+    assert by_name["Season Ref"]["season"]["matches"] == 10
+    assert by_name["Season Ref"]["season"]["yellows_per_match"] == 5.2
+    assert by_name["Season Ref"]["season"]["reds_per_match"] == 0.3
+    assert by_name["Season Ref"]["season_last5"] is None
