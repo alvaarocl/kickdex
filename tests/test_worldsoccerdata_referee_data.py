@@ -1,4 +1,6 @@
-from scripts.update_worldsoccerdata_referee_data import _parse_cards, _parse_referee_links, fetch_league
+import requests
+
+from scripts.update_worldsoccerdata_referee_data import _parse_cards, _parse_referee_links, _request, fetch_league
 
 
 def test_parse_worldsoccerdata_referee_links():
@@ -25,6 +27,23 @@ def test_parse_worldsoccerdata_referee_links():
     ]
 
 
+def test_parse_worldsoccerdata_markdown_referee_links():
+    markdown = """
+    | Referee | Total Games | Avg Goals |
+    | --- | --- | --- |
+    | [Test Ref](https://www.worldsoccerdata.com/stats/spain/laliga/referees/test-ref) | 10 | 2.4 |
+    | [Test Ref](https://www.worldsoccerdata.com/stats/spain/laliga/referees/test-ref) | 8 | 2.1 |
+    """
+
+    assert _parse_referee_links(markdown) == [
+        {
+            "referee": "Test Ref",
+            "href": "https://www.worldsoccerdata.com/stats/spain/laliga/referees/test-ref",
+            "matches": 10,
+        }
+    ]
+
+
 def test_parse_worldsoccerdata_cards():
     html = """
     <section>
@@ -35,6 +54,18 @@ def test_parse_worldsoccerdata_cards():
     """
 
     assert _parse_cards(html) == (66, 3)
+
+
+def test_parse_worldsoccerdata_markdown_cards():
+    markdown = """
+    #### Cards (avg)
+
+    4.79 YC · 0.26 RC
+
+    Totals: 91Y / 5R
+    """
+
+    assert _parse_cards(markdown) == (91, 5)
 
 
 def test_fetch_league_combines_list_and_profile(monkeypatch):
@@ -69,3 +100,27 @@ def test_fetch_league_combines_list_and_profile(monkeypatch):
             "updated_at": rows[0]["updated_at"],
         }
     ]
+
+
+def test_request_falls_back_to_reader_on_forbidden(monkeypatch):
+    calls = []
+
+    class FakeResponse:
+        def __init__(self, status_code, text):
+            self.status_code = status_code
+            self.text = text
+
+        def raise_for_status(self):
+            if self.status_code >= 400:
+                raise requests.HTTPError(f"{self.status_code} error")
+
+    def fake_get(url, headers, timeout):
+        calls.append(url)
+        if len(calls) == 1:
+            return FakeResponse(403, "")
+        return FakeResponse(200, "reader ok")
+
+    monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data.requests.get", fake_get)
+
+    assert _request("https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025", timeout=1) == "reader ok"
+    assert calls[1].startswith("https://r.jina.ai/http://r.jina.ai/http://")

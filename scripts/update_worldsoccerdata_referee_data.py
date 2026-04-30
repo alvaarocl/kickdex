@@ -28,6 +28,7 @@ sys.path.insert(0, str(ROOT))
 from app.config import DATA_DIR, LEAGUES, WORLDSOCCERDATA_REFEREE_PATHS
 
 BASE_URL = "https://www.worldsoccerdata.com"
+READER_BASE_URL = "https://r.jina.ai/http://r.jina.ai/http://"
 OUT_PATH = Path(DATA_DIR) / "referees_season.csv"
 FIELDNAMES = [
     "league",
@@ -51,6 +52,10 @@ HEADERS = {
 
 def _request(url: str, timeout: int) -> str:
     response = requests.get(url, headers=HEADERS, timeout=timeout)
+    if response.status_code in {403, 429}:
+        reader = requests.get(f"{READER_BASE_URL}{url}", headers=HEADERS, timeout=timeout)
+        reader.raise_for_status()
+        return reader.text
     response.raise_for_status()
     return response.text
 
@@ -76,6 +81,15 @@ def _parse_referee_links(html: str) -> list[dict[str, Any]]:
             current = rows_by_href.get(absolute_href)
             if current is None or matches > int(current.get("matches") or 0):
                 rows_by_href[absolute_href] = {"referee": name, "href": absolute_href, "matches": matches}
+
+    for name, href, matches_raw in re.findall(
+        r"\|\s*\[([^\]]+)\]\((https://www\.worldsoccerdata\.com/stats/[^)]+/referees/[^)]+)\)\s*\|\s*(\d+)\s*\|",
+        html,
+    ):
+        matches = int(matches_raw)
+        current = rows_by_href.get(href)
+        if current is None or matches > int(current.get("matches") or 0):
+            rows_by_href[href] = {"referee": name.strip(), "href": href, "matches": matches}
     return sorted(rows_by_href.values(), key=lambda row: (-int(row["matches"]), str(row["referee"])))
 
 
@@ -147,6 +161,16 @@ def write_rows(rows: list[dict[str, Any]], path: Path = OUT_PATH) -> None:
             writer.writerow({key: row.get(key, "") for key in FIELDNAMES})
 
 
+def _load_existing_rows(path: Path = OUT_PATH) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    try:
+        with path.open("r", encoding="utf-8", newline="") as fh:
+            return list(csv.DictReader(fh))
+    except Exception:
+        return []
+
+
 def update_worldsoccerdata_referees(
     leagues: list[str],
     season: int,
@@ -155,6 +179,7 @@ def update_worldsoccerdata_referees(
     concurrency: int = 6,
 ) -> int:
     rows: list[dict[str, Any]] = []
+    requested = set(leagues)
     for code in leagues:
         path = WORLDSOCCERDATA_REFEREE_PATHS.get(code)
         if not path:
@@ -169,6 +194,8 @@ def update_worldsoccerdata_referees(
         rows.extend(league_rows)
 
     if rows:
+        if requested != set(WORLDSOCCERDATA_REFEREE_PATHS):
+            rows = [row for row in _load_existing_rows() if row.get("league") not in requested] + rows
         write_rows(rows)
     print(f"OK WorldSoccerData referees={len(rows)} path={OUT_PATH}")
     return len(rows)

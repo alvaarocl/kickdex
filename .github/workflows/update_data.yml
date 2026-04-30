@@ -51,7 +51,7 @@ jobs:
         run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES" --leagues $REFEREE_LEAGUES
 
       - name: Update referee season aggregates
-        run: python scripts/update_worldsoccerdata_referee_data.py
+        run: python scripts/update_worldsoccerdata_referee_data.py --sleep 0 --concurrency 8
 
       - name: Build static data
         env:
@@ -63,6 +63,9 @@ jobs:
 
       - name: Check player coverage
         run: python scripts/check_player_coverage.py --fail-under 1.0 --required-leagues SP1 E0 I1 D1 F1
+
+      - name: Check referee coverage
+        run: python scripts/check_referee_coverage.py --fail-under 10 --required-leagues SP1 SP2 E0 E1 I1 D1 F1 N1
 
       - name: Commit updated data
         run: |

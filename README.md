@@ -77,7 +77,7 @@ pytest tests/ -v
 
 - **Resultados históricos:** [football-data.co.uk](https://www.football-data.co.uk) (gratuito, SP1 + SP2 desde 2004)
 - **Stats de jugadores:** FBref via [soccerdata](https://github.com/probberechts/soccerdata)
-- **Árbitros:** football-data/manual como fallback gratuito; si configuras el secreto `APIFOOTBALL_KEY`, el workflow añade partidos recientes a `datos/referees_matches.csv`.
+- **Árbitros:** World Soccer Data actualiza `DATOS/referees_season.csv` en el workflow para la vista de temporada actual; football-data/manual quedan como histórico/fallback. Si configuras `APIFOOTBALL_KEY`, el workflow también intenta añadir partidos recientes a `DATOS/referees_matches.csv`.
 
 ---
 
