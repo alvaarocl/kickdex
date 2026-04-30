@@ -461,7 +461,7 @@ def _load_referee_season_aggregates():
             "fouls_per_match": None,
             "penalties_per_match": None,
             "last_match": None,
-            "source": str(row.get("source") or "statbunker"),
+            "source": str(row.get("source") or "worldsoccerdata"),
         }
     return result
 

@@ -38,13 +38,17 @@ APIFOOTBALL_LEAGUE_IDS = {
     "N1": 88,   # Eredivisie
 }
 
-# Public StatBunker competition ids for referee season aggregates.
+# Public World Soccer Data paths for referee season aggregates.
 # Used as a free fallback when per-match referee feeds are unavailable.
-STATBUNKER_REFEREE_COMP_IDS = {
-    "SP1": 777,  # La Liga 25/26
-    "E0": 776,   # Premier League 25/26
-    "I1": 785,   # Serie A 25/26
-    "F1": 787,   # Ligue 1 25/26
+WORLDSOCCERDATA_REFEREE_PATHS = {
+    "SP1": "spain/laliga",
+    "SP2": "spain/la-liga2",
+    "E0": "england/premier-league",
+    "E1": "england/championship",
+    "I1": "italy/seriea",
+    "D1": "germany/bundesliga",
+    "F1": "france/ligue-1",
+    "N1": "netherlands/eredivisie",
 }
 
 # ── Parámetros de análisis ────────────────────────────────────────────────────

@@ -67,7 +67,7 @@ def test_build_referees_uses_season_aggregate_file(tmp_path, monkeypatch):
         "\n".join(
             [
                 "league,league_name,referee,matches,yellow_cards,second_yellow_cards,red_cards,source,updated_at",
-                "SP1,La Liga,Season Ref,10,52,2,1,statbunker,2026-04-30T00:00:00Z",
+                "SP1,La Liga,Season Ref,10,52,2,1,worldsoccerdata,2026-04-30T00:00:00Z",
             ]
         ),
         encoding="utf-8",
@@ -91,7 +91,7 @@ def test_build_referees_uses_season_aggregate_file(tmp_path, monkeypatch):
     refs = build_referees(base, base)
     by_name = {r["name"]: r for r in refs}
 
-    assert by_name["Season Ref"]["source"] == "statbunker"
+    assert by_name["Season Ref"]["source"] == "worldsoccerdata"
     assert by_name["Season Ref"]["season"]["matches"] == 10
     assert by_name["Season Ref"]["season"]["yellows_per_match"] == 5.2
     assert by_name["Season Ref"]["season"]["reds_per_match"] == 0.3

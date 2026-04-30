@@ -121,7 +121,7 @@ function renderArbitros() {
     </table>
   </div>
   <div class="disclaimer" style="margin-top:14px;">
-    Fuente: API-Football si hay acceso a temporada actual; fallback StatBunker/football-data/manual cuando no hay feed partido a partido.
+    Fuente: World Soccer Data/API-Football para temporada actual; fallback football-data/manual para historico.
   </div>`;
 
   setTimeout(() => initAllTables(box), 50);
