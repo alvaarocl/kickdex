@@ -84,6 +84,20 @@ def write_player_json(data, filename: str):
     write_json(data, filename)
 
 
+def write_fixtures_json(data, filename: str = "fixtures.json"):
+    """Preserve the current calendar if external fixture sources fail empty."""
+    existing = _read_existing_json(filename)
+    existing_upcoming = len(existing.get("upcoming", [])) if isinstance(existing, dict) else 0
+    new_upcoming = len(data.get("upcoming", [])) if isinstance(data, dict) else 0
+    fd_status = (data.get("meta") or {}).get("fixture_download") if isinstance(data, dict) else {}
+    fd_leagues = (fd_status or {}).get("leagues") or {}
+    source_failed = bool(fd_leagues) and not any(info.get("ok") for info in fd_leagues.values() if isinstance(info, dict))
+    if existing_upcoming > 0 and new_upcoming == 0 and source_failed:
+        print(f"  KEEP {filename}  (FixtureDownload falló; preservados {existing_upcoming} próximos)")
+        return
+    write_json(data, filename)
+
+
 def build_player_coverage(df_players, leagues: dict) -> dict:
     coverage = {
         "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -853,7 +867,7 @@ def main():
 
     print("\n[7/7] leagues.json, fixtures.json, edges.json...")
     write_json(leagues, "leagues.json")
-    write_json(build_fixtures(df, leagues), "fixtures.json")
+    write_fixtures_json(build_fixtures(df, leagues))
     write_json(build_edges(df), "edges.json")
 
     print("\n" + "=" * 60)
