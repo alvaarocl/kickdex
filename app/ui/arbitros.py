@@ -10,10 +10,7 @@ from app.engine.referees import get_referee_stats
 from app.config import DISCLAIMER, LEAGUES
 
 _WINDOW_OPTIONS = {
-    "Últimos 5 partidos":  5,
-    "Últimos 10 partidos": 10,
-    "Últimos 20 partidos": 20,
-    "Últimos 38 partidos": 38,
+    "Temporada actual": "season",
     "Histórico completo":  None,
 }
 
@@ -62,7 +59,7 @@ def render(df: pd.DataFrame) -> None:
     st.markdown('<h2 class="section-h2">⚖️ Panel de Árbitros</h2>', unsafe_allow_html=True)
     st.markdown(
         '<p class="section-desc">Perfil disciplinario por colegiado. '
-        'Filtra por liga y elige la ventana temporal para analizar forma reciente o histórico completo.</p>',
+        'Filtra por liga y alterna entre temporada actual e histórico completo.</p>',
         unsafe_allow_html=True,
     )
 
@@ -71,7 +68,7 @@ def render(df: pd.DataFrame) -> None:
         league_label = st.selectbox("🌍 Liga", list(_LEAGUE_OPTIONS.keys()), key="ref_league")
         league_code  = _LEAGUE_OPTIONS[league_label]
     with c2:
-        window_label = st.selectbox("📅 Ventana temporal", list(_WINDOW_OPTIONS.keys()), index=4, key="ref_window")
+        window_label = st.selectbox("📅 Ventana", list(_WINDOW_OPTIONS.keys()), index=0, key="ref_window")
         window       = _WINDOW_OPTIONS[window_label]
     with c3:
         min_m = st.slider("Mín. partidos arbitrados", 1, 20, 5, key="ref_min")

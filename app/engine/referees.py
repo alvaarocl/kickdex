@@ -63,7 +63,7 @@ def _build_curated_df() -> pd.DataFrame:
 def get_referee_stats(
     df: pd.DataFrame,
     league_code: str | None = None,
-    window: int | None = None,
+    window: int | str | None = None,
     min_matches: int = 3,
 ) -> pd.DataFrame:
     """
@@ -72,7 +72,7 @@ def get_referee_stats(
     Args:
         df: DataFrame completo de partidos.
         league_code: Código de liga ('SP1', 'E0', …). None = todas.
-        window: Últimos N partidos por árbitro. None = histórico completo.
+        window: Últimos N partidos por árbitro, "season" = temporada actual, None = histórico completo.
         min_matches: Mínimo de partidos para incluir al árbitro.
     """
     working = df.copy()
@@ -124,7 +124,9 @@ def get_referee_stats(
             if "Div" in rdf.columns:
                 rdf["Liga"] = rdf["Liga"].fillna(rdf["Div"].map(LEAGUES).fillna(rdf["Div"]))
 
-            if window:
+            if window == "season" and "Date" in rdf.columns:
+                rdf = rdf[rdf["Date"] >= pd.Timestamp(CURRENT_SEASON_START)].copy()
+            elif window:
                 rdf = rdf.sort_values("Date")
                 rdf = (
                     rdf.groupby("Referee", group_keys=False)
@@ -153,7 +155,9 @@ def get_referee_stats(
     elif not incremental.empty:
         rdf = incremental.copy()
         rdf["Liga"] = rdf["Div"].map(LEAGUES).fillna(rdf["Div"])
-        if window:
+        if window == "season" and "Date" in rdf.columns:
+            rdf = rdf[rdf["Date"] >= pd.Timestamp(CURRENT_SEASON_START)].copy()
+        elif window:
             rdf = rdf.sort_values("Date")
             rdf = (
                 rdf.groupby("Referee", group_keys=False)
@@ -181,6 +185,8 @@ def get_referee_stats(
     if league_code:
         liga_name = LEAGUES.get(league_code, "")
         curated = curated[curated["Liga"] == liga_name]
+    if window == "season":
+        curated = curated.iloc[0:0]
 
     # CSV prevalece; curated rellena árbitros ausentes
     if not csv_stats.empty:

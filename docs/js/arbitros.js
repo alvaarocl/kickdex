@@ -38,14 +38,10 @@ function initArbitros() {
 
 function pickRefStats(r, window_) {
   const keyMap = {
-    "5": "last5",
-    "10": "last10",
     "all": "overall",
     "season": "season",
-    "season_last10": "season_last10",
-    "season_last5": "season_last5",
   };
-  const key = keyMap[window_] || "overall";
+  const key = keyMap[window_] || "season";
   const block = r[key];
 
   if (block) return { ...block, _available: true };
@@ -74,11 +70,7 @@ function renderArbitros() {
 
   const windowLabelMap = {
     "season": "Esta temporada",
-    "season_last10": "Esta temp. - ult. 10",
-    "season_last5": "Esta temp. - ult. 5",
     "all": "Historico completo",
-    "10": "Historico - ult. 10",
-    "5": "Historico - ult. 5",
   };
   const windowLabel = windowLabelMap[_arbWindow] || "Esta temporada";
   const leagueName = _arbLeague === "all" ? "todas las ligas" : (APP.leagues[_arbLeague]?.name || _arbLeague);
