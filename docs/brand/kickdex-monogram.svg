@@ -1,0 +1,7 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KICKDEX monogram">
+  <rect width="160" height="160" rx="32" fill="#05070D"/>
+  <rect x="20" y="20" width="120" height="120" rx="24" fill="#2EE6A6"/>
+  <path d="M40 50H132M40 110H132M86 36V124" stroke="#021A12" stroke-width="2" stroke-linecap="round" opacity=".22"/>
+  <text x="50" y="113" fill="#021A12" font-family="IBM Plex Mono, JetBrains Mono, monospace" font-size="76" font-weight="800">K</text>
+  <rect x="106" y="106" width="18" height="8" rx="2" fill="#021A12"/>
+</svg>

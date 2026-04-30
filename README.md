@@ -1,8 +1,10 @@
-# KICKDEX — The Football Data Terminal
+# KICKDEX — Football intelligence, indexed.
 
-**Terminal gratuito de estadísticas de fútbol.** Comparador de equipos, H2H histórico, scouting de jugadores y datos de ligas europeas.
+**La terminal de inteligencia futbolística.** Comparador de equipos, H2H histórico, scouting de jugadores y detección de edge en cuotas de ligas europeas.
 
-Free, independent, math-first.
+> NO LOGIN. NO ADS. NO PICKS.
+
+Brand system V3 → ver `brand/BRAND_GUIDE.md`.
 
 ---
 
@@ -81,6 +83,26 @@ pytest tests/ -v
 
 ---
 
+## Generar OG images
+
+Cada partido puede tener su PNG Open Graph dinámico:
+
+```bash
+python -m app.og --home "Real Madrid" --away "Barcelona" \
+                 --edge 12.8 --league "LA LIGA · J30" \
+                 --caption "Real Madrid · ML · Bet365 1.92"
+```
+
+Se guarda en `docs/og/<home>-vs-<away>.png`. Para previsualización web sin servidor: abre `docs/og.html?home=...&away=...&edge=12.8`.
+
+Para fuentes correctas en el render Pillow, coloca los TTF en `app/fonts/` (`IBMPlexMono-Bold.ttf`, `IBMPlexMono-Medium.ttf`).
+
+## Match Report PDF
+
+`docs/report.html?home=...&away=...&edge=...&caption=...&league=...` genera un report en light mode con botón "Export PDF" (html2canvas + jsPDF, todo en cliente).
+
 ## Disclaimer
+
+> RISK NOTICE: edges are estimates, not guarantees. Play responsibly.
 
 KICKDEX proporciona análisis histórico y modelos estadísticos informativos, no garantías de resultados futuros.

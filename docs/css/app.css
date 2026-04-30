@@ -70,8 +70,9 @@
   --shadow-gold:  0 8px 36px -8px rgba(245,185,60,.55);
 
   /* ── Typography ───────────────────────────────────── */
-  --font-ui:   'IBM Plex Sans', 'Inter', system-ui, sans-serif;
-  --font-data: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-ui:   'Inter', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-data: 'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-mono-dense: 'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', monospace;
 }
 
 /* ── Base ──────────────────────────────────────────────── */
@@ -2597,4 +2598,282 @@ tbody td b { font-family: var(--font-data); }
 @supports (padding: env(safe-area-inset-bottom)) {
   .lp-overlay { padding-bottom: env(safe-area-inset-bottom); }
   .tabs-nav { padding-top: calc(8px + env(safe-area-inset-top, 0px)); }
+}
+
+/* ============================================================
+   BRAND SYSTEM V3 — Edge Number, terminal status, brand utilities
+   ============================================================ */
+
+/* — Edge Number: el activo de marca (Bloomberg-moment) — */
+.edge-number {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-data);
+  font-feature-settings: "tnum", "ss01";
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: var(--gold);
+}
+.edge-number__label {
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+.edge-number__value {
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 0 32px rgba(245, 185, 60, 0.25);
+  display: inline-flex;
+  align-items: baseline;
+}
+.edge-number__value::after {
+  content: "▌";
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--brand);
+  font-size: 0.8em;
+  animation: edge-cursor 1.1s steps(2) infinite;
+}
+.edge-number__spark {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--brand) 30%, var(--brand) 70%, transparent 100%);
+  width: 100%;
+  max-width: 260px;
+  opacity: 0.6;
+}
+.edge-number__caption {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.edge-number--xxl .edge-number__value { font-size: 96px; }
+.edge-number--lg  .edge-number__value { font-size: 48px; }
+.edge-number--md  .edge-number__value { font-size: 32px; }
+
+.edge-number--risk { color: var(--red); }
+.edge-number--risk .edge-number__value { color: var(--red); text-shadow: 0 0 32px rgba(255, 90, 110, 0.25); }
+.edge-number--neutral .edge-number__value { color: var(--text); text-shadow: none; }
+
+/* — Terminal cursor reusable — */
+.edge-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  background: var(--brand);
+  vertical-align: -0.1em;
+  margin-left: 0.15em;
+  animation: edge-cursor 1.1s steps(2) infinite;
+}
+@keyframes edge-cursor {
+  0%, 50%   { opacity: 1; }
+  50.01%, 100% { opacity: 0.15; }
+}
+
+/* — Terminal status bar (header badge) — */
+.terminal-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 12px;
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  background: rgba(11, 15, 26, 0.6);
+}
+.terminal-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 8px var(--brand-glow);
+  animation: edge-pulse 2s ease-in-out infinite;
+}
+@keyframes edge-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* — Hairline grid background (hero) — */
+.kbd-grid {
+  position: relative;
+  isolation: isolate;
+}
+.kbd-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(46, 230, 166, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 230, 166, 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 90%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* — Live tag (cyan, monospace) — */
+.tag-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  padding: 3px 8px;
+  border: 1px solid rgba(91, 214, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(91, 214, 255, 0.08);
+}
+.tag-live::before {
+  content: "●";
+  font-size: 8px;
+  animation: edge-pulse 1.4s ease-in-out infinite;
+}
+
+/* — Bracketed number (live feed style) — */
+.num-bracket {
+  font-family: var(--font-data);
+  font-feature-settings: "tnum";
+  color: var(--text2);
+}
+.num-bracket::before { content: "[ "; color: var(--muted2); }
+.num-bracket::after  { content: " ]"; color: var(--muted2); }
+
+/* — Reduced motion — */
+@media (prefers-reduced-motion: reduce) {
+  .edge-cursor,
+  .edge-number__value::after,
+  .terminal-status::before,
+  .tag-live::before { animation: none; }
+}
+
+/* — Brand mark (tile + wordmark + cursor) — */
+.lp-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.lp-brand-tile {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #021A12;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-data);
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+}
+.lp-brand-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-data);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.lp-brand-mark .edge-cursor {
+  width: 0.45em;
+  height: 0.95em;
+}
+
+/* — Hero Edge Card — */
+.lp-edge-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(11,15,26,0.92) 0%, rgba(5,7,13,0.95) 100%);
+  border: 1px solid rgba(46, 230, 166, 0.18);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow:
+    0 30px 80px -30px rgba(0,0,0,0.9),
+    0 0 0 1px rgba(245, 185, 60, 0.06) inset;
+  min-width: 380px;
+  max-width: 460px;
+}
+.lp-edge-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-family: var(--font-data);
+}
+.lp-edge-card__match {
+  font-size: 13px;
+  color: var(--text2);
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+.lp-edge-card__match em {
+  color: var(--muted);
+  font-style: normal;
+  margin: 0 4px;
+}
+.lp-edge-card__body {
+  padding: 8px 0 18px;
+  border-bottom: 1px solid var(--border);
+}
+.lp-edge-card__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  font-family: var(--font-data);
+  font-size: 13px;
+}
+.lp-edge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+}
+.lp-edge-row b {
+  color: var(--text);
+  font-weight: 600;
+}
+.lp-edge-row .f-w,
+.lp-edge-row .f-d,
+.lp-edge-row .f-l {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 2px;
+  font-family: var(--font-data);
+}
+.lp-edge-row .f-w { background: rgba(46,230,166,0.18); color: var(--brand); }
+.lp-edge-row .f-d { background: rgba(245,185,60,0.16); color: var(--gold); }
+.lp-edge-row .f-l { background: rgba(255,90,110,0.18); color: var(--red); }
+
+.lp-cta-primary {
+  font-family: var(--font-data);
+  letter-spacing: -0.01em;
 }

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>KICKDEX OG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #05070D; }
+  .og {
+    width: 1200px;
+    height: 630px;
+    background: #05070D;
+    color: #F1F5FB;
+    font-family: 'Inter', system-ui, sans-serif;
+    position: relative;
+    overflow: hidden;
+    padding: 56px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .og::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(46,230,166,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46,230,166,0.08) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 90%);
+  }
+  .og::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(800px 400px at 8% -20%, rgba(46,230,166,0.18), transparent 60%),
+      radial-gradient(700px 380px at 100% 110%, rgba(245,185,60,0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .og > * { position: relative; }
+
+  .og-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .og-brand { display: inline-flex; align-items: center; gap: 14px; }
+  .og-tile {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: #2EE6A6; color: #021A12;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 30px;
+  }
+  .og-word { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+  .og-status {
+    font-size: 14px;
+    color: #8A94AB;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 14px;
+    border-radius: 999px;
+  }
+  .og-status::before {
+    content: "● ";
+    color: #2EE6A6;
+  }
+
+  .og-body {
+    display: flex; align-items: flex-end;
+    gap: 60px;
+    padding-top: 30px;
+  }
+  .og-edge { display: flex; flex-direction: column; gap: 16px; }
+  .og-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px; letter-spacing: 0.3em; color: #8A94AB; text-transform: uppercase;
+  }
+  .og-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 220px; font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    color: #F5B93C;
+    text-shadow: 0 0 60px rgba(245,185,60,0.25);
+    font-feature-settings: "tnum";
+    display: flex; align-items: center; gap: 12px;
+  }
+  .og-cursor {
+    display: inline-block;
+    width: 30px; height: 140px;
+    background: #2EE6A6;
+  }
+  .og-spark {
+    width: 360px; height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #2EE6A6 30%, #2EE6A6 70%, transparent 100%);
+  }
+  .og-caption {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px; color: #C8D4E8;
+  }
+
+  .og-side {
+    display: flex; flex-direction: column;
+    margin-left: auto;
+    text-align: right;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .og-match {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .og-match em { color: #8A94AB; font-style: normal; margin: 0 12px; font-weight: 500; }
+  .og-league {
+    font-size: 14px; letter-spacing: 0.16em; color: #5BD6FF; text-transform: uppercase;
+  }
+
+  .og-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px; color: #8A94AB;
+    letter-spacing: 0.04em;
+  }
+  .og-foot strong { color: #2EE6A6; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="og" id="og">
+  <div class="og-head">
+    <div class="og-brand">
+      <span class="og-tile">K</span>
+      <span class="og-word">kickdex</span>
+    </div>
+    <div class="og-status">live · terminal</div>
+  </div>
+
+  <div class="og-body">
+    <div class="og-edge">
+      <span class="og-label">EDGE detected</span>
+      <span class="og-value" id="ogValue">+12.8%<span class="og-cursor"></span></span>
+      <span class="og-spark"></span>
+      <span class="og-caption" id="ogCaption">Real Madrid · ML · Bet365 1.92</span>
+    </div>
+    <div class="og-side">
+      <span class="og-league" id="ogLeague">LA LIGA · J30</span>
+      <span class="og-match" id="ogMatch">Real Madrid <em>vs</em> Barcelona</span>
+    </div>
+  </div>
+
+  <div class="og-foot">
+    <span><strong>Football intelligence, indexed.</strong> &nbsp;·&nbsp; kickdex.com</span>
+    <span>&gt; NO LOGIN. NO ADS. NO PICKS.</span>
+  </div>
+</div>
+
+<script>
+  const qs = new URLSearchParams(location.search);
+  const set = (id, v) => { if (v) document.getElementById(id).childNodes[0].nodeValue = v; };
+  if (qs.get('edge')) {
+    const n = parseFloat(qs.get('edge'));
+    if (!Number.isNaN(n)) {
+      document.getElementById('ogValue').childNodes[0].nodeValue = (n > 0 ? '+' : '') + n.toFixed(1) + '%';
+    }
+  }
+  if (qs.get('match')) document.getElementById('ogMatch').innerHTML = qs.get('match').replace(' vs ', ' <em>vs</em> ');
+  if (qs.get('league')) document.getElementById('ogLeague').textContent = qs.get('league').toUpperCase();
+  if (qs.get('caption')) document.getElementById('ogCaption').textContent = qs.get('caption');
+</script>
+</body>
+</html>
