@@ -300,7 +300,7 @@ function buildPlayerComparison(home, away) {
 
     return `
     <div class="players-col-title">${teamName}</div>
-    <div class="table-wrap" style="overflow-x:auto; max-height:450px; overflow-y:auto;">
+    <div class="table-wrap players-table-wrap" style="overflow-x:auto; max-height:450px; overflow-y:auto;">
       <table>
         <thead><tr><th>Jugador</th><th>Sh</th><th>SoT</th><th>Gls</th><th>Ast</th><th>Fls</th></tr></thead>
         <tbody>${rows}</tbody>
@@ -309,11 +309,11 @@ function buildPlayerComparison(home, away) {
   }
 
   return `
-  <div class="card stagger-item" style="margin-bottom:20px;">
+  <div class="card stagger-item players-panel" style="margin-bottom:20px;">
     <div class="section-title">📊 Comparativa de Jugadores Pro</div>
     <div class="players-comparison">
-      <div>${playerTable(homePlayers, home)}</div>
-      <div>${playerTable(awayPlayers, away)}</div>
+      <div class="players-team-panel">${playerTable(homePlayers, home)}</div>
+      <div class="players-team-panel">${playerTable(awayPlayers, away)}</div>
     </div>
   </div>`;
 }

@@ -1430,6 +1430,93 @@ tbody td b { font-family: var(--font-data); }
 .section-h2 { font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .section-desc { font-size: .85rem; color: var(--muted); }
 
+.calendar-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.calendar-summary-item {
+  background: rgba(255,255,255,.035);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+.calendar-summary-item strong {
+  display: block;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.calendar-summary-item span {
+  display: block;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.calendar-day {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(8,12,22,.55);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.calendar-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.035);
+  border-bottom: 1px solid var(--border);
+}
+.calendar-day-head span {
+  color: var(--text);
+  font-weight: 850;
+  text-transform: capitalize;
+}
+.calendar-day-head strong {
+  color: var(--muted);
+  font-size: .72rem;
+  white-space: nowrap;
+}
+.calendar-league-block { padding: 10px 12px 12px; }
+.calendar-league-block + .calendar-league-block { border-top: 1px solid rgba(255,255,255,.06); }
+.calendar-league-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 850;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  margin: 2px 2px 10px;
+}
+.calendar-league-head span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.calendar-league-head strong {
+  color: var(--brand);
+  background: var(--brand-soft);
+  border: 1px solid rgba(46,230,166,.2);
+  border-radius: 999px;
+  min-width: 24px;
+  text-align: center;
+  padding: 2px 7px;
+}
+
 /* ── Fixture cards (Inicio tab) ───────────────────────────── */
 .fx-section-title {
   font-size: .7rem; font-weight: 700; text-transform: uppercase;
@@ -1437,7 +1524,7 @@ tbody td b { font-family: var(--font-data); }
 }
 .fx-card {
   background: var(--grad-card); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 18px; margin-bottom: 8px;
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 8px;
   transition: border-color .15s, transform .15s;
 }
 .fx-card:hover { border-color: rgba(46,230,166,.3); transform: translateY(-1px); }
@@ -1488,11 +1575,21 @@ tbody td b { font-family: var(--font-data); }
 .players-comparison {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 18px; margin-top: 16px;
+  min-width: 0;
 }
+.players-team-panel { min-width: 0; }
+.players-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.players-table-wrap table { min-width: 520px; }
 @media (max-width: 640px) { .players-comparison { grid-template-columns: 1fr; } }
 .players-col-title {
   font-size: .72rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: 1px; color: var(--brand); margin-bottom: 10px;
+  overflow-wrap: anywhere;
 }
 
 /* ── Fixture card layout helpers ──────────────────────────── */
@@ -2391,11 +2488,30 @@ tbody td b { font-family: var(--font-data); }
   .grid-2 { grid-template-columns: 1fr !important; }
 
   /* Fixture cards */
+  .calendar-summary { grid-template-columns: 1fr; }
+  .calendar-day { border-radius: 12px; margin-left: -4px; margin-right: -4px; }
+  .calendar-day-head { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .calendar-league-block { padding: 10px 8px 12px; }
+  .calendar-league-head span { white-space: normal; }
   .fx-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .fx-card { padding: 12px; }
   .fx-card-row { flex-direction: column; gap: 8px; }
+  .fx-teams { min-width: 0; width: 100%; align-items: flex-start; }
+  .fx-team { overflow-wrap: anywhere; }
+  .fx-meta { font-size: .76rem; }
   .fx-analyze-btn { width: 100%; justify-content: center; padding: 12px; }
 
-  /* Players comparison 1 col handled already */
+  .players-panel { padding-left: 10px !important; padding-right: 10px !important; }
+  .players-comparison { gap: 14px; }
+  .players-table-wrap { max-height: 360px !important; border-radius: 10px; }
+  .players-table-wrap table { min-width: 430px; }
+  .players-table-wrap th:first-child,
+  .players-table-wrap td:first-child {
+    min-width: 130px;
+    max-width: 150px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (max-width: 440px) {
@@ -2404,6 +2520,9 @@ tbody td b { font-family: var(--font-data); }
   .lp-nav-brand { font-size: .95rem; }
   .h2h-summary { grid-template-columns: repeat(3, 1fr); }
   .h2h-box .val { font-size: 1.15rem; }
+  .players-table-wrap table { min-width: 400px; }
+  .players-table-wrap th,
+  .players-table-wrap td { padding-left: 8px; padding-right: 8px; }
 }
 
 /* Touch-device tweaks — disable hover-only effects that feel stuck on mobile */

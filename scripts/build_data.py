@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT))
 
 from app.data.updater import update_data
 from app.data.loader import load_matches, load_players, get_team_list, invalidate_cache
+from app.data.fixture_download import fetch_fixture_download_calendar
 from app.engine.metrics import (
     get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics
 )
@@ -308,7 +309,26 @@ def build_leagues(df, teams: list) -> dict:
     return result
 
 
-def build_fixtures(df) -> dict:
+def _fixture_key(item: dict) -> tuple:
+    return (
+        item.get("league", ""),
+        item.get("date", ""),
+        item.get("home", ""),
+        item.get("away", ""),
+    )
+
+
+def _merge_fixture_lists(primary: list[dict], secondary: list[dict]) -> list[dict]:
+    merged: dict[tuple, dict] = {}
+    for item in secondary:
+        merged[_fixture_key(item)] = item
+    for item in primary:
+        key = _fixture_key(item)
+        merged[key] = {**merged.get(key, {}), **item}
+    return list(merged.values())
+
+
+def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     """
     Genera partidos recientes (últimos 7 días) y próximos (NaN FTHG).
     Fuente: CSVs de la temporada actual descargados frescos.
@@ -363,9 +383,32 @@ def build_fixtures(df) -> dict:
                 if date >= now - pd.Timedelta(days=1):
                     upcoming.append(item)
 
-    recent.sort(key=lambda x: x["date"], reverse=True)
-    upcoming.sort(key=lambda x: x["date"])
-    return {"recent": recent[:20], "upcoming": upcoming[:20]}
+    fd_recent = []
+    fd_upcoming = []
+    fd_status = {}
+    if leagues_json:
+        try:
+            league_teams = {code: info.get("teams", []) for code, info in leagues_json.items()}
+            fd_recent, fd_upcoming, fd_status = fetch_fixture_download_calendar(leagues, league_teams)
+            print(f"  OK FixtureDownload calendar ({len(fd_upcoming)} futuros, {len(fd_recent)} recientes)")
+        except Exception as exc:
+            fd_status = {"source": "fixturedownload", "ok": False, "error": str(exc)}
+            print(f"  Warning FixtureDownload calendar: {exc}")
+
+    recent = _merge_fixture_lists(primary=recent, secondary=fd_recent)
+    upcoming = _merge_fixture_lists(primary=fd_upcoming, secondary=upcoming)
+
+    recent.sort(key=lambda x: (x["date"], x.get("time", "")), reverse=True)
+    upcoming.sort(key=lambda x: (x["date"], x.get("time", ""), x.get("league", "")))
+    return {
+        "recent": recent[:80],
+        "upcoming": upcoming[:160],
+        "meta": {
+            "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "sources": ["football-data.co.uk", "FixtureDownload"],
+            "fixture_download": fd_status,
+        },
+    }
 
 
 def _normalise_referee_frame(df, source: str = "csv"):
@@ -652,10 +695,10 @@ def main():
 
     print("\n[7/7] leagues.json, fixtures.json...")
     write_json(leagues, "leagues.json")
-    write_json(build_fixtures(df), "fixtures.json")
+    write_json(build_fixtures(df, leagues), "fixtures.json")
 
     print("\n" + "=" * 60)
-    print("✓ BUILD COMPLETADO")
+    print("BUILD COMPLETADO")
     print("=" * 60)
     print(f"Archivos en: {OUTPUT_DIR.resolve()}")
     return 0

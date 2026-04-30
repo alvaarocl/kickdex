@@ -24,19 +24,22 @@ function renderInicio(leagueFilter) {
     recent   = recent.filter(f => f.league === league);
   }
 
-  const todayFx  = upcoming.filter(f => f.date === today);
-  const futureFx = upcoming.filter(f => f.date >  today);
-
   let html = "";
-
-  if (todayFx.length > 0) {
-    html += `<div class="fx-section-title">${t("inicio_today")}</div>`;
-    html += todayFx.map(f => buildFixtureCard(f, false)).join("");
+  const totalUpcoming = upcoming.length;
+  const nextDate = upcoming[0]?.date;
+  const leagueCount = new Set(upcoming.map(f => f.league)).size;
+  if (totalUpcoming > 0) {
+    html += `
+    <div class="calendar-summary">
+      <div class="calendar-summary-item"><strong>${totalUpcoming}</strong><span>próximos</span></div>
+      <div class="calendar-summary-item"><strong>${leagueCount}</strong><span>ligas</span></div>
+      <div class="calendar-summary-item"><strong>${nextDate ? fxDateLabel(nextDate, "") : "—"}</strong><span>siguiente</span></div>
+    </div>`;
   }
 
-  if (futureFx.length > 0) {
+  if (upcoming.length > 0) {
     html += `<div class="fx-section-title">${t("inicio_upcoming")}</div>`;
-    html += futureFx.map(f => buildFixtureCard(f, false)).join("");
+    html += buildCalendarAgenda(upcoming, false);
   }
 
   if (upcoming.length === 0) {
@@ -51,7 +54,7 @@ function renderInicio(leagueFilter) {
 
   if (recent.length > 0) {
     html += `<div class="fx-section-title">${t("inicio_recent")}</div>`;
-    html += recent.map(f => buildFixtureCard(f, true)).join("");
+    html += buildCalendarAgenda(recent.slice(0, 24), true);
   }
 
   if (!html) {
@@ -95,6 +98,55 @@ function renderInicio(leagueFilter) {
   });
 }
 
+function buildCalendarAgenda(fixtures, isResult) {
+  const byDate = new Map();
+  fixtures.forEach(f => {
+    if (!byDate.has(f.date)) byDate.set(f.date, []);
+    byDate.get(f.date).push(f);
+  });
+
+  return Array.from(byDate.entries()).map(([date, dayFixtures]) => {
+    const byLeague = new Map();
+    sortFixtures(dayFixtures).forEach(f => {
+      const key = f.league || "other";
+      if (!byLeague.has(key)) byLeague.set(key, []);
+      byLeague.get(key).push(f);
+    });
+    const leagueBlocks = Array.from(byLeague.entries()).map(([league, items]) => {
+      const label = typeof getLeagueLabel === "function"
+        ? getLeagueLabel(league)
+        : (APP.leagues?.[league]?.name || league);
+      return `
+      <div class="calendar-league-block">
+        <div class="calendar-league-head">
+          <span>${escHtml(label)}</span>
+          <strong>${items.length}</strong>
+        </div>
+        ${items.map(f => buildFixtureCard(f, isResult)).join("")}
+      </div>`;
+    }).join("");
+
+    return `
+    <section class="calendar-day">
+      <div class="calendar-day-head">
+        <span>${fxDateLabel(date, "")}</span>
+        <strong>${dayFixtures.length} partidos</strong>
+      </div>
+      ${leagueBlocks}
+    </section>`;
+  }).join("");
+}
+
+function sortFixtures(fixtures) {
+  return fixtures.slice().sort((a, b) => {
+    const leagueCmp = typeof compareLeagueCodes === "function"
+      ? compareLeagueCodes(a.league, b.league)
+      : String(a.league || "").localeCompare(String(b.league || ""));
+    if (leagueCmp !== 0) return leagueCmp;
+    return String(a.time || "").localeCompare(String(b.time || ""));
+  });
+}
+
 function buildFixtureCard(f, isResult) {
   const leagueCls   = f.league ? f.league.toLowerCase().replace(/\d/g, "") : "other";
   const leagueLabel = APP.leagues?.[f.league]?.name || f.league || "—";
@@ -112,7 +164,9 @@ function buildFixtureCard(f, isResult) {
         <span class="${awayWon ? "fx-score-win" : ""}">${f.away_score}</span>
       </div>`;
   } else {
-    mainContent = `<div class="fx-meta">Datos de calendario y forma disponibles en el comparador</div>`;
+    const round = f.round ? `<span>J${escHtml(f.round)}</span>` : "";
+    const venue = f.venue ? `<span>${escHtml(f.venue)}</span>` : "";
+    mainContent = `<div class="fx-meta">${round}${venue}<span>Previa disponible</span></div>`;
   }
 
   const analyzeBtn = !isResult
