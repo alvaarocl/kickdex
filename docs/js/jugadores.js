@@ -187,12 +187,6 @@ function runJugadores() {
     setTimeout(() => {
       drawPlayerSparklines(player, detail);
       initAllTables(box);
-      const backBtn = document.getElementById("jug-back-btn");
-      if (backBtn) backBtn.addEventListener("click", () => {
-        const sel = document.getElementById("jug-player");
-        if (sel) sel.value = "";
-        runJugadores();
-      });
     }, 50);
   } else {
     // All players summary
@@ -298,11 +292,6 @@ function buildPlayerDetail(team, player, detail) {
   const svgShot = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
   const svgList = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`;
   return `
-  <div style="margin-bottom:12px;">
-    <button class="btn btn-ghost" id="jug-back-btn" style="font-size:.82rem;padding:6px 14px;">
-      â† Volver al equipo
-    </button>
-  </div>
   <div class="card" style="margin-bottom:20px;">
     <div class="section-title">${svgUser} ${player} <small>${team}</small></div>
     <div class="grid-4" style="margin-bottom:16px;">
