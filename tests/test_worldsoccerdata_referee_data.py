@@ -124,3 +124,30 @@ def test_request_falls_back_to_reader_on_forbidden(monkeypatch):
 
     assert _request("https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025", timeout=1) == "reader ok"
     assert calls[1].startswith("https://r.jina.ai/http://r.jina.ai/http://")
+
+
+def test_request_retries_reader_rate_limit(monkeypatch):
+    calls = []
+
+    class FakeResponse:
+        def __init__(self, status_code, text):
+            self.status_code = status_code
+            self.text = text
+
+        def raise_for_status(self):
+            if self.status_code >= 400:
+                raise requests.HTTPError(f"{self.status_code} error")
+
+    def fake_get(url, headers, timeout):
+        calls.append(url)
+        if len(calls) == 1:
+            return FakeResponse(403, "")
+        if len(calls) == 2:
+            return FakeResponse(429, "")
+        return FakeResponse(200, "reader ok")
+
+    monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data.requests.get", fake_get)
+    monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data.time.sleep", lambda seconds: None)
+
+    assert _request("https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025", timeout=1) == "reader ok"
+    assert len(calls) == 3

@@ -52,10 +52,25 @@ HEADERS = {
 
 def _request(url: str, timeout: int) -> str:
     response = requests.get(url, headers=HEADERS, timeout=timeout)
-    if response.status_code in {403, 429}:
-        reader = requests.get(f"{READER_BASE_URL}{url}", headers=HEADERS, timeout=timeout)
-        reader.raise_for_status()
-        return reader.text
+    if response.status_code not in {403, 429}:
+        response.raise_for_status()
+        return response.text
+
+    reader_url = f"{READER_BASE_URL}{url}"
+    last_error: Exception | None = None
+    for attempt in range(3):
+        try:
+            reader = requests.get(reader_url, headers=HEADERS, timeout=timeout)
+            if reader.status_code == 429:
+                time.sleep(5 * (attempt + 1))
+                continue
+            reader.raise_for_status()
+            return reader.text
+        except Exception as exc:
+            last_error = exc
+            time.sleep(5 * (attempt + 1))
+    if last_error:
+        raise last_error
     response.raise_for_status()
     return response.text
 
@@ -180,6 +195,7 @@ def update_worldsoccerdata_referees(
 ) -> int:
     rows: list[dict[str, Any]] = []
     requested = set(leagues)
+    existing = _load_existing_rows()
     for code in leagues:
         path = WORLDSOCCERDATA_REFEREE_PATHS.get(code)
         if not path:
@@ -194,8 +210,9 @@ def update_worldsoccerdata_referees(
         rows.extend(league_rows)
 
     if rows:
-        if requested != set(WORLDSOCCERDATA_REFEREE_PATHS):
-            rows = [row for row in _load_existing_rows() if row.get("league") not in requested] + rows
+        refreshed = {row.get("league") for row in rows}
+        preserve = [row for row in existing if row.get("league") not in refreshed]
+        rows = preserve + rows
         write_rows(rows)
     print(f"OK WorldSoccerData referees={len(rows)} path={OUT_PATH}")
     return len(rows)
