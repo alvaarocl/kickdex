@@ -178,6 +178,7 @@ function buildFixtureCard(f, isResult) {
   const analyzeBtn = !isResult
     ? `<button class="fx-analyze-btn" data-home="${escHtml(f.home)}" data-away="${escHtml(f.away)}">${t("inicio_analyze")} →</button>`
     : "";
+  const matchBtn = `<a class="fx-match-btn" href="${buildMatchHref(f)}">Ficha</a>`;
 
   return `
   <div class="fx-card">
@@ -194,8 +195,18 @@ function buildFixtureCard(f, isResult) {
       </div>
       ${mainContent}
     </div>
-    ${analyzeBtn ? `<div class="fx-actions">${analyzeBtn}</div>` : ""}
+    <div class="fx-actions">${matchBtn}${analyzeBtn || ""}</div>
   </div>`;
+}
+
+function buildMatchHref(f) {
+  const params = new URLSearchParams({
+    league: f.league || "",
+    date: f.date || "",
+    home: f.home || "",
+    away: f.away || "",
+  });
+  return `match.html?${params.toString()}`;
 }
 
 function fxDateLabel(dateStr, timeStr) {
