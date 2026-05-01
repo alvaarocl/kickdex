@@ -82,11 +82,8 @@ kickdex/
 ├── DATOS/                          ← CSVs históricos
 ├── AGENTS.md                       ← Guía para agentes IA (puntero a CLAUDE.md)
 ├── CLAUDE.md                       ← Playbook compartido (sprints, brand, voice)
-├── MVP_BACKLOG.md                  ← Backlog priorizado y trackeable
-└── main.py, Procfile, Dockerfile, railway.json   ← Streamlit interno (NO público)
+└── MVP_BACKLOG.md                  ← Backlog priorizado y trackeable
 ```
-
-> **Nota:** `main.py`, `Procfile`, `Dockerfile`, `railway.json`, `app/ui/`, `app/api/` son artefactos de exploración Streamlit/FastAPI no servidos públicamente. Decisión pendiente sobre si archivarlos o mantenerlos como admin interno (ver `MVP_BACKLOG.md` P2).
 
 ---
 

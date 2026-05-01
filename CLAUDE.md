@@ -87,24 +87,15 @@ Expected `edges.json` contract:
 Important caveat:
 - Football-data closing odds are not live odds. Label them honestly as historical/closing-book-derived estimates until a live odds API is added.
 
-### 2. Decide Stack
+### 2. Stack Decision (resolved 2026-05-01)
 
-The public product is static. Streamlit/FastAPI artifacts create maintenance confusion.
+Stack is **static-first**. All Streamlit/FastAPI/SQL artifacts have been removed:
+- `main.py`, `Procfile`, `Dockerfile`, `railway.json`, `.streamlit/` → deleted.
+- `app/ui/`, `app/api/`, `app/i18n.py` → deleted.
+- `app/data/database.py`, `app/data/models.py`, `app/engine/query_engine.py` → deleted.
+- `scripts/migrate_to_sql.py`, `kickdex.db`, `frontend/`, `.env.example` → deleted.
 
-Preferred launch decision:
-- Keep static frontend + batch pipeline.
-- Keep `app/data` and `app/engine`.
-- Freeze or remove Streamlit public deployment files after explicit user approval.
-
-Do not delete these without explicit approval:
-- `main.py`
-- `Procfile`
-- `Dockerfile`
-- `railway.json`
-- `app/ui/*`
-- `app/api/main.py`
-
-If retained, document them as internal/admin only.
+The public product is `docs/` on GitHub Pages. The Python pipeline (`app/data`, `app/engine`, `scripts/build_data.py`) runs as a batch job in CI and writes to `docs/data/*.json`. Do not reintroduce a public backend without explicit approval.
 
 ### 3. OG Image
 
@@ -207,17 +198,9 @@ Definition of done:
 - A critical user can see what is covered and what is not.
 - No false claim about live odds or full player coverage.
 
-### Sprint 3: Stack Cleanup
+### Sprint 3: Stack Cleanup ✓ DONE (2026-05-01)
 
-Tasks:
-- Decide static-only vs internal Streamlit.
-- If static-only: remove or archive Streamlit/FastAPI deployment artifacts.
-- If internal: document how to run it and mark it non-public.
-- Align `Procfile`, `Dockerfile`, and `railway.json` with the decision.
-
-Definition of done:
-- One public deployment story.
-- No contradictory deployment entrypoints.
+All Streamlit/FastAPI/SQL artifacts removed. See "Stack Decision" above.
 
 ### Sprint 4: Launch Polish
 
@@ -251,9 +234,15 @@ node --check docs/js/jugadores.js
 node --check docs/js/arbitros.js
 ```
 
-For data pipeline changes:
+For data pipeline changes (POSIX bash):
 
 ```bash
+KICKDEX_SKIP_DOWNLOADS=1 KICKDEX_SKIP_PLAYER_DOWNLOADS=1 python scripts/build_data.py
+```
+
+PowerShell:
+
+```powershell
 $env:KICKDEX_SKIP_DOWNLOADS='1'; $env:KICKDEX_SKIP_PLAYER_DOWNLOADS='1'; python scripts/build_data.py
 ```
 

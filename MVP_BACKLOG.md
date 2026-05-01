@@ -67,22 +67,13 @@ Backlog accionable y trackeable. Convenciones:
 
 ---
 
-## P2 · Decisión de stack y limpieza
+## P2 · Decisión de stack y limpieza ✓ CERRADO (2026-05-01)
 
-> Mapeado a Sprint 3 de CLAUDE.md. **Requiere aprobación humana antes de borrar.**
-
-- [ ] **P2.1 · Decisión humana: ¿matar Streamlit/FastAPI o conservar como interno?** *(Owner: humano)*
-  - Bloquea P2.2 y P2.3.
-
-- [ ] **P2.2 · Si matamos: archivar Streamlit/FastAPI** *(Owner: claude · espera P2.1)*
-  - Mover `main.py`, `Procfile`, `Dockerfile`, `railway.json`, `app/ui/`, `app/api/` a `archive/` o eliminar.
-  - Limpiar `requirements.txt` de deps innecesarias (streamlit, fastapi, uvicorn).
-  - Actualizar README.
-
-- [ ] **P2.3 · Si los conservamos: documentar como admin interno** *(Owner: codex · espera P2.1)*
-  - Header en `main.py` indicando "internal only, not public".
-  - Quitar de `Procfile`/`railway.json` o señalar que no es public-facing.
-  - Documentar acceso en `docs_proyecto/INTERNAL.md`.
+- [x] **P2.1 · Decisión: matar Streamlit/FastAPI** *(✓ humano · 2026-05-01)*
+- [x] **P2.2 · Eliminar artefactos** *(✓ claude · 2026-05-01)*
+  - Borrados: `main.py`, `Procfile`, `Dockerfile`, `railway.json`, `.streamlit/`, `app/ui/`, `app/api/`, `app/i18n.py`, `app/data/database.py`, `app/data/models.py`, `app/engine/query_engine.py`, `scripts/migrate_to_sql.py`, `kickdex.db`, `frontend/`, `.env.example`.
+  - `requirements.txt` limpio: sin streamlit, plotly, fastapi, uvicorn, sqlalchemy, dotenv, openpyxl.
+  - 50/50 tests pasan tras la limpieza.
 
 - [x] **P2.4 · Limpieza de tokens CSS duplicados** *(✓ claude · 2026-05-01)*
   - `--green/yellow/blue` ahora son alias de `--brand/gold/brand2`. Una única fuente de verdad.

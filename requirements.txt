@@ -1,16 +1,9 @@
 pandas
 numpy
-streamlit
-plotly
 requests
 soccerdata
 lxml
 html5lib
-openpyxl
 pytest
 scipy
-sqlalchemy
-fastapi
-uvicorn
-python-dotenv
 Pillow
