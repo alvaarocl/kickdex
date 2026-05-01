@@ -22,6 +22,7 @@ from app.engine.metrics import (
 )
 from app.engine.probability import calculate_probabilities
 from app.engine.edge import calculate_edge, edge_confidence, implied_probability
+from app.engine.trends import build_trends_payload
 from app.engine.smart_alerts import generate_alerts, AlertStrength
 from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, ROLLING_WINDOW_DEFAULT
 
@@ -865,10 +866,11 @@ def main():
     write_json(build_data_status(coverage), "data_status.json")
     write_json(build_referees(df, df_current), "referees.json")
 
-    print("\n[7/7] leagues.json, fixtures.json, edges.json...")
+    print("\n[7/7] leagues.json, fixtures.json, edges.json, trends.json...")
     write_json(leagues, "leagues.json")
     write_fixtures_json(build_fixtures(df, leagues))
     write_json(build_edges(df), "edges.json")
+    write_json(build_trends_payload(df, teams, season_start=CURRENT_SEASON_START), "trends.json")
 
     print("\n" + "=" * 60)
     print("BUILD COMPLETADO")

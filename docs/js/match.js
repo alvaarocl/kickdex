@@ -12,6 +12,7 @@ const state = {
   teamStats: {},
   h2h: {},
   edges: { items: [], top: null },
+  trends: { teams: {} },
   players: {},
   referees: [],
 };
@@ -20,16 +21,17 @@ document.addEventListener("DOMContentLoaded", initMatchPage);
 
 async function initMatchPage() {
   try {
-    const [fixtures, leagues, teamStats, h2h, edges, players, referees] = await Promise.all([
+    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees] = await Promise.all([
       fetchJSON("fixtures.json"),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("team_stats.json").catch(() => ({})),
       fetchJSON("h2h.json").catch(() => ({})),
       fetchJSON("edges.json").catch(() => ({ items: [], top: null })),
+      fetchJSON("trends.json").catch(() => ({ teams: {} })),
       fetchJSON("players.json").catch(() => ({})),
       fetchJSON("referees.json").catch(() => []),
     ]);
-    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, players, referees });
+    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees });
     renderMatch();
   } catch (err) {
     document.getElementById("match-root").innerHTML = `
@@ -72,6 +74,7 @@ function renderMatch() {
     <div class="match-layout">
       <section class="match-main">
         ${buildProbabilitySection(fixture, probs, topEdge)}
+        ${buildTrendsSection(fixture)}
         ${buildFormSection(fixture, homeStats, awayStats)}
         ${buildH2HSection(fixture, h2hData)}
         ${buildPlayersSection(fixture)}
@@ -174,6 +177,36 @@ function buildFormSection(f, homeStats, awayStats) {
     <div class="match-form-grid">
       ${teamFormBlock(f.home, "En casa", home)}
       ${teamFormBlock(f.away, "Fuera", away)}
+    </div>
+  `);
+}
+
+function buildTrendsSection(f) {
+  const home = state.trends?.teams?.[f.home] || {};
+  const away = state.trends?.teams?.[f.away] || {};
+  const groups = [
+    { title: `${f.home} en casa`, items: home.home || [] },
+    { title: `${f.away} fuera`, items: away.away || [] },
+    { title: "Globales", items: [...(home.all || []).slice(0, 4), ...(away.all || []).slice(0, 4)] },
+  ];
+  const hasAny = groups.some(group => group.items.length);
+  if (!hasAny) return sectionCard("Tendencias", `<p class="muted">Aun no hay tendencias fuertes para este partido.</p>`);
+
+  return sectionCard("Tendencias", `
+    <div class="match-trends-grid">
+      ${groups.map(group => `
+        <div class="match-trend-group">
+          <h3>${esc(group.title)}</h3>
+          <ul>
+            ${(group.items || []).slice(0, 6).map(item => `
+              <li>
+                <span>${esc(item.category || "trend")}</span>
+                <strong>${esc(item.text)}</strong>
+                <small>${esc((item.sequence || []).map(v => v ? "1" : "0").join("-"))}</small>
+              </li>`).join("") || `<li class="muted">Sin tendencia fuerte</li>`}
+          </ul>
+        </div>
+      `).join("")}
     </div>
   `);
 }

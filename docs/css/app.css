@@ -1651,6 +1651,32 @@ tbody td b { font-family: var(--font-data); }
 .match-log { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 7px; }
 .match-log li { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 8px; align-items: center; color: var(--muted); font-size: .82rem; }
 .match-log strong { color: var(--text2); font-family: var(--font-data); }
+.match-trends-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+.match-trend-group {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: rgba(255,255,255,.025);
+  min-width: 0;
+}
+.match-trend-group h3 { margin: 0 0 10px; color: var(--text); font-size: .9rem; }
+.match-trend-group ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.match-trend-group li {
+  border-left: 2px solid rgba(46,230,166,.45);
+  padding: 8px 0 8px 10px;
+  color: var(--text2);
+  line-height: 1.35;
+}
+.match-trend-group li span {
+  display: block;
+  color: var(--muted);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 3px;
+}
+.match-trend-group li strong { display: block; color: var(--text); font-size: .86rem; }
+.match-trend-group li small { display: block; color: var(--muted2); font-family: var(--font-data); margin-top: 4px; }
 .match-table { margin-top: 12px; }
 .match-table table { min-width: 0; }
 .match-facts { display: grid; grid-template-columns: 95px minmax(0,1fr); gap: 10px; margin: 0; }
@@ -1662,7 +1688,7 @@ tbody td b { font-family: var(--font-data); }
   .match-title-row h1:last-child { text-align: center; }
   .match-score { margin: 0 auto; }
   .match-layout { grid-template-columns: 1fr; }
-  .match-prob-grid, .match-form-grid, .match-mini-grid { grid-template-columns: 1fr; }
+  .match-prob-grid, .match-form-grid, .match-mini-grid, .match-trends-grid { grid-template-columns: 1fr; }
   .match-mini-grid.compact { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .match-subline { justify-content: center; text-align: center; }
 }
