@@ -79,6 +79,7 @@ function renderMatch() {
         ${buildTrendsSection(fixture)}
         ${buildFormSection(fixture, homeStats, awayStats)}
         ${buildH2HSection(fixture, h2hData)}
+        ${buildApercibidosSection(fixture)}
         ${buildPlayersSection(fixture)}
         ${buildDisciplineSection(fixture)}
       </section>
@@ -91,13 +92,62 @@ function renderMatch() {
   `;
 }
 
+function buildApercibidosSection(f) {
+  const home = possibleApercibidos(f.home);
+  const away = possibleApercibidos(f.away);
+  const total = home.length + away.length;
+  if (!total) {
+    return sectionCard("Posibles apercibidos", `
+      <p class="muted">No hay jugadores destacados por tendencia de amarillas para este partido.</p>
+      <p class="match-note">KICKDEX aun no tiene una fuente oficial de acumulaciones por competicion, asi que este bloque se activa solo cuando el modelo detecta riesgo relevante.</p>
+    `);
+  }
+
+  return sectionCard("Posibles apercibidos del partido", `
+    <div class="match-form-grid">
+      ${apercibidosBlock(f.home, home)}
+      ${apercibidosBlock(f.away, away)}
+    </div>
+    <div class="apercibidos-note">
+      <strong>No oficial.</strong> Lista calculada por tendencia de tarjetas y minutos. Pendiente de cruzar con acumulaciones oficiales de cada competicion.
+      <a href="apercibidos.html?league=${encodeURIComponent(f.league || "")}">Ver watchlist completa</a>
+    </div>
+  `);
+}
+
+function possibleApercibidos(team) {
+  return (state.discipline?.by_team?.[team] || [])
+    .filter(item => item.risk === "alto" || Number(item.yellow_cards_per_match) >= 0.28 || Number(item.yellow_cards_p90) >= 0.38)
+    .slice(0, 5);
+}
+
+function apercibidosBlock(team, items) {
+  const rows = items.map(item => `
+    <tr>
+      <td><a href="${playerHref(team, item.player)}"><b>${esc(item.player)}</b></a></td>
+      <td>${fmt(item.yellow_cards_per_match, 2)}</td>
+      <td>${fmt(item.yellow_cards_p90, 2)}</td>
+      <td><span class="apercibido-badge">posible</span></td>
+    </tr>`).join("");
+  return `
+    <div class="match-team-form apercibidos-card">
+      <h3>${esc(team)}</h3>
+      <div class="table-wrap match-table">
+        <table>
+          <thead><tr><th>Jugador</th><th>TA/p</th><th>TA P90</th><th>Estado</th></tr></thead>
+          <tbody>${rows || `<tr><td colspan="4">Sin posibles apercibidos</td></tr>`}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
 function buildDisciplineSection(f) {
   const home = state.discipline?.by_team?.[f.home] || [];
   const away = state.discipline?.by_team?.[f.away] || [];
   if (!home.length && !away.length) {
-    return sectionCard("Riesgo disciplinario", `<p class="muted">No hay jugadores con tendencia alta de tarjetas para estos equipos.</p>`);
+    return sectionCard("Tendencia de tarjetas", `<p class="muted">No hay jugadores con tendencia alta de tarjetas para estos equipos.</p>`);
   }
-  return sectionCard("Riesgo disciplinario", `
+  return sectionCard("Tendencia de tarjetas", `
     <div class="match-form-grid">
       ${disciplineBlock(f.home, home)}
       ${disciplineBlock(f.away, away)}
