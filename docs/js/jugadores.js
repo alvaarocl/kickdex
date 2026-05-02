@@ -253,7 +253,7 @@ function buildPlayerRow(team, p) {
   const sparkId = `spark-${sanitizeId(team)}-${sanitizeId(p.player)}`;
   return `
   <tr>
-    <td><b>${p.player}</b></td>
+    <td><b><a href="${playerHref(team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a></b></td>
     <td>${fmt(p.min, 0)}</td>
     <td>${fmt(p.sh, 1)}</td>
     <td>${fmt(p.sot, 1)}</td>
@@ -287,13 +287,14 @@ function drawTeamSparklines(team) {
 function buildPlayerDetail(team, player, detail) {
   const avg = aggregatePlayerStats(detail);
   const hasMatchLog = hasPlayerMatchLog(detail);
+  const profileUrl = playerHref(team, player);
   const svgUser = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
   const svgGls  = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 2a14.5 14.5 0 0 0 0 20A14.5 14.5 0 0 0 12 2z"/><path d="M2 12h20"/></svg>`;
   const svgShot = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
   const svgList = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`;
   return `
   <div class="card" style="margin-bottom:20px;">
-    <div class="section-title">${svgUser} ${player} <small>${team}</small></div>
+    <div class="section-title">${svgUser} ${player} <small>${team} · <a href="${profileUrl}">abrir perfil completo</a></small></div>
     <div class="grid-4" style="margin-bottom:16px;">
       ${miniCard("Disparos/p",   fmt(avg.sh, 1), "var(--blue)")}
       ${miniCard("SoT/p",        fmt(avg.sot, 1), "var(--green)")}
@@ -488,6 +489,11 @@ function escHtml(str) {
     .replace(/"/g, "&quot;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+function playerHref(team, player) {
+  const params = new URLSearchParams({ team: team || "", player: player || "" });
+  return `player.html?${params.toString()}`;
 }
 
 function getLeagueForTeam(team) {
