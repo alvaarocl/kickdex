@@ -15,13 +15,14 @@ const state = {
   trends: { teams: {} },
   players: {},
   referees: [],
+  discipline: { by_team: {}, top: [] },
 };
 
 document.addEventListener("DOMContentLoaded", initMatchPage);
 
 async function initMatchPage() {
   try {
-    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees] = await Promise.all([
+    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, discipline] = await Promise.all([
       fetchJSON("fixtures.json"),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("team_stats.json").catch(() => ({})),
@@ -30,8 +31,9 @@ async function initMatchPage() {
       fetchJSON("trends.json").catch(() => ({ teams: {} })),
       fetchJSON("players.json").catch(() => ({})),
       fetchJSON("referees.json").catch(() => []),
+      fetchJSON("discipline_watch.json").catch(() => ({ by_team: {}, top: [] })),
     ]);
-    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees });
+    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, discipline });
     renderMatch();
   } catch (err) {
     document.getElementById("match-root").innerHTML = `
@@ -78,6 +80,7 @@ function renderMatch() {
         ${buildFormSection(fixture, homeStats, awayStats)}
         ${buildH2HSection(fixture, h2hData)}
         ${buildPlayersSection(fixture)}
+        ${buildDisciplineSection(fixture)}
       </section>
       <aside class="match-side">
         ${buildMatchFacts(fixture, referee)}
@@ -86,6 +89,41 @@ function renderMatch() {
       </aside>
     </div>
   `;
+}
+
+function buildDisciplineSection(f) {
+  const home = state.discipline?.by_team?.[f.home] || [];
+  const away = state.discipline?.by_team?.[f.away] || [];
+  if (!home.length && !away.length) {
+    return sectionCard("Riesgo disciplinario", `<p class="muted">No hay jugadores con tendencia alta de tarjetas para estos equipos.</p>`);
+  }
+  return sectionCard("Riesgo disciplinario", `
+    <div class="match-form-grid">
+      ${disciplineBlock(f.home, home)}
+      ${disciplineBlock(f.away, away)}
+    </div>
+    <p class="match-note">Watchlist orientativa por tendencia de amarillas. No confirma apercibidos ni sanciones oficiales.</p>
+  `);
+}
+
+function disciplineBlock(team, items) {
+  const rows = items.slice(0, 6).map(item => `
+    <tr>
+      <td><a href="${playerHref(team, item.player)}">${esc(item.player)}</a></td>
+      <td>${fmt(item.yellow_cards_per_match, 2)}</td>
+      <td>${fmt(item.yellow_cards_p90, 2)}</td>
+      <td><span class="discipline-risk discipline-risk--${esc(item.risk)}">${esc(item.risk)}</span></td>
+    </tr>`).join("");
+  return `
+    <div class="match-team-form">
+      <h3>${esc(team)}</h3>
+      <div class="table-wrap match-table">
+        <table>
+          <thead><tr><th>Jugador</th><th>TA/p</th><th>TA P90</th><th>Riesgo</th></tr></thead>
+          <tbody>${rows || `<tr><td colspan="4">Sin alertas</td></tr>`}</tbody>
+        </table>
+      </div>
+    </div>`;
 }
 
 function findRequestedFixture() {
@@ -362,6 +400,11 @@ function getLeagueRefereeContext(league) {
     return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
   };
   return { count: refs.length, yellows: avg("yellows_per_match"), reds: avg("reds_per_match") };
+}
+
+function playerHref(team, player) {
+  const params = new URLSearchParams({ team: team || "", player: player || "" });
+  return `player.html?${params.toString()}`;
 }
 
 function topPlayers(team) {

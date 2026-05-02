@@ -25,6 +25,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://kickdex.alvarocarpintero.com/apercibidos.html</loc>
+    <lastmod>2026-05-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://kickdex.alvarocarpintero.com/methodology.html</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>

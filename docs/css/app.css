@@ -1756,6 +1756,39 @@ tbody td b { font-family: var(--font-data); }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.discipline-controls .controls {
+  margin-bottom: 10px;
+  box-shadow: none;
+}
+.compact-controls {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.discipline-table table { min-width: 760px; }
+.discipline-risk {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: var(--font-data);
+  font-size: .68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.discipline-risk--alto {
+  color: var(--red);
+  border: 1px solid rgba(255,90,110,.35);
+  background: rgba(255,90,110,.10);
+}
+.discipline-risk--medio {
+  color: var(--gold);
+  border: 1px solid rgba(245,185,60,.35);
+  background: rgba(245,185,60,.10);
+}
 
 @media (max-width: 860px) {
   .match-title-row { grid-template-columns: 1fr; text-align: center; }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riesgo disciplinario - KICKDEX</title>
+  <meta name="description" content="Watchlist de jugadores con mayor tendencia de tarjetas por liga y equipo. No es una lista oficial de sanciones." />
+  <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
+  <link rel="stylesheet" href="css/app.css?v=20260502d" />
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="Volver a KICKDEX">
+        <div class="logo-mark">K</div>
+        <div class="logo-text">
+          <span class="brand-cursor">kickdex</span>
+          <span class="logo-sub">discipline watch</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <a class="btn btn-secondary btn-sm" href="index.html">Terminal</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container match-page">
+    <section class="match-hero card">
+      <div class="match-kicker">
+        <span>Jugadores</span>
+        <span>Tarjetas</span>
+        <span>No oficial</span>
+      </div>
+      <div class="referee-hero-row player-hero-row">
+        <div class="ref-avatar player-avatar">TA</div>
+        <div>
+          <h1>Riesgo disciplinario</h1>
+          <p>Jugadores con mayor tendencia de amarillas segun los datos actuales de jugador.</p>
+        </div>
+      </div>
+      <div class="match-edge-chip match-edge-chip--muted">Aviso <span>No confirma apercibidos ni sanciones oficiales</span></div>
+    </section>
+
+    <div id="discipline-root">
+      <div class="state-box">
+        <div class="icon"><span class="spinner"></span></div>
+        <p>Cargando watchlist disciplinaria...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="disclaimer">
+        <strong>KICKDEX</strong> &nbsp;-&nbsp; Watchlist orientativa por tendencia de tarjetas. Verifica siempre sanciones oficiales.
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/apercibidos.js?v=20260502a"></script>
+</body>
+</html>

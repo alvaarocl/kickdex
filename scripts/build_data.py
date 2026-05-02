@@ -682,6 +682,85 @@ def _load_referee_season_aggregates():
     return result
 
 
+def build_discipline_watch(players: dict, leagues: dict) -> dict:
+    """Build a player card-risk watchlist from current player yellow-card rates.
+
+    This is not an official suspension feed. It ranks players by yellow-card
+    tendency using the player stats we already refresh.
+    """
+    by_team = {}
+    by_league = {}
+    top = []
+    league_by_team = {}
+    for code, info in (leagues or {}).items():
+        for team in info.get("teams", []):
+            league_by_team[team] = code
+
+    for team, rows in (players or {}).items():
+        league = league_by_team.get(team)
+        team_items = []
+        for row in rows or []:
+            minutes = row.get("min")
+            crdy = row.get("crdy")
+            if minutes is None or crdy is None:
+                continue
+            try:
+                minutes_f = float(minutes)
+                crdy_f = float(crdy)
+            except (TypeError, ValueError):
+                continue
+            if minutes_f < 25 or crdy_f < 0.12:
+                continue
+            crdy_p90 = crdy_f * 90 / minutes_f if minutes_f > 0 else None
+            score = (crdy_f * 0.65) + ((crdy_p90 or 0) * 0.35)
+            risk = "alto" if crdy_f >= 0.28 or (crdy_p90 or 0) >= 0.38 else "medio"
+            item = {
+                "player": row.get("player"),
+                "team": team,
+                "league": league,
+                "league_name": (leagues.get(league) or {}).get("name", league),
+                "minutes_per_match": _safe(minutes_f, 0),
+                "yellow_cards_per_match": _safe(crdy_f, 2),
+                "yellow_cards_p90": _safe(crdy_p90, 2),
+                "risk_score": _safe(score, 3),
+                "risk": risk,
+                "label": "posible riesgo disciplinario",
+                "official_suspension_status": False,
+            }
+            team_items.append(item)
+            top.append(item)
+            if league:
+                by_league.setdefault(league, {
+                    "name": (leagues.get(league) or {}).get("name", league),
+                    "players": [],
+                })["players"].append(item)
+
+        if team_items:
+            team_items.sort(key=lambda x: (x["risk_score"] or 0), reverse=True)
+            by_team[team] = team_items[:8]
+
+    top.sort(key=lambda x: (x["risk_score"] or 0), reverse=True)
+    for block in by_league.values():
+        block["players"].sort(key=lambda x: (x["risk_score"] or 0), reverse=True)
+        block["players"] = block["players"][:30]
+
+    return {
+        "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "source": "players.json yellow-card rates",
+        "status": "risk_model_not_official_suspension_feed",
+        "disclaimer": "Lista orientativa por tendencia de tarjetas. No confirma apercibidos ni sanciones oficiales.",
+        "thresholds": {
+            "min_minutes_per_match": 25,
+            "min_yellow_cards_per_match": 0.12,
+            "high_risk_yellow_cards_per_match": 0.28,
+            "high_risk_yellow_cards_p90": 0.38,
+        },
+        "top": top[:50],
+        "by_team": by_team,
+        "by_league": by_league,
+    }
+
+
 def _ref_stats(grp):
     import pandas as pd
     if grp is None or grp.empty:
@@ -859,10 +938,13 @@ def main():
     # 6. Players + Leagues + Fixtures + Referees
     print("\n[6/7] players.json, players_detail.json, referees.json...")
     leagues = build_leagues(df, teams)
-    write_player_json(build_players(df_players), "players.json")
+    players_payload = build_players(df_players)
+    write_player_json(players_payload, "players.json")
     write_player_json(build_players_detail(df_players), "players_detail.json")
     coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
     write_json(coverage, "player_coverage.json")
+    players_for_watch = _read_existing_json("players.json") or players_payload
+    write_json(build_discipline_watch(players_for_watch, leagues), "discipline_watch.json")
     write_json(build_data_status(coverage), "data_status.json")
     write_json(build_referees(df, df_current), "referees.json")
 
