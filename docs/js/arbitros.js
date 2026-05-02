@@ -137,6 +137,7 @@ function renderArbitros() {
 
 function buildRefereeRow(r, stats) {
   const name = r.name || "-";
+  const href = refereeHref(r);
   const yp = stats.yellows_per_match ?? 0;
   const rp = stats.reds_per_match ?? 0;
   const fp = stats.fouls_per_match;
@@ -158,11 +159,19 @@ function buildRefereeRow(r, stats) {
 
   return `
   <tr>
-    <td><b>${name}</b></td>
+    <td><b><a href="${href}">${name}</a></b></td>
     <td class="muted" data-sort="${pj}">${pj}</td>
     <td style="color:${ypColor};font-weight:600;" data-sort="${yp}">${fmt(yp, 2)}</td>
     <td data-sort="${rp}">${fmt(rp, 2)}</td>
     <td style="color:${fpColor}" data-sort="${fpSort}">${fpLabel}</td>
     <td><span class="${badgeCls}" style="font-size:.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">${badge}</span></td>
   </tr>`;
+}
+
+function refereeHref(r) {
+  const params = new URLSearchParams({
+    name: r.name || "",
+    league: r.league || "",
+  });
+  return `referee.html?${params.toString()}`;
 }
