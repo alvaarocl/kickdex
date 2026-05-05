@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "league": "E0",
+      "name": "Premier League - Player suspensions",
+      "url": "https://www.premierleague.com/en/news/4425344",
+      "type": "premierleague_article",
+      "official": true,
+      "notes": "Official page to review when structured parsing is unavailable."
+    },
+    {
+      "league": "D1",
+      "name": "Bundesliga - Suspensions",
+      "url": "https://www.bundesliga.com/en/bundesliga/news/suspension-red-yellow-cards-latest-list-36490",
+      "type": "bundesliga_article",
+      "official": true,
+      "notes": "Official page to review when structured parsing is unavailable."
+    },
+    {
+      "league": "SP1",
+      "name": "RFEF - Primera Division disciplinary resolutions",
+      "url": "https://rfef.es/es/competiciones/futbol-masculino/primera-division/sanciones",
+      "type": "manual_review",
+      "official": true,
+      "notes": "Official RFEF sanctions source. Add specific CSV/JSON/PDF extractor entries as URLs are published."
+    },
+    {
+      "league": "SP2",
+      "name": "RFEF - Segunda Division disciplinary resolutions",
+      "url": "https://rfef.es/es/competiciones/futbol-masculino/segunda-division/sanciones",
+      "type": "manual_review",
+      "official": true,
+      "notes": "Official RFEF sanctions source. Add specific CSV/JSON/PDF extractor entries as URLs are published."
+    }
+  ]
+}

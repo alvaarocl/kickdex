@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riesgo disciplinario - KICKDEX</title>
-  <meta name="description" content="Watchlist de jugadores con mayor tendencia de tarjetas por liga y equipo. No es una lista oficial de sanciones." />
+  <title>Apercibidos oficiales - KICKDEX</title>
+  <meta name="description" content="Feed de jugadores apercibidos y sancionados confirmados por fuentes oficiales o verificacion manual." />
   <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
-  <link rel="stylesheet" href="css/app.css?v=20260502d" />
+  <link rel="stylesheet" href="css/app.css?v=20260505a" />
 </head>
 <body>
   <header>
@@ -15,7 +15,7 @@
         <div class="logo-mark">K</div>
         <div class="logo-text">
           <span class="brand-cursor">kickdex</span>
-          <span class="logo-sub">discipline watch</span>
+          <span class="logo-sub">official suspensions</span>
         </div>
       </a>
       <div class="header-actions">
@@ -29,22 +29,22 @@
       <div class="match-kicker">
         <span>Jugadores</span>
         <span>Tarjetas</span>
-        <span>No oficial</span>
+        <span>Oficial/verificado</span>
       </div>
       <div class="referee-hero-row player-hero-row">
         <div class="ref-avatar player-avatar">TA</div>
         <div>
-          <h1>Riesgo disciplinario</h1>
-          <p>Jugadores con mayor tendencia de amarillas segun los datos actuales de jugador.</p>
+          <h1>Apercibidos oficiales</h1>
+          <p>Jugadores a una tarjeta de sancion o ya sancionados, solo cuando hay fuente oficial o verificacion manual.</p>
         </div>
       </div>
-      <div class="match-edge-chip match-edge-chip--muted">Aviso <span>No confirma apercibidos ni sanciones oficiales</span></div>
+      <div class="match-edge-chip">Feed verificado <span>Sin estimaciones ni posibles</span></div>
     </section>
 
     <div id="discipline-root">
       <div class="state-box">
         <div class="icon"><span class="spinner"></span></div>
-        <p>Cargando watchlist disciplinaria...</p>
+        <p>Cargando feed de apercibidos...</p>
       </div>
     </div>
   </main>
@@ -52,11 +52,11 @@
   <footer>
     <div class="container">
       <div class="disclaimer">
-        <strong>KICKDEX</strong> &nbsp;-&nbsp; Watchlist orientativa por tendencia de tarjetas. Verifica siempre sanciones oficiales.
+        <strong>KICKDEX</strong> &nbsp;-&nbsp; Feed de apercibidos oficiales/verificados. Si no hay fuente, no se inventa el dato.
       </div>
     </div>
   </footer>
 
-  <script src="js/apercibidos.js?v=20260502a"></script>
+  <script src="js/apercibidos.js?v=20260505a"></script>
 </body>
 </html>

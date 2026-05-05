@@ -24,6 +24,7 @@ from app.engine.probability import calculate_probabilities
 from app.engine.edge import calculate_edge, edge_confidence, implied_probability
 from app.engine.trends import build_trends_payload
 from app.engine.smart_alerts import generate_alerts, AlertStrength
+from app.engine.suspensions import build_suspensions_payload
 from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, ROLLING_WINDOW_DEFAULT
 
 OUTPUT_DIR = ROOT / "docs" / "data"
@@ -761,6 +762,26 @@ def build_discipline_watch(players: dict, leagues: dict) -> dict:
     }
 
 
+def load_manual_suspension_rows(path: Path | None = None) -> list[dict]:
+    import csv
+
+    manual_path = path or (ROOT / "DATOS" / "suspensions_manual.csv")
+    if not manual_path.exists():
+        return []
+    with manual_path.open("r", encoding="utf-8-sig", newline="") as fh:
+        return [dict(row) for row in csv.DictReader(fh) if any((value or "").strip() for value in row.values())]
+
+
+def load_suspension_source_catalog(path: Path | None = None) -> list[dict]:
+    source_path = path or (ROOT / "DATOS" / "suspensions_sources.json")
+    if not source_path.exists():
+        return []
+    try:
+        return json.loads(source_path.read_text(encoding="utf-8")).get("sources", [])
+    except Exception:
+        return []
+
+
 def _ref_stats(grp):
     import pandas as pd
     if grp is None or grp.empty:
@@ -945,6 +966,7 @@ def main():
     write_json(coverage, "player_coverage.json")
     players_for_watch = _read_existing_json("players.json") or players_payload
     write_json(build_discipline_watch(players_for_watch, leagues), "discipline_watch.json")
+    write_json(build_suspensions_payload(load_manual_suspension_rows(), leagues, load_suspension_source_catalog()), "suspensions.json")
     write_json(build_data_status(coverage), "data_status.json")
     write_json(build_referees(df, df_current), "referees.json")
 

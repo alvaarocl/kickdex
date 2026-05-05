@@ -1809,6 +1809,16 @@ tbody td b { font-family: var(--font-data); }
   text-transform: uppercase;
   letter-spacing: .06em;
 }
+.apercibido-badge--sancionado {
+  color: var(--red);
+  border-color: rgba(255,90,110,.38);
+  background: rgba(255,90,110,.10);
+}
+.apercibido-badge--apercibido {
+  color: var(--gold);
+  border-color: rgba(245,185,60,.38);
+  background: rgba(245,185,60,.10);
+}
 .apercibidos-note {
   margin-top: 12px;
   padding: 12px 14px;

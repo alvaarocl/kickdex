@@ -58,6 +58,9 @@ jobs:
           KICKDEX_SKIP_PLAYER_DOWNLOADS: "1"
         run: python scripts/build_data.py
 
+      - name: Update official suspension feed
+        run: python scripts/update_suspensions.py --fetch
+
       - name: Update player data
         run: python scripts/update_player_data.py --skip-scrape
 
@@ -74,5 +77,6 @@ jobs:
           git add docs/data/
           test ! -f DATOS/referees_matches.csv || git add DATOS/referees_matches.csv
           test ! -f DATOS/referees_season.csv || git add DATOS/referees_season.csv
+          test ! -f DATOS/suspensions_manual.csv || git add DATOS/suspensions_manual.csv
           git diff --staged --quiet || git commit -m "chore: update data $(date -u +%Y-%m-%d) [skip ci]"
           git push

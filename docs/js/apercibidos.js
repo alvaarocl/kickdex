@@ -1,25 +1,25 @@
 /**
- * apercibidos.js - discipline watchlist page.
+ * apercibidos.js - official/verified suspensions page.
  */
 
 "use strict";
 
 const DATA_BASE = "./data/";
-const DISC = { watch: null, leagues: {} };
+const DISC = { feed: null, leagues: {} };
 
 document.addEventListener("DOMContentLoaded", initDisciplinePage);
 
 async function initDisciplinePage() {
   try {
-    const [watch, leagues] = await Promise.all([
-      fetchJSON("discipline_watch.json"),
+    const [feed, leagues] = await Promise.all([
+      fetchJSON("suspensions.json"),
       fetchJSON("leagues.json").catch(() => ({})),
     ]);
-    DISC.watch = watch;
+    DISC.feed = feed;
     DISC.leagues = leagues;
     renderDisciplinePage();
   } catch (err) {
-    document.getElementById("discipline-root").innerHTML = `<div class="state-box"><div class="icon">!</div><p>No se pudo cargar la watchlist.</p></div>`;
+    document.getElementById("discipline-root").innerHTML = `<div class="state-box"><div class="icon">!</div><p>No se pudo cargar el feed de apercibidos.</p></div>`;
     console.error(err);
   }
 }
@@ -34,8 +34,9 @@ function renderDisciplinePage() {
   const root = document.getElementById("discipline-root");
   const params = new URLSearchParams(window.location.search);
   const league = params.get("league") || "all";
-  const items = getItems(league);
-  const leagues = Object.entries(DISC.watch?.by_league || {});
+  const status = params.get("status") || "all";
+  const items = getItems(league, status);
+  const leagues = getLeagueOptions();
 
   root.innerHTML = `
     <section class="card match-section discipline-controls">
@@ -48,8 +49,16 @@ function renderDisciplinePage() {
             ${leagues.map(([code, data]) => `<option value="${esc(code)}" ${league === code ? "selected" : ""}>${esc(data.name || code)}</option>`).join("")}
           </select>
         </div>
+        <div class="field">
+          <label for="discipline-status">Estado</label>
+          <select id="discipline-status">
+            <option value="all" ${status === "all" ? "selected" : ""}>Todos</option>
+            <option value="at_risk" ${status === "at_risk" ? "selected" : ""}>Apercibidos</option>
+            <option value="suspended" ${status === "suspended" ? "selected" : ""}>Sancionados</option>
+          </select>
+        </div>
       </div>
-      <p class="match-note">${esc(DISC.watch?.disclaimer || "")}</p>
+      <p class="match-note">${esc(DISC.feed?.disclaimer || "")}</p>
     </section>
 
     <div class="match-layout">
@@ -58,26 +67,52 @@ function renderDisciplinePage() {
       </section>
       <aside class="match-side">
         ${buildSummary(items)}
-        ${buildMethod()}
+        ${buildSources()}
       </aside>
     </div>
   `;
 
-  document.getElementById("discipline-league")?.addEventListener("change", event => {
-    const value = event.target.value;
-    const url = value === "all" ? "apercibidos.html" : `apercibidos.html?league=${encodeURIComponent(value)}`;
-    window.location.href = url;
-  });
+  document.getElementById("discipline-league")?.addEventListener("change", syncFilters);
+  document.getElementById("discipline-status")?.addEventListener("change", syncFilters);
 }
 
-function getItems(league) {
-  if (league !== "all") return DISC.watch?.by_league?.[league]?.players || [];
-  return DISC.watch?.top || [];
+function getLeagueOptions() {
+  const fromFeed = DISC.feed?.by_league || {};
+  const sourceLeagues = new Set((DISC.feed?.sources || []).map(source => source.league).filter(Boolean));
+  const known = Object.entries(DISC.leagues || {});
+  const withData = new Set(Object.keys(fromFeed));
+  return known
+    .filter(([code]) => withData.has(code) || sourceLeagues.has(code))
+    .concat(Object.entries(fromFeed).filter(([code]) => !(code in (DISC.leagues || {}))))
+    .sort((a, b) => String(a[1].name || a[0]).localeCompare(String(b[1].name || b[0]), "es"));
+}
+
+function syncFilters() {
+  const league = document.getElementById("discipline-league")?.value || "all";
+  const status = document.getElementById("discipline-status")?.value || "all";
+  const params = new URLSearchParams();
+  if (league !== "all") params.set("league", league);
+  if (status !== "all") params.set("status", status);
+  const query = params.toString();
+  window.location.href = query ? `apercibidos.html?${query}` : "apercibidos.html";
+}
+
+function getItems(league, status) {
+  const items = league === "all"
+    ? (DISC.feed?.items || [])
+    : (DISC.feed?.by_league?.[league]?.items || []);
+  if (status === "all") return items;
+  return items.filter(item => item.status === status);
 }
 
 function buildWatchTable(items) {
-  if (!items.length) return sectionCard("Watchlist", `<p class="muted">No hay jugadores con riesgo relevante en este filtro.</p>`);
-  return sectionCard("Watchlist de tarjetas", `
+  if (!items.length) {
+    return sectionCard("Apercibidos oficiales", `
+      <p class="muted">No hay registros oficiales/verificados para este filtro.</p>
+      <p class="match-note">Cuando una liga no publica el dato de forma estructurada, KICKDEX queda vacio en vez de mostrar estimaciones.</p>
+    `);
+  }
+  return sectionCard("Apercibidos y sancionados", `
     <div class="table-wrap match-table discipline-table">
       <table>
         <thead>
@@ -85,10 +120,10 @@ function buildWatchTable(items) {
             <th>Jugador</th>
             <th>Equipo</th>
             <th>Liga</th>
-            <th>TA/p</th>
-            <th>TA P90</th>
-            <th>Min/p</th>
-            <th>Riesgo</th>
+            <th>Estado</th>
+            <th>Tarjetas</th>
+            <th>Jornada</th>
+            <th>Fuente</th>
           </tr>
         </thead>
         <tbody>
@@ -97,10 +132,10 @@ function buildWatchTable(items) {
               <td><a href="${playerHref(item.team, item.player)}"><b>${esc(item.player)}</b></a></td>
               <td>${esc(item.team)}</td>
               <td>${esc(item.league_name || item.league || "-")}</td>
-              <td>${fmt(item.yellow_cards_per_match, 2)}</td>
-              <td>${fmt(item.yellow_cards_p90, 2)}</td>
-              <td>${fmt(item.minutes_per_match, 0)}</td>
-              <td><span class="discipline-risk discipline-risk--${esc(item.risk)}">${esc(item.risk)}</span></td>
+              <td>${statusBadge(item)}</td>
+              <td>${cardCount(item)}</td>
+              <td>${esc(item.matchday || "-")}</td>
+              <td>${sourceLink(item)}</td>
             </tr>
           `).join("")}
         </tbody>
@@ -110,28 +145,61 @@ function buildWatchTable(items) {
 }
 
 function buildSummary(items) {
-  const high = items.filter(item => item.risk === "alto").length;
-  const updated = DISC.watch?.updated_at ? new Date(DISC.watch.updated_at).toLocaleString("es-ES") : "-";
+  const updated = DISC.feed?.updated_at ? new Date(DISC.feed.updated_at).toLocaleString("es-ES") : "-";
+  const totals = DISC.feed?.totals || {};
   return sectionCard("Resumen", `
     <div class="match-mini-grid compact">
-      <div><span>Jugadores</span><strong>${items.length}</strong></div>
-      <div><span>Riesgo alto</span><strong>${high}</strong></div>
+      <div><span>Filtro</span><strong>${items.length}</strong></div>
+      <div><span>Apercibidos</span><strong>${totals.at_risk || 0}</strong></div>
+      <div><span>Sancionados</span><strong>${totals.suspended || 0}</strong></div>
+      <div><span>Oficiales</span><strong>${totals.official || 0}</strong></div>
       <div><span>Actualizado</span><strong>${esc(updated)}</strong></div>
-      <div><span>Estado</span><strong>No oficial</strong></div>
+      <div><span>Estado</span><strong>${esc(DISC.feed?.status || "-")}</strong></div>
     </div>
   `);
 }
 
-function buildMethod() {
-  const th = DISC.watch?.thresholds || {};
-  return sectionCard("Metodo", `
+function buildSources() {
+  const sources = DISC.feed?.sources || [];
+  if (!sources.length) {
+    return sectionCard("Fuentes", `
+      <ul class="match-coverage">
+        <li><strong>Feed:</strong> Sin registros cargados todavia.</li>
+        <li><strong>Regla:</strong> no se publican apercibidos si no hay fuente oficial o verificacion manual.</li>
+      </ul>
+    `);
+  }
+  return sectionCard("Fuentes", `
     <ul class="match-coverage">
-      <li><strong>Fuente:</strong> ${esc(DISC.watch?.source || "players.json")}</li>
-      <li><strong>Minimos:</strong> ${th.min_minutes_per_match || 25} min/p y ${th.min_yellow_cards_per_match || 0.12} TA/p.</li>
-      <li><strong>Alto:</strong> ${th.high_risk_yellow_cards_per_match || 0.28} TA/p o ${th.high_risk_yellow_cards_p90 || 0.38} TA P90.</li>
-      <li><strong>Limitacion:</strong> No suma acumulaciones oficiales por competicion.</li>
+      ${sources.map(source => `
+        <li>
+          <strong>${source.official ? "Oficial" : "Verificada"}:</strong>
+          ${source.url ? `<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.name || source.url)}</a>` : esc(source.name || "-")}
+        </li>
+      `).join("")}
     </ul>
   `);
+}
+
+function statusBadge(item) {
+  const status = item.status === "suspended" ? "sancionado" : "apercibido";
+  return `<span class="apercibido-badge apercibido-badge--${esc(status)}">${esc(item.status_label || status)}</span>`;
+}
+
+function cardCount(item) {
+  const cards = item.cards ?? null;
+  const threshold = item.threshold ?? null;
+  if (cards !== null && threshold !== null) return `${esc(cards)}/${esc(threshold)}`;
+  if (cards !== null) return esc(cards);
+  return "-";
+}
+
+function sourceLink(item) {
+  const label = item.official ? "Oficial" : "Verificado";
+  if (item.source_url) {
+    return `<a href="${esc(item.source_url)}" target="_blank" rel="noopener">${label}</a>`;
+  }
+  return label;
 }
 
 function sectionCard(title, body) {
@@ -141,11 +209,6 @@ function sectionCard(title, body) {
 function playerHref(team, player) {
   const params = new URLSearchParams({ team: team || "", player: player || "" });
   return `player.html?${params.toString()}`;
-}
-
-function fmt(value, dec = 2) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n.toFixed(dec) : "-";
 }
 
 function esc(value) {

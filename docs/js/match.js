@@ -15,6 +15,7 @@ const state = {
   trends: { teams: {} },
   players: {},
   referees: [],
+  suspensions: { by_team: {}, items: [], totals: {} },
   discipline: { by_team: {}, top: [] },
 };
 
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", initMatchPage);
 
 async function initMatchPage() {
   try {
-    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, discipline] = await Promise.all([
+    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline] = await Promise.all([
       fetchJSON("fixtures.json"),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("team_stats.json").catch(() => ({})),
@@ -31,9 +32,10 @@ async function initMatchPage() {
       fetchJSON("trends.json").catch(() => ({ teams: {} })),
       fetchJSON("players.json").catch(() => ({})),
       fetchJSON("referees.json").catch(() => []),
+      fetchJSON("suspensions.json").catch(() => ({ by_team: {}, items: [], totals: {} })),
       fetchJSON("discipline_watch.json").catch(() => ({ by_team: {}, top: [] })),
     ]);
-    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, discipline });
+    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline });
     renderMatch();
   } catch (err) {
     document.getElementById("match-root").innerHTML = `
@@ -81,7 +83,6 @@ function renderMatch() {
         ${buildH2HSection(fixture, h2hData)}
         ${buildApercibidosSection(fixture)}
         ${buildPlayersSection(fixture)}
-        ${buildDisciplineSection(fixture)}
       </section>
       <aside class="match-side">
         ${buildMatchFacts(fixture, referee)}
@@ -93,52 +94,72 @@ function renderMatch() {
 }
 
 function buildApercibidosSection(f) {
-  const home = possibleApercibidos(f.home);
-  const away = possibleApercibidos(f.away);
+  const home = officialSuspensionsForTeam(f.home);
+  const away = officialSuspensionsForTeam(f.away);
   const total = home.length + away.length;
   if (!total) {
-    return sectionCard("Posibles apercibidos", `
-      <p class="muted">No hay jugadores destacados por tendencia de amarillas para este partido.</p>
-      <p class="match-note">KICKDEX aun no tiene una fuente oficial de acumulaciones por competicion, asi que este bloque se activa solo cuando el modelo detecta riesgo relevante.</p>
+    return sectionCard("Apercibidos oficiales", `
+      <p class="muted">Sin apercibidos o sancionados oficiales publicados para estos equipos en el feed actual.</p>
+      <p class="match-note">Este bloque solo muestra jugadores confirmados por una fuente oficial o cargados como verificados. No usa el modelo de riesgo disciplinario.</p>
     `);
   }
 
-  return sectionCard("Posibles apercibidos del partido", `
+  return sectionCard("Apercibidos oficiales del partido", `
     <div class="match-form-grid">
       ${apercibidosBlock(f.home, home)}
       ${apercibidosBlock(f.away, away)}
     </div>
     <div class="apercibidos-note">
-      <strong>No oficial.</strong> Lista calculada por tendencia de tarjetas y minutos. Pendiente de cruzar con acumulaciones oficiales de cada competicion.
-      <a href="apercibidos.html?league=${encodeURIComponent(f.league || "")}">Ver watchlist completa</a>
+      <strong>Fuente verificada.</strong> KICKDEX no inventa apercibidos: si una competicion no publica datos estructurados, el bloque queda vacio hasta validacion manual u oficial.
+      <a href="apercibidos.html?league=${encodeURIComponent(f.league || "")}">Ver feed completo</a>
     </div>
   `);
 }
 
-function possibleApercibidos(team) {
-  return (state.discipline?.by_team?.[team] || [])
-    .filter(item => item.risk === "alto" || Number(item.yellow_cards_per_match) >= 0.28 || Number(item.yellow_cards_p90) >= 0.38)
-    .slice(0, 5);
+function officialSuspensionsForTeam(team) {
+  const block = state.suspensions?.by_team?.[team] || {};
+  return [...(block.suspended || []), ...(block.at_risk || [])].slice(0, 8);
 }
 
 function apercibidosBlock(team, items) {
   const rows = items.map(item => `
     <tr>
       <td><a href="${playerHref(team, item.player)}"><b>${esc(item.player)}</b></a></td>
-      <td>${fmt(item.yellow_cards_per_match, 2)}</td>
-      <td>${fmt(item.yellow_cards_p90, 2)}</td>
-      <td><span class="apercibido-badge">posible</span></td>
+      <td>${statusBadge(item)}</td>
+      <td>${cardCount(item)}</td>
+      <td>${sourceLink(item)}</td>
     </tr>`).join("");
   return `
     <div class="match-team-form apercibidos-card">
       <h3>${esc(team)}</h3>
       <div class="table-wrap match-table">
         <table>
-          <thead><tr><th>Jugador</th><th>TA/p</th><th>TA P90</th><th>Estado</th></tr></thead>
-          <tbody>${rows || `<tr><td colspan="4">Sin posibles apercibidos</td></tr>`}</tbody>
+          <thead><tr><th>Jugador</th><th>Estado</th><th>Tarjetas</th><th>Fuente</th></tr></thead>
+          <tbody>${rows || `<tr><td colspan="4">Sin registros oficiales</td></tr>`}</tbody>
         </table>
       </div>
     </div>`;
+}
+
+function statusBadge(item) {
+  const status = item.status === "suspended" ? "sancionado" : "apercibido";
+  return `<span class="apercibido-badge apercibido-badge--${esc(status)}">${esc(item.status_label || status)}</span>`;
+}
+
+function cardCount(item) {
+  const cards = item.cards ?? null;
+  const threshold = item.threshold ?? null;
+  if (cards !== null && threshold !== null) return `${esc(cards)}/${esc(threshold)}`;
+  if (cards !== null) return esc(cards);
+  return "-";
+}
+
+function sourceLink(item) {
+  const label = item.official ? "Oficial" : "Verificado";
+  if (item.source_url) {
+    return `<a href="${esc(item.source_url)}" target="_blank" rel="noopener">${label}</a>`;
+  }
+  return label;
 }
 
 function buildDisciplineSection(f) {
@@ -152,7 +173,7 @@ function buildDisciplineSection(f) {
       ${disciplineBlock(f.home, home)}
       ${disciplineBlock(f.away, away)}
     </div>
-    <p class="match-note">Watchlist orientativa por tendencia de amarillas. No confirma apercibidos ni sanciones oficiales.</p>
+    <p class="match-note">Tendencia estadistica por amarillas y minutos. Este bloque no confirma apercibidos ni sanciones oficiales.</p>
   `);
 }
 
