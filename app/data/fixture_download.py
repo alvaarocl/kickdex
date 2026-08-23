@@ -14,20 +14,25 @@ from zoneinfo import ZoneInfo
 
 import requests
 
-from app.config import TEAM_ALIASES
+from app.config import CURRENT_SEASON_YEAR, TEAM_ALIASES
 
 
 FEED_BASE_URL = "https://fixturedownload.com/feed/json"
 
-FIXTURE_DOWNLOAD_SLUGS = {
-    "SP1": "la-liga-2025",
-    "E0": "epl-2025",
-    "E1": "championship-2025",
-    "I1": "serie-a-2025",
-    "D1": "bundesliga-2025",
-    "F1": "ligue-1-2025",
-    "N1": "eredivisie-2025",
+FIXTURE_DOWNLOAD_COMPETITIONS = {
+    "SP1": "la-liga",
+    "E0": "epl",
+    "E1": "championship",
+    "I1": "serie-a",
+    "D1": "bundesliga",
+    "F1": "ligue-1",
+    "N1": "eredivisie",
 }
+
+
+def fixture_download_slugs(season_year: int = CURRENT_SEASON_YEAR) -> dict[str, str]:
+    """Return feed slugs for the configured season; never hardcode last season."""
+    return {code: f"{competition}-{season_year}" for code, competition in FIXTURE_DOWNLOAD_COMPETITIONS.items()}
 
 TEAM_NAME_ALIASES = {
     "man utd": "Man United",
@@ -153,7 +158,7 @@ def fetch_fixture_download_calendar(
     upcoming: list[dict] = []
     status = {"source": "fixturedownload", "updated_at": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"), "leagues": {}}
 
-    for code, slug in FIXTURE_DOWNLOAD_SLUGS.items():
+    for code, slug in fixture_download_slugs().items():
         if code not in leagues:
             continue
         url = f"{FEED_BASE_URL}/{slug}"

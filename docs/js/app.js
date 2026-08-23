@@ -9,7 +9,7 @@
 const I18N = {
   es: {
     tab_inicio: "Inicio", tab_comparador: "Comparador", tab_h2h: "H2H",
-    tab_jugadores: "Jugadores", tab_arbitros: "Árbitros",
+    tab_jugadores: "Jugadores", tab_arbitros: "Árbitros", tab_live: "Directo",
     arb_title: "Árbitros", arb_subtitle: "Perfil disciplinario histórico. Identifica árbitros con tendencia a sacar más o menos tarjetas.",
     league_all: "Todas", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendario y Partidos",
@@ -33,7 +33,7 @@ const I18N = {
     landing_title: "La terminal de datos del fútbol",
     landing_subtitle: "22 años de historia. 15.000+ partidos. Análisis profesional 100% gratuito.",
     landing_cta: "⚡ EMPEZAR A ANALIZAR",
-    landing_f1_title: "Calendario en Vivo",
+    landing_f1_title: "Calendario multiliga",
     landing_f1_body: "Partidos de hoy, próxima jornada y resultados recientes agrupados por liga.",
     landing_f2_title: "Análisis Pre-Partido",
     landing_f2_body: "Forma reciente, H2H, Smart Alerts y probabilidades Poisson para cualquier partido.",
@@ -71,7 +71,7 @@ const I18N = {
     features_eyebrow: "Todo en una herramienta",
     features_h2: "Análisis profesional, gratis",
     features_sub: "Las mismas herramientas que usan los analistas deportivos, sin pagar nada.",
-    feat_calendar_title: "Calendario en Vivo",
+    feat_calendar_title: "Calendario multiliga",
     feat_calendar_desc: "Calendario multiliga con próximos partidos y resultados recientes. Un clic para analizar cualquier fixture cubierto.",
     feat_calendar_tag: "Actualizado diariamente",
     feat_trends_title: "Tendencias",
@@ -112,7 +112,7 @@ const I18N = {
   },
   en: {
     tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
-    tab_jugadores: "Players", tab_arbitros: "Referees",
+    tab_jugadores: "Players", tab_arbitros: "Referees", tab_live: "Live",
     arb_title: "Referees", arb_subtitle: "Historical disciplinary profile. Identify referees with a tendency to show more or fewer cards.",
     league_all: "All", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendar & Matches",
@@ -136,7 +136,7 @@ const I18N = {
     landing_title: "The football data terminal",
     landing_subtitle: "22 years of history. 15,000+ matches. Pro-level analytics, 100% free.",
     landing_cta: "⚡ START ANALYZING",
-    landing_f1_title: "Live Calendar",
+    landing_f1_title: "Multi-league calendar",
     landing_f1_body: "Today's matches, upcoming fixtures and recent results grouped by league.",
     landing_f2_title: "Pre-Match Analysis",
     landing_f2_body: "Recent form, H2H, Smart Alerts and Poisson probabilities for every match.",
@@ -174,7 +174,7 @@ const I18N = {
     features_eyebrow: "Everything in one tool",
     features_h2: "Pro-level analytics, free",
     features_sub: "The same tools sports analysts use, without paying a cent.",
-    feat_calendar_title: "Live Calendar",
+    feat_calendar_title: "Multi-league calendar",
     feat_calendar_desc: "Multi-league calendar with upcoming fixtures and recent results. One click to analyze any covered match.",
     feat_calendar_tag: "Updated daily",
     feat_trends_title: "Trends",
@@ -348,6 +348,9 @@ const APP = {
   playersDetail: {},
   playerCoverage: {},
   dataStatus:   {},
+  dataHealth:   {},
+  teamAssets:   { teams: {} },
+  playerAssets: { players: {} },
   referees:    [],
   edges:       { items: [], top: null, stats: {} },
   meta:        {},
@@ -413,6 +416,7 @@ function appendLeagueOption(sel, code) {
   const meta = getLeagueMeta(code);
   opt.value = code;
   opt.textContent = getLeagueLabel(code);
+  if (ld.roster_status === "partial") opt.textContent += " · cobertura parcial";
   opt.title = meta.country === "Otras" ? `${code} · ${ld.name}` : `${code} · ${meta.country} · ${ld.name}`;
   sel.appendChild(opt);
 }
@@ -432,6 +436,27 @@ async function fetchJSON(file) {
   const res = await fetch(DATA_BASE + file + sep + "v=" + _DATA_VERSION);
   if (!res.ok) throw new Error(`HTTP ${res.status} loading ${file}`);
   return res.json();
+}
+
+function initialsFor(value) {
+  return String(value || "KD").trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toUpperCase();
+}
+
+function teamAsset(name) {
+  return APP.teamAssets?.teams?.[name] || { name, initials: initialsFor(name) };
+}
+
+function playerAsset(team, name) {
+  return APP.playerAssets?.players?.[team + "::" + name] || { name, team, initials: initialsFor(name) };
+}
+
+function entityMedia(kind, name, team = "", extraClass = "") {
+  const asset = kind === "player" ? playerAsset(team, name) : teamAsset(name);
+  const src = asset.photo_local || asset.photo || asset.crest_local || asset.crest;
+  const initials = asset.initials || initialsFor(name);
+  const cls = kind === "player" ? "entity-media entity-media--player" : "entity-media entity-media--team";
+  if (!src) return '<span class="' + cls + " " + extraClass + '" aria-hidden="true">' + escHtml(initials) + "</span>";
+  return '<span class="' + cls + " " + extraClass + '"><img src="' + escHtml(src) + '" alt="" loading="lazy" onerror="this.parentElement.classList.add(\'is-fallback\');this.remove()"><i>' + escHtml(initials) + "</i></span>";
 }
 
 function formatPercent(value, decimals = 1) {
@@ -564,7 +589,7 @@ async function loadAllData() {
 
   try {
     // Critical path: everything except H2H (4.4MB) which loads in background
-    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, leagues, fixtures, referees, edges] = await Promise.all([
+    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -572,10 +597,13 @@ async function loadAllData() {
       fetchJSON("players_detail.json").catch(() => ({})),
       fetchJSON("player_coverage.json").catch(() => ({})),
       fetchJSON("data_status.json").catch(() => ({})),
+      fetchJSON("data_health.json").catch(() => ({})),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("fixtures.json").catch(() => ({ recent: [], upcoming: [] })),
       fetchJSON("referees.json").catch(() => []),
       fetchJSON("edges.json").catch(() => ({ items: [], top: null, stats: {} })),
+      fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
+      fetchJSON("player_assets.json").catch(() => ({ players: {} })),
     ]);
 
     APP.meta           = meta;
@@ -587,10 +615,13 @@ async function loadAllData() {
     APP.playersDetail  = playersDetail;
     APP.playerCoverage = playerCoverage;
     APP.dataStatus     = dataStatus;
+    APP.dataHealth     = dataHealth;
     APP.leagues        = leagues;
     APP.fixtures       = fixtures;
     APP.referees       = referees;
     APP.edges          = edges;
+    APP.teamAssets     = teamAssets;
+    APP.playerAssets   = playerAssets;
     APP.loaded         = true;
 
     updateHeader();
@@ -600,6 +631,9 @@ async function loadAllData() {
     populateAllSelects();
     initSegControls();
     initModules();
+    initGlobalSearch();
+    updateLivePanel();
+    applyRouteParams();
 
     // Background-load H2H (heavy 4.4MB file). Does not block initial render.
     fetchJSON("h2h.json")
@@ -625,7 +659,7 @@ async function loadAllData() {
 function updateHeader() {
   const m = APP.meta;
   const badge = document.getElementById("seasonBadge");
-  if (badge) badge.textContent = m.season || "2025/26";
+  if (badge) badge.textContent = m.season || "2026/27";
   const upd = m.updated_at ? new Date(m.updated_at).toLocaleDateString("es-ES") : "—";
   const info = document.getElementById("metaInfo");
   if (info) info.textContent = `${(m.total_matches || 0).toLocaleString()} partidos · actualizado ${upd}`;
@@ -634,7 +668,7 @@ function updateHeader() {
 function getTeamsByLeague(leagueCode) {
   if (!leagueCode || leagueCode === "all") return APP.teams;
   const ld = APP.leagues[leagueCode];
-  return (ld && ld.teams && ld.teams.length) ? ld.teams : APP.teams;
+  return ld ? (ld.teams || []) : [];
 }
 
 function getPlayerLeagueCodes() {
@@ -735,11 +769,7 @@ function initTabs() {
     tabs.addEventListener("click", e => {
       const btn = e.target.closest(".tab-btn");
       if (!btn) return;
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-      btn.classList.add("active");
-      const panel = document.getElementById("tab-" + btn.dataset.tab);
-      if (panel) panel.classList.add("active");
+      openTab(btn.dataset.tab);
     });
   }
 
@@ -754,12 +784,116 @@ function initTabs() {
   });
 }
 
+function openTab(tabName) {
+  const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+  const panel = document.getElementById("tab-" + tabName);
+  if (!btn || !panel) return false;
+  document.querySelectorAll(".tab-btn").forEach(item => {
+    item.classList.remove("active");
+    item.setAttribute("aria-selected", "false");
+  });
+  document.querySelectorAll(".tab-panel").forEach(item => item.classList.remove("active"));
+  btn.classList.add("active");
+  btn.setAttribute("aria-selected", "true");
+  panel.classList.add("active");
+  return true;
+}
+
+function globalSearchItems() {
+  const items = [];
+  (APP.teams || []).forEach(name => items.push({
+    type: "Equipo",
+    label: name,
+    meta: APP.teamAssets?.teams?.[name]?.league || "",
+    href: "index.html?tab=comparador&home=" + encodeURIComponent(name),
+    media: entityMedia("team", name),
+  }));
+  Object.entries(APP.players || {}).forEach(([team, rows]) => (rows || []).forEach(player => items.push({
+    type: "Jugador",
+    label: player.player,
+    meta: team,
+    href: "player.html?team=" + encodeURIComponent(team) + "&player=" + encodeURIComponent(player.player),
+    media: entityMedia("player", player.player, team),
+  })));
+  (APP.referees || []).forEach(referee => items.push({
+    type: "Arbitro",
+    label: referee.name,
+    meta: referee.league || "",
+    href: "referee.html?name=" + encodeURIComponent(referee.name) + "&league=" + encodeURIComponent(referee.league || ""),
+    media: '<span class="entity-media entity-media--ref">R</span>',
+  }));
+  [...(APP.fixtures?.upcoming || []), ...(APP.fixtures?.recent || [])].forEach(fixture => items.push({
+    type: "Partido",
+    label: fixture.home + " vs " + fixture.away,
+    meta: fixture.date + " · " + (fixture.league || ""),
+    href: typeof buildMatchHref === "function" ? buildMatchHref(fixture) : "match.html",
+    media: entityMedia("team", fixture.home),
+  }));
+  return items;
+}
+
+function initGlobalSearch() {
+  const input = document.getElementById("globalSearch");
+  const results = document.getElementById("globalSearchResults");
+  if (!input || !results) return;
+  const items = globalSearchItems();
+  const normalize = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const render = () => {
+    const query = normalize(input.value).trim();
+    if (query.length < 2) {
+      results.hidden = true;
+      results.innerHTML = "";
+      return;
+    }
+    const matches = items.filter(item => normalize(item.label + " " + item.meta).includes(query)).slice(0, 10);
+    results.innerHTML = matches.length ? matches.map(item =>
+      '<a href="' + item.href + '">' + item.media + '<span><strong>' + escHtml(item.label) + '</strong><small>' + escHtml(item.type + " · " + item.meta) + '</small></span></a>'
+    ).join("") : '<div class="kdx-search-empty">Sin resultados para “' + escHtml(input.value) + '”</div>';
+    results.hidden = false;
+  };
+  input.addEventListener("input", render);
+  input.addEventListener("focus", render);
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".kdx-global-search")) results.hidden = true;
+  });
+  input.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      results.hidden = true;
+      input.blur();
+    }
+  });
+}
+
+function updateLivePanel() {
+  const status = document.getElementById("liveDataStatus");
+  if (!status) return;
+  const calendar = APP.dataHealth?.domains?.calendar;
+  if (calendar?.updated_at) {
+    status.textContent = "Calendario batch actualizado " + new Date(calendar.updated_at).toLocaleString("es-ES") + ". El feed live sigue desactivado.";
+  }
+}
+
+function applyRouteParams() {
+  const params = new URLSearchParams(location.search);
+  const tab = params.get("tab");
+  if (!tab || !openTab(tab)) return;
+  if (typeof closeLanding === "function") closeLanding();
+  if (tab === "comparador" && params.get("home")) {
+    const home = document.getElementById("cmp-home");
+    if (home) home.value = params.get("home");
+  }
+}
+
 function initModules() {
-  if (typeof initInicio     === "function") initInicio();
-  if (typeof initComparador === "function") initComparador();
-  if (typeof initH2H        === "function") initH2H();
-  if (typeof initJugadores  === "function") initJugadores();
-  if (typeof initArbitros   === "function") initArbitros();
+  ["initInicio", "initComparador", "initH2H", "initJugadores", "initArbitros"].forEach(name => {
+    const initializer = window[name];
+    if (typeof initializer !== "function") return;
+    try {
+      initializer();
+    } catch (error) {
+      console.error(`KICKDEX module ${name} failed:`, error);
+    }
+  });
 }
 
 // ── Utilities ──────────────────────────────────────────────────────────────

@@ -5,19 +5,22 @@
 "use strict";
 
 const DATA_BASE = "./data/";
-const PLAYER = { players: {}, details: {}, leagues: {}, coverage: null };
+const PLAYER = { players: {}, details: {}, leagues: {}, coverage: null, teamAssets: { teams: {} }, playerAssets: { players: {} } };
 
 document.addEventListener("DOMContentLoaded", initPlayerPage);
 
 async function initPlayerPage() {
   try {
-    const [players, details, leagues, coverage] = await Promise.all([
+    const [players, details, leagues, coverage, teamAssets, playerAssets] = await Promise.all([
       fetchJSON("players.json"),
       fetchJSON("players_detail.json").catch(() => ({})),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("player_coverage.json").catch(() => null),
+      fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
+      fetchJSON("player_assets.json").catch(() => ({ players: {} })),
     ]);
-    Object.assign(PLAYER, { players, details, leagues, coverage });
+    Object.assign(PLAYER, { players, details, leagues, coverage, teamAssets, playerAssets });
+    window.KDXEntities?.configure(teamAssets, playerAssets);
     renderPlayer();
   } catch (err) {
     document.getElementById("player-root").innerHTML = `<div class="state-box"><div class="icon">!</div><p>No se pudo cargar el perfil.</p></div>`;
@@ -26,7 +29,7 @@ async function initPlayerPage() {
 }
 
 async function fetchJSON(file) {
-  const res = await fetch(`${DATA_BASE}${file}?v=${Date.now()}`);
+  const res = await fetch(`${DATA_BASE}${file}?v=20260823a`);
   if (!res.ok) throw new Error(`HTTP ${res.status} loading ${file}`);
   return res.json();
 }
@@ -62,7 +65,7 @@ function renderPlayer() {
         <span>${matchLog.length ? `${matchLog.length} registros` : "promedio temporada"}</span>
       </div>
       <div class="referee-hero-row player-hero-row">
-        <div class="ref-avatar player-avatar">${initials(player)}</div>
+        ${window.KDXEntities?.media("player", player, team, "player-avatar player-avatar--hero") || `<div class="ref-avatar player-avatar">${initials(player)}</div>`}
         <div>
           <h1>${esc(player)}</h1>
           <p>${profile} basado en datos disponibles de temporada.</p>

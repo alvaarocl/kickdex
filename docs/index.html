@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260502d" />
+  <link rel="stylesheet" href="css/app.css?v=20260823a" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
   <script type="module" src="js/edge.js?v=20260430b" defer></script>
 </head>
@@ -103,7 +103,7 @@
         </div>
         <div class="lp-stat-sep"></div>
         <div class="lp-stat">
-          <span class="lp-stat-num" data-counter="10" data-suffix="">0</span>
+          <span class="lp-stat-num" data-counter="11" data-suffix="">0</span>
           <span class="lp-stat-label" data-i18n="hero_stat_3">ligas europeas</span>
         </div>
         <div class="lp-stat-sep"></div>
@@ -206,7 +206,7 @@
           <div class="lp-feat-icon lp-feat-icon--brand">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </div>
-          <h3 class="lp-feat-title" data-i18n="feat_calendar_title">Calendario en Vivo</h3>
+          <h3 class="lp-feat-title" data-i18n="feat_calendar_title">Calendario multiliga</h3>
           <p class="lp-feat-desc" data-i18n="feat_calendar_desc">Calendario multiliga con próximos partidos y resultados recientes. Un clic para analizar cualquier fixture cubierto.</p>
           <div class="lp-feat-tag" data-i18n="feat_calendar_tag">Actualizado diariamente</div>
         </div>
@@ -351,7 +351,12 @@
       </a>
 
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span class="season-badge" id="seasonBadge">2025/26</span>
+        <div class="kdx-global-search">
+          <label class="sr-only" for="globalSearch">Buscar en KICKDEX</label>
+          <input id="globalSearch" type="search" placeholder="Buscar equipo, jugador, partido o arbitro" autocomplete="off" />
+          <div id="globalSearchResults" class="kdx-global-results" hidden></div>
+        </div>
+        <span class="season-badge" id="seasonBadge">2026/27</span>
         <span class="meta-info" id="metaInfo">
           <span class="spinner"></span>Cargando datos...
         </span>
@@ -394,6 +399,11 @@
       <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/>
     </svg>
     <span data-i18n="tab_arbitros">Árbitros</span>
+  </button>
+
+  <button class="tab-btn" data-tab="live" role="tab" aria-selected="false" aria-controls="tab-live">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span data-i18n="tab_live">Directo</span>
   </button>
 
 </nav>
@@ -570,6 +580,20 @@
 
   </section>
 
+  <section class="tab-panel" id="tab-live" role="tabpanel">
+    <div class="live-empty card">
+      <span class="live-status-chip">LIVE API · OFF</span>
+      <h2>Centro de partidos en directo</h2>
+      <p>La interfaz y el contrato técnico están preparados. El feed permanece desactivado hasta disponer de acceso autorizado a la temporada 2026/27.</p>
+      <div class="live-contract-grid">
+        <div><strong>Marcador</strong><span>Estado, minuto y resultado</span></div>
+        <div><strong>Timeline</strong><span>Goles, tarjetas y cambios</span></div>
+        <div><strong>Estadísticas</strong><span>Tiros, posesión y córners</span></div>
+      </div>
+      <small id="liveDataStatus">No se muestran datos simulados en producción.</small>
+    </div>
+  </section>
+
 </main>
 
 <!-- ── Footer ────────────────────────────────────────────── -->
@@ -594,11 +618,11 @@
 </footer>
 
 <script src="js/animations.js?v=20260429a"></script>
-<script src="js/app.js?v=20260501a"></script>
-<script src="js/comparador.js?v=20260501a"></script>
+<script src="js/app.js?v=20260823a"></script>
+<script src="js/comparador.js?v=20260823a"></script>
 <script src="js/h2h.js?v=20260429a"></script>
-<script src="js/jugadores.js?v=20260502a"></script>
-<script src="js/inicio.js?v=20260502a"></script>
-<script src="js/arbitros.js?v=20260502a"></script>
+<script src="js/jugadores.js?v=20260823a"></script>
+<script src="js/inicio.js?v=20260823a"></script>
+<script src="js/arbitros.js?v=20260823a"></script>
 </body>
 </html>

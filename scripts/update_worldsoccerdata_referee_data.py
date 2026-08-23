@@ -25,10 +25,10 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from app.config import DATA_DIR, LEAGUES, WORLDSOCCERDATA_REFEREE_PATHS
+from app.config import CURRENT_SEASON_YEAR, DATA_DIR, LEAGUES, WORLDSOCCERDATA_REFEREE_PATHS
 
 BASE_URL = "https://www.worldsoccerdata.com"
-READER_BASE_URL = "https://r.jina.ai/http://r.jina.ai/http://"
+READER_BASE_URL = "https://r.jina.ai/http://"
 OUT_PATH = Path(DATA_DIR) / "referees_season.csv"
 FIELDNAMES = [
     "league",
@@ -221,7 +221,7 @@ def update_worldsoccerdata_referees(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--leagues", nargs="*", default=list(WORLDSOCCERDATA_REFEREE_PATHS.keys()))
-    parser.add_argument("--season", type=int, default=2025)
+    parser.add_argument("--season", type=int, default=CURRENT_SEASON_YEAR)
     parser.add_argument("--timeout", type=int, default=30)
     parser.add_argument("--sleep", type=float, default=0.2)
     parser.add_argument("--concurrency", type=int, default=6)

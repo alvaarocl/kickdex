@@ -17,6 +17,8 @@ sys.path.insert(0, str(ROOT))
 from app.data.updater import update_data
 from app.data.loader import load_matches, load_players, get_team_list, invalidate_cache
 from app.data.fixture_download import fetch_fixture_download_calendar
+from app.data.assets import build_player_assets, build_team_assets
+from app.data.health import build_data_health
 from app.engine.metrics import (
     get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics
 )
@@ -90,11 +92,20 @@ def write_fixtures_json(data, filename: str = "fixtures.json"):
     """Preserve the current calendar if external fixture sources fail empty."""
     existing = _read_existing_json(filename)
     existing_upcoming = len(existing.get("upcoming", [])) if isinstance(existing, dict) else 0
+    existing_season = (existing.get("meta") or {}).get("season") if isinstance(existing, dict) else None
     new_upcoming = len(data.get("upcoming", [])) if isinstance(data, dict) else 0
     fd_status = (data.get("meta") or {}).get("fixture_download") if isinstance(data, dict) else {}
     fd_leagues = (fd_status or {}).get("leagues") or {}
-    source_failed = bool(fd_leagues) and not any(info.get("ok") for info in fd_leagues.values() if isinstance(info, dict))
-    if existing_upcoming > 0 and new_upcoming == 0 and source_failed:
+    source_failed = bool((fd_status or {}).get("skipped")) or (
+        bool(fd_leagues)
+        and not any(info.get("ok") for info in fd_leagues.values() if isinstance(info, dict))
+    )
+    if (
+        existing_upcoming > 0
+        and existing_season == CURRENT_SEASON_LABEL
+        and new_upcoming == 0
+        and source_failed
+    ):
         print(f"  KEEP {filename}  (FixtureDownload falló; preservados {existing_upcoming} próximos)")
         return
     write_json(data, filename)
@@ -111,19 +122,34 @@ def build_player_coverage(df_players, leagues: dict) -> dict:
         return coverage
     coverage["total_teams_with_players"] = int(df_players["team"].nunique())
     coverage["total_player_rows"] = int(len(df_players))
+    for league_code, league_info in leagues.items():
+        expected = set(league_info.get("teams", []))
+        expected_count = int(league_info.get("expected_teams") or len(expected))
+        coverage["by_league"][league_code] = {
+            "name": league_info.get("name", league_code),
+            "teams_with_players": 0,
+            "expected_teams": expected_count,
+            "coverage_rate": 0.0 if expected_count else None,
+            "missing_teams": sorted(expected),
+            "unresolved_team_slots": max(0, expected_count - len(expected)),
+            "player_rows": 0,
+        }
     if "league" in df_players.columns:
         for code, grp in df_players.groupby("league"):
             league_code = str(code)
             league_info = leagues.get(league_code) or {}
             expected = set(league_info.get("teams", []))
+            expected_count = int(league_info.get("expected_teams") or len(expected))
             covered = set(grp["team"].dropna().astype(str))
+            matched = covered & expected
             coverage["by_league"][league_code] = {
                 "name": league_info.get("name", league_code),
-                "teams_with_players": len(covered),
-                "expected_teams": len(expected),
-                "coverage_rate": round(len(covered & expected) / len(expected), 3) if expected else None,
+                "teams_with_players": len(matched),
+                "expected_teams": expected_count,
+                "coverage_rate": round(len(matched) / expected_count, 3) if expected_count else None,
                 "missing_teams": sorted(expected - covered),
-                "player_rows": int(len(grp)),
+                "unresolved_team_slots": max(0, expected_count - len(expected)),
+                "player_rows": int(grp["team"].isin(matched).sum()),
             }
     return coverage
 
@@ -143,13 +169,15 @@ def build_player_coverage_from_json(leagues: dict) -> dict:
     coverage["total_player_rows"] = sum(len(v) for v in players.values() if isinstance(v, list))
     for code, info in leagues.items():
         expected = set(info.get("teams", []))
+        expected_count = int(info.get("expected_teams") or len(expected))
         matched = expected & covered_teams
         coverage["by_league"][code] = {
             "name": info.get("name", code),
             "teams_with_players": len(matched),
-            "expected_teams": len(expected),
-            "coverage_rate": round(len(matched) / len(expected), 3) if expected else None,
+            "expected_teams": expected_count,
+            "coverage_rate": round(len(matched) / expected_count, 3) if expected_count else None,
             "missing_teams": sorted(expected - covered_teams),
+            "unresolved_team_slots": max(0, expected_count - len(expected)),
             "player_rows": sum(len(players.get(team, [])) for team in matched),
         }
     return coverage
@@ -293,8 +321,10 @@ def build_players_detail(df_players) -> dict:
                     date_str = date_val.strftime("%Y-%m-%d") if pd.notna(date_val) and hasattr(date_val, "strftime") else str(date_val or "")
                 except Exception:
                     date_str = str(date_val or "")
+                is_aggregate = not date_str or date_str == "NaT"
                 rows.append({
-                    "date": date_str,
+                    "date": None if is_aggregate else date_str,
+                    "scope": "season_aggregate" if is_aggregate else "match",
                     "sh":   _safe(r.get("sh", 0)),
                     "sot":  _safe(r.get("sot", 0)),
                     "gls":  _safe(r.get("gls", 0)),
@@ -311,19 +341,24 @@ def build_players_detail(df_players) -> dict:
 def build_leagues(df, teams: list) -> dict:
     """Mapeo liga → equipos para el filtro de división en el frontend."""
     import pandas as pd
-    from app.config import CURRENT_SEASON_START, LEAGUES
+    from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, LEAGUES, LEAGUE_TEAM_COUNTS
     if df is None or df.empty or "Date" not in df.columns:
         return {}
     current = df[df["Date"] >= CURRENT_SEASON_START]
     result = {}
     for code, name in LEAGUES.items():
         league_df = current[current["Div"] == code] if "Div" in current.columns else pd.DataFrame()
-        if league_df.empty:
-            continue
         league_teams = sorted(
             set(league_df["HomeTeam"].dropna()) | set(league_df["AwayTeam"].dropna())
-        )
-        result[code] = {"name": name, "teams": league_teams}
+        ) if not league_df.empty else []
+        expected = LEAGUE_TEAM_COUNTS.get(code)
+        result[code] = {
+            "name": name,
+            "teams": league_teams,
+            "season": CURRENT_SEASON_LABEL,
+            "expected_teams": expected,
+            "roster_status": "complete" if expected and len(league_teams) == expected else "partial",
+        }
     return result
 
 
@@ -404,7 +439,17 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     fd_recent = []
     fd_upcoming = []
     fd_status = {}
-    if leagues_json:
+    skip_fixture_downloads = os.getenv("KICKDEX_SKIP_FIXTURE_DOWNLOADS") == "1"
+    if leagues_json and skip_fixture_downloads:
+        fd_status = {
+            "source": "fixturedownload",
+            "ok": False,
+            "skipped": True,
+            "reason": "KICKDEX_SKIP_FIXTURE_DOWNLOADS=1",
+            "leagues": {},
+        }
+        print("  SKIP FixtureDownload calendar (KICKDEX_SKIP_FIXTURE_DOWNLOADS=1)")
+    elif leagues_json:
         try:
             league_teams = {code: info.get("teams", []) for code, info in leagues_json.items()}
             fd_recent, fd_upcoming, fd_status = fetch_fixture_download_calendar(leagues, league_teams)
@@ -423,6 +468,7 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
         "upcoming": upcoming[:160],
         "meta": {
             "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "season": CURRENT_SEASON_LABEL,
             "sources": ["football-data.co.uk", "FixtureDownload"],
             "fixture_download": fd_status,
         },
@@ -914,6 +960,7 @@ def main():
     print("=" * 60)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    skip_heavy_rebuild = os.getenv("KICKDEX_SKIP_HEAVY_REBUILD") == "1"
 
     # 1. Descargar/actualizar CSVs
     print("\n[1/6] Actualizando CSVs...")
@@ -945,16 +992,23 @@ def main():
 
     # 3. Meta
     print("\n[3/6] meta.json + teams.json...")
-    write_json(build_meta(df, df_current), "meta.json")
+    meta_payload = build_meta(df, df_current)
+    write_json(meta_payload, "meta.json")
     write_json(teams, "teams.json")
 
     # 4. Team stats
     print("\n[4/6] team_stats.json...")
-    write_json(build_team_stats(df, teams), "team_stats.json")
+    if skip_heavy_rebuild:
+        print("     Conservado por KICKDEX_SKIP_HEAVY_REBUILD=1")
+    else:
+        write_json(build_team_stats(df, teams), "team_stats.json")
 
     # 5. H2H
     print("\n[5/6] h2h.json...")
-    write_json(build_h2h(df, teams), "h2h.json")
+    if skip_heavy_rebuild:
+        print("     Conservado por KICKDEX_SKIP_HEAVY_REBUILD=1")
+    else:
+        write_json(build_h2h(df, teams), "h2h.json")
 
     # 6. Players + Leagues + Fixtures + Referees
     print("\n[6/7] players.json, players_detail.json, referees.json...")
@@ -966,15 +1020,42 @@ def main():
     write_json(coverage, "player_coverage.json")
     players_for_watch = _read_existing_json("players.json") or players_payload
     write_json(build_discipline_watch(players_for_watch, leagues), "discipline_watch.json")
-    write_json(build_suspensions_payload(load_manual_suspension_rows(), leagues, load_suspension_source_catalog()), "suspensions.json")
+    suspensions_payload = build_suspensions_payload(
+        load_manual_suspension_rows(), leagues, load_suspension_source_catalog()
+    )
+    write_json(suspensions_payload, "suspensions.json")
     write_json(build_data_status(coverage), "data_status.json")
-    write_json(build_referees(df, df_current), "referees.json")
+    referees_payload = build_referees(df, df_current)
+    write_json(referees_payload, "referees.json")
 
     print("\n[7/7] leagues.json, fixtures.json, edges.json, trends.json...")
     write_json(leagues, "leagues.json")
-    write_fixtures_json(build_fixtures(df, leagues))
-    write_json(build_edges(df), "edges.json")
-    write_json(build_trends_payload(df, teams, season_start=CURRENT_SEASON_START), "trends.json")
+    fixtures_payload = build_fixtures(df, leagues)
+    write_fixtures_json(fixtures_payload)
+    if skip_heavy_rebuild:
+        print("     Conservados edges.json y trends.json por KICKDEX_SKIP_HEAVY_REBUILD=1")
+    else:
+        write_json(build_edges(df), "edges.json")
+        write_json(build_trends_payload(df, teams, season_start=CURRENT_SEASON_START), "trends.json")
+    write_json(
+        build_team_assets(leagues, _read_existing_json("team_assets.json")),
+        "team_assets.json",
+    )
+    write_json(
+        build_player_assets(players_for_watch, _read_existing_json("player_assets.json")),
+        "player_assets.json",
+    )
+    write_json(
+        build_data_health(
+            meta_payload,
+            fixtures_payload,
+            coverage,
+            referees_payload,
+            suspensions_payload,
+            leagues,
+        ),
+        "data_health.json",
+    )
 
     print("\n" + "=" * 60)
     print("BUILD COMPLETADO")

@@ -124,6 +124,30 @@ Items aún sin priorizar; sólo si el lanzamiento va bien.
 
 ---
 
+## P4 · Temporada 2026/27 y experiencia de entidades
+
+- [x] **P4.1 · Migrar configuración y contratos a 2026/27** *(✓ codex · 2026-08-23)*
+  - Once ligas declaradas, roster y cobertura por liga, calendario aislado por temporada.
+  - Validación esencial en CI mediante `scripts/validate_static_data.py`.
+
+- [x] **P4.2 · Escudos y retratos con fallback estable** *(✓ codex · 2026-08-23)*
+  - Manifiestos `team_assets.json` y `player_assets.json`.
+  - Escudo/retrato o iniciales en calendario, buscador, jugadores y fichas.
+  - Enriquecimiento incremental opcional mediante API-Football, sin bloquear el build.
+
+- [x] **P4.3 · Búsqueda global y estados honestos de cobertura** *(✓ codex · 2026-08-23)*
+  - Búsqueda unificada de equipos, jugadores, árbitros y partidos.
+  - Contrato `data_health.json` y etiquetas de cobertura parcial.
+
+- [x] **P4.4 · Preparar directo sin datos simulados** *(✓ codex · 2026-08-23)*
+  - Worker con normalización, CORS, caché y fallback stale.
+  - UI desactivada de forma explícita hasta disponer de proveedor autorizado.
+
+- [ ] **P4.5 · Activar proveedor live y enriquecer imágenes reales**
+  - Requiere una fuente con acceso 2026/27 y licencia compatible.
+
+---
+
 ## Changelog (items completados)
 
 > Mover aquí items con `[x]` cuando se cierran. Mantiene la lista activa limpia.

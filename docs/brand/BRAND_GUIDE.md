@@ -194,7 +194,9 @@ No legalese — es una línea de status de terminal.
 ## 9. Qué NO hacer
 
 - No añadir colores fuera de los 6 tokens.
-- No usar fotografía de jugadores ni ilustraciones figurativas.
+- No usar fotografía de jugadores como decoración o reclamo editorial. Los
+  retratos funcionales sí están permitidos en avatares, perfiles y alineaciones,
+  siempre con fallback KICKDEX y atribución/licencia de la fuente.
 - No copiar la densidad sin jerarquía de ValueStats.
 - No usar la palabra "apuesta" en marketing — siempre "edge", "valor", "señal".
 - No registrarse en directorios de tipsters.

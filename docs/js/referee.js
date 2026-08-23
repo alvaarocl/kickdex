@@ -25,7 +25,7 @@ async function initRefereePage() {
 }
 
 async function fetchJSON(file) {
-  const res = await fetch(`${DATA_BASE}${file}?v=${Date.now()}`);
+  const res = await fetch(`${DATA_BASE}${file}?v=20260823a`);
   if (!res.ok) throw new Error(`HTTP ${res.status} loading ${file}`);
   return res.json();
 }

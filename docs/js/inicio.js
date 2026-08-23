@@ -189,9 +189,9 @@ function buildFixtureCard(f, isResult) {
     </div>
     <div class="fx-row fx-main">
       <div class="fx-teams">
-        <span class="fx-team">${escHtml(f.home)}</span>
+        <span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", f.home) : ""}<b>${escHtml(f.home)}</b></span>
         <span class="fx-vs">vs</span>
-        <span class="fx-team">${escHtml(f.away)}</span>
+        <span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", f.away) : ""}<b>${escHtml(f.away)}</b></span>
       </div>
       ${mainContent}
     </div>

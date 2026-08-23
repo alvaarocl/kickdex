@@ -4,9 +4,10 @@ Un único lugar para cambiar temporadas, ligas y parámetros globales.
 """
 
 # ── Temporada actual ──────────────────────────────────────────────────────────
-CURRENT_SEASON_CODE = "2526"
-CURRENT_SEASON_START = "2025-08-01"   # Cambiar cada año en pretemporada
-CURRENT_SEASON_LABEL = "2025/26"
+CURRENT_SEASON_CODE = "2627"
+CURRENT_SEASON_START = "2026-08-01"   # Cambiar cada año en pretemporada
+CURRENT_SEASON_LABEL = "2026/27"
+CURRENT_SEASON_YEAR = 2026
 
 # ── Ligas cubiertas ───────────────────────────────────────────────────────────
 LEAGUES = {
@@ -21,6 +22,22 @@ LEAGUES = {
     "F1": "Ligue 1",
     "F2": "Ligue 2",
     "N1": "Eredivisie",
+}
+
+# Expected club count is used to label an early-season roster as partial. It
+# does not block publication while a league feed is still being populated.
+LEAGUE_TEAM_COUNTS = {
+    "SP1": 20,
+    "SP2": 22,
+    "E0": 20,
+    "E1": 24,
+    "I1": 20,
+    "I2": 20,
+    "D1": 18,
+    "D2": 18,
+    "F1": 18,
+    "F2": 18,
+    "N1": 18,
 }
 
 # Free-tier API-Football league ids. Used only when APIFOOTBALL_KEY is set.

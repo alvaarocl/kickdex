@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kickdex-live",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-23",
+  "vars": {
+    "LIVE_API_ENABLED": "false",
+    "LIVE_PROVIDER": "api-football",
+    "ALLOWED_ORIGINS": "https://kickdex.alvarocarpintero.com,http://localhost:8080"
+  }
+}

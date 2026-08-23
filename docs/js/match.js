@@ -17,13 +17,15 @@ const state = {
   referees: [],
   suspensions: { by_team: {}, items: [], totals: {} },
   discipline: { by_team: {}, top: [] },
+  teamAssets: { teams: {} },
+  playerAssets: { players: {} },
 };
 
 document.addEventListener("DOMContentLoaded", initMatchPage);
 
 async function initMatchPage() {
   try {
-    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline] = await Promise.all([
+    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets] = await Promise.all([
       fetchJSON("fixtures.json"),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("team_stats.json").catch(() => ({})),
@@ -34,8 +36,11 @@ async function initMatchPage() {
       fetchJSON("referees.json").catch(() => []),
       fetchJSON("suspensions.json").catch(() => ({ by_team: {}, items: [], totals: {} })),
       fetchJSON("discipline_watch.json").catch(() => ({ by_team: {}, top: [] })),
+      fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
+      fetchJSON("player_assets.json").catch(() => ({ players: {} })),
     ]);
-    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline });
+    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets });
+    window.KDXEntities?.configure(teamAssets, playerAssets);
     renderMatch();
   } catch (err) {
     document.getElementById("match-root").innerHTML = `
@@ -45,7 +50,7 @@ async function initMatchPage() {
 }
 
 async function fetchJSON(file) {
-  const res = await fetch(`${DATA_BASE}${file}?v=${Date.now()}`);
+  const res = await fetch(`${DATA_BASE}${file}?v=20260823a`);
   if (!res.ok) throw new Error(`HTTP ${res.status} loading ${file}`);
   return res.json();
 }
@@ -236,9 +241,9 @@ function buildHero(f, edge, probs) {
         <span>${formatDate(f.date, f.time)}</span>
       </div>
       <div class="match-title-row">
-        <h1>${esc(f.home)}</h1>
+        <div class="match-team-title">${window.KDXEntities?.media("team", f.home, "", "entity-media--hero") || ""}<h1>${esc(f.home)}</h1></div>
         ${score}
-        <h1>${esc(f.away)}</h1>
+        <div class="match-team-title match-team-title--away">${window.KDXEntities?.media("team", f.away, "", "entity-media--hero") || ""}<h1>${esc(f.away)}</h1></div>
       </div>
       <div class="match-subline">
         <span>${esc(f.venue || "Estadio no publicado")}</span>

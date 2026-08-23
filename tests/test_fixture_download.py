@@ -1,4 +1,4 @@
-from app.data.fixture_download import _canonical_team
+from app.data.fixture_download import _canonical_team, fixture_download_slugs
 
 
 def test_canonical_team_matches_suffix_names():
@@ -8,3 +8,8 @@ def test_canonical_team_matches_suffix_names():
     assert _canonical_team("Leicester City", teams) == "Leicester"
     assert _canonical_team("Queens Park Rangers", teams) == "QPR"
     assert _canonical_team("Sheffield Wednesday", teams) == "Sheffield Weds"
+
+
+def test_fixture_download_slugs_follow_current_season():
+    assert fixture_download_slugs(2026)["SP1"] == "la-liga-2026"
+    assert fixture_download_slugs(2026)["E0"] == "epl-2026"

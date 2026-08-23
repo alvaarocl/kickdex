@@ -16,7 +16,7 @@ def test_load_players_from_per_league_csv(tmp_path, monkeypatch):
     csv_path = players_dir / "laliga.csv"
     csv_path.write_text(
         "date,team,player,sh,sot,gls,ast,fls,crdy,min,league\n"
-        "2025-09-01,Real Madrid,Jugador Uno,3,2,1,0,1,0,90,SP1\n",
+        "2026-09-01,Real Madrid,Jugador Uno,3,2,1,0,1,0,90,SP1\n",
         encoding="utf-8",
     )
     monkeypatch.setattr(loader, "DATA_DIR", str(data_dir))

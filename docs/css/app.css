@@ -198,6 +198,89 @@ header {
   .logo-text .brand-cursor::after { animation: none; }
 }
 
+/* Entity identity, global search and prepared live centre */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+.entity-media {
+  width: 34px; height: 34px; flex: 0 0 34px;
+  display: inline-grid; place-items: center;
+  overflow: hidden; border: 1px solid var(--border2);
+  background: linear-gradient(145deg, var(--bg3), var(--bg1));
+  color: var(--brand); font: 700 .68rem/1 var(--font-data);
+  letter-spacing: -.02em; border-radius: 10px;
+}
+.entity-media--player { border-radius: 50%; }
+.entity-media--ref { border-color: rgba(245,185,60,.3); color: var(--gold); }
+.entity-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.entity-media--player img { object-fit: cover; }
+.entity-media i { display: none; font-style: normal; }
+.entity-media.is-fallback i { display: inline; }
+.fx-team { display: inline-flex; align-items: center; gap: 9px; }
+.fx-team b { font: inherit; overflow-wrap: anywhere; }
+
+.kdx-global-search { position: relative; width: min(390px, 42vw); }
+.kdx-global-search input {
+  width: 100%; min-height: 40px; padding: 9px 13px 9px 38px;
+  border: 1px solid var(--border2); border-radius: 11px;
+  background: var(--bg2); color: var(--text); font: 500 .84rem var(--font-ui);
+}
+.kdx-global-search::before {
+  content: ""; position: absolute; left: 14px; top: 13px; z-index: 2;
+  width: 12px; height: 12px; border: 1.5px solid var(--muted); border-radius: 50%;
+}
+.kdx-global-search::after {
+  content: ""; position: absolute; left: 25px; top: 25px; z-index: 2;
+  width: 6px; height: 1.5px; background: var(--muted); transform: rotate(45deg);
+}
+.kdx-global-search input:focus { outline: none; border-color: rgba(46,230,166,.55); box-shadow: 0 0 0 3px var(--brand-soft); }
+.kdx-global-results {
+  position: absolute; z-index: 120; top: calc(100% + 8px); left: 0; right: 0;
+  max-height: min(520px, 70vh); overflow: auto; padding: 7px;
+  border: 1px solid var(--border2); border-radius: 14px;
+  background: rgba(11,15,26,.98); box-shadow: 0 24px 60px rgba(0,0,0,.5);
+}
+.kdx-global-results a {
+  display: flex; align-items: center; gap: 11px; padding: 9px;
+  border-radius: 9px; color: var(--text); text-decoration: none;
+}
+.kdx-global-results a:hover, .kdx-global-results a:focus { background: var(--brand-soft); }
+.kdx-global-results a > span:last-child { min-width: 0; display: grid; gap: 3px; }
+.kdx-global-results strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .86rem; }
+.kdx-global-results small { color: var(--muted); font-size: .72rem; }
+.kdx-search-empty { padding: 18px; color: var(--muted); text-align: center; }
+
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted2); }
+.tab-btn.active .live-dot { background: var(--live, var(--brand2)); box-shadow: 0 0 10px var(--brand2); }
+.live-empty { padding: clamp(24px, 5vw, 56px); text-align: center; overflow: hidden; position: relative; }
+.live-empty::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(rgba(91,214,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(91,214,255,.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.live-empty > * { position: relative; }
+.live-status-chip {
+  display: inline-flex; padding: 6px 10px; border-radius: 999px;
+  border: 1px solid rgba(91,214,255,.28); color: var(--brand2);
+  font: 700 .68rem var(--font-data); letter-spacing: .08em;
+}
+.live-empty h2 { margin: 18px 0 8px; font-size: clamp(1.45rem, 3vw, 2.2rem); }
+.live-empty > p { max-width: 680px; margin: 0 auto; color: var(--text2); line-height: 1.65; }
+.live-empty > small { display: block; margin-top: 22px; color: var(--muted); }
+.live-contract-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; max-width: 760px; margin: 28px auto 0; }
+.live-contract-grid div { padding: 18px; border: 1px solid var(--border); background: rgba(5,7,13,.72); border-radius: 12px; display: grid; gap: 6px; }
+.live-contract-grid strong { color: var(--brand2); font-family: var(--font-data); }
+.live-contract-grid span { color: var(--muted); font-size: .8rem; }
+
+@media (max-width: 780px) {
+  .kdx-global-search { order: 3; width: 100%; }
+  .header-inner > div:last-child { width: 100%; }
+  .live-contract-grid { grid-template-columns: 1fr; }
+  .fx-team .entity-media { width: 30px; height: 30px; flex-basis: 30px; }
+}
+
 .season-badge {
   background: var(--brand-soft);
   color: var(--brand);
@@ -1602,6 +1685,11 @@ tbody td b { font-family: var(--font-data); }
 /* Match page */
 .match-page { padding-top: 28px; padding-bottom: 48px; }
 .match-hero { margin-bottom: 18px; padding: 24px; }
+.match-team-title { display: flex; align-items: center; justify-content: flex-start; gap: 14px; min-width: 0; flex: 1; }
+.match-team-title--away { flex-direction: row-reverse; text-align: right; }
+.match-team-title h1 { min-width: 0; overflow-wrap: anywhere; }
+.entity-media--hero { width: 64px; height: 64px; flex-basis: 64px; border-radius: 16px; font-size: .95rem; }
+.player-avatar--hero { width: 86px; height: 86px; flex-basis: 86px; border-radius: 50%; font-size: 1.1rem; }
 .match-kicker {
   display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
   color: var(--muted); font-size: .72rem; font-weight: 800;
@@ -1836,6 +1924,8 @@ tbody td b { font-family: var(--font-data); }
 }
 
 @media (max-width: 860px) {
+  .match-team-title, .match-team-title--away { flex-direction: column; text-align: center; gap: 8px; }
+  .entity-media--hero { width: 48px; height: 48px; flex-basis: 48px; border-radius: 13px; }
   .match-title-row { grid-template-columns: 1fr; text-align: center; }
   .match-title-row h1:last-child { text-align: center; }
   .match-score { margin: 0 auto; }
@@ -1896,6 +1986,11 @@ tbody td b { font-family: var(--font-data); }
   gap: 3px;
   font-family: inherit;
 }
+.player-suggestion > .entity-media { width: 32px; height: 32px; flex-basis: 32px; }
+.player-suggestion > span:last-child { min-width: 0; display: grid; gap: 2px; text-align: left; }
+.player-suggestion > span:last-child b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.player-cell { display: inline-flex; align-items: center; gap: 9px; min-width: 170px; }
+.player-cell .entity-media { width: 30px; height: 30px; flex-basis: 30px; }
 .player-suggestion:hover,
 .player-suggestion:focus {
   background: rgba(46,230,166,.10);

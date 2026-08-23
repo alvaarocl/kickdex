@@ -39,8 +39,12 @@ python scripts/build_data.py
 Saltar descargas para iterar rápido:
 
 ```bash
-KICKDEX_SKIP_DOWNLOADS=1 KICKDEX_SKIP_PLAYER_DOWNLOADS=1 python scripts/build_data.py
+KICKDEX_SKIP_DOWNLOADS=1 KICKDEX_SKIP_PLAYER_DOWNLOADS=1 KICKDEX_SKIP_FIXTURE_DOWNLOADS=1 python scripts/build_data.py
 ```
+
+Si ya existe un build completo y solo cambian contratos ligeros, también se
+puede conservar H2H, tendencias, estadísticas y edges con
+`KICKDEX_SKIP_HEAVY_REBUILD=1`.
 
 ---
 
@@ -96,6 +100,16 @@ CURRENT_SEASON_CODE = "2627"
 CURRENT_SEASON_START = "2026-08-01"
 CURRENT_SEASON_LABEL = "2026/27"
 ```
+
+El build también genera `data_health.json`, `team_assets.json` y
+`player_assets.json`. Los enriquecimientos parciales de jugadores o árbitros se
+publican con estado honesto y no bloquean calendario/resultados esenciales.
+
+## Directo
+
+El contrato del futuro directo vive en `worker/`. Se entrega desactivado
+(`LIVE_API_ENABLED=false`) hasta que exista un proveedor con acceso autorizado a
+2026/27; la clave solo se configura como secreto de Cloudflare.
 
 ---
 

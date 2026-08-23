@@ -105,8 +105,8 @@ function updatePlayerSuggestions() {
   box.hidden = false;
   box.innerHTML = matches.map(item => `
     <button type="button" class="player-suggestion" data-team="${escAttr(item.team)}" data-player="${escAttr(item.player)}">
-      <span>${escHtml(item.player)}</span>
-      <small>${escHtml(item.team)} · ${escHtml(item.league || "Liga")}</small>
+      ${typeof entityMedia === "function" ? entityMedia("player", item.player, item.team) : ""}
+      <span><b>${escHtml(item.player)}</b><small>${escHtml(item.team)} · ${escHtml(item.league || "Liga")}</small></span>
     </button>
   `).join("");
 
@@ -253,7 +253,7 @@ function buildPlayerRow(team, p) {
   const sparkId = `spark-${sanitizeId(team)}-${sanitizeId(p.player)}`;
   return `
   <tr>
-    <td><b><a href="${playerHref(team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a></b></td>
+    <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, team) : ""}<b><a href="${playerHref(team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a></b></span></td>
     <td>${fmt(p.min, 0)}</td>
     <td>${fmt(p.sh, 1)}</td>
     <td>${fmt(p.sot, 1)}</td>

@@ -123,7 +123,7 @@ def test_request_falls_back_to_reader_on_forbidden(monkeypatch):
     monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data.requests.get", fake_get)
 
     assert _request("https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025", timeout=1) == "reader ok"
-    assert calls[1].startswith("https://r.jina.ai/http://r.jina.ai/http://")
+    assert calls[1] == "https://r.jina.ai/http://https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025"
 
 
 def test_request_retries_reader_rate_limit(monkeypatch):
