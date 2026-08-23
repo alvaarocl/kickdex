@@ -63,6 +63,17 @@ def test_get_recent_form_none_on_insufficient_data():
     assert form is None
 
 
+def test_get_recent_form_can_expose_early_season_sample():
+    small_df = SAMPLE_MATCHES.head(1)
+
+    form = get_recent_form(
+        small_df, "Madrid", venue="All", n=5, season_only=False, min_matches=1
+    )
+
+    assert form is not None
+    assert form["matches_analyzed"] == 1
+
+
 def test_h2h_returns_dataframe():
     h2h = get_h2h(SAMPLE_MATCHES, "Madrid", "Barça")
     assert h2h is not None

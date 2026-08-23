@@ -37,6 +37,7 @@ def fixture_download_slugs(season_year: int = CURRENT_SEASON_YEAR) -> dict[str, 
 TEAM_NAME_ALIASES = {
     "man utd": "Man United",
     "spurs": "Tottenham",
+    "wolverhampton wanderers": "Wolves",
     "fc bayern munchen": "Bayern Munich",
     "fc bayern münchen": "Bayern Munich",
     "borussia monchengladbach": "M'gladbach",
@@ -76,6 +77,7 @@ TEAM_NAME_ALIASES = {
     "fc barcelona": "Barcelona",
     "atletico de madrid": "Ath Madrid",
     "atlético de madrid": "Ath Madrid",
+    "atl madrid": "Ath Madrid",
     "athletic club": "Athletic Club",
     "ca osasuna": "Osasuna",
     "c a osasuna": "Osasuna",
@@ -92,10 +94,13 @@ TEAM_NAME_ALIASES = {
     "real betis": "Betis",
     "real sociedad": "Sociedad",
     "rayo vallecano": "Vallecano",
+    "r racing club": "Santander",
     "villarreal cf": "Villarreal",
     "queens park rangers": "QPR",
     "sheffield wednesday": "Sheffield Weds",
     "west bromwich albion": "West Brom",
+    "internazionale": "Inter",
+    "fortuna sittard": "For Sittard",
 }
 
 

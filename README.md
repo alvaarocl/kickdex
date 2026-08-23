@@ -75,6 +75,7 @@ kickdex/
 │       └── edges.json       ← Edges Bet365 (closing odds)
 ├── app/
 │   ├── data/{loader,updater}.py    ← Carga y descarga de CSVs
+│   ├── data/season_rosters.py      ← Clubes verificados de la temporada activa
 │   ├── engine/
 │   │   ├── probability.py          ← Poisson bivariante + Dixon-Coles
 │   │   ├── metrics.py              ← Forma reciente, H2H, rolling
@@ -124,6 +125,8 @@ pytest tests/ -v
 ## Fuentes de datos
 
 - **Resultados históricos:** [football-data.co.uk](https://www.football-data.co.uk) (gratuito, SP1 + SP2 desde 2004)
+- **Calendario próximo:** [FixtureDownload](https://fixturedownload.com) (feed JSON público, sin API key)
+- **Clubes de la temporada:** webs oficiales de cada competición, con URL y fecha de verificación en `leagues.json`
 - **Stats de jugadores:** FBref via [soccerdata](https://github.com/probberechts/soccerdata)
 - **Árbitros:** World Soccer Data actualiza `DATOS/referees_season.csv` en el workflow para la vista de temporada actual; football-data/manual quedan como histórico/fallback. Si configuras `APIFOOTBALL_KEY`, el workflow también intenta añadir partidos recientes a `DATOS/referees_matches.csv`.
 

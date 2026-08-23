@@ -48,8 +48,17 @@ def validate(require_calendar: bool = False) -> list[str]:
     missing_leagues = sorted(set(LEAGUES) - set(leagues))
     if missing_leagues:
         errors.append(f"missing leagues: {','.join(missing_leagues)}")
+    incomplete_rosters = sorted(
+        code for code in LEAGUES if (leagues.get(code) or {}).get("roster_status") != "complete"
+    )
+    if incomplete_rosters:
+        errors.append(f"incomplete rosters: {','.join(incomplete_rosters)}")
     if not isinstance(teams, list) or not teams:
         errors.append("teams.json must be a non-empty list")
+    roster_teams = {team for info in leagues.values() for team in info.get("teams") or []}
+    missing_search_teams = sorted(roster_teams - set(teams))
+    if missing_search_teams:
+        errors.append(f"teams.json misses roster clubs: {','.join(missing_search_teams)}")
     current_team_count = sum(len(info.get("teams") or []) for info in leagues.values())
     if current_team_count != len(set(team for info in leagues.values() for team in info.get("teams") or [])):
         errors.append("the same canonical team appears in more than one current league")

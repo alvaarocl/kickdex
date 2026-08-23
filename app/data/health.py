@@ -38,9 +38,14 @@ def build_data_health(
 
     expected_leagues = set(LEAGUES)
     present_leagues = {code for code, info in leagues.items() if info.get("teams")}
+    incomplete_rosters = sorted(
+        code
+        for code in expected_leagues
+        if (leagues.get(code) or {}).get("roster_status") != "complete"
+    )
     calendar_is_partial = bool(fixture_failures) or bool(fixture_download.get("skipped")) or not fixtures.get("upcoming")
     calendar_status = "unavailable" if not available_fixtures else ("partial" if calendar_is_partial else "fresh")
-    teams_status = "fresh" if expected_leagues <= present_leagues else "partial"
+    teams_status = "fresh" if expected_leagues <= present_leagues and not incomplete_rosters else "partial"
     suspension_items = suspensions.get("items") or []
     domains = {
         "calendar": {
@@ -54,6 +59,7 @@ def build_data_health(
             "updated_at": meta.get("updated_at"),
             "records": sum(len(info.get("teams") or []) for info in leagues.values()),
             "missing_leagues": sorted(expected_leagues - present_leagues),
+            "incomplete_rosters": incomplete_rosters,
         },
         "players": {
             "status": player_status,

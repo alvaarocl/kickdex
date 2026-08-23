@@ -94,6 +94,7 @@ def get_recent_form(
     venue: Venue = "All",
     n: int = ROLLING_WINDOW_DEFAULT,
     season_only: bool = True,
+    min_matches: int = MIN_MATCHES_FOR_STATS,
 ) -> dict | None:
     """
     Calcula la forma reciente de un equipo basada en sus últimos N partidos.
@@ -104,6 +105,8 @@ def get_recent_form(
         venue: "Home", "Away" o "All".
         n: Número de partidos a considerar.
         season_only: Si True, limita a la temporada actual.
+        min_matches: Muestra mínima exigida; el frontend puede usar 1 al
+            inicio de temporada y presentar el tamaño de muestra.
     Returns:
         Dict con promedios, historial de partidos y conteos, o None si no hay datos.
     """
@@ -118,7 +121,7 @@ def get_recent_form(
 
     matches = matches.sort_values("Date", ascending=True).tail(n)
 
-    if len(matches) < MIN_MATCHES_FOR_STATS:
+    if len(matches) < min_matches:
         return None
 
     stats: dict[str, list] = {

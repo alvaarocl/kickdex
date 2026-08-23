@@ -1,5 +1,8 @@
+import json
+
 from app.data.assets import build_player_assets, build_team_assets
 from app.data.health import build_data_health
+from scripts import build_data
 from scripts.build_data import build_player_coverage
 
 import pandas as pd
@@ -51,3 +54,24 @@ def test_player_coverage_keeps_leagues_without_player_rows_visible():
     assert coverage["by_league"]["SP1"]["coverage_rate"] == 0.5
     assert coverage["by_league"]["E0"]["coverage_rate"] == 0.0
     assert coverage["by_league"]["E0"]["unresolved_team_slots"] == 20
+
+
+def test_preserved_calendar_is_returned_for_health_checks(tmp_path, monkeypatch):
+    existing = {
+        "recent": [],
+        "upcoming": [{"home": "A", "away": "B"}],
+        "meta": {"season": "2026/27"},
+    }
+    (tmp_path / "fixtures.json").write_text(json.dumps(existing), encoding="utf-8")
+    monkeypatch.setattr(build_data, "OUTPUT_DIR", tmp_path)
+
+    actual = build_data.write_fixtures_json({
+        "recent": [],
+        "upcoming": [],
+        "meta": {
+            "season": "2026/27",
+            "fixture_download": {"skipped": True, "leagues": {}},
+        },
+    })
+
+    assert actual == existing

@@ -19,6 +19,7 @@ from app.data.loader import load_matches, load_players, get_team_list, invalidat
 from app.data.fixture_download import fetch_fixture_download_calendar
 from app.data.assets import build_player_assets, build_team_assets
 from app.data.health import build_data_health
+from app.data.season_rosters import all_roster_teams, roster_for
 from app.engine.metrics import (
     get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics
 )
@@ -89,7 +90,7 @@ def write_player_json(data, filename: str):
 
 
 def write_fixtures_json(data, filename: str = "fixtures.json"):
-    """Preserve the current calendar if external fixture sources fail empty."""
+    """Persist fixtures and return the payload that is actually on disk."""
     existing = _read_existing_json(filename)
     existing_upcoming = len(existing.get("upcoming", [])) if isinstance(existing, dict) else 0
     existing_season = (existing.get("meta") or {}).get("season") if isinstance(existing, dict) else None
@@ -107,8 +108,9 @@ def write_fixtures_json(data, filename: str = "fixtures.json"):
         and source_failed
     ):
         print(f"  KEEP {filename}  (FixtureDownload falló; preservados {existing_upcoming} próximos)")
-        return
+        return existing
     write_json(data, filename)
+    return data
 
 
 def build_player_coverage(df_players, leagues: dict) -> dict:
@@ -214,8 +216,12 @@ def build_team_stats(df, teams: list) -> dict:
     for i, team in enumerate(teams):
         if i % 10 == 0:
             print(f"    {i}/{len(teams)} equipos...")
-        home = get_recent_form(df, team, venue="Home", n=ROLLING_WINDOW_DEFAULT)
-        away = get_recent_form(df, team, venue="Away", n=ROLLING_WINDOW_DEFAULT)
+        home = get_recent_form(
+            df, team, venue="Home", n=ROLLING_WINDOW_DEFAULT, min_matches=1
+        )
+        away = get_recent_form(
+            df, team, venue="Away", n=ROLLING_WINDOW_DEFAULT, min_matches=1
+        )
         if not home and not away:
             continue
         result[team] = {
@@ -339,18 +345,22 @@ def build_players_detail(df_players) -> dict:
 
 
 def build_leagues(df, teams: list) -> dict:
-    """Mapeo liga → equipos para el filtro de división en el frontend."""
+    """Build league rosters independently from the matches already played."""
     import pandas as pd
     from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, LEAGUES, LEAGUE_TEAM_COUNTS
-    if df is None or df.empty or "Date" not in df.columns:
-        return {}
-    current = df[df["Date"] >= CURRENT_SEASON_START]
+    current = (
+        df[df["Date"] >= CURRENT_SEASON_START]
+        if df is not None and not df.empty and "Date" in df.columns
+        else pd.DataFrame()
+    )
     result = {}
     for code, name in LEAGUES.items():
         league_df = current[current["Div"] == code] if "Div" in current.columns else pd.DataFrame()
-        league_teams = sorted(
+        observed_teams = sorted(
             set(league_df["HomeTeam"].dropna()) | set(league_df["AwayTeam"].dropna())
         ) if not league_df.empty else []
+        roster = roster_for(code)
+        league_teams = sorted(roster["teams"]) if roster else observed_teams
         expected = LEAGUE_TEAM_COUNTS.get(code)
         result[code] = {
             "name": name,
@@ -358,6 +368,10 @@ def build_leagues(df, teams: list) -> dict:
             "season": CURRENT_SEASON_LABEL,
             "expected_teams": expected,
             "roster_status": "complete" if expected and len(league_teams) == expected else "partial",
+            "observed_team_count": len(set(observed_teams) & set(league_teams)),
+            "unmatched_observed_teams": sorted(set(observed_teams) - set(league_teams)),
+            "roster_source": roster.get("source") if roster else "football-data.co.uk",
+            "roster_verified_at": roster.get("verified_at") if roster else None,
         }
     return result
 
@@ -390,6 +404,7 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     from datetime import datetime, timedelta
     from pathlib import Path
     from app.config import CURRENT_SEASON_CODE, DATA_DIR, LEAGUES
+    from app.data.loader import normalize_team_name
 
     recent = []
     upcoming = []
@@ -424,8 +439,8 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
                 "league_name": name,
                 "date": date.strftime("%Y-%m-%d"),
                 "time": str(row.get("Time", "") or "").strip(),
-                "home": str(row.get("HomeTeam", "")),
-                "away": str(row.get("AwayTeam", "")),
+                "home": normalize_team_name(str(row.get("HomeTeam", ""))),
+                "away": normalize_team_name(str(row.get("AwayTeam", ""))),
             }
             if has_score:
                 item["home_score"] = int(row["FTHG"])
@@ -986,9 +1001,14 @@ def main():
         print("       Se conservan los JSON existentes en docs/data/ para no romper GitHub Pages.")
         print("       Descarga o copia los CSVs football-data en datos/ y vuelve a ejecutar este script.")
         return 1
-    teams = get_team_list(df, recent_only=True)
+    observed_teams = get_team_list(df, recent_only=True)
+    leagues = build_leagues(df, observed_teams)
+    teams = sorted(set(observed_teams) | set(all_roster_teams()))
     df_current = df[df["Date"] >= CURRENT_SEASON_START]
-    print(f"     {len(df):,} partidos · {len(teams)} equipos · {len(df_players):,} registros jugadores")
+    print(
+        f"     {len(df):,} partidos · {len(teams)} equipos "
+        f"({len(observed_teams)} observados) · {len(df_players):,} registros jugadores"
+    )
 
     # 3. Meta
     print("\n[3/6] meta.json + teams.json...")
@@ -1012,7 +1032,6 @@ def main():
 
     # 6. Players + Leagues + Fixtures + Referees
     print("\n[6/7] players.json, players_detail.json, referees.json...")
-    leagues = build_leagues(df, teams)
     players_payload = build_players(df_players)
     write_player_json(players_payload, "players.json")
     write_player_json(build_players_detail(df_players), "players_detail.json")
@@ -1031,7 +1050,7 @@ def main():
     print("\n[7/7] leagues.json, fixtures.json, edges.json, trends.json...")
     write_json(leagues, "leagues.json")
     fixtures_payload = build_fixtures(df, leagues)
-    write_fixtures_json(fixtures_payload)
+    fixtures_payload = write_fixtures_json(fixtures_payload)
     if skip_heavy_rebuild:
         print("     Conservados edges.json y trends.json por KICKDEX_SKIP_HEAVY_REBUILD=1")
     else:
