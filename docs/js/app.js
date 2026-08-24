@@ -645,7 +645,6 @@ async function loadAllData() {
     updateHeader();
     updateLandingMetrics();
     updateHeroEdge();
-    updateCoverageStrip();
     populateAllSelects();
     initSegControls();
     initModules();
