@@ -213,6 +213,8 @@ header {
   letter-spacing: -.02em; border-radius: 10px;
 }
 .entity-media--player { border-radius: 50%; }
+.entity-media--team { padding: 3px; }
+.entity-media--team.entity-media--hero { padding: 5px; }
 .entity-media--ref { border-color: rgba(245,185,60,.3); color: var(--gold); }
 .entity-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .entity-media--player img { object-fit: cover; }
