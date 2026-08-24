@@ -972,8 +972,8 @@ function poissonPMF(k, lambda) {
 }
 
 function calcProbabilities(homeStats, awayStats, h2hSummary) {
-  const hHome = homeStats?.home;
-  const aAway = awayStats?.away;
+  const hHome = homeStats?.home || homeStats?.away;
+  const aAway = awayStats?.away || awayStats?.home;
   if (!hHome || !aAway) return null;
 
   let lambdaH = (hHome.avg_goals ?? 1.5) * 0.7 + (aAway.avg_goals_against ?? 1.2) * 0.3;
@@ -1018,8 +1018,8 @@ function calcProbabilities(homeStats, awayStats, h2hSummary) {
 
 function generateAlerts(homeStats, awayStats, h2hSummary) {
   const alerts = [];
-  const hH = homeStats?.home;
-  const aA = awayStats?.away;
+  const hH = homeStats?.home || homeStats?.away;
+  const aA = awayStats?.away || awayStats?.home;
   if (!hH || !aA) return alerts;
 
   const add = (strength, type, text) => alerts.push({ strength, type, text });

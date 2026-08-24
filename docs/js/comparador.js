@@ -6,6 +6,23 @@
 
 let radarChart = null;
 
+function emptyTeamStats(team) {
+  return { team, home: null, away: null, sample_scope: 'none', season_matches: 0, historical_matches: 0 };
+}
+
+function sampleLabel(data, venue) {
+  const block = data?.[venue];
+  const count = Number(block?.matches_analyzed || 0);
+  if (!count) return 'sin historial';
+  const suffix = count === 1 ? ' partido' : ' partidos';
+  const scope = data?.sample_scope === 'historical' ? ' histórico' : data?.sample_scope === 'mixed' ? ' muestra mixta' : ' temporada';
+  return count + suffix + scope;
+}
+
+function statsForVenue(data, venue) {
+  return data?.[venue] || data?.[venue === 'home' ? 'away' : 'home'] || {};
+}
+
 function initComparador() {
   document.getElementById("cmp-run").addEventListener("click", runComparador);
 }
@@ -24,8 +41,8 @@ function runComparador() {
     return;
   }
 
-  const homeData = APP.teamStats[home];
-  const awayData = APP.teamStats[away];
+  const homeData = APP.teamStats[home] || emptyTeamStats(home);
+  const awayData = APP.teamStats[away] || emptyTeamStats(away);
 
   if (!homeData || !awayData) {
     box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos suficientes para estos equipos</p></div>`;
@@ -58,8 +75,8 @@ function runComparador() {
 // ── Main HTML builder ──────────────────────────────────────
 
 function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary, h2hData) {
-  const hH = homeData.home || {};
-  const aA = awayData.away || {};
+  const hH = statsForVenue(homeData, 'home');
+  const aA = statsForVenue(awayData, 'away');
 
   const svgDuel  = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`;
   const svgHome  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
@@ -92,6 +109,7 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
   </div>
 
   <!-- ── Stat duel comparison ── -->
+  <div class='cmp-sample-note'>Muestra disponible: ${sampleLabel(homeData, 'home')} · ${sampleLabel(awayData, 'away')}. Con una sola jornada el análisis es orientativo.</div>
   <div class="card stagger-item" style="margin-bottom:20px;">
     <div class="section-title">${svgDuel} Comparativa de estadísticas <small>local vs visitante</small></div>
     ${buildStatDuel(home, away, hH, aA)}
@@ -254,7 +272,7 @@ function buildH2HIntegratedSection(home, away, h2hData, h2hSummary) {
 function drawRadar(home, away, homeData, awayData) {
   const ctx = document.getElementById("radarChart"); if (!ctx) return;
   if (radarChart) { radarChart.destroy(); }
-  const hH = homeData.home || {}; const aA = awayData.away || {};
+  const hH = statsForVenue(homeData, 'home'); const aA = statsForVenue(awayData, 'away');
   const normalize = (v, m) => v != null ? Math.min(v / m, 1) * 100 : 0;
   radarChart = new Chart(ctx, {
     type: "radar",
@@ -344,10 +362,10 @@ function _calcRow(label, hVal, aVal, format, higherIsBetter) {
 function buildMasterCalculatorJS(home, away) {
   const hd = APP.teamStats[home] || {};
   const ad = APP.teamStats[away] || {};
-  const hH = hd.home || {};
-  const hA = hd.away || {};
-  const aH = ad.home || {};
-  const aA = ad.away || {};
+  const hH = statsForVenue(hd, 'home');
+  const hA = statsForVenue(hd, 'away');
+  const aH = statsForVenue(ad, 'home');
+  const aA = statsForVenue(ad, 'away');
 
   const rows = [
     _calcRow("Win Rate (local/visitante)",   hH.win_rate,           aA.win_rate,           "pct", true),

@@ -1282,6 +1282,16 @@ tbody td b { font-family: var(--font-data); }
   margin-top: 4px;
   font-weight: 500;
 }
+.cmp-sample-note {
+  margin: 0 0 16px;
+  padding: 9px 12px;
+  border: 1px solid rgba(46,230,166,.18);
+  border-radius: 9px;
+  color: var(--muted);
+  background: rgba(46,230,166,.045);
+  font-size: .72rem;
+  line-height: 1.45;
+}
 .fixture-vs {
   position: relative;
   z-index: 1;

@@ -231,6 +231,33 @@ def build_team_stats(df, teams: list) -> dict:
     return result
 
 
+def build_team_stats(df, teams: list) -> dict:
+    """Build stats for every roster team, falling back to all-time history."""
+    result = {}
+    for i, team in enumerate(teams):
+        if i % 10 == 0:
+            print(f'    {i}/{len(teams)} equipos...')
+        current_home = get_recent_form(df, team, venue='Home', n=ROLLING_WINDOW_DEFAULT, min_matches=1)
+        current_away = get_recent_form(df, team, venue='Away', n=ROLLING_WINDOW_DEFAULT, min_matches=1)
+        historical_home = get_recent_form(df, team, venue='Home', n=ROLLING_WINDOW_DEFAULT, season_only=False, min_matches=1)
+        historical_away = get_recent_form(df, team, venue='Away', n=ROLLING_WINDOW_DEFAULT, season_only=False, min_matches=1)
+        home = current_home or historical_home
+        away = current_away or historical_away
+        if not home and not away:
+            continue
+        current_count = (current_home or {}).get('matches_analyzed', 0) + (current_away or {}).get('matches_analyzed', 0)
+        historical_count = (historical_home or {}).get('matches_analyzed', 0) + (historical_away or {}).get('matches_analyzed', 0)
+        scope = 'season' if current_count == historical_count else 'mixed' if current_count else 'historical'
+        result[team] = {
+            'home': _serialize_form(home),
+            'away': _serialize_form(away),
+            'sample_scope': scope,
+            'season_matches': current_count,
+            'historical_matches': historical_count,
+        }
+    return result
+
+
 def build_h2h(df, teams: list) -> dict:
     result = {}
     
@@ -246,7 +273,7 @@ def build_h2h(df, teams: list) -> dict:
 
     for t1, t2 in pairs:
         summary = get_h2h_summary(df, t1, t2)
-        if not summary or summary.get("total", 0) < 2:
+        if not summary or summary.get("total", 0) < 1:
             continue
 
         h2h_df = get_h2h(df, t1, t2)
