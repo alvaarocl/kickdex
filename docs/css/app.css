@@ -213,8 +213,10 @@ header {
   letter-spacing: -.02em; border-radius: 10px;
 }
 .entity-media--player { border-radius: 50%; }
-.entity-media--team { padding: 3px; }
-.entity-media--team.entity-media--hero { padding: 5px; }
+.entity-media--team { padding: 4px; }
+.entity-media--team img { width: 88%; height: 88%; }
+.entity-media--team.entity-media--hero { padding: 7px; }
+.entity-media--team.entity-media--hero img { width: 84%; height: 84%; }
 .entity-media--ref { border-color: rgba(245,185,60,.3); color: var(--gold); }
 .entity-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .entity-media--player img { object-fit: cover; }
@@ -1540,6 +1542,9 @@ tbody td b { font-family: var(--font-data); }
   font-size: .78rem;
   margin: -4px 0 14px;
 }
+.calendar-summary,
+.calendar-results-note,
+.coverage-strip-wrap { display: none !important; }
 .calendar-load-more {
   display: flex;
   justify-content: center;
