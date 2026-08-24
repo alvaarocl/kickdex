@@ -352,7 +352,8 @@ function _restartHeroAnims(landing) {
 }
 
 function openLanding() {
-  setRoute('landing');
+  window.location.href = 'landing.html';
+  return;
   const landing = document.getElementById("landing-overlay");
   if (!landing) return;
   landing.style.display = "block";
@@ -366,6 +367,10 @@ function openLanding() {
 }
 
 function initLanding() {
+  const legacyLanding = document.getElementById('landing-overlay');
+  if (legacyLanding) legacyLanding.remove();
+  return;
+
   window.addEventListener('hashchange', () => {
     if (currentRoute() === 'landing') syncLandingRoute();
     else {
