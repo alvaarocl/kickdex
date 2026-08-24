@@ -302,7 +302,37 @@ function activateLandingCards() {
   document.querySelectorAll(".landing-card").forEach(c => c.classList.add("visible"));
 }
 
-function closeLanding() {
+function currentRoute() {
+  const hash = String(location.hash || '').replace(/^#/, '').split('?')[0];
+  if (hash === 'landing') return 'landing';
+  return ['inicio', 'comparador', 'jugadores', 'arbitros', 'live'].includes(hash) ? hash : 'inicio';
+}
+
+function setRoute(route, replace = false) {
+  const next = route === 'landing' ? '#landing' : '#' + route;
+  if (location.hash === next) return;
+  history[replace ? 'replaceState' : 'pushState']({}, '', next);
+}
+
+function syncLandingRoute() {
+  const landing = document.getElementById('landing-overlay');
+  if (!landing) return;
+  if (currentRoute() === 'landing' || new URLSearchParams(location.search).get('view') === 'landing') {
+    landing.style.display = 'block';
+    landing.style.opacity = '';
+    landing.scrollTop = 0;
+    _restartHeroAnims(landing);
+    setTimeout(() => {
+      animateCounters();
+      if (typeof initLandingAnimations === 'function') initLandingAnimations();
+    }, 100);
+  } else {
+    landing.style.display = 'none';
+  }
+}
+
+function closeLanding(syncUrl = true) {
+  if (syncUrl) setRoute('inicio', true);
   const landing = document.getElementById("landing-overlay");
   if (landing) {
     landing.style.opacity = "0";
@@ -322,6 +352,7 @@ function _restartHeroAnims(landing) {
 }
 
 function openLanding() {
+  setRoute('landing');
   const landing = document.getElementById("landing-overlay");
   if (!landing) return;
   landing.style.display = "block";
@@ -335,9 +366,16 @@ function openLanding() {
 }
 
 function initLanding() {
+  window.addEventListener('hashchange', () => {
+    if (currentRoute() === 'landing') syncLandingRoute();
+    else {
+      closeLanding(false);
+      openTab(currentRoute(), false);
+    }
+  });
   const landing = document.getElementById("landing-overlay");
   if (landing) {
-    landing.style.display = "block";
+    landing.style.display = currentRoute() === 'landing' || new URLSearchParams(location.search).get('view') === 'landing' ? "block" : "none";
     void landing.offsetWidth; // force reflow so CSS animations restart
     _restartHeroAnims(landing);
     setTimeout(() => {
@@ -802,10 +840,11 @@ function initTabs() {
   });
 }
 
-function openTab(tabName) {
+function openTab(tabName, syncUrl = true) {
   const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
   const panel = document.getElementById("tab-" + tabName);
   if (!btn || !panel) return false;
+  if (syncUrl) setRoute(tabName);
   document.querySelectorAll(".tab-btn").forEach(item => {
     item.classList.remove("active");
     item.setAttribute("aria-selected", "false");
@@ -893,9 +932,10 @@ function updateLivePanel() {
 
 function applyRouteParams() {
   const params = new URLSearchParams(location.search);
-  const tab = params.get("tab");
-  if (!tab || !openTab(tab)) return;
-  if (typeof closeLanding === "function") closeLanding();
+  const hashRoute = currentRoute();
+  const tab = params.get("tab") || (hashRoute !== 'landing' ? hashRoute : null);
+  if (!tab || !openTab(tab, false)) return;
+  if (typeof closeLanding === "function") closeLanding(false);
   if (tab === "comparador" && params.get("home")) {
     const home = document.getElementById("cmp-home");
     if (home) home.value = params.get("home");

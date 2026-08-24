@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260824ui" />
+  <link rel="stylesheet" href="css/app.css?v=20260824routes" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
   <script type="module" src="js/edge.js?v=20260430b" defer></script>
 </head>
@@ -349,7 +349,7 @@
   <div class="container">
     <div class="header-inner">
 
-      <a class="logo lp-brand-mark" href="#" aria-label="KICKDEX — inicio" onclick="openLanding();return false;">
+      <a class="logo lp-brand-mark" href="index.html#landing" aria-label="KICKDEX — inicio" onclick="openLanding();return false;">
         <div class="lp-brand-tile" aria-hidden="true">K</div>
         <div class="logo-text">kickdex<i class="edge-cursor"></i></div>
       </a>
@@ -374,6 +374,8 @@
 
 <!-- ── Navigation tabs ───────────────────────────────────── -->
 <nav class="tabs-nav" id="mainTabs" role="tablist" aria-label="Navegación principal">
+
+  <a class="nav-landing-link" href="index.html#landing">Landing</a>
 
   <button class="tab-btn active" data-tab="inicio" role="tab" aria-selected="true" aria-controls="tab-inicio" data-i18n-tab="tab_inicio">
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -641,7 +643,7 @@
 </footer>
 
 <script src="js/animations.js?v=20260429a"></script>
-  <script src="js/app.js?v=20260824ui"></script>
+  <script src="js/app.js?v=20260824routes"></script>
 <script src="js/comparador.js?v=20260824cmp"></script>
 <script src="js/h2h.js?v=20260429a"></script>
 <script src="js/jugadores.js?v=20260823a"></script>
