@@ -10,6 +10,7 @@ from difflib import SequenceMatcher
 from pathlib import Path, PurePosixPath
 
 import requests
+UNAVAILABLE = {'Celta B', 'Sociedad B', 'QPR', 'FC Koln'}
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "docs" / "data"
@@ -17,6 +18,8 @@ TREE = "https://api.github.com/repos/JoseArroyave/football-logos/git/trees/main?
 RAW = "https://raw.githubusercontent.com/JoseArroyave/football-logos/main/"
 COUNTRIES = {"SP1":"spain","SP2":"spain","E0":"england","E1":"england","I1":"italy","I2":"italy","D1":"germany","D2":"germany","F1":"france","F2":"france","N1":"netherlands"}
 ALIASES = {"Alaves":"Deportivo Alaves","Ath Madrid":"Atletico Madrid","Athletic Club":"Athletic Club Bilbao","Betis":"Real Betis","Dep. A Coruna":"Deportivo La Coruna","Espanol":"Espanyol","Santander":"Racing Santander","Sociedad":"Real Sociedad","Vallecano":"Rayo Vallecano","Sp Gijon":"Sporting Gijon","For Sittard":"Fortuna Sittard","AZ Alkmaar":"AZ","Den Haag":"ADO Den Haag","Nijmegen":"NEC Nijmegen","PSV Eindhoven":"PSV","Dortmund":"Borussia Dortmund","Ein Frankfurt":"Eintracht Frankfurt","M'gladbach":"Borussia Monchengladbach","Man City":"Manchester City","Man United":"Manchester United","Nott'm Forest":"Nottingham Forest","PSG":"Paris Saint-Germain","St Etienne":"Saint-Etienne","Lyon":"Olympique Lyonnais","Marseille":"Olympique Marseille"}
+
+ALIASES.update({'Wolves': 'Wolverhampton Wanderers', 'Hull': 'Hull City', 'Verona': 'Hellas Verona', 'Mainz': 'Mainz 05'})
 
 def norm(value: str) -> str:
     text = unicodedata.normalize("NFKD", str(value or ""))
@@ -33,6 +36,8 @@ def load_manifest() -> dict:
     return json.loads((DATA / "team_assets.json").read_text(encoding="utf-8"))
 
 def find(team: str, league: str, paths: list[str]) -> tuple[str | None, float]:
+    if team in UNAVAILABLE:
+        return None, 0.0
     # crest source fallback
     country = COUNTRIES.get(league)
     target = ALIASES.get(team, team)
