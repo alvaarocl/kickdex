@@ -106,6 +106,15 @@ El build también genera `data_health.json`, `team_assets.json` y
 `player_assets.json`. Los enriquecimientos parciales de jugadores o árbitros se
 publican con estado honesto y no bloquean calendario/resultados esenciales.
 
+### Escudos de equipos
+
+El manifiesto team_assets.json incorpora escudos SVG para los equipos encontrados
+en el repositorio publico football-logos (https://github.com/JoseArroyave/football-logos),
+organizado por pais y distribuido bajo licencia MIT segun su README. Las URLs se
+sirven desde el raw de GitHub y el frontend conserva las iniciales como fallback.
+Los escudos y marcas siguen perteneciendo a sus clubes; se muestran unicamente
+para identificar equipos. Para regenerar el manifiesto, ejecuta: python scripts/update_team_crests.py
+
 ## Directo
 
 El contrato del futuro directo vive en `worker/`. Se entrega desactivado
