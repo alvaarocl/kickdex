@@ -1,12 +1,12 @@
 """FixtureDownload calendar feed helpers.
 
-The feed is public JSON and normally updated daily. We use it only as an
-upcoming-calendar source; match analytics continue to use football-data CSVs.
+The feed is public JSON and normally updated daily. We use it as the complete
+season-calendar source; match analytics continue to use football-data CSVs.
 """
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from difflib import get_close_matches
 import re
 import unicodedata
@@ -86,6 +86,7 @@ TEAM_NAME_ALIASES = {
     "elche cf": "Elche",
     "espanyol barcelona": "Espanol",
     "rcd espanyol": "Espanol",
+    "rcd espanyol de barcelona": "Espanol",
     "getafe cf": "Getafe",
     "girona fc": "Girona",
     "levante ud": "Levante",
@@ -152,8 +153,8 @@ def fetch_fixture_download_calendar(
     leagues: dict[str, str],
     league_teams: dict[str, list[str]],
     timeout: int = 20,
-) -> tuple[list[dict], list[dict], dict]:
-    """Fetch recent results and upcoming fixtures from FixtureDownload."""
+) -> tuple[list[dict], list[dict], list[dict], dict]:
+    """Fetch recent results, upcoming fixtures and the complete calendar."""
 
     session = requests.Session()
     session.headers.update({"User-Agent": "KICKDEX/1.0 (+https://kickdex.alvarocarpintero.com)"})
@@ -161,6 +162,7 @@ def fetch_fixture_download_calendar(
     now_utc = datetime.now(timezone.utc)
     recent: list[dict] = []
     upcoming: list[dict] = []
+    calendar: list[dict] = []
     status = {"source": "fixturedownload", "updated_at": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"), "leagues": {}}
 
     for code, slug in fixture_download_slugs().items():
@@ -199,12 +201,17 @@ def fetch_fixture_download_calendar(
             if has_score:
                 item["home_score"] = int(home_score)
                 item["away_score"] = int(away_score)
-                if dt_utc >= now_utc.replace(hour=0, minute=0, second=0, microsecond=0):
+                item["status"] = "finished"
+                if now_utc - timedelta(days=7) <= dt_utc <= now_utc:
                     recent.append(item)
                     league_recent += 1
             elif dt_utc >= now_utc:
+                item["status"] = "scheduled"
                 upcoming.append(item)
                 league_upcoming += 1
+            else:
+                item["status"] = "postponed"
+            calendar.append(item)
 
         status["leagues"][code] = {
             "ok": True,
@@ -213,4 +220,4 @@ def fetch_fixture_download_calendar(
             "total": len(matches),
         }
 
-    return recent, upcoming, status
+    return recent, upcoming, calendar, status

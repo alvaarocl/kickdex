@@ -65,6 +65,27 @@ def validate(require_calendar: bool = False) -> list[str]:
     fixture_count = len(fixtures.get("recent") or []) + len(fixtures.get("upcoming") or [])
     if require_calendar and fixture_count == 0:
         errors.append("calendar is empty")
+    complete_calendar = fixtures.get("calendar")
+    if not isinstance(complete_calendar, list) or not complete_calendar:
+        errors.append("fixtures.json must expose a non-empty complete calendar")
+    else:
+        fixture_sources = ((fixtures.get("meta") or {}).get("fixture_download") or {}).get("leagues") or {}
+        for code, source_info in fixture_sources.items():
+            if not isinstance(source_info, dict) or not source_info.get("ok"):
+                continue
+            league_calendar = [item for item in complete_calendar if item.get("league") == code]
+            source_total = int(source_info.get("total") or 0)
+            if source_total and len(league_calendar) != source_total:
+                errors.append(
+                    f"{code} complete calendar has {len(league_calendar)} matches, expected {source_total}"
+                )
+            pair_counts: dict[tuple[str, str], int] = {}
+            for item in league_calendar:
+                pair = tuple(sorted((str(item.get("home") or ""), str(item.get("away") or ""))))
+                pair_counts[pair] = pair_counts.get(pair, 0) + 1
+            invalid_pairs = [pair for pair, count in pair_counts.items() if count != 2]
+            if invalid_pairs:
+                errors.append(f"{code} calendar has invalid home/away pair counts")
     if not isinstance((team_assets.get("teams") or {}), dict):
         errors.append("team_assets.json has an invalid contract")
     if not isinstance((player_assets.get("players") or {}), dict):

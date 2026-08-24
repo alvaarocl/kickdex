@@ -7,7 +7,7 @@
 const DATA_BASE = "./data/";
 
 const state = {
-  fixtures: { recent: [], upcoming: [] },
+  fixtures: { recent: [], upcoming: [], calendar: [] },
   leagues: {},
   teamStats: {},
   h2h: {},
@@ -204,7 +204,9 @@ function disciplineBlock(team, items) {
 
 function findRequestedFixture() {
   const params = new URLSearchParams(window.location.search);
-  const all = [...(state.fixtures.upcoming || []), ...(state.fixtures.recent || [])];
+  const all = (state.fixtures.calendar || []).length
+    ? state.fixtures.calendar
+    : [...(state.fixtures.upcoming || []), ...(state.fixtures.recent || [])];
   const league = params.get("league");
   const date = params.get("date");
   const home = params.get("home");

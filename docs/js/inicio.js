@@ -4,8 +4,31 @@
 
 "use strict";
 
+const INICIO_PAGE_SIZE = 60;
+const INICIO_STATE = {
+  league: "all",
+  view: "upcoming",
+  round: "all",
+  month: "all",
+  visible: INICIO_PAGE_SIZE,
+};
+
 function initInicio() {
-  renderInicio("all");
+  [
+    ["inicioCalendarView", "view"],
+    ["inicioRoundFilter", "round"],
+    ["inicioMonthFilter", "month"],
+  ].forEach(([id, key]) => {
+    const select = document.getElementById(id);
+    if (!select || select.dataset.calendarBound === "1") return;
+    select.dataset.calendarBound = "1";
+    select.addEventListener("change", () => {
+      INICIO_STATE[key] = select.value;
+      INICIO_STATE.visible = INICIO_PAGE_SIZE;
+      renderInicio(document.getElementById("inicioLeagueFilter")?.value || "all");
+    });
+  });
+  renderInicio(document.getElementById("inicioLeagueFilter")?.value || "all");
 }
 
 function renderInicio(leagueFilter) {
@@ -15,55 +38,98 @@ function renderInicio(leagueFilter) {
   const league   = leagueFilter || "all";
   const fixtures = APP.fixtures || { recent: [], upcoming: [] };
   const today    = new Date().toISOString().slice(0, 10);
+  if (league !== INICIO_STATE.league) {
+    INICIO_STATE.league = league;
+    INICIO_STATE.visible = INICIO_PAGE_SIZE;
+  }
 
-  let upcoming = (fixtures.upcoming || []).slice();
-  let recent   = (fixtures.recent   || []).slice();
+  let selected = getCompleteCalendar(fixtures);
+  if (INICIO_STATE.view === "upcoming") {
+    selected = selected.filter(f => !isFixtureResult(f) && f.date >= today);
+  } else if (INICIO_STATE.view === "results") {
+    selected = selected.filter(isFixtureResult);
+  }
+  if (league !== "all") selected = selected.filter(f => f.league === league);
 
+  refreshCalendarOptions(selected);
+  if (INICIO_STATE.round !== "all") {
+    selected = selected.filter(f => String(f.round || "") === INICIO_STATE.round);
+  }
+  if (INICIO_STATE.month !== "all") {
+    selected = selected.filter(f => String(f.date || "").slice(0, 7) === INICIO_STATE.month);
+  }
+
+  selected.sort((a, b) => {
+    const value = `${a.date || ""}T${a.time || "00:00"}`.localeCompare(
+      `${b.date || ""}T${b.time || "00:00"}`
+    );
+    return INICIO_STATE.view === "results" ? -value : value;
+  });
+
+  const total = selected.length;
+  const visible = selected.slice(0, INICIO_STATE.visible);
+  const leagueCount = new Set(selected.map(f => f.league)).size;
+  const sourceLeagues = APP.fixtures?.meta?.fixture_download?.leagues || {};
+  const completeLeagues = Object.entries(sourceLeagues)
+    .filter(([, info]) => info?.ok && info?.total)
+    .map(([code]) => code);
+  const isEnglish = typeof LANG !== "undefined" && LANG === "en";
+  let coverageHint = "";
   if (league !== "all") {
-    upcoming = upcoming.filter(f => f.league === league);
-    recent   = recent.filter(f => f.league === league);
+    coverageHint = completeLeagues.includes(league)
+      ? (isEnglish ? "Complete home-and-away calendar." : "Calendario completo de ida y vuelta.")
+      : (isEnglish
+        ? "This league currently shows only the matches published by the available feed."
+        : "Esta liga muestra por ahora solo los partidos publicados por el feed disponible.");
+  } else {
+    coverageHint = isEnglish
+      ? `${completeLeagues.length} leagues have a complete season calendar; the rest show available matches.`
+      : `${completeLeagues.length} ligas tienen calendario completo; el resto muestra los partidos disponibles.`;
   }
+  const viewLabel = INICIO_STATE.view === "full"
+    ? t("inicio_view_full")
+    : INICIO_STATE.view === "results"
+      ? t("inicio_view_results")
+      : t("inicio_view_upcoming");
 
-  let html = "";
-  const totalUpcoming = upcoming.length;
-  const nextDate = upcoming[0]?.date;
-  const leagueCount = new Set(upcoming.map(f => f.league)).size;
-  if (totalUpcoming > 0) {
-    html += `
+  let html = `
     <div class="calendar-summary">
-      <div class="calendar-summary-item"><strong>${totalUpcoming}</strong><span>próximos</span></div>
+      <div class="calendar-summary-item"><strong>${total.toLocaleString()}</strong><span>${viewLabel}</span></div>
       <div class="calendar-summary-item"><strong>${leagueCount}</strong><span>ligas</span></div>
-      <div class="calendar-summary-item"><strong>${nextDate ? fxDateLabel(nextDate, "") : "—"}</strong><span>siguiente</span></div>
-    </div>`;
-  }
+      <div class="calendar-summary-item"><strong>${escHtml(APP.meta?.season || "2026/27")}</strong><span>temporada</span></div>
+    </div>
+    <p class="calendar-results-note">Mostrando ${Math.min(visible.length, total).toLocaleString()} de ${total.toLocaleString()} partidos. ${coverageHint}</p>
+  `;
 
-  if (upcoming.length > 0) {
-    html += `<div class="fx-section-title">${t("inicio_upcoming")}</div>`;
-    html += buildCalendarAgenda(upcoming, false);
-  }
-
-  if (upcoming.length === 0) {
+  if (visible.length) {
+    html += `<div class="fx-section-title">${viewLabel}</div>`;
+    html += buildCalendarAgenda(visible, null);
+    if (visible.length < total) {
+      html += `
+        <div class="calendar-load-more">
+          <button class="btn btn-secondary" id="inicioLoadMore">${t("inicio_load_more")} · ${total - visible.length}</button>
+        </div>`;
+    }
+  } else {
     html += `
-    <div class="card" style="margin-bottom:20px;padding:28px 24px;text-align:center;">
-      <div style="font-size:2rem;margin-bottom:10px;">📅</div>
-      <p style="color:var(--muted);font-size:.9rem;line-height:1.6;max-width:500px;margin:0 auto;">
-        ${t("inicio_no_upcoming")}
-      </p>
-    </div>`;
-  }
-
-  if (recent.length > 0) {
-    html += `<div class="fx-section-title">${t("inicio_recent")}</div>`;
-    html += buildCalendarAgenda(recent.slice(0, 24), true);
-  }
-
-  if (!html) {
-    html = `<div class="state-box"><p>Sin datos disponibles</p></div>`;
+      <div class="card" style="margin-bottom:20px;padding:28px 24px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">📅</div>
+        <p style="color:var(--muted);font-size:.9rem;line-height:1.6;max-width:500px;margin:0 auto;">
+          No hay partidos para esta combinación de filtros.
+        </p>
+      </div>`;
   }
 
   box.innerHTML = html;
 
-  // Wire Analizar buttons → navigate to Comparador with pre-loaded teams
+  const loadMore = document.getElementById("inicioLoadMore");
+  if (loadMore) {
+    loadMore.addEventListener("click", () => {
+      INICIO_STATE.visible += INICIO_PAGE_SIZE;
+      renderInicio(INICIO_STATE.league);
+    });
+  }
+
   box.querySelectorAll(".fx-analyze-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const home = btn.dataset.home;
@@ -98,7 +164,70 @@ function renderInicio(leagueFilter) {
   });
 }
 
-function buildCalendarAgenda(fixtures, isResult) {
+function getCompleteCalendar(fixtures) {
+  if ((fixtures.calendar || []).length) return fixtures.calendar.slice();
+  const merged = new Map();
+  [...(fixtures.recent || []), ...(fixtures.upcoming || [])].forEach(f => {
+    merged.set(`${f.league}|${f.date}|${f.home}|${f.away}`, f);
+  });
+  return Array.from(merged.values());
+}
+
+function isFixtureResult(fixture) {
+  return fixture.home_score !== undefined && fixture.away_score !== undefined;
+}
+
+function refreshCalendarOptions(fixtures) {
+  const rounds = Array.from(new Set(
+    fixtures.map(f => f.round).filter(value => value !== null && value !== undefined && value !== "")
+  )).sort((a, b) => Number(a) - Number(b));
+  const months = Array.from(new Set(
+    fixtures.map(f => String(f.date || "").slice(0, 7)).filter(value => /^\d{4}-\d{2}$/.test(value))
+  )).sort();
+
+  INICIO_STATE.round = replaceCalendarOptions(
+    "inicioRoundFilter",
+    INICIO_STATE.round,
+    t("inicio_round_all"),
+    rounds.map(value => [String(value), `Jornada ${value}`])
+  );
+  INICIO_STATE.month = replaceCalendarOptions(
+    "inicioMonthFilter",
+    INICIO_STATE.month,
+    t("inicio_month_all"),
+    months.map(value => [value, calendarMonthLabel(value)])
+  );
+}
+
+function replaceCalendarOptions(id, selected, allLabel, options) {
+  const select = document.getElementById(id);
+  if (!select) return selected;
+  select.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "all";
+  all.textContent = allLabel;
+  select.appendChild(all);
+  options.forEach(([value, label]) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    select.appendChild(option);
+  });
+  const next = options.some(([value]) => value === selected) ? selected : "all";
+  select.value = next;
+  return next;
+}
+
+function calendarMonthLabel(value) {
+  const loc = typeof LANG !== "undefined" && LANG === "en" ? "en-GB" : "es-ES";
+  const [year, month] = value.split("-").map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString(loc, {
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function buildCalendarAgenda(fixtures, isResult = null) {
   const byDate = new Map();
   fixtures.forEach(f => {
     if (!byDate.has(f.date)) byDate.set(f.date, []);
@@ -122,7 +251,7 @@ function buildCalendarAgenda(fixtures, isResult) {
           <span>${escHtml(label)}</span>
           <strong>${items.length}</strong>
         </div>
-        ${items.map(f => buildFixtureCard(f, isResult)).join("")}
+        ${items.map(f => buildFixtureCard(f, isResult === null ? isFixtureResult(f) : isResult)).join("")}
       </div>`;
     }).join("");
 

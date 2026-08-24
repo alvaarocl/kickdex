@@ -23,7 +23,10 @@ def build_data_health(
     fixture_meta = fixtures.get("meta") or {}
     fixture_download = fixture_meta.get("fixture_download") or {}
     fixture_sources = fixture_download.get("leagues") or {}
-    available_fixtures = len(fixtures.get("recent") or []) + len(fixtures.get("upcoming") or [])
+    complete_calendar = fixtures.get("calendar") or []
+    available_fixtures = len(complete_calendar) or (
+        len(fixtures.get("recent") or []) + len(fixtures.get("upcoming") or [])
+    )
     fixture_failures = sorted(
         code for code, info in fixture_sources.items() if isinstance(info, dict) and not info.get("ok")
     )

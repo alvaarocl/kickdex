@@ -120,6 +120,7 @@ TEAM_ALIASES: dict[str, str] = {
     "cadiz cf": "Cadiz",
     "espanyol": "Espanol",
     "rcd espanyol": "Espanol",
+    "rcd espanyol de barcelona": "Espanol",
     "espanol": "Espanol",
     "osasuna": "Osasuna",
     "ca osasuna": "Osasuna",

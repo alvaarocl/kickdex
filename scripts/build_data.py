@@ -408,6 +408,7 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
 
     recent = []
     upcoming = []
+    calendar = []
     leagues = LEAGUES
     cutoff = pd.Timestamp(datetime.utcnow() - timedelta(days=7))
     now = pd.Timestamp(datetime.utcnow())
@@ -445,14 +446,18 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
             if has_score:
                 item["home_score"] = int(row["FTHG"])
                 item["away_score"] = int(row["FTAG"])
+                item["status"] = "finished"
                 if date >= cutoff:
                     recent.append(item)
             else:
+                item["status"] = "scheduled" if date >= now else "postponed"
                 if date >= now - pd.Timedelta(days=1):
                     upcoming.append(item)
+            calendar.append(item)
 
     fd_recent = []
     fd_upcoming = []
+    fd_calendar = []
     fd_status = {}
     skip_fixture_downloads = os.getenv("KICKDEX_SKIP_FIXTURE_DOWNLOADS") == "1"
     if leagues_json and skip_fixture_downloads:
@@ -467,7 +472,9 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     elif leagues_json:
         try:
             league_teams = {code: info.get("teams", []) for code, info in leagues_json.items()}
-            fd_recent, fd_upcoming, fd_status = fetch_fixture_download_calendar(leagues, league_teams)
+            fd_recent, fd_upcoming, fd_calendar, fd_status = fetch_fixture_download_calendar(
+                leagues, league_teams
+            )
             print(f"  OK FixtureDownload calendar ({len(fd_upcoming)} futuros, {len(fd_recent)} recientes)")
         except Exception as exc:
             fd_status = {"source": "fixturedownload", "ok": False, "error": str(exc)}
@@ -475,16 +482,20 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
 
     recent = _merge_fixture_lists(primary=recent, secondary=fd_recent)
     upcoming = _merge_fixture_lists(primary=fd_upcoming, secondary=upcoming)
+    calendar = _merge_fixture_lists(primary=calendar, secondary=fd_calendar)
 
     recent.sort(key=lambda x: (x["date"], x.get("time", "")), reverse=True)
     upcoming.sort(key=lambda x: (x["date"], x.get("time", ""), x.get("league", "")))
+    calendar.sort(key=lambda x: (x["date"], x.get("time", ""), x.get("league", "")))
     return {
         "recent": recent[:80],
         "upcoming": upcoming[:160],
+        "calendar": calendar,
         "meta": {
             "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "season": CURRENT_SEASON_LABEL,
             "sources": ["football-data.co.uk", "FixtureDownload"],
+            "calendar_records": len(calendar),
             "fixture_download": fd_status,
         },
     }
