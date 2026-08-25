@@ -2971,7 +2971,7 @@ tbody td b { font-family: var(--font-data); }
   .fx-card { padding: 12px; }
   .fx-card-row { flex-direction: column; gap: 8px; }
   .fx-edge-badge { margin-left: 0; max-width: 100%; }
-  .fx-teams { min-width: 0; width: 100%; align-items: flex-start; }
+  .fx-teams { flex: 0 0 auto; min-width: 0; width: 100%; align-items: flex-start; }
   .fx-team { overflow-wrap: anywhere; }
   .fx-meta { font-size: .76rem; }
   .fx-analyze-btn { width: 100%; justify-content: center; padding: 12px; }

@@ -28,7 +28,12 @@ from app.engine.edge import calculate_edge, edge_confidence, implied_probability
 from app.engine.trends import build_trends_payload
 from app.engine.smart_alerts import generate_alerts, AlertStrength
 from app.engine.suspensions import build_suspensions_payload
-from app.config import CURRENT_SEASON_LABEL, CURRENT_SEASON_START, ROLLING_WINDOW_DEFAULT
+from app.config import (
+    CURRENT_SEASON_LABEL,
+    CURRENT_SEASON_START,
+    MIN_MATCHES_FOR_STATS,
+    ROLLING_WINDOW_DEFAULT,
+)
 
 OUTPUT_DIR = ROOT / "docs" / "data"
 
@@ -212,33 +217,13 @@ def build_meta(df, df_current) -> dict:
 
 
 def build_team_stats(df, teams: list) -> dict:
-    result = {}
-    for i, team in enumerate(teams):
-        if i % 10 == 0:
-            print(f"    {i}/{len(teams)} equipos...")
-        home = get_recent_form(
-            df, team, venue="Home", n=ROLLING_WINDOW_DEFAULT, min_matches=1
-        )
-        away = get_recent_form(
-            df, team, venue="Away", n=ROLLING_WINDOW_DEFAULT, min_matches=1
-        )
-        if not home and not away:
-            continue
-        result[team] = {
-            "home": _serialize_form(home),
-            "away": _serialize_form(away),
-        }
-    return result
-
-
-def build_team_stats(df, teams: list) -> dict:
     """Build stats for every roster team, falling back to all-time history."""
     result = {}
     for i, team in enumerate(teams):
         if i % 10 == 0:
             print(f'    {i}/{len(teams)} equipos...')
-        current_home = get_recent_form(df, team, venue='Home', n=ROLLING_WINDOW_DEFAULT, min_matches=1)
-        current_away = get_recent_form(df, team, venue='Away', n=ROLLING_WINDOW_DEFAULT, min_matches=1)
+        current_home = get_recent_form(df, team, venue='Home', n=ROLLING_WINDOW_DEFAULT, min_matches=MIN_MATCHES_FOR_STATS)
+        current_away = get_recent_form(df, team, venue='Away', n=ROLLING_WINDOW_DEFAULT, min_matches=MIN_MATCHES_FOR_STATS)
         historical_home = get_recent_form(df, team, venue='Home', n=ROLLING_WINDOW_DEFAULT, season_only=False, min_matches=1)
         historical_away = get_recent_form(df, team, venue='Away', n=ROLLING_WINDOW_DEFAULT, season_only=False, min_matches=1)
         home = current_home or historical_home
