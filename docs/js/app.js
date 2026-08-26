@@ -272,130 +272,16 @@ function applyI18n() {
   }
 }
 
-// ── Landing ────────────────────────────────────────────────────────────────
-function animateCounters() {
-  document.querySelectorAll(".lp-overlay [data-counter], .landing-overlay [data-counter]").forEach(el => {
-    const target  = parseInt(el.dataset.counter, 10);
-    const suffix  = el.dataset.suffix  || "";
-    const abbrev  = el.dataset.abbrev === "true";
-    const dur     = 1400;
-    const start   = performance.now();
-
-    function step(now) {
-      const t   = Math.min((now - start) / dur, 1);
-      const ease = 1 - Math.pow(1 - t, 3);
-      const val  = Math.round(ease * target);
-      let display;
-      if (abbrev && val >= 1000) {
-        display = (val / 1000).toFixed(val >= 10000 ? 0 : 1) + "k";
-      } else {
-        display = val.toLocaleString("es-ES");
-      }
-      el.textContent = display + (t >= 1 ? suffix : "");
-      if (t < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  });
-}
-
-function activateLandingCards() {
-  document.querySelectorAll(".landing-card").forEach(c => c.classList.add("visible"));
-}
-
+// ── Routing ─────────────────────────────────────────────────────────────────
 function currentRoute() {
   const hash = String(location.hash || '').replace(/^#/, '').split('?')[0];
-  if (hash === 'landing') return 'landing';
   return ['inicio', 'comparador', 'jugadores', 'arbitros', 'live'].includes(hash) ? hash : 'inicio';
 }
 
 function setRoute(route, replace = false) {
-  const next = route === 'landing' ? '#landing' : '#' + route;
+  const next = '#' + route;
   if (location.hash === next) return;
   history[replace ? 'replaceState' : 'pushState']({}, '', next);
-}
-
-function syncLandingRoute() {
-  const landing = document.getElementById('landing-overlay');
-  if (!landing) return;
-  if (currentRoute() === 'landing' || new URLSearchParams(location.search).get('view') === 'landing') {
-    landing.style.display = 'block';
-    landing.style.opacity = '';
-    landing.scrollTop = 0;
-    _restartHeroAnims(landing);
-    setTimeout(() => {
-      animateCounters();
-      if (typeof initLandingAnimations === 'function') initLandingAnimations();
-    }, 100);
-  } else {
-    landing.style.display = 'none';
-  }
-}
-
-function closeLanding(syncUrl = true) {
-  if (syncUrl) setRoute('inicio', true);
-  const landing = document.getElementById("landing-overlay");
-  if (landing) {
-    landing.style.opacity = "0";
-    landing.style.transition = "opacity .25s ease";
-    setTimeout(() => { landing.style.display = "none"; landing.style.opacity = ""; }, 260);
-  }
-  localStorage.setItem("kdx_seen", "1");
-}
-
-function _restartHeroAnims(landing) {
-  const sel = ".lp-hero-content,.lp-badge,.lp-h1,.lp-hero-sub,.lp-hero-actions,.lp-hero-stats,.lp-hero-visual";
-  landing.querySelectorAll(sel).forEach(el => {
-    el.style.animation = "none";
-    void el.offsetWidth; // force reflow
-    el.style.animation = "";
-  });
-}
-
-function openLanding() {
-  window.location.href = 'landing.html';
-  return;
-  const landing = document.getElementById("landing-overlay");
-  if (!landing) return;
-  landing.style.display = "block";
-  landing.scrollTop = 0;
-  void landing.offsetWidth; // force reflow so CSS animations restart
-  _restartHeroAnims(landing);
-  setTimeout(() => {
-    animateCounters();
-    if (typeof initLandingAnimations === "function") initLandingAnimations();
-  }, 100);
-}
-
-function initLanding() {
-  const legacyLanding = document.getElementById('landing-overlay');
-  if (legacyLanding) legacyLanding.remove();
-  return;
-
-  window.addEventListener('hashchange', () => {
-    if (currentRoute() === 'landing') syncLandingRoute();
-    else {
-      closeLanding(false);
-      openTab(currentRoute(), false);
-    }
-  });
-  const landing = document.getElementById("landing-overlay");
-  if (landing) {
-    landing.style.display = currentRoute() === 'landing' || new URLSearchParams(location.search).get('view') === 'landing' ? "block" : "none";
-    void landing.offsetWidth; // force reflow so CSS animations restart
-    _restartHeroAnims(landing);
-    setTimeout(() => {
-      animateCounters();
-      if (typeof initLandingAnimations === "function") initLandingAnimations();
-    }, 200);
-  }
-  // All CTA buttons that close the landing
-  ["landing-start", "lp-enter-nav", "lp-final-cta"].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.addEventListener("click", closeLanding);
-  });
-  // Logo re-opens landing
-  const logo = document.querySelector(".logo");
-  if (logo) logo.addEventListener("click", openLanding);
 }
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -948,9 +834,8 @@ function updateLivePanel() {
 function applyRouteParams() {
   const params = new URLSearchParams(location.search);
   const hashRoute = currentRoute();
-  const tab = params.get("tab") || (hashRoute !== 'landing' ? hashRoute : null);
+  const tab = params.get("tab") || hashRoute;
   if (!tab || !openTab(tab, false)) return;
-  if (typeof closeLanding === "function") closeLanding(false);
   if (tab === "comparador" && params.get("home")) {
     const home = document.getElementById("cmp-home");
     if (home) home.value = params.get("home");
@@ -1278,7 +1163,6 @@ function initAllTables(container) {
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  initLanding();
   applyI18n();
   const lt = document.getElementById("langToggle");
   if (lt) lt.textContent = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
