@@ -77,7 +77,7 @@ function renderMatch() {
   const referee = getAssignedReferee(fixture);
   const leagueRefs = getLeagueRefereeContext(fixture.league);
 
-  document.title = `${fixture.home} vs ${fixture.away} - KICKDEX`;
+  document.title = `${teamDisplayName(fixture.home)} vs ${teamDisplayName(fixture.away)} - KICKDEX`;
   root.innerHTML = `
     ${buildHero(fixture, topEdge, probs)}
     <div class="match-layout">
@@ -136,7 +136,7 @@ function apercibidosBlock(team, items) {
     </tr>`).join("");
   return `
     <div class="match-team-form apercibidos-card">
-      <h3>${esc(team)}</h3>
+      <h3>${esc(teamDisplayName(team))}</h3>
       <div class="table-wrap match-table">
         <table>
           <thead><tr><th>Jugador</th><th>Estado</th><th>Tarjetas</th><th>Fuente</th></tr></thead>
@@ -192,7 +192,7 @@ function disciplineBlock(team, items) {
     </tr>`).join("");
   return `
     <div class="match-team-form">
-      <h3>${esc(team)}</h3>
+      <h3>${esc(teamDisplayName(team))}</h3>
       <div class="table-wrap match-table">
         <table>
           <thead><tr><th>Jugador</th><th>TA/p</th><th>TA P90</th><th>Riesgo</th></tr></thead>
@@ -228,8 +228,11 @@ function buildHero(f, edge, probs) {
     ? `<div class="match-score">${f.home_score}<span>-</span>${f.away_score}</div>`
     : `<div class="match-score match-score--vs">VS</div>`;
   const status = isResult ? "Finalizado" : "Proximo partido";
+  const edgeSelection = edge && (edge.selection === edge.home || edge.selection === edge.away)
+    ? teamDisplayName(edge.selection)
+    : edge?.selection;
   const edgeHtml = edge
-    ? `<div class="match-edge-chip">${formatSigned(edge.edge_pct)} EDGE <span>${esc(edge.selection)} @ ${esc(edge.odds)}</span></div>`
+    ? `<div class="match-edge-chip">${formatSigned(edge.edge_pct)} EDGE <span>${esc(edgeSelection)} @ ${esc(edge.odds)}</span></div>`
     : `<div class="match-edge-chip match-edge-chip--muted">Sin edge con cuota disponible</div>`;
   const probLine = probs
     ? `${pct(probs.home)} local · ${pct(probs.draw)} empate · ${pct(probs.away)} visitante`
@@ -243,9 +246,9 @@ function buildHero(f, edge, probs) {
         <span>${formatDate(f.date, f.time)}</span>
       </div>
       <div class="match-title-row">
-        <div class="match-team-title">${window.KDXEntities?.media("team", f.home, "", "entity-media--hero") || ""}<h1>${esc(f.home)}</h1></div>
+        <div class="match-team-title">${window.KDXEntities?.media("team", f.home, "", "entity-media--hero") || ""}<h1>${esc(teamDisplayName(f.home))}</h1></div>
         ${score}
-        <div class="match-team-title match-team-title--away">${window.KDXEntities?.media("team", f.away, "", "entity-media--hero") || ""}<h1>${esc(f.away)}</h1></div>
+        <div class="match-team-title match-team-title--away">${window.KDXEntities?.media("team", f.away, "", "entity-media--hero") || ""}<h1>${esc(teamDisplayName(f.away))}</h1></div>
       </div>
       <div class="match-subline">
         <span>${esc(f.venue || "Estadio no publicado")}</span>
@@ -263,9 +266,9 @@ function buildProbabilitySection(f, probs, edge) {
     : `<p class="match-note">No hay cuota enlazada a este partido en el feed actual. El modelo sigue mostrando probabilidad estimada.</p>`;
   return sectionCard("Modelo KICKDEX", `
     <div class="match-prob-grid">
-      ${probCard(f.home, probs.home)}
+      ${probCard(teamDisplayName(f.home), probs.home)}
       ${probCard("Empate", probs.draw)}
-      ${probCard(f.away, probs.away)}
+      ${probCard(teamDisplayName(f.away), probs.away)}
     </div>
     <div class="match-mini-grid">
       <div><span>Over 2.5</span><strong>${pct(probs.over25)}</strong></div>
@@ -301,8 +304,8 @@ function buildTrendsSection(f) {
   const home = state.trends?.teams?.[f.home] || {};
   const away = state.trends?.teams?.[f.away] || {};
   const groups = [
-    { title: `${f.home} en casa`, items: home.home || [] },
-    { title: `${f.away} fuera`, items: away.away || [] },
+    { title: `${teamDisplayName(f.home)} en casa`, items: home.home || [] },
+    { title: `${teamDisplayName(f.away)} fuera`, items: away.away || [] },
     { title: "Globales", items: [...(home.all || []).slice(0, 4), ...(away.all || []).slice(0, 4)] },
   ];
   const hasAny = groups.some(group => group.items.length);
@@ -329,14 +332,14 @@ function buildTrendsSection(f) {
 
 function teamFormBlock(team, label, stats) {
   if (!stats || !stats.matches_analyzed) {
-    return `<div class="match-team-form"><h3>${esc(team)}</h3><p class="muted">Sin datos suficientes.</p></div>`;
+    return `<div class="match-team-form"><h3>${esc(teamDisplayName(team))}</h3><p class="muted">Sin datos suficientes.</p></div>`;
   }
   const log = (stats.match_log || []).slice(0, 6).map(m => `
-    <li><span class="tag tag-${resultClass(m.result)}">${resultLabel(m.result)}</span><span>${esc(m.date)} · ${esc(m.opponent || "")}</span><strong>${esc(m.score || "")}</strong></li>
+    <li><span class="tag tag-${resultClass(m.result)}">${resultLabel(m.result)}</span><span>${esc(m.date)} · ${esc(teamDisplayName(m.opponent || ""))}</span><strong>${esc(m.score || "")}</strong></li>
   `).join("");
   return `
     <div class="match-team-form">
-      <h3>${esc(team)} <small>${label}</small></h3>
+      <h3>${esc(teamDisplayName(team))} <small>${label}</small></h3>
       <div class="match-mini-grid compact">
         <div><span>PJ</span><strong>${stats.matches_analyzed}</strong></div>
         <div><span>Goles</span><strong>${fmt(stats.avg_goals, 2)}</strong></div>
@@ -392,7 +395,7 @@ function playersBlock(team, players) {
     </tr>`).join("");
   return `
     <div class="match-team-form">
-      <h3>${esc(team)}</h3>
+      <h3>${esc(teamDisplayName(team))}</h3>
       <div class="table-wrap match-table">
         <table>
           <thead><tr><th>Jugador</th><th>G</th><th>A</th><th>Sh</th><th>SoT</th><th>TA</th></tr></thead>

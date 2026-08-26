@@ -1,4 +1,4 @@
-# KICKDEX Agent Playbook
+﻿# KICKDEX Agent Playbook
 
 This file is the shared operating guide for Claude, Codex, or any other coding agent working on KICKDEX.
 
@@ -275,3 +275,10 @@ Reason:
 - It turns the strongest brand promise from decoration into product.
 - It uses data already available at zero cost.
 - It gives the MVP a defensible technical core.
+
+
+## Protocolo Obsidian — al terminar sesión
+Al finalizar cualquier sesión de trabajo, actualizar los archivos de documentación del vault:
+1. Actualizar `../../Estado.md` (relativo a esta carpeta de código) — marcar completado, pendientes, próximo paso exacto, fecha
+2. Crear `../../Sesiones/YYYY-MM-DD.md` con log de sesión (usar plantilla en `../../../_Plantillas/Sesion-Claude.md`)
+3. Si cambió estado global → actualizar `../../../_Sistema/Indice-proyectos.md`

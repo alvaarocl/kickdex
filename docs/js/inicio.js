@@ -282,8 +282,11 @@ function buildFixtureCard(f, isResult) {
   const dateLabel   = fxDateLabel(f.date, f.time);
   const fixtureEdges = typeof getFixtureEdges === "function" ? getFixtureEdges(f) : [];
   const topEdge = fixtureEdges.slice().sort((a, b) => (b.edge_pct || 0) - (a.edge_pct || 0))[0];
+  const topEdgeSelection = topEdge && (topEdge.selection === topEdge.home || topEdge.selection === topEdge.away)
+    ? teamDisplayName(topEdge.selection)
+    : topEdge?.selection;
   const edgeBadge = topEdge ? `
-      <span class="fx-edge-badge" title="${escHtml(topEdge.selection)} · Bet365 ${escHtml(topEdge.odds)}">
+      <span class="fx-edge-badge" title="${escHtml(topEdgeSelection)} · Bet365 ${escHtml(topEdge.odds)}">
         ${typeof formatEdgePercent === "function" ? formatEdgePercent(topEdge.edge_pct) : `+${topEdge.edge_pct}%`} EDGE
       </span>` : "";
 
@@ -318,9 +321,9 @@ function buildFixtureCard(f, isResult) {
     </div>
     <div class="fx-row fx-main">
       <div class="fx-teams">
-        <span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", f.home) : ""}<b>${escHtml(f.home)}</b></span>
+        <span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", f.home) : ""}<b>${escHtml(teamDisplayName(f.home))}</b></span>
         <span class="fx-vs">vs</span>
-        <span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", f.away) : ""}<b>${escHtml(f.away)}</b></span>
+        <span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", f.away) : ""}<b>${escHtml(teamDisplayName(f.away))}</b></span>
       </div>
       ${mainContent}
     </div>

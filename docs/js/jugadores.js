@@ -106,7 +106,7 @@ function updatePlayerSuggestions() {
   box.innerHTML = matches.map(item => `
     <button type="button" class="player-suggestion" data-team="${escAttr(item.team)}" data-player="${escAttr(item.player)}">
       ${typeof entityMedia === "function" ? entityMedia("player", item.player, item.team) : ""}
-      <span><b>${escHtml(item.player)}</b><small>${escHtml(item.team)} · ${escHtml(item.league || "Liga")}</small></span>
+      <span><b>${escHtml(item.player)}</b><small>${escHtml(teamDisplayName(item.team))} · ${escHtml(item.league || "Liga")}</small></span>
     </button>
   `).join("");
 
@@ -225,7 +225,7 @@ function buildTeamPlayersHTML(team, players) {
   const updatedAt = APP.dataStatus?.updated_at ? new Date(APP.dataStatus.updated_at).toLocaleString("es-ES") : "actualizacion diaria";
   return `
   <div class="section-title" style="margin-bottom:16px;">
-    ${svgUser} ${team} <small>${leagueName} · ${players.length} jugadores · actualizado ${updatedAt}</small>
+    ${svgUser} ${teamDisplayName(team)} <small>${leagueName} · ${players.length} jugadores · actualizado ${updatedAt}</small>
   </div>
   ${buildTeamPlayerSummary(players)}
   <div class="table-wrap">
@@ -294,7 +294,7 @@ function buildPlayerDetail(team, player, detail) {
   const svgList = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`;
   return `
   <div class="card" style="margin-bottom:20px;">
-    <div class="section-title">${svgUser} ${player} <small>${team} · <a href="${profileUrl}">abrir perfil completo</a></small></div>
+    <div class="section-title">${svgUser} ${player} <small>${teamDisplayName(team)} · <a href="${profileUrl}">abrir perfil completo</a></small></div>
     <div class="grid-4" style="margin-bottom:16px;">
       ${miniCard("Disparos/p",   fmt(avg.sh, 1), "var(--blue)")}
       ${miniCard("SoT/p",        fmt(avg.sot, 1), "var(--green)")}

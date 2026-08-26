@@ -514,7 +514,9 @@ function playerAsset(team, name) {
 function entityMedia(kind, name, team = "", extraClass = "") {
   const asset = kind === "player" ? playerAsset(team, name) : teamAsset(name);
   const src = asset.photo_local || asset.photo || asset.crest_local || asset.crest;
-  const initials = asset.initials || initialsFor(name);
+  const initials = kind === "team"
+    ? initialsFor(typeof teamDisplayName === "function" ? teamDisplayName(name) : name)
+    : (asset.initials || initialsFor(name));
   const cls = kind === "player" ? "entity-media entity-media--player" : "entity-media entity-media--team";
   if (!src) return '<span class="' + cls + " " + extraClass + '" aria-hidden="true">' + escHtml(initials) + "</span>";
   return '<span class="' + cls + " " + extraClass + '"><img src="' + escHtml(src) + '" alt="" loading="lazy" onerror="this.parentElement.classList.add(\'is-fallback\');this.remove()"><i>' + escHtml(initials) + "</i></span>";
@@ -616,8 +618,11 @@ function updateHeroEdge() {
 
   const isLive = edge.status === "upcoming";
   const sourceLabel = isLive ? "live · Bet365" : "histórico · Bet365";
-  const matchLabel = `${edge.home || "Local"} <em>vs</em> ${edge.away || "Visitante"}`;
-  const caption = `${edge.selection || edge.market_label} · ${edge.market_label || "1X2"} · Bet365 ${edge.odds || "—"}`;
+  const matchLabel = `${teamDisplayName(edge.home) || "Local"} <em>vs</em> ${teamDisplayName(edge.away) || "Visitante"}`;
+  const selectionLabel = edge.selection && (edge.selection === edge.home || edge.selection === edge.away)
+    ? teamDisplayName(edge.selection)
+    : edge.selection;
+  const caption = `${selectionLabel || edge.market_label} · ${edge.market_label || "1X2"} · Bet365 ${edge.odds || "—"}`;
 
   if (statusEl) statusEl.textContent = sourceLabel;
   if (matchEl) matchEl.innerHTML = matchLabel;
@@ -755,9 +760,11 @@ function populateSelect(id, teams) {
   if (!sel) return;
   const prev = sel.value;
   while (sel.options.length > 1) sel.remove(1);
-  teams.forEach(tm => {
+  const label = typeof teamDisplayName === "function" ? teamDisplayName : (tm => tm);
+  const sorted = [...teams].sort((a, b) => label(a).localeCompare(label(b), "es"));
+  sorted.forEach(tm => {
     const opt = document.createElement("option");
-    opt.value = tm; opt.textContent = tm;
+    opt.value = tm; opt.textContent = label(tm);
     sel.appendChild(opt);
   });
   if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
@@ -865,7 +872,8 @@ function globalSearchItems() {
   const items = [];
   (APP.teams || []).forEach(name => items.push({
     type: "Equipo",
-    label: name,
+    label: teamDisplayName(name),
+    keywords: name,
     meta: APP.teamAssets?.teams?.[name]?.league || "",
     href: "index.html?tab=comparador&home=" + encodeURIComponent(name),
     media: entityMedia("team", name),
@@ -873,7 +881,8 @@ function globalSearchItems() {
   Object.entries(APP.players || {}).forEach(([team, rows]) => (rows || []).forEach(player => items.push({
     type: "Jugador",
     label: player.player,
-    meta: team,
+    meta: teamDisplayName(team),
+    keywords: team,
     href: "player.html?team=" + encodeURIComponent(team) + "&player=" + encodeURIComponent(player.player),
     media: entityMedia("player", player.player, team),
   })));
@@ -886,7 +895,8 @@ function globalSearchItems() {
   }));
   [...(APP.fixtures?.upcoming || []), ...(APP.fixtures?.recent || [])].forEach(fixture => items.push({
     type: "Partido",
-    label: fixture.home + " vs " + fixture.away,
+    label: teamDisplayName(fixture.home) + " vs " + teamDisplayName(fixture.away),
+    keywords: fixture.home + " " + fixture.away,
     meta: fixture.date + " · " + (fixture.league || ""),
     href: typeof buildMatchHref === "function" ? buildMatchHref(fixture) : "match.html",
     media: entityMedia("team", fixture.home),
@@ -907,7 +917,7 @@ function initGlobalSearch() {
       results.innerHTML = "";
       return;
     }
-    const matches = items.filter(item => normalize(item.label + " " + item.meta).includes(query)).slice(0, 10);
+    const matches = items.filter(item => normalize(item.label + " " + item.meta + " " + (item.keywords || "")).includes(query)).slice(0, 10);
     results.innerHTML = matches.length ? matches.map(item =>
       '<a href="' + item.href + '">' + item.media + '<span><strong>' + escHtml(item.label) + '</strong><small>' + escHtml(item.type + " · " + item.meta) + '</small></span></a>'
     ).join("") : '<div class="kdx-search-empty">Sin resultados para “' + escHtml(input.value) + '”</div>';

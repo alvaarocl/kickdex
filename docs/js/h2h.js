@@ -58,7 +58,7 @@ function buildH2HHTML(team1, team2, data) {
   return `
   <!-- Title -->
   <div class="match-header" style="margin-bottom:24px;">
-    <div class="teams">${team1} <span class="vs">VS</span> ${team2}</div>
+    <div class="teams">${teamDisplayName(team1)} <span class="vs">VS</span> ${teamDisplayName(team2)}</div>
     <div class="subtitle">${s.total} enfrentamientos históricos en la base de datos</div>
   </div>
 
@@ -66,7 +66,7 @@ function buildH2HHTML(team1, team2, data) {
   <div class="h2h-summary" style="margin-bottom:20px;">
     <div class="h2h-box">
       <div class="val" style="color:var(--green)">${s.wins1}</div>
-      <div class="lbl">${team1.split(" ")[0]}</div>
+      <div class="lbl">${teamShortLabel(team1)}</div>
     </div>
     <div class="h2h-box">
       <div class="val" style="color:var(--yellow)">${s.draws}</div>
@@ -74,7 +74,7 @@ function buildH2HHTML(team1, team2, data) {
     </div>
     <div class="h2h-box">
       <div class="val" style="color:var(--red)">${s.wins2}</div>
-      <div class="lbl">${team2.split(" ")[0]}</div>
+      <div class="lbl">${teamShortLabel(team2)}</div>
     </div>
     <div class="h2h-box">
       <div class="val">${fmt(s.avg_goals)}</div>
@@ -131,9 +131,9 @@ function buildH2HDetailStats(team1, team2, matches) {
   return `
   <div>
     ${statRow("Partidos analizados",         total)}
-    ${statRow(`Victorias ${team1.split(" ")[0]}`, t1wins + ` (${pct(t1wins/total)})`)}
+    ${statRow(`Victorias ${teamShortLabel(team1)}`, t1wins + ` (${pct(t1wins/total)})`)}
     ${statRow("Empates",                      draws + ` (${pct(draws/total)})`)}
-    ${statRow(`Victorias ${team2.split(" ")[0]}`, t2wins + ` (${pct(t2wins/total)})`)}
+    ${statRow(`Victorias ${teamShortLabel(team2)}`, t2wins + ` (${pct(t2wins/total)})`)}
     ${statRow("Over 3 goles",                goalsOver3 + ` (${pct(goalsOver3/total)})`)}
     ${statRow("0-0 / Sin goles",             goalsExact0 + ` (${pct(goalsExact0/total)})`)}
   </div>`;
@@ -214,13 +214,13 @@ function drawH2HChart(team1, team2, matches) {
       labels,
       datasets: [
         {
-          label: team1,
+          label: teamDisplayName(team1),
           data: goalsH,
           backgroundColor: "rgba(0,212,170,.7)",
           borderRadius: 3,
         },
         {
-          label: team2,
+          label: teamDisplayName(team2),
           data: goalsA,
           backgroundColor: "rgba(255,75,75,.6)",
           borderRadius: 3,

@@ -61,7 +61,7 @@ function renderReferee() {
           <p>${disciplineLabel(ref.season || ref.overall)} · comparado contra media de liga.</p>
         </div>
       </div>
-      ${upcoming ? `<div class="match-edge-chip">Proximo partido <span>${esc(upcoming.home)} vs ${esc(upcoming.away)} · ${formatDate(upcoming.date, upcoming.time)}</span></div>` : ""}
+      ${upcoming ? `<div class="match-edge-chip">Proximo partido <span>${esc(teamDisplayName(upcoming.home))} vs ${esc(teamDisplayName(upcoming.away))} · ${formatDate(upcoming.date, upcoming.time)}</span></div>` : ""}
     </section>
 
     <div class="match-layout">

@@ -130,7 +130,7 @@ function buildWatchTable(items) {
           ${items.map(item => `
             <tr>
               <td><a href="${playerHref(item.team, item.player)}"><b>${esc(item.player)}</b></a></td>
-              <td>${esc(item.team)}</td>
+              <td>${esc(typeof teamDisplayName === "function" ? teamDisplayName(item.team) : item.team)}</td>
               <td>${esc(item.league_name || item.league || "-")}</td>
               <td>${statusBadge(item)}</td>
               <td>${cardCount(item)}</td>

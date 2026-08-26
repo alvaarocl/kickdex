@@ -61,7 +61,7 @@ function renderPlayer() {
     <section class="match-hero card">
       <div class="match-kicker">
         <span>${esc(league)}</span>
-        <span>${esc(team)}</span>
+        <span>${esc(teamDisplayName(team))}</span>
         <span>${matchLog.length ? `${matchLog.length} registros` : "promedio temporada"}</span>
       </div>
       <div class="referee-hero-row player-hero-row">
@@ -71,7 +71,7 @@ function renderPlayer() {
           <p>${profile} basado en datos disponibles de temporada.</p>
         </div>
       </div>
-      <div class="match-edge-chip">Ficha de jugador <span>${esc(team)} · ${esc(league)}</span></div>
+      <div class="match-edge-chip">Ficha de jugador <span>${esc(teamDisplayName(team))} · ${esc(league)}</span></div>
     </section>
 
     <div class="match-layout">
@@ -208,7 +208,7 @@ function buildFacts(player, team, league, avg, matchLog) {
   return sectionCard("Ficha", `
     <dl class="match-facts">
       <dt>Jugador</dt><dd>${esc(player)}</dd>
-      <dt>Equipo</dt><dd>${esc(team)}</dd>
+      <dt>Equipo</dt><dd>${esc(teamDisplayName(team))}</dd>
       <dt>Liga</dt><dd>${esc(league)}</dd>
       <dt>Min/p</dt><dd>${fmt(avg.min, 0)}</dd>
       <dt>Formato</dt><dd>${matchLog.length ? "partido a partido" : "agregado"}</dd>
@@ -231,11 +231,11 @@ function buildCoverage(leagueCode, matchLog) {
 
 function buildTeamLeaders(rows, team) {
   const leaders = [
-    ["Goles/p", top(rows, "gls")],
-    ["Disp/p", top(rows, "sh")],
-    ["SoT/p", top(rows, "sot")],
+    ["Goles/p", topStat(rows, "gls")],
+    ["Disp/p", topStat(rows, "sh")],
+    ["SoT/p", topStat(rows, "sot")],
   ];
-  return sectionCard(`Lideres ${esc(team)}`, `
+  return sectionCard(`Lideres ${esc(teamDisplayName(team))}`, `
     <div class="player-leaders">
       ${leaders.map(([label, item]) => `
         <a href="${playerHref(team, item?.player || "")}">
@@ -274,7 +274,7 @@ function sectionCard(title, body) {
   return `<section class="card match-section"><h2>${esc(title)}</h2>${body}</section>`;
 }
 
-function top(rows, key) {
+function topStat(rows, key) {
   const item = (rows || []).slice().sort((a, b) => (Number(b[key]) || 0) - (Number(a[key]) || 0))[0];
   return item ? { player: item.player, value: item[key] } : null;
 }

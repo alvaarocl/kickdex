@@ -92,7 +92,7 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
   <div class="fixture-header stagger-item">
     <div class="fixture-team">
       <div class="fixture-team-info">
-        <div class="fixture-team-name">${home}</div>
+        <div class="fixture-team-name">${teamDisplayName(home)}</div>
         <div class="fixture-team-sub">${homeWinRate}</div>
       </div>
     </div>
@@ -102,7 +102,7 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
     </div>
     <div class="fixture-team away">
       <div class="fixture-team-info">
-        <div class="fixture-team-name">${away}</div>
+        <div class="fixture-team-name">${teamDisplayName(away)}</div>
         <div class="fixture-team-sub">${awayWinRate}</div>
       </div>
     </div>
@@ -118,12 +118,12 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
   <!-- ── Form logs ── -->
   <div class="grid-2 stagger-item" style="margin-bottom:20px;">
     <div class="card">
-      <div class="section-title">${svgHome} ${home} <small>en casa</small></div>
+      <div class="section-title">${svgHome} ${teamDisplayName(home)} <small>en casa</small></div>
       ${buildFormDots(hH)}
       ${buildMatchLog(hH.match_log)}
     </div>
     <div class="card">
-      <div class="section-title">${svgAway} ${away} <small>fuera</small></div>
+      <div class="section-title">${svgAway} ${teamDisplayName(away)} <small>fuera</small></div>
       ${buildFormDots(aA)}
       ${buildMatchLog(aA.match_log)}
     </div>
@@ -164,9 +164,9 @@ function buildStatDuel(home, away, hStats, aStats) {
 
   const header = `
   <div class="duel-header">
-    <div style="text-align:right;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:var(--brand);font-weight:800;">${home.split(" ")[0]}</div>
+    <div style="text-align:right;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:var(--brand);font-weight:800;">${teamShortLabel(home)}</div>
     <div></div><div></div><div></div>
-    <div style="text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:#fb7185;font-weight:800;">${away.split(" ")[0]}</div>
+    <div style="text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:#fb7185;font-weight:800;">${teamShortLabel(away)}</div>
   </div>`;
 
   const rowsHtml = rows.map(r => {
@@ -265,7 +265,7 @@ function buildH2HIntegratedSection(home, away, h2hData, h2hSummary) {
   return `
   <div class="card stagger-item" style="margin-bottom:20px;">
     <div class="section-title">H2H completo</div>
-    <p class="muted" style="font-size:.85rem;">Sin historial disponible entre ${home} y ${away}.</p>
+    <p class="muted" style="font-size:.85rem;">Sin historial disponible entre ${teamDisplayName(home)} y ${teamDisplayName(away)}.</p>
   </div>`;
 }
 
@@ -279,8 +279,8 @@ function drawRadar(home, away, homeData, awayData) {
     data: {
       labels: ["Goles", "Victorias", "Tiros", "xG", "Over 2.5", "BTTS", "Defensa"],
       datasets: [
-        { label: home, data: [normalize(hH.avg_goals, 3), normalize(hH.win_rate, 1), normalize(hH.avg_shots, 20), normalize(hH.avg_xg_proxy, 2.5), normalize(hH.over25_rate, 1), normalize(hH.btts_rate, 1), normalize(1-hH.avg_goals_against/3, 1)], borderColor: "rgba(0,212,170,1)", backgroundColor: "rgba(0,212,170,0.1)" },
-        { label: away, data: [normalize(aA.avg_goals, 3), normalize(aA.win_rate, 1), normalize(aA.avg_shots, 20), normalize(aA.avg_xg_proxy, 2.5), normalize(aA.over25_rate, 1), normalize(aA.btts_rate, 1), normalize(1-aA.avg_goals_against/3, 1)], borderColor: "#fb7185", backgroundColor: "rgba(251,113,133,0.1)" }
+        { label: teamDisplayName(home), data: [normalize(hH.avg_goals, 3), normalize(hH.win_rate, 1), normalize(hH.avg_shots, 20), normalize(hH.avg_xg_proxy, 2.5), normalize(hH.over25_rate, 1), normalize(hH.btts_rate, 1), normalize(1-hH.avg_goals_against/3, 1)], borderColor: "rgba(0,212,170,1)", backgroundColor: "rgba(0,212,170,0.1)" },
+        { label: teamDisplayName(away), data: [normalize(aA.avg_goals, 3), normalize(aA.win_rate, 1), normalize(aA.avg_shots, 20), normalize(aA.avg_xg_proxy, 2.5), normalize(aA.over25_rate, 1), normalize(aA.btts_rate, 1), normalize(1-aA.avg_goals_against/3, 1)], borderColor: "#fb7185", backgroundColor: "rgba(251,113,133,0.1)" }
       ]
     },
     options: { scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: "rgba(255,255,255,0.05)" } } }, plugins: { legend: { labels: { color: "#8b9ab0" } } } }
@@ -335,8 +335,8 @@ function buildPlayerComparison(home, away) {
   <div class="card stagger-item players-panel" style="margin-bottom:20px;">
     <div class="section-title">📊 Comparativa de Jugadores Pro</div>
     <div class="players-comparison">
-      <div class="players-team-panel">${playerTable(homePlayers, home)}</div>
-      <div class="players-team-panel">${playerTable(awayPlayers, away)}</div>
+      <div class="players-team-panel">${playerTable(homePlayers, teamDisplayName(home))}</div>
+      <div class="players-team-panel">${playerTable(awayPlayers, teamDisplayName(away))}</div>
     </div>
   </div>`;
 }
@@ -389,16 +389,16 @@ function buildMasterCalculatorJS(home, away) {
   <div class="card stagger-item" style="margin-bottom:40px; border:1px solid var(--brand-dim);">
     <div class="section-title">🔍 KICKDEX Terminal — Calculadora Maestra</div>
     <p style="color:var(--muted);font-size:.82rem;margin-bottom:18px;">
-      Análisis completo: <b style="color:var(--brand)">${home}</b> (como local, ${hMatches} partidos)
-      vs <b style="color:#fb7185">${away}</b> (como visitante, ${aMatches} partidos)
+      Análisis completo: <b style="color:var(--brand)">${teamDisplayName(home)}</b> (como local, ${hMatches} partidos)
+      vs <b style="color:#fb7185">${teamDisplayName(away)}</b> (como visitante, ${aMatches} partidos)
     </p>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th>Métrica</th>
-            <th style="text-align:right;color:var(--brand);">${home}</th>
-            <th style="text-align:right;color:#fb7185;">${away}</th>
+            <th style="text-align:right;color:var(--brand);">${teamDisplayName(home)}</th>
+            <th style="text-align:right;color:#fb7185;">${teamDisplayName(away)}</th>
           </tr>
         </thead>
         <tbody>${rows.join("")}</tbody>
@@ -413,11 +413,13 @@ function buildExportReport(home, away, probs) {
   // Edge from probabilities for the favored side, computing implied vs model
   // We don't have live odds in this view, so report uses model probability as headline.
   const homePct = probs?.home != null ? (probs.home * 100).toFixed(1) : "—";
+  const homeLabel = teamDisplayName(home);
+  const awayLabel = teamDisplayName(away);
   const url = "report.html?"
-    + `home=${encodeURIComponent(home)}`
-    + `&away=${encodeURIComponent(away)}`
+    + `home=${encodeURIComponent(homeLabel)}`
+    + `&away=${encodeURIComponent(awayLabel)}`
     + `&edge=${encodeURIComponent(homePct)}`
-    + `&caption=${encodeURIComponent(home + " · model probability")}`
+    + `&caption=${encodeURIComponent(homeLabel + " · model probability")}`
     + `&league=${encodeURIComponent("KICKDEX analysis")}`;
   return `
   <div class="card stagger-item" style="margin-bottom:40px; text-align:center; padding:28px 24px;">
