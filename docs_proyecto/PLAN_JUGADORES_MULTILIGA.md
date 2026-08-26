@@ -59,7 +59,55 @@ Regla de seguridad: los datos de jugadores solo se reemplazan si la cobertura nu
 - Algunas segundas divisiones pueden no tener el mismo nivel de match logs.
 - Los nombres de equipos entre football-data y FBref necesitan alias adicionales.
 
+## Bloqueo de FBref/Selenium y mitigacion con Understat (2026-08-26)
+
+`soccerdata.FBref` hereda de `BaseSeleniumReader` y depende de `seleniumbase`
+en modo `uc=True` (Chrome no detectado) sin ninguna via alternativa por
+requests puro. En esta maquina esa llamada cuelga de forma indefinida (se
+confirmo de nuevo: >1min30s sin resolver ni lanzar excepcion), consistente
+con el bloqueo ya diagnosticado en sesiones anteriores. Ademas, en CI
+(`update_data.yml`) el scraping de jugadores nunca se ejecuta: el paso
+"Update player data" siempre corre con `--skip-scrape`, asi que la cobertura
+de jugadores lleva tiempo congelada en cualquier entorno, no solo en local.
+
+Mitigacion aplicada: `app/data/player_scraper.py` ahora intenta primero
+`soccerdata.Understat` (lector HTTP puro, sin navegador) para las 5 ligas que
+cubre — SP1, E0, I1, D1, F1 — y solo si falla o la liga no esta soportada cae
+al camino FBref existente. Understat solo aporta **equipos que faltan** en la
+cache local (`_merge_missing_teams`); nunca sobreescribe un equipo que ya
+tenga datos, para no perder columnas que Understat no expone a nivel de
+temporada (tiros a puerta, faltas cometidas quedan en 0.0 para las filas que
+vengan de Understat).
+
+Ejecutado y verificado para **SP1**: anadidos Deportivo, Malaga y Racing
+Santander (los 3 ascendidos que faltaban) sin tocar los 17 equipos ya
+cubiertos por FBref — verificado byte a byte que esas filas no cambiaron.
+`docs/data/players.json` regenerado; `check_player_coverage.py` ahora marca
+SP1 en 100% (era 85%, 17/20).
+
+**No aplicado a E0/I1/D1/F1 en esta sesion** — motivo: la cache existente de
+esas 4 ligas usa nombres de equipo sin normalizar de una version anterior del
+pipeline (p. ej. "Leeds United"/"Manchester Utd"/"Newcastle United" en vez de
+las claves canonicas "Leeds"/"Man United"/"Newcastle" que ya existen en
+`TEAM_ALIASES`). Al comparar contra los nombres de Understat ("Leeds", "Man
+United", "Newcastle"...) el merge por nombre-no-visto los trata como equipos
+nuevos y crea duplicados. Los equipos realmente nuevos que si detecto
+Understat (Coventry/Hull/Ipswich en E0, Frosinone/Monza/Venezia en I1,
+Le Mans/Troyes en F1) coinciden con el roster oficial de la app, asi que la
+fuente es correcta — el problema es solo de normalizacion de nombres
+heredados. D1/Bundesliga ademas devolvio 0 filas en Understat para la
+temporada 2026 (la liga probablemente aun no esta indexada alli).
+
 ## Siguiente implementacion
 
+- Normalizar las cache CSV heredadas de E0/I1/D1/F1 con `normalize_team_name`
+  (o regenerarlas desde cero) antes de activar el relleno automatico de
+  Understat en esas 4 ligas — evita los duplicados descritos arriba.
+- Confirmar si D1 necesita esperar a que Understat indexe la temporada
+  2026/27 de Bundesliga, o si hace falta otra fuente para esa liga.
+- Extender la automatizacion diaria (`update_data.yml`) para dejar de correr
+  siempre `--skip-scrape`, ahora que existe una via sin Selenium para las 5
+  ligas grandes.
 - Mostrar en el frontend una etiqueta de cobertura por liga/equipo.
-- Anadir alias de equipos a medida que aparezcan diferencias entre FBref y football-data.
+- Anadir alias de equipos a medida que aparezcan diferencias entre
+  FBref/Understat y football-data.
