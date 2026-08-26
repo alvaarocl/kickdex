@@ -144,33 +144,6 @@ function toggleLang() {
   lpApplyI18n();
 }
 
-// ── Stat counters ──────────────────────────────────────────
-function lpAnimateCounters() {
-  document.querySelectorAll("[data-counter]").forEach(function(el) {
-    var target = parseInt(el.dataset.counter, 10);
-    if (!target) return;
-    var suffix = el.dataset.suffix || "";
-    var abbrev = el.dataset.abbrev === "true";
-    var dur    = 1400;
-    var start  = performance.now();
-
-    function step(now) {
-      var t    = Math.min((now - start) / dur, 1);
-      var ease = 1 - Math.pow(1 - t, 3);
-      var val  = Math.round(ease * target);
-      var display;
-      if (abbrev && val >= 1000) {
-        display = (val / 1000).toFixed(val >= 10000 ? 0 : 1) + "k";
-      } else {
-        display = val.toLocaleString("es-ES");
-      }
-      el.textContent = display + (t >= 1 ? suffix : "");
-      if (t < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  });
-}
-
 // ── Utilities ──────────────────────────────────────────────
 function lpFormatPercent(value, decimals) {
   decimals = decimals === undefined ? 1 : decimals;
@@ -276,25 +249,26 @@ document.addEventListener("DOMContentLoaded", function() {
     if (btn) btn.addEventListener("click", function() { window.location.href = "index.html"; });
   });
 
-  // Kick off landing animations (uses #landing-overlay as scroll root)
-  if (typeof initLandingAnimations === "function") {
-    initLandingAnimations();
+  // Fetch the two lightweight JSON files needed by the landing, then start
+  // the animations (animations.js's _setupLpCounters reads data-counter via
+  // an IntersectionObserver, so the real total_matches value must already be
+  // in place before initLandingAnimations() runs — otherwise it animates to
+  // the static placeholder baked into the HTML instead of the live number).
+  function startAnimations() {
+    if (typeof initLandingAnimations === "function") initLandingAnimations();
   }
 
-  // Initial counter animation (placeholder values from HTML)
-  setTimeout(lpAnimateCounters, 200);
-
-  // Fetch only the two lightweight JSON files needed by the landing
-  Promise.all([
-    lpFetchJSON("data/meta.json"),
-    lpFetchJSON("data/edges.json"),
-  ]).then(function(results) {
-    LP_META  = results[0];
-    LP_EDGES = results[1];
+  lpFetchJSON("data/meta.json").then(function(meta) {
+    LP_META = meta;
     lpUpdateLandingMetrics();
-    lpAnimateCounters();   // re-run with real total_matches value
+  }).catch(function(err) {
+    console.warn("KICKDEX landing: meta.json fetch failed", err);
+  }).then(startAnimations);
+
+  lpFetchJSON("data/edges.json").then(function(edges) {
+    LP_EDGES = edges;
     lpUpdateHeroEdge();
   }).catch(function(err) {
-    console.warn("KICKDEX landing: data fetch failed", err);
+    console.warn("KICKDEX landing: edges.json fetch failed", err);
   });
 });
