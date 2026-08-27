@@ -11,6 +11,8 @@ import pandas as pd
 
 from app.config import (
     CURRENT_SEASON_START,
+    HALF_LIFE_DAYS,
+    MAX_LOOKBACK_MATCHES,
     MIN_MATCHES_FOR_STATS,
     ROLLING_WINDOW_DEFAULT,
 )
@@ -197,6 +199,150 @@ def get_recent_form(
     }
 
 
+def get_weighted_form(
+    df: pd.DataFrame,
+    team: str,
+    venue: Venue = "All",
+    as_of: pd.Timestamp | str | None = None,
+    half_life_days: float = HALF_LIFE_DAYS,
+    max_matches: int = MAX_LOOKBACK_MATCHES,
+    min_matches: int = 1,
+) -> dict | None:
+    """
+    Forma de un equipo ponderada por antigüedad, sobre todo el historial
+    disponible (no solo temporada actual ni un tail(5) fijo).
+
+    Cada partido pesa `0.5 ** (dias_desde_el_partido / half_life_days)`, así
+    que un partido reciente pesa más que uno antiguo sin necesidad de elegir
+    entre "temporada actual" o "histórico" como hace `get_recent_form`.
+
+    Args:
+        df: DataFrame completo de partidos (todas las temporadas).
+        team: Nombre del equipo (normalizado).
+        venue: "Home", "Away" o "All".
+        as_of: Fecha de referencia para el decaimiento; None = fecha máxima
+            disponible en `df` (build_edges debe pasar la fecha del fixture
+            para no filtrar por "hoy" y respetar el anti-leakage).
+        half_life_days: Días para que el peso de un partido caiga a la mitad.
+        max_matches: Tope de partidos más recientes a incluir (rendimiento;
+            con el decaimiento por defecto, un partido de hace 3 años ya
+            pesa ~6%, así que un tope generoso no cambia el resultado).
+        min_matches: Partidos mínimos para devolver algo (no None).
+
+    Returns:
+        Mismo shape que `get_recent_form()` (avg_goals, win_rate, over25_rate,
+        etc.) más `effective_matches` (tamaño de muestra efectivo, ponderado)
+        y `current_season_weight_share` (fracción del peso que viene de la
+        temporada en curso), o None si no hay datos suficientes.
+    """
+    if venue == "Home":
+        matches = df[df["HomeTeam"] == team]
+    elif venue == "Away":
+        matches = df[df["AwayTeam"] == team]
+    else:
+        matches = df[(df["HomeTeam"] == team) | (df["AwayTeam"] == team)]
+
+    matches = matches.sort_values("Date", ascending=True).tail(max_matches)
+
+    if len(matches) < min_matches:
+        return None
+
+    reference_date = pd.Timestamp(as_of) if as_of is not None else matches["Date"].max()
+    season_start = pd.Timestamp(CURRENT_SEASON_START)
+
+    rows: list[dict] = []
+    match_log: list[dict] = []
+
+    for _, r in matches.iterrows():
+        match_date = r["Date"]
+        if pd.isna(match_date):
+            continue
+        days_since = (reference_date - match_date).days
+        if days_since < 0:
+            # Nunca debería pasar (anti-leakage aguas arriba lo evita), pero
+            # por seguridad no dejamos que un partido "futuro" tenga peso >1.
+            days_since = 0
+        weight = 0.5 ** (days_since / half_life_days) if half_life_days > 0 else 1.0
+
+        is_home = r["HomeTeam"] == team
+        opp = r["AwayTeam"] if is_home else r["HomeTeam"]
+
+        gf = float(r["FTHG"] if is_home else r["FTAG"]) if pd.notna(r.get("FTHG")) else 0.0
+        ga = float(r["FTAG"] if is_home else r["FTHG"]) if pd.notna(r.get("FTAG")) else 0.0
+        sot = float(r.get("HST" if is_home else "AST", 0) or 0)
+
+        if gf > ga:
+            result = "W"
+        elif gf < ga:
+            result = "L"
+        else:
+            result = "D"
+
+        rows.append({
+            "weight": weight,
+            "in_current_season": match_date >= season_start,
+            "goals": gf,
+            "goals_against": ga,
+            "shots": float(r.get("HS" if is_home else "AS", 0) or 0),
+            "shots_on": sot,
+            "corners": float(r.get("HC" if is_home else "AC", 0) or 0),
+            "cards": float(r.get("HY" if is_home else "AY", 0) or 0),
+            "fouls": float(r.get("HF" if is_home else "AF", 0) or 0),
+            "xg_proxy": round(sot * 0.35, 2),
+            "win": 1.0 if result == "W" else 0.0,
+            "draw": 1.0 if result == "D" else 0.0,
+            "loss": 1.0 if result == "L" else 0.0,
+            "over25": 1.0 if (gf + ga) > 2.5 else 0.0,
+            "btts": 1.0 if (gf > 0 and ga > 0) else 0.0,
+            "clean_sheet": 1.0 if ga == 0 else 0.0,
+        })
+
+        match_log.append({
+            "date": match_date.strftime("%d/%m/%Y") if pd.notna(match_date) else "?",
+            "opponent": opp,
+            "score": f"{int(gf)}-{int(ga)}",
+            "result": result,
+            "venue": "C" if is_home else "F",
+        })
+
+    if not rows:
+        return None
+
+    total_weight = sum(r["weight"] for r in rows)
+    if total_weight <= 0:
+        return None
+
+    def _wavg(key: str) -> float:
+        return round(sum(r["weight"] * r[key] for r in rows) / total_weight, 3)
+
+    current_season_weight = sum(r["weight"] for r in rows if r["in_current_season"])
+    current_season_matches = sum(1 for r in rows if r["in_current_season"])
+
+    return {
+        "team": team,
+        "matches_analyzed": len(rows),
+        "current_season_matches": current_season_matches,
+        "effective_matches": round(total_weight, 1),
+        "current_season_weight_share": round(current_season_weight / total_weight, 3),
+        "wins": round(sum(r["win"] for r in rows), 1),
+        "draws": round(sum(r["draw"] for r in rows), 1),
+        "losses": round(sum(r["loss"] for r in rows), 1),
+        "win_rate": _wavg("win"),
+        "avg_goals": round(_wavg("goals"), 2),
+        "avg_goals_against": round(_wavg("goals_against"), 2),
+        "avg_shots": round(_wavg("shots"), 2),
+        "avg_shots_on": round(_wavg("shots_on"), 2),
+        "avg_corners": round(_wavg("corners"), 2),
+        "avg_cards": round(_wavg("cards"), 2),
+        "avg_fouls": round(_wavg("fouls"), 2),
+        "avg_xg_proxy": round(_wavg("xg_proxy"), 2),
+        "over25_rate": _wavg("over25"),
+        "btts_rate": _wavg("btts"),
+        "clean_sheet_rate": _wavg("clean_sheet"),
+        "match_log": match_log[-10:],
+    }
+
+
 def calculate_player_percentiles(df_players: pd.DataFrame) -> pd.DataFrame:
     """
     Calcula el Z-Score y percentil de cada jugador en métricas clave.
@@ -303,4 +449,86 @@ def get_h2h_summary(df: pd.DataFrame, team1: str, team2: str) -> dict:
                 if pd.notna(r["FTHG"]) and pd.notna(r["FTAG"])
                 and float(r["FTHG"]) > 0 and float(r["FTAG"]) > 0) / n, 3
         ) if n else 0,
+    }
+
+
+def get_weighted_h2h_summary(
+    df: pd.DataFrame,
+    team1: str,
+    team2: str,
+    as_of: pd.Timestamp | str | None = None,
+    half_life_days: float = HALF_LIFE_DAYS,
+) -> dict:
+    """
+    Igual que `get_h2h_summary`, pero da más peso a los enfrentamientos
+    recientes que a los antiguos (mismo decaimiento que `get_weighted_form`).
+
+    Los conteos enteros (`total`, `wins_team1`, `draws`, `wins_team2`) se
+    devuelven SIN ponderar — son los mismos que `get_h2h_summary` produciría
+    (así `wins_team1 + draws + wins_team2 == total` sigue siendo cierto).
+    Se añaden `weighted_win_rate1`, `weighted_draw_rate`, `weighted_win_rate2`
+    y se recalculan `avg_goals`/`over25_rate`/`btts_rate` con el peso por
+    antigüedad, para usar en el blend de probabilidades.
+    """
+    full = df[
+        ((df["HomeTeam"] == team1) & (df["AwayTeam"] == team2)) |
+        ((df["HomeTeam"] == team2) & (df["AwayTeam"] == team1))
+    ].copy()
+    full = full[pd.notna(full["Date"])]
+    if full.empty:
+        return {}
+
+    reference_date = pd.Timestamp(as_of) if as_of is not None else full["Date"].max()
+
+    wins1 = draws = wins2 = 0
+    rows: list[dict] = []
+
+    for _, r in full.iterrows():
+        hg = float(r["FTHG"]) if pd.notna(r["FTHG"]) else 0.0
+        ag = float(r["FTAG"]) if pd.notna(r["FTAG"]) else 0.0
+        total_goals = hg + ag
+
+        if r["HomeTeam"] == team1:
+            team1_won, team2_won = hg > ag, hg < ag
+        else:
+            team1_won, team2_won = ag > hg, ag < hg
+
+        if team1_won:
+            wins1 += 1
+        elif team2_won:
+            wins2 += 1
+        else:
+            draws += 1
+
+        days_since = max(0, (reference_date - r["Date"]).days)
+        weight = 0.5 ** (days_since / half_life_days) if half_life_days > 0 else 1.0
+
+        rows.append({
+            "weight": weight,
+            "goals": total_goals,
+            "over25": 1.0 if total_goals > 2.5 else 0.0,
+            "btts": 1.0 if (hg > 0 and ag > 0) else 0.0,
+            "win1": 1.0 if team1_won else 0.0,
+            "draw": 0.0 if (team1_won or team2_won) else 1.0,
+            "win2": 1.0 if team2_won else 0.0,
+        })
+
+    n = len(full)
+    total_weight = sum(r["weight"] for r in rows)
+
+    def _wavg(key: str) -> float:
+        return round(sum(r["weight"] * r[key] for r in rows) / total_weight, 3) if total_weight else 0.0
+
+    return {
+        "total": n,
+        "wins_team1": wins1,
+        "draws": draws,
+        "wins_team2": wins2,
+        "avg_goals": round(_wavg("goals"), 2),
+        "over25_rate": _wavg("over25"),
+        "btts_rate": _wavg("btts"),
+        "effective_total": round(total_weight, 1),
+        "weighted_win_rate1": _wavg("win1"),
+        "weighted_draw_rate": _wavg("draw"),
+        "weighted_win_rate2": _wavg("win2"),
     }

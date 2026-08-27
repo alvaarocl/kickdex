@@ -19,13 +19,14 @@ const state = {
   discipline: { by_team: {}, top: [] },
   teamAssets: { teams: {} },
   playerAssets: { players: {} },
+  modelConfig: null, // fallback a DEFAULT_MODEL_CONFIG (probability.js) si el fetch falla
 };
 
 document.addEventListener("DOMContentLoaded", initMatchPage);
 
 async function initMatchPage() {
   try {
-    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets] = await Promise.all([
+    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets, modelConfig] = await Promise.all([
       fetchJSON("fixtures.json"),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("team_stats.json").catch(() => ({})),
@@ -38,8 +39,9 @@ async function initMatchPage() {
       fetchJSON("discipline_watch.json").catch(() => ({ by_team: {}, top: [] })),
       fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
       fetchJSON("player_assets.json").catch(() => ({ players: {} })),
+      fetchJSON("model_config.json").catch(() => null),
     ]);
-    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets });
+    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets, modelConfig });
     window.KDXEntities?.configure(teamAssets, playerAssets);
     renderMatch();
   } catch (err) {
@@ -71,7 +73,7 @@ function renderMatch() {
   const homeStats = state.teamStats[fixture.home] || {};
   const awayStats = state.teamStats[fixture.away] || {};
   const h2hData = getH2H(fixture.home, fixture.away);
-  const probs = calcProbabilities(homeStats, awayStats, h2hData?.summary || null);
+  const probs = calcProbabilities(homeStats, awayStats, h2hData?.summary || null, state.modelConfig);
   const matchEdges = getFixtureEdges(fixture);
   const topEdge = matchEdges[0] || null;
   const referee = getAssignedReferee(fixture);
@@ -495,40 +497,9 @@ function topPlayers(team) {
     .slice(0, 8);
 }
 
-function calcProbabilities(homeStats, awayStats, h2hSummary) {
-  const hHome = homeStats?.home;
-  const aAway = awayStats?.away;
-  if (!hHome || !aAway) return null;
-  let lambdaH = (hHome.avg_goals ?? 1.5) * 0.7 + (aAway.avg_goals_against ?? 1.2) * 0.3;
-  let lambdaA = (aAway.avg_goals ?? 1.2) * 0.7 + (hHome.avg_goals_against ?? 1.3) * 0.3;
-  if (h2hSummary && h2hSummary.total >= 3) {
-    const h2hGoals = h2hSummary.avg_goals ?? (lambdaH + lambdaA);
-    lambdaH = lambdaH * 0.88 + (h2hGoals * 0.48) * 0.12;
-    lambdaA = lambdaA * 0.88 + (h2hGoals * 0.52) * 0.12;
-  }
-  lambdaH = clamp(lambdaH, 0.3, 5);
-  lambdaA = clamp(lambdaA, 0.3, 5);
-  let home = 0, draw = 0, away = 0, over25 = 0, btts = 0;
-  for (let i = 0; i <= 8; i++) {
-    for (let j = 0; j <= 8; j++) {
-      const p = poisson(i, lambdaH) * poisson(j, lambdaA);
-      if (i > j) home += p;
-      else if (i === j) draw += p;
-      else away += p;
-      if (i + j > 2) over25 += p;
-      if (i > 0 && j > 0) btts += p;
-    }
-  }
-  const total = home + draw + away;
-  return { home: home / total, draw: draw / total, away: away / total, over25, btts, lambda_h: lambdaH, lambda_a: lambdaA };
-}
-
-function poisson(k, lambda) {
-  if (lambda <= 0) return k === 0 ? 1 : 0;
-  let log = -lambda + k * Math.log(lambda);
-  for (let i = 1; i <= k; i++) log -= Math.log(i);
-  return Math.exp(log);
-}
+// calcProbabilities/poissonPMF viven en probability.js (compartido con
+// app.js), cargado antes que este archivo — ver la llamada en renderMatch()
+// más abajo, que pasa state.modelConfig como 4º argumento.
 
 function formatDate(date, time) {
   if (!date) return "-";
@@ -561,10 +532,6 @@ function formatSigned(v) {
   const n = Number(v);
   if (!Number.isFinite(n)) return "-";
   return `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
-}
-
-function clamp(v, min, max) {
-  return Math.max(min, Math.min(max, v));
 }
 
 function norm(s) {

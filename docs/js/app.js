@@ -541,7 +541,7 @@ async function loadAllData() {
 
   try {
     // Critical path: everything except H2H (4.4MB) which loads in background
-    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets] = await Promise.all([
+    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets, modelConfig] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -556,11 +556,17 @@ async function loadAllData() {
       fetchJSON("edges.json").catch(() => ({ items: [], top: null, stats: {} })),
       fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
       fetchJSON("player_assets.json").catch(() => ({ players: {} })),
+      // Constantes del modelo de probabilidad (app/engine/probability.py) —
+      // se leen aquí en vez de hardcodearlas para que calcProbabilities()
+      // no diverja de edges.json. Fallback = las mismas constantes por si
+      // el fetch falla.
+      fetchJSON("model_config.json").catch(() => null),
     ]);
 
     APP.meta           = meta;
     APP.teams          = teams;
     APP.teamStats      = teamStats;
+    APP.modelConfig    = modelConfig || DEFAULT_MODEL_CONFIG;
     APP.h2h            = {};
     APP.h2hReady       = false;
     APP.players        = players;
@@ -902,56 +908,10 @@ function getH2H(t1, t2) {
 function isH2HReady() { return APP.h2hReady === true; }
 
 // ── Probability engine ────────────────────────────────────────────────────
-
-function poissonPMF(k, lambda) {
-  if (lambda <= 0) return k === 0 ? 1 : 0;
-  let log_p = -lambda + k * Math.log(lambda);
-  for (let i = 1; i <= k; i++) log_p -= Math.log(i);
-  return Math.exp(log_p);
-}
-
-function calcProbabilities(homeStats, awayStats, h2hSummary) {
-  const hHome = homeStats?.home || homeStats?.away;
-  const aAway = awayStats?.away || awayStats?.home;
-  if (!hHome || !aAway) return null;
-
-  let lambdaH = (hHome.avg_goals ?? 1.5) * 0.7 + (aAway.avg_goals_against ?? 1.2) * 0.3;
-  let lambdaA = (aAway.avg_goals ?? 1.2) * 0.7 + (hHome.avg_goals_against ?? 1.3) * 0.3;
-
-  if (h2hSummary && h2hSummary.total >= 3) {
-    const h2hGoals = h2hSummary.avg_goals ?? (lambdaH + lambdaA);
-    lambdaH = lambdaH * 0.88 + (h2hGoals * 0.48) * 0.12;
-    lambdaA = lambdaA * 0.88 + (h2hGoals * 0.52) * 0.12;
-  }
-
-  lambdaH = Math.max(0.3, Math.min(5.0, lambdaH));
-  lambdaA = Math.max(0.3, Math.min(5.0, lambdaA));
-
-  const MAX_GOALS = 8;
-  let home = 0, draw = 0, away = 0, over25 = 0, btts = 0;
-
-  for (let i = 0; i <= MAX_GOALS; i++) {
-    for (let j = 0; j <= MAX_GOALS; j++) {
-      const p = poissonPMF(i, lambdaH) * poissonPMF(j, lambdaA);
-      if (i > j) home += p;
-      else if (i === j) draw += p;
-      else away += p;
-      if (i + j > 2.5) over25 += p;
-      if (i > 0 && j > 0) btts += p;
-    }
-  }
-
-  const total = home + draw + away;
-  return {
-    home:     home  / total,
-    draw:     draw  / total,
-    away:     away  / total,
-    over25:   over25,
-    btts:     btts,
-    lambda_h: lambdaH,
-    lambda_a: lambdaA,
-  };
-}
+// poissonPMF/calcProbabilities/DEFAULT_MODEL_CONFIG viven en probability.js
+// (compartido con match.js) para que ambas páginas usen exactamente la misma
+// matemática. Los llamadores de esta página pasan APP.modelConfig como 4º
+// argumento (ver comparador.js).
 
 // ── Smart Alerts engine ────────────────────────────────────────────────────
 

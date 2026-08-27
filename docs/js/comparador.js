@@ -10,13 +10,30 @@ function emptyTeamStats(team) {
   return { team, home: null, away: null, sample_scope: 'none', season_matches: 0, historical_matches: 0 };
 }
 
+// Las estadísticas ahora vienen de get_weighted_form (app/engine/metrics.py):
+// todo el historial disponible, con más peso a los partidos recientes en vez
+// de cortar a los últimos 5. matches_analyzed = partidos reales incluidos;
+// effective_matches = tamaño de muestra "efectivo" una vez aplicado el peso
+// (siempre <= matches_analyzed, y mucho menor si la mayoría son antiguos).
 function sampleLabel(data, venue) {
   const block = data?.[venue];
   const count = Number(block?.matches_analyzed || 0);
   if (!count) return 'sin historial';
   const suffix = count === 1 ? ' partido' : ' partidos';
-  const scope = data?.sample_scope === 'historical' ? ' histórico' : data?.sample_scope === 'mixed' ? ' muestra mixta' : ' temporada';
-  return count + suffix + scope;
+  const effective = block?.effective_matches;
+  const weightNote = Number.isFinite(effective) ? ` (peso efectivo ≈${Math.round(effective * 10) / 10})` : '';
+  return count + suffix + weightNote;
+}
+
+// El aviso de "muestra orientativa" solo tiene sentido cuando el peso
+// efectivo real es bajo — no siempre, como pasaba con el texto fijo antiguo.
+// homeData/awayData son los team_stats completos de cada equipo; solo importa
+// el lado que realmente se muestra (local del equipo local, visitante del
+// equipo visitante), igual que sampleLabel() más abajo.
+function hasThinSample(homeData, awayData) {
+  const homeEff = Number(homeData?.home?.effective_matches ?? Infinity);
+  const awayEff = Number(awayData?.away?.effective_matches ?? Infinity);
+  return Math.min(homeEff, awayEff) < 3;
 }
 
 function statsForVenue(data, venue) {
@@ -54,7 +71,7 @@ function runComparador() {
 
   const h2hData    = getH2H(home, away);
   const h2hSummary = h2hData?.summary || null;
-  const probs      = calcProbabilities(homeData, awayData, h2hSummary);
+  const probs      = calcProbabilities(homeData, awayData, h2hSummary, APP.modelConfig);
   const alerts     = generateAlerts(homeData, awayData, h2hSummary);
 
   box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary, h2hData)
@@ -109,7 +126,7 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
   </div>
 
   <!-- ── Stat duel comparison ── -->
-  <div class='cmp-sample-note'>Muestra disponible: ${sampleLabel(homeData, 'home')} · ${sampleLabel(awayData, 'away')}. Con una sola jornada el análisis es orientativo.</div>
+  <div class='cmp-sample-note'>Muestra disponible: ${sampleLabel(homeData, 'home')} · ${sampleLabel(awayData, 'away')}. Ponderado por antigüedad — los partidos recientes pesan más.${hasThinSample(homeData, awayData) ? ' Peso efectivo bajo: el análisis es orientativo.' : ''}</div>
   <div class="card stagger-item" style="margin-bottom:20px;">
     <div class="section-title">${svgDuel} Comparativa de estadísticas <small>local vs visitante</small></div>
     ${buildStatDuel(home, away, hH, aA)}
@@ -334,6 +351,10 @@ function buildPlayerComparison(home, away) {
   return `
   <div class="card stagger-item players-panel" style="margin-bottom:20px;">
     <div class="section-title">📊 Comparativa de Jugadores Pro</div>
+    <p style="color:var(--muted);font-size:.78rem;margin-bottom:10px;">
+      Promedio por partido de toda la temporada — la fuente disponible no da partido a partido,
+      así que no hay ventana de últimos 5/10 partidos para jugadores todavía.
+    </p>
     <div class="players-comparison">
       <div class="players-team-panel">${playerTable(homePlayers, teamDisplayName(home))}</div>
       <div class="players-team-panel">${playerTable(awayPlayers, teamDisplayName(away))}</div>
@@ -384,13 +405,17 @@ function buildMasterCalculatorJS(home, away) {
 
   const hMatches = hH.matches_analyzed || 0;
   const aMatches = aA.matches_analyzed || 0;
+  const hEffective = hH.effective_matches;
+  const aEffective = aA.effective_matches;
+  const hSuffix = Number.isFinite(hEffective) ? `${hMatches} partidos, peso efectivo ≈${Math.round(hEffective * 10) / 10}` : `${hMatches} partidos`;
+  const aSuffix = Number.isFinite(aEffective) ? `${aMatches} partidos, peso efectivo ≈${Math.round(aEffective * 10) / 10}` : `${aMatches} partidos`;
 
   return `
   <div class="card stagger-item" style="margin-bottom:40px; border:1px solid var(--brand-dim);">
     <div class="section-title">🔍 KICKDEX Terminal — Calculadora Maestra</div>
     <p style="color:var(--muted);font-size:.82rem;margin-bottom:18px;">
-      Análisis completo: <b style="color:var(--brand)">${teamDisplayName(home)}</b> (como local, ${hMatches} partidos)
-      vs <b style="color:#fb7185">${teamDisplayName(away)}</b> (como visitante, ${aMatches} partidos)
+      Análisis completo: <b style="color:var(--brand)">${teamDisplayName(home)}</b> (como local, ${hSuffix})
+      vs <b style="color:#fb7185">${teamDisplayName(away)}</b> (como visitante, ${aSuffix})
     </p>
     <div class="table-wrap">
       <table>

@@ -73,6 +73,12 @@ ROLLING_WINDOW_DEFAULT = 5       # Últimos N partidos para forma reciente
 ROLLING_WINDOW_OPTIONS = [3, 5, 10]
 MIN_MATCHES_FOR_STATS = 3        # Mínimo de partidos para mostrar métricas
 
+# ── Forma ponderada por historial (get_weighted_form / get_weighted_h2h_summary) ──
+# En vez de cortar a los últimos N partidos (arriba), estas funciones usan todo
+# el historial disponible pero dan menos peso a los partidos más antiguos.
+HALF_LIFE_DAYS = 270             # Un partido de hace ~9 meses pesa la mitad que uno de hoy
+MAX_LOOKBACK_MATCHES = 60        # Tope de partidos por local/visitante (rendimiento; el peso ya los hace irrelevantes antes)
+
 # ── Descarga de datos ─────────────────────────────────────────────────────────
 FOOTBALL_DATA_BASE_URL = "https://www.football-data.co.uk/mmz4281"
 DATA_DIR = "DATOS"

@@ -111,3 +111,40 @@ temporada 2026 (la liga probablemente aun no esta indexada alli).
 - Mostrar en el frontend una etiqueta de cobertura por liga/equipo.
 - Anadir alias de equipos a medida que aparezcan diferencias entre
   FBref/Understat y football-data.
+
+## Fase futura: ventana de partidos a nivel de jugador (2026-08-27)
+
+El usuario pidio explicitamente poder ver el rendimiento de un jugador en los
+ultimos 5/10 partidos (no solo el promedio de toda la temporada) dentro del
+Comparador y la Calculadora Maestra — analogo al motor de forma ponderada por
+historial que se implemento para equipos (`get_weighted_form` en
+`app/engine/metrics.py`). Se investigo el alcance y se decidio **aparcarlo
+como fase separada**, confirmado con el usuario:
+
+- Hoy no existe ningun dato partido a partido de jugadores: cada jugador en
+  `docs/data/players_detail.json` tiene exactamente 1 fila (agregado de
+  temporada). Los 54 registros marcados `scope: "match"` (del backfill de
+  Understat para SP1) son en realidad agregados de temporada mal etiquetados
+  por una heuristica basada en presencia de fecha (`build_data.py`
+  `build_players_detail`, linea ~344) — hay que corregir esa heuristica antes
+  de fiarse de `scope` para nada.
+- El pipeline YA tiene la logica de ventana escrita y lista
+  (`build_players()`/`build_players_detail()` en `scripts/build_data.py`
+  hacen `.head(10)`/`.head(20)` sobre las filas por fecha), pero con una sola
+  fila por jugador esa logica colapsa siempre al mismo dato — funcionara en
+  cuanto haya datos reales partido a partido, sin tocar ese codigo.
+- La unica via real para partidos por jugador es
+  `soccerdata.Understat.read_player_match_stats()` (HTTP puro, sin Selenium),
+  para las mismas 5 ligas que ya cubre el backfill de temporada (SP1, E0, I1,
+  D1, F1). Es una recoleccion pesada: aproximadamente 1 peticion por partido
+  de la temporada por liga (cientos de peticiones cada una), estimado en
+  30-60 minutos la primera vez, y habria que disenar una cache incremental
+  para no re-descargar toda la temporada cada dia en CI.
+- El Comparador (`docs/js/comparador.js`, tabla de jugadores) y el selector
+  `jug-window` de la pestana Jugadores (`docs/index.html`, hoy deshabilitado
+  a proposito con un tooltip explicando por que) ya estan preparados
+  visualmente para activarse en cuanto exista un dato real que mostrar.
+
+Retomar aqui cuando se decida abordar esta fase: implementar el scrape de
+Understat partido a partido para las 5 ligas grandes, corregir la heuristica
+de `scope`, y reactivar el selector de ventana en Jugadores y el Comparador.

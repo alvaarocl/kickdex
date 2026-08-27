@@ -21,9 +21,14 @@ from app.data.assets import build_player_assets, build_team_assets
 from app.data.health import build_data_health
 from app.data.season_rosters import all_roster_teams, roster_for
 from app.engine.metrics import (
-    get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics
+    get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics,
+    get_weighted_form, get_weighted_h2h_summary,
 )
-from app.engine.probability import calculate_probabilities
+from app.engine.probability import (
+    calculate_probabilities,
+    _HOME_ADVANTAGE, _LEAGUE_AVG_GOALS, _DIXON_COLES_RHO,
+    _H2H_WEIGHT, _H2H_MIN_TOTAL, _OVER25_WEIGHTS, _BTTS_WEIGHTS,
+)
 from app.engine.edge import calculate_edge, edge_confidence, implied_probability
 from app.engine.trends import build_trends_payload
 from app.engine.smart_alerts import generate_alerts, AlertStrength
@@ -216,29 +221,58 @@ def build_meta(df, df_current) -> dict:
     }
 
 
+def build_model_config() -> dict:
+    """
+    Vuelca las constantes del modelo de probabilidad (app/engine/probability.py)
+    a JSON para que docs/js/app.js las lea en vez de mantener su propia copia
+    hardcodeada — evita que el Comparador (JS) y edges.json (Python) usen
+    matemáticas distintas para el mismo partido.
+    """
+    return {
+        "home_advantage": _HOME_ADVANTAGE,
+        "league_avg_goals": _LEAGUE_AVG_GOALS,
+        "dixon_coles_rho": _DIXON_COLES_RHO,
+        "h2h_weight": _H2H_WEIGHT,
+        "h2h_min_total": _H2H_MIN_TOTAL,
+        "over25_weights": {
+            "base_poisson": _OVER25_WEIGHTS[0],
+            "home_rate": _OVER25_WEIGHTS[1],
+            "away_rate": _OVER25_WEIGHTS[2],
+            "h2h_rate": _OVER25_WEIGHTS[3],
+        },
+        "btts_weights": {
+            "home_rate": _BTTS_WEIGHTS[0],
+            "away_rate": _BTTS_WEIGHTS[1],
+            "h2h_rate": _BTTS_WEIGHTS[2],
+        },
+    }
+
+
 def build_team_stats(df, teams: list) -> dict:
-    """Build stats for every roster team, falling back to all-time history."""
+    """Build stats for every roster team, weighting all-time history by recency."""
     result = {}
     for i, team in enumerate(teams):
         if i % 10 == 0:
             print(f'    {i}/{len(teams)} equipos...')
-        current_home = get_recent_form(df, team, venue='Home', n=ROLLING_WINDOW_DEFAULT, min_matches=MIN_MATCHES_FOR_STATS)
-        current_away = get_recent_form(df, team, venue='Away', n=ROLLING_WINDOW_DEFAULT, min_matches=MIN_MATCHES_FOR_STATS)
-        historical_home = get_recent_form(df, team, venue='Home', n=ROLLING_WINDOW_DEFAULT, season_only=False, min_matches=1)
-        historical_away = get_recent_form(df, team, venue='Away', n=ROLLING_WINDOW_DEFAULT, season_only=False, min_matches=1)
-        home = current_home or historical_home
-        away = current_away or historical_away
+        home = get_weighted_form(df, team, venue='Home')
+        away = get_weighted_form(df, team, venue='Away')
         if not home and not away:
             continue
-        current_count = (current_home or {}).get('matches_analyzed', 0) + (current_away or {}).get('matches_analyzed', 0)
-        historical_count = (historical_home or {}).get('matches_analyzed', 0) + (historical_away or {}).get('matches_analyzed', 0)
-        scope = 'season' if current_count == historical_count else 'mixed' if current_count else 'historical'
+        # Fracción de peso que viene de la temporada en curso, combinada de
+        # ambos lados. Sustituye a la antigua distinción binaria
+        # season/historical (que en la práctica siempre eran los mismos 5
+        # partidos, con o sin filtrar por fecha de inicio de temporada).
+        weight_current = (home or {}).get('current_season_weight_share', 0) * (home or {}).get('effective_matches', 0) \
+            + (away or {}).get('current_season_weight_share', 0) * (away or {}).get('effective_matches', 0)
+        weight_total = (home or {}).get('effective_matches', 0) + (away or {}).get('effective_matches', 0)
+        current_share = (weight_current / weight_total) if weight_total else 0.0
+        scope = 'season' if current_share >= 0.6 else 'mixed' if current_share > 0 else 'historical'
         result[team] = {
             'home': _serialize_form(home),
             'away': _serialize_form(away),
             'sample_scope': scope,
-            'season_matches': current_count,
-            'historical_matches': historical_count,
+            'season_matches': (home or {}).get('current_season_matches', 0) + (away or {}).get('current_season_matches', 0),
+            'historical_matches': (home or {}).get('matches_analyzed', 0) + (away or {}).get('matches_analyzed', 0),
         }
     return result
 
@@ -257,7 +291,7 @@ def build_h2h(df, teams: list) -> dict:
     print(f"    Calculando {len(pairs)} pares reales (filtrado de {len(teams) * (len(teams)-1) // 2} posibles)...")
 
     for t1, t2 in pairs:
-        summary = get_h2h_summary(df, t1, t2)
+        summary = get_weighted_h2h_summary(df, t1, t2)
         if not summary or summary.get("total", 0) < 1:
             continue
 
@@ -294,6 +328,12 @@ def build_h2h(df, teams: list) -> dict:
                 "avg_goals": _safe(summary["avg_goals"]),
                 "over25_rate": _safe(summary["over25_rate"]),
                 "btts_rate": _safe(summary["btts_rate"]),
+                # Ponderados por antigüedad (0.5 ** dias/HALF_LIFE_DAYS); "total"
+                # y "wins1/draws/wins2" arriba siguen siendo conteos reales.
+                "effective_total": _safe(summary.get("effective_total", summary["total"]), 1),
+                "weighted_win_rate1": _safe(summary.get("weighted_win_rate1")),
+                "weighted_draw_rate": _safe(summary.get("weighted_draw_rate")),
+                "weighted_win_rate2": _safe(summary.get("weighted_win_rate2")),
             },
             "matches": matches,
         }
@@ -590,14 +630,16 @@ def build_edges(df) -> dict:
 
         league_mask = data["Div"].eq(league) if "Div" in data.columns else True
         history = data[league_mask & (data["Date"] < date)].copy()
-        home_form = get_recent_form(history, home, venue="Home", n=ROLLING_WINDOW_DEFAULT, season_only=False)
-        away_form = get_recent_form(history, away, venue="Away", n=ROLLING_WINDOW_DEFAULT, season_only=False)
+        # as_of=date: el decaimiento se calcula respecto a la fecha del propio
+        # fixture (no "hoy"), y el filtro Date < date de arriba ya evita fugas.
+        home_form = get_weighted_form(history, home, venue="Home", as_of=date)
+        away_form = get_weighted_form(history, away, venue="Away", as_of=date)
         if not home_form or not away_form:
             continue
-        if home_form.get("matches_analyzed", 0) < 3 or away_form.get("matches_analyzed", 0) < 3:
+        if home_form.get("effective_matches", 0) < 3 or away_form.get("effective_matches", 0) < 3:
             continue
 
-        h2h_summary = get_h2h_summary(history, home, away)
+        h2h_summary = get_weighted_h2h_summary(history, home, away, as_of=date)
         probabilities = calculate_probabilities(home_form, away_form, h2h_summary).as_dict()
         status = _match_status(row, date)
         outcome = _settled_outcome(row)
@@ -1038,6 +1080,7 @@ def main():
     meta_payload = build_meta(df, df_current)
     write_json(meta_payload, "meta.json")
     write_json(teams, "teams.json")
+    write_json(build_model_config(), "model_config.json")
 
     # 4. Team stats
     print("\n[4/6] team_stats.json...")

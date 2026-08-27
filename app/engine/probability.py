@@ -17,6 +17,15 @@ logger = logging.getLogger(__name__)
 # Factor de ventaja local en La Liga (basado en histórico largo plazo)
 _HOME_ADVANTAGE = 1.15   # El equipo local gana ~15% más de lo que marcaría sin ventaja
 _LEAGUE_AVG_GOALS = 2.52  # Media de goles por partido en La Liga (histórico)
+_DIXON_COLES_RHO = -0.12  # Ajuste por subestimación de marcadores bajos (0-0, 1-0, 0-1, 1-1)
+_H2H_WEIGHT = 0.30
+_H2H_MIN_TOTAL = 5
+_OVER25_WEIGHTS = (0.4, 0.25, 0.25, 0.10)  # base_poisson, home_rate, away_rate, h2h_rate
+_BTTS_WEIGHTS = (0.35, 0.35, 0.30)          # home_rate, away_rate, h2h_rate
+
+# Estas mismas constantes se publican en docs/data/model_config.json (ver
+# build_model_config() en scripts/build_data.py) para que el modelo
+# equivalente en JavaScript (docs/js/app.js calcProbabilities) no diverja.
 
 
 @dataclass
@@ -65,14 +74,12 @@ def _poisson_matrix(lam_home: float, lam_away: float, max_goals: int = 8) -> tup
     Calcula matriz de probabilidades con ajuste Dixon-Coles.
     """
     p_home = p_draw = p_away = 0.0
-    # Rho aproximado basado en la tendencia de la liga a empates bajos
-    rho = -0.12 
 
     for hg in range(max_goals + 1):
         p_h = _poisson_prob(lam_home, hg)
         for ag in range(max_goals + 1):
             p_a = _poisson_prob(lam_away, ag)
-            prob = p_h * p_a * _dixon_coles_adjustment(hg, ag, lam_home, lam_away, rho)
+            prob = p_h * p_a * _dixon_coles_adjustment(hg, ag, lam_home, lam_away, _DIXON_COLES_RHO)
             
             if hg > ag:
                 p_home += prob
@@ -134,13 +141,20 @@ def calculate_probabilities(
     # Probabilidades Poisson
     p_home, p_draw, p_away = _poisson_matrix(lam_home, lam_away)
 
-    # Si hay H2H, ponderar (30% H2H, 70% forma reciente)
-    if h2h_summary and h2h_summary.get("total", 0) >= 5:
+    # Si hay H2H, ponderar (30% H2H, 70% forma reciente). Si el resumen trae
+    # tasas ponderadas por antigüedad (get_weighted_h2h_summary), se prefieren
+    # sobre los conteos crudos wins_team1/draws/wins_team2.
+    if h2h_summary and h2h_summary.get("total", 0) >= _H2H_MIN_TOTAL:
         n = h2h_summary["total"]
-        h2h_home = h2h_summary["wins_team1"] / n
-        h2h_draw = h2h_summary["draws"] / n
-        h2h_away = h2h_summary["wins_team2"] / n
-        w_h2h = 0.30
+        if "weighted_win_rate1" in h2h_summary:
+            h2h_home = h2h_summary["weighted_win_rate1"]
+            h2h_draw = h2h_summary["weighted_draw_rate"]
+            h2h_away = h2h_summary["weighted_win_rate2"]
+        else:
+            h2h_home = h2h_summary["wins_team1"] / n
+            h2h_draw = h2h_summary["draws"] / n
+            h2h_away = h2h_summary["wins_team2"] / n
+        w_h2h = _H2H_WEIGHT
         p_home = round(p_home * (1 - w_h2h) + h2h_home * w_h2h, 4)
         p_draw = round(p_draw * (1 - w_h2h) + h2h_draw * w_h2h, 4)
         p_away = round(p_away * (1 - w_h2h) + h2h_away * w_h2h, 4)
@@ -162,13 +176,15 @@ def calculate_probabilities(
     home_o25 = home_stats.get("over25_rate", p_over25_base)
     away_o25 = away_stats.get("over25_rate", p_over25_base)
     h2h_o25 = h2h_summary.get("over25_rate", p_over25_base) if h2h_summary else p_over25_base
-    p_over25 = round((p_over25_base * 0.4 + home_o25 * 0.25 + away_o25 * 0.25 + h2h_o25 * 0.10), 4)
+    w_base, w_home_o25, w_away_o25, w_h2h_o25 = _OVER25_WEIGHTS
+    p_over25 = round((p_over25_base * w_base + home_o25 * w_home_o25 + away_o25 * w_away_o25 + h2h_o25 * w_h2h_o25), 4)
 
     # BTTS: promedio ponderado de tasas históricas
+    w_home_btts, w_away_btts, w_h2h_btts = _BTTS_WEIGHTS
     home_btts = home_stats.get("btts_rate", 0.50)
     away_btts = away_stats.get("btts_rate", 0.50)
     h2h_btts = h2h_summary.get("btts_rate", 0.50) if h2h_summary else 0.50
-    p_btts = round((home_btts * 0.35 + away_btts * 0.35 + h2h_btts * 0.30), 4)
+    p_btts = round((home_btts * w_home_btts + away_btts * w_away_btts + h2h_btts * w_h2h_btts), 4)
 
     # Clamp todo a [0.01, 0.99]
     def _clamp(x):

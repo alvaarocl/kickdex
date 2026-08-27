@@ -7,7 +7,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.engine.metrics import get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics
+from app.engine.metrics import (
+    get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics,
+    get_weighted_form, get_weighted_h2h_summary,
+)
 
 
 def _make_df(rows: list[dict]) -> pd.DataFrame:
@@ -101,3 +104,70 @@ def test_rolling_metrics_columns_exist():
     df_rolled = calculate_rolling_metrics(SAMPLE_MATCHES.copy(), window=5)
     for col in ["Home_Roll_Goals", "Away_Roll_Goals", "Home_Roll_ShoT", "Away_Roll_ShoT"]:
         assert col in df_rolled.columns, f"Columna {col} no encontrada"
+
+
+# ─── get_weighted_form / get_weighted_h2h_summary ────────────────────────────
+
+# Un equipo con un partido muy antiguo (goleada) y uno reciente (derrota),
+# para comprobar que el reciente domina el resultado ponderado.
+DECAY_MATCHES = _make_df([
+    {"Date": "2018-01-01", "HomeTeam": "Madrid", "AwayTeam": "Rival",  "FTHG": 5, "FTAG": 0, "FTR": "H",
+     "HS": 20, "AS": 3, "HST": 10, "AST": 1, "HF": 8, "AF": 10, "HC": 9, "AC": 1, "HY": 0, "AY": 3},
+    {"Date": "2025-11-20", "HomeTeam": "Madrid", "AwayTeam": "Rival2", "FTHG": 0, "FTAG": 3, "FTR": "A",
+     "HS": 6, "AS": 15, "HST": 1, "AST": 8, "HF": 12, "AF": 8, "HC": 2, "AC": 8, "HY": 3, "AY": 1},
+])
+
+
+def test_get_weighted_form_recent_match_dominates():
+    """El partido de hace unos días debe pesar mucho más que el de hace años."""
+    form = get_weighted_form(DECAY_MATCHES, "Madrid", venue="Home", as_of=pd.Timestamp("2025-11-27"))
+    assert form is not None
+    # El agregado plano de los dos partidos sería avg_goals = 2.5; ponderado
+    # debe quedar mucho más cerca del resultado reciente (0 goles).
+    assert form["avg_goals"] < 1.0
+    assert form["win_rate"] < 0.2
+
+
+def test_get_weighted_form_effective_matches_bounded():
+    form = get_weighted_form(SAMPLE_MATCHES, "Madrid", venue="All")
+    assert form is not None
+    assert 0 < form["effective_matches"] <= form["matches_analyzed"]
+
+
+def test_get_weighted_form_matches_single_match_case():
+    """Con un único partido disponible, debe comportarse como get_recent_form(min_matches=1)."""
+    small_df = SAMPLE_MATCHES.head(1)
+    weighted = get_weighted_form(small_df, "Madrid", venue="All", min_matches=1)
+    flat = get_recent_form(small_df, "Madrid", venue="All", n=5, season_only=False, min_matches=1)
+    assert weighted is not None and flat is not None
+    assert weighted["matches_analyzed"] == flat["matches_analyzed"] == 1
+    assert weighted["avg_goals"] == flat["avg_goals"]
+
+
+def test_get_weighted_form_rates_in_range():
+    form = get_weighted_form(SAMPLE_MATCHES, "Madrid", venue="All")
+    assert 0.0 <= form["win_rate"] <= 1.0
+    assert 0.0 <= form["over25_rate"] <= 1.0
+    assert 0.0 <= form["btts_rate"] <= 1.0
+    assert 0.0 <= form["current_season_weight_share"] <= 1.0
+
+
+def test_get_weighted_h2h_summary_totals_match_raw_counts():
+    """Los conteos enteros deben coincidir exactamente con get_h2h_summary (sin ponderar)."""
+    raw = get_h2h_summary(SAMPLE_MATCHES, "Madrid", "Barça")
+    weighted = get_weighted_h2h_summary(SAMPLE_MATCHES, "Madrid", "Barça")
+    assert weighted["total"] == raw["total"]
+    assert weighted["wins_team1"] == raw["wins_team1"]
+    assert weighted["draws"] == raw["draws"]
+    assert weighted["wins_team2"] == raw["wins_team2"]
+    assert weighted["wins_team1"] + weighted["draws"] + weighted["wins_team2"] == weighted["total"]
+
+
+def test_get_weighted_h2h_summary_weighted_rates_in_range():
+    weighted = get_weighted_h2h_summary(SAMPLE_MATCHES, "Madrid", "Barça")
+    assert 0.0 <= weighted["weighted_win_rate1"] <= 1.0
+    assert 0.0 <= weighted["weighted_draw_rate"] <= 1.0
+    assert 0.0 <= weighted["weighted_win_rate2"] <= 1.0
+    assert round(
+        weighted["weighted_win_rate1"] + weighted["weighted_draw_rate"] + weighted["weighted_win_rate2"], 3
+    ) == 1.0
