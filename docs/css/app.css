@@ -214,9 +214,13 @@ header {
 }
 .entity-media--player { border-radius: 50%; }
 .entity-media--team { padding: 4px; }
-.entity-media--team img { width: 78%; height: 78%; object-position: center; }
+/* aspect-ratio:1/1 reserves a square box before the crest's real intrinsic
+   size is known (SVGs load async); without it, non-square crests (taller
+   shields vs. round badges) can render with the wrong box for a moment
+   while loading and appear clipped by the parent's overflow:hidden. */
+.entity-media--team img { width: 78%; height: 78%; aspect-ratio: 1 / 1; object-position: center; }
 .entity-media--team.entity-media--hero { padding: 7px; }
-.entity-media--team.entity-media--hero img { width: 74%; height: 74%; object-position: center; }
+.entity-media--team.entity-media--hero img { width: 74%; height: 74%; aspect-ratio: 1 / 1; object-position: center; }
 .entity-media--ref { border-color: rgba(245,185,60,.3); color: var(--gold); }
 .entity-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .entity-media--player img { object-fit: cover; }
