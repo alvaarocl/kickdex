@@ -7,4 +7,3 @@ html5lib
 pytest
 scipy
 Pillow
-svgelements
