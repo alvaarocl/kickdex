@@ -343,6 +343,67 @@ def get_weighted_form(
     }
 
 
+def get_weighted_referee_form(
+    df: pd.DataFrame,
+    as_of: pd.Timestamp | str | None = None,
+    half_life_days: float = HALF_LIFE_DAYS,
+    max_matches: int = MAX_LOOKBACK_MATCHES,
+    min_matches: int = 3,
+) -> dict | None:
+    """
+    Forma de un árbitro ponderada por antigüedad — mismo principio que
+    `get_weighted_form()` para equipos (decaimiento exponencial en vez de un
+    `tail(N)` plano sin peso), aplicado a tarjetas/faltas/penaltis en lugar
+    de goles. Sin distinción local/visitante: una sola pasada por partido.
+
+    Espera un DataFrame ya normalizado (ver `_normalise_referee_frame` en
+    `scripts/build_data.py`) con columnas `Date`, `_Y`, `_R`, `_F`, `_P`.
+
+    Returns:
+        Dict con `matches`, `effective_matches` (tamaño de muestra
+        ponderado), `yellows_per_match`, `reds_per_match`, `fouls_per_match`,
+        `penalties_per_match`, `last_match`; o None si no hay partidos
+        suficientes.
+    """
+    if df is None or df.empty or "Date" not in df.columns:
+        return None
+    matches = df.dropna(subset=["Date"]).sort_values("Date", ascending=True).tail(max_matches)
+    if len(matches) < min_matches:
+        return None
+
+    reference_date = pd.Timestamp(as_of) if as_of is not None else matches["Date"].max()
+
+    rows: list[dict] = []
+    for _, r in matches.iterrows():
+        match_date = r["Date"]
+        days_since = max(0, (reference_date - match_date).days)
+        weight = 0.5 ** (days_since / half_life_days) if half_life_days > 0 else 1.0
+        rows.append({
+            "weight": weight,
+            "yellows": float(r.get("_Y", 0) or 0),
+            "reds": float(r.get("_R", 0) or 0),
+            "fouls": float(r.get("_F", 0) or 0),
+            "penalties": float(r.get("_P", 0) or 0),
+        })
+
+    total_weight = sum(r["weight"] for r in rows)
+    if total_weight <= 0:
+        return None
+
+    def _wavg(key: str) -> float:
+        return round(sum(r["weight"] * r[key] for r in rows) / total_weight, 2)
+
+    return {
+        "matches": len(rows),
+        "effective_matches": round(total_weight, 1),
+        "yellows_per_match": _wavg("yellows"),
+        "reds_per_match": _wavg("reds"),
+        "fouls_per_match": _wavg("fouls"),
+        "penalties_per_match": _wavg("penalties"),
+        "last_match": matches["Date"].max().strftime("%Y-%m-%d"),
+    }
+
+
 def calculate_player_percentiles(df_players: pd.DataFrame) -> pd.DataFrame:
     """
     Calcula el Z-Score y percentil de cada jugador en métricas clave.

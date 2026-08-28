@@ -3,16 +3,18 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
-import unicodedata
+import sys
 from datetime import datetime, timezone
-from difflib import SequenceMatcher
 from pathlib import Path, PurePosixPath
 
 import requests
-UNAVAILABLE = {'Celta B', 'Sociedad B', 'QPR', 'FC Koln'}
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts._fuzzy_match import norm, score  # noqa: E402
+
+UNAVAILABLE = {'Celta B', 'Sociedad B', 'QPR', 'FC Koln'}
+
 DATA = ROOT / "docs" / "data"
 TREE = "https://api.github.com/repos/JoseArroyave/football-logos/git/trees/main?recursive=1"
 RAW = "https://raw.githubusercontent.com/JoseArroyave/football-logos/main/"
@@ -20,17 +22,6 @@ COUNTRIES = {"SP1":"spain","SP2":"spain","E0":"england","E1":"england","I1":"ita
 ALIASES = {"Alaves":"Deportivo Alaves","Ath Madrid":"Atletico Madrid","Athletic Club":"Athletic Club Bilbao","Betis":"Real Betis","Dep. A Coruna":"Deportivo La Coruna","Espanol":"Espanyol","Santander":"Racing Santander","Sociedad":"Real Sociedad","Vallecano":"Rayo Vallecano","Sp Gijon":"Sporting Gijon","For Sittard":"Fortuna Sittard","AZ Alkmaar":"AZ","Den Haag":"ADO Den Haag","Nijmegen":"NEC Nijmegen","PSV Eindhoven":"PSV","Dortmund":"Borussia Dortmund","Ein Frankfurt":"Eintracht Frankfurt","M'gladbach":"Borussia Monchengladbach","Man City":"Manchester City","Man United":"Manchester United","Nott'm Forest":"Nottingham Forest","PSG":"Paris Saint-Germain","St Etienne":"Saint-Etienne","Lyon":"Olympique Lyonnais","Marseille":"Olympique Marseille"}
 
 ALIASES.update({'Wolves': 'Wolverhampton Wanderers', 'Hull': 'Hull City', 'Verona': 'Hellas Verona', 'Mainz': 'Mainz 05'})
-
-def norm(value: str) -> str:
-    text = unicodedata.normalize("NFKD", str(value or ""))
-    text = "".join(c for c in text if not unicodedata.combining(c)).lower()
-    return re.sub(r"[^a-z0-9]+", "", text)
-
-def score(left: str, right: str) -> float:
-    a, b = norm(left), norm(right)
-    if a == b: return 1.0
-    if a in b or b in a: return .91
-    return SequenceMatcher(None, a, b).ratio() * .86
 
 def load_manifest() -> dict:
     return json.loads((DATA / "team_assets.json").read_text(encoding="utf-8"))

@@ -1,0 +1,48 @@
+name: Update Live Scores
+
+# Marcador con retraso (no en directo) vía football-data.org. Cadencia propia
+# de 15 min, separada del workflow diario (update_data.yml) que hace el
+# refresco completo — esto solo actualiza docs/data/live_scores.json.
+# Sin FOOTBALL_DATA_API_KEY configurada, el script escribe un contrato
+# "enabled: false" y no falla nunca.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Cada ~15 min (GitHub no garantiza el minuto exacto)
+  workflow_dispatch:
+
+concurrency:
+  group: update-live-scores
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update live scores (delayed)
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/update_live_scores.py
+
+      - name: Commit updated live scores
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/live_scores.json
+          git diff --staged --quiet || git commit -m "chore: update live scores $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+          git push

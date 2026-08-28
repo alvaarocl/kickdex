@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/app.css?v=20260827crestfix2" />
+  <link rel="stylesheet" href="css/app.css?v=20260827live" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
   <script type="module" src="js/edge.js?v=20260430b" defer></script>
 </head>
@@ -299,16 +299,15 @@
   </section>
 
   <section class="tab-panel" id="tab-live" role="tabpanel">
-    <div class="live-empty card">
-      <span class="live-status-chip">LIVE API · OFF</span>
-      <h2>Centro de partidos en directo</h2>
-      <p>La interfaz y el contrato técnico están preparados. El feed permanece desactivado hasta disponer de acceso autorizado a la temporada 2026/27.</p>
-      <div class="live-contract-grid">
-        <div><strong>Marcador</strong><span>Estado, minuto y resultado</span></div>
-        <div><strong>Timeline</strong><span>Goles, tarjetas y cambios</span></div>
-        <div><strong>Estadísticas</strong><span>Tiros, posesión y córners</span></div>
+    <div class="live-banner card">
+      <span class="live-status-chip" id="liveStatusChip">DIRECTO · —</span>
+      <p id="liveDataStatus">Cargando estado del marcador…</p>
+    </div>
+    <div id="live-root">
+      <div class="state-box">
+        <div class="icon"><span class="spinner"></span></div>
+        <p data-i18n="loading">Cargando partidos...</p>
       </div>
-      <small id="liveDataStatus">No se muestran datos simulados en producción.</small>
     </div>
   </section>
 
@@ -343,6 +342,7 @@
 <script src="js/h2h.js?v=20260826teamnames"></script>
 <script src="js/jugadores.js?v=20260826teamnames"></script>
 <script src="js/inicio.js?v=20260826teamnames"></script>
-<script src="js/arbitros.js?v=20260823a"></script>
+<script src="js/arbitros.js?v=20260827weighted"></script>
+<script src="js/live.js?v=20260827a"></script>
 </body>
 </html>

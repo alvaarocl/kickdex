@@ -129,7 +129,7 @@ function renderArbitros() {
     </table>
   </div>
   <div class="disclaimer" style="margin-top:14px;">
-    Fuente: World Soccer Data/API-Football para temporada actual; fallback football-data/manual para historico.
+    Fuente: football-data.co.uk (Premier League y Championship, partido a partido) y World Soccer Data (resto de ligas, agregado de temporada). Medias ponderadas por antigüedad: los partidos recientes pesan más que los antiguos.
   </div>`;
 
   setTimeout(() => initAllTables(box), 50);

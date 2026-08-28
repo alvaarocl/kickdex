@@ -589,7 +589,6 @@ async function loadAllData() {
     initSegControls();
     initModules();
     initGlobalSearch();
-    updateLivePanel();
     applyRouteParams();
 
     // Background-load H2H (heavy 4.4MB file). Does not block initial render.
@@ -757,6 +756,7 @@ function openTab(tabName, syncUrl = true) {
   btn.classList.add("active");
   btn.setAttribute("aria-selected", "true");
   panel.classList.add("active");
+  document.dispatchEvent(new CustomEvent("kdx:tab-open", { detail: { tab: tabName } }));
   return true;
 }
 
@@ -828,15 +828,6 @@ function initGlobalSearch() {
   });
 }
 
-function updateLivePanel() {
-  const status = document.getElementById("liveDataStatus");
-  if (!status) return;
-  const calendar = APP.dataHealth?.domains?.calendar;
-  if (calendar?.updated_at) {
-    status.textContent = "Calendario batch actualizado " + new Date(calendar.updated_at).toLocaleString("es-ES") + ". El feed live sigue desactivado.";
-  }
-}
-
 function applyRouteParams() {
   const params = new URLSearchParams(location.search);
   const hashRoute = currentRoute();
@@ -849,7 +840,7 @@ function applyRouteParams() {
 }
 
 function initModules() {
-  ["initInicio", "initComparador", "initH2H", "initJugadores", "initArbitros"].forEach(name => {
+  ["initInicio", "initComparador", "initH2H", "initJugadores", "initArbitros", "initLive"].forEach(name => {
     const initializer = window[name];
     if (typeof initializer !== "function") return;
     try {

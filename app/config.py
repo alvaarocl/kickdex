@@ -55,6 +55,20 @@ APIFOOTBALL_LEAGUE_IDS = {
     "N1": 88,   # Eredivisie
 }
 
+# football-data.org (v4) competition codes — usados por update_live_scores.py
+# para el marcador con retraso (plan gratuito: sin partidos en vivo, solo con
+# retraso). Cubre 7 de las 11 ligas de KICKDEX; SP2/I2/D2/F2 quedan fuera
+# porque el tier gratuito de football-data.org no las incluye.
+FOOTBALL_DATA_ORG_COMPETITION_CODES = {
+    "SP1": "PD",   # La Liga (Primera División)
+    "E0": "PL",    # Premier League
+    "E1": "ELC",   # Championship
+    "I1": "SA",    # Serie A
+    "D1": "BL1",   # Bundesliga
+    "F1": "FL1",   # Ligue 1
+    "N1": "DED",   # Eredivisie
+}
+
 # Public World Soccer Data paths for referee season aggregates.
 # Used as a free fallback when per-match referee feeds are unavailable.
 WORLDSOCCERDATA_REFEREE_PATHS = {
@@ -78,6 +92,11 @@ MIN_MATCHES_FOR_STATS = 3        # Mínimo de partidos para mostrar métricas
 # el historial disponible pero dan menos peso a los partidos más antiguos.
 HALF_LIFE_DAYS = 270             # Un partido de hace ~9 meses pesa la mitad que uno de hoy
 MAX_LOOKBACK_MATCHES = 60        # Tope de partidos por local/visitante (rendimiento; el peso ya los hace irrelevantes antes)
+
+# ── Alias de árbitros (colisiones apellido+inicial que _referee_key no resuelve) ──
+# Clave: nombre normalizado (NFKD sin diacríticos, minúsculas) tal como aparece
+# en la fuente. Valor: la clave canónica a la que debe mapear en build_referees().
+REFEREE_ALIASES: dict[str, str] = {}
 
 # ── Descarga de datos ─────────────────────────────────────────────────────────
 FOOTBALL_DATA_BASE_URL = "https://www.football-data.co.uk/mmz4281"

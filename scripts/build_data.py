@@ -22,7 +22,7 @@ from app.data.health import build_data_health
 from app.data.season_rosters import all_roster_teams, roster_for
 from app.engine.metrics import (
     get_recent_form, get_h2h, get_h2h_summary, calculate_rolling_metrics,
-    get_weighted_form, get_weighted_h2h_summary,
+    get_weighted_form, get_weighted_h2h_summary, get_weighted_referee_form,
 )
 from app.engine.probability import (
     calculate_probabilities,
@@ -908,7 +908,40 @@ def load_suspension_source_catalog(path: Path | None = None) -> list[dict]:
         return []
 
 
+def _referee_key(name: str) -> str:
+    """
+    Normaliza un nombre de árbitro para cruzar fuentes con formato distinto:
+    football-data.co.uk usa iniciales ("A Taylor"), worldsoccerdata usa
+    nombre completo ("Anthony Taylor") — sin esto nunca coinciden y el mismo
+    árbitro humano aparece como dos registros separados (uno con historial,
+    otro con la temporada actual, nunca los dos a la vez).
+
+    Clave = apellido + inicial del nombre ("A Taylor" y "Anthony Taylor" ->
+    "taylor_a"). Colisiones reales de apellido+inicial son raras pero
+    posibles; para esos casos añadir una entrada a REFEREE_ALIASES en
+    app/config.py.
+    """
+    import re
+    import unicodedata
+    from app.config import REFEREE_ALIASES
+
+    text = unicodedata.normalize("NFKD", str(name or ""))
+    text = "".join(c for c in text if not unicodedata.combining(c)).strip().lower()
+    text = re.sub(r"[^a-z\s]", "", text)
+    if text in REFEREE_ALIASES:
+        return REFEREE_ALIASES[text]
+    parts = [p for p in text.split() if p]
+    if not parts:
+        return ""
+    last = parts[-1]
+    first_initial = parts[0][0] if len(parts) > 1 else ""
+    return f"{last}_{first_initial}" if first_initial else last
+
+
 def _ref_stats(grp):
+    """Media plana sin ponderar — se mantiene solo para el CSV incremental de
+    API-Football sin fecha fiable por partido; el camino normal usa
+    get_weighted_referee_form()."""
     import pandas as pd
     if grp is None or grp.empty:
         return None
@@ -950,26 +983,44 @@ def build_referees(df, df_current=None) -> list:
         inc_curr = incremental[incremental["Date"] >= pd.Timestamp(CURRENT_SEASON_START)].copy()
         rdf_curr = pd.concat([rdf_curr, inc_curr], ignore_index=True)
 
-    # Sort by date so head(N) = most recent N
-    date_col = "Date" if "Date" in rdf.columns else None
-    if date_col:
-        rdf = rdf.sort_values(date_col, ascending=False)
-        if not rdf_curr.empty:
-            rdf_curr = rdf_curr.sort_values(date_col, ascending=False)
+    rdf["_key"] = rdf["Referee"].apply(_referee_key)
+    if not rdf_curr.empty:
+        rdf_curr["_key"] = rdf_curr["Referee"].apply(_referee_key)
+
+    # Las claves de los agregados de temporada (worldsoccerdata) se
+    # normalizan igual, para que "Anthony Taylor" cruce con "A Taylor".
+    season_aggregates_by_key = {
+        (div, _referee_key(name)): stats for (div, name), stats in season_aggregates.items()
+    }
 
     results = []
-    for (div, referee), grp in rdf.groupby(["Div", "Referee"], sort=False):
-        overall = _ref_stats(grp)
+    for (div, key), grp in rdf.groupby(["Div", "_key"], sort=False):
+        if not key:
+            continue
+        overall = get_weighted_referee_form(grp)
         if overall is None:
             continue  # skip refs with < 3 matches total
+        overall["source"] = "api-football" if (grp.get("_source") == "api-football").any() else "football-data"
+        # Nombre a mostrar: el más largo/completo de los que aparecen para
+        # esta clave (normalmente el de football-data, con iniciales, pierde
+        # frente al nombre completo si ambas fuentes cruzan).
+        display_name = max(grp["Referee"].unique(), key=len)
 
-        grp_curr = rdf_curr[(rdf_curr["Div"] == div) & (rdf_curr["Referee"] == referee)] if not rdf_curr.empty else pd.DataFrame()
-        season_stats = season_aggregates.get((div, referee))
-        if season_stats is None and not grp_curr.empty:
-            season_stats = _ref_stats(grp_curr)
+        grp_curr = rdf_curr[(rdf_curr["Div"] == div) & (rdf_curr["_key"] == key)] if not rdf_curr.empty else pd.DataFrame()
+        # El agregado de temporada de worldsoccerdata puede estar desfasado
+        # (se ha visto con fecha de scrape anterior al inicio de temporada,
+        # es decir con datos de la temporada previa mal etiquetados como
+        # "actual"). En cuanto exista partido a partido real de la temporada
+        # actual (aunque sean pocos partidos) confiamos solo en esa fuente,
+        # incluso si es "sin datos aun" (None) — mejor honesto que hinchado
+        # con un numero que no corresponde a este arbitro esta temporada.
+        if grp_curr.empty:
+            season_stats = season_aggregates_by_key.get((div, key))
+        else:
+            season_stats = get_weighted_referee_form(grp_curr)
 
         record = {
-            "name":    referee,
+            "name":    display_name,
             "league":  div,
             # top-level legacy fields (used by old frontend code)
             "matches":           overall["matches"],
@@ -979,19 +1030,20 @@ def build_referees(df, df_current=None) -> list:
             "penalties_per_match": overall.get("penalties_per_match"),
             "last_match":        overall.get("last_match"),
             "source":            overall.get("source"),
-            # windowed blocks
+            # windowed blocks — todos ponderados por antigüedad (más peso a
+            # lo reciente), no una media plana sobre los últimos N.
             "overall":        overall,
-            "last10":         _ref_stats(grp.head(10)),
-            "last5":          _ref_stats(grp.head(5)),
+            "last10":         get_weighted_referee_form(grp, max_matches=10, min_matches=3),
+            "last5":          get_weighted_referee_form(grp, max_matches=5, min_matches=3),
             "season":         season_stats,
-            "season_last10":  _ref_stats(grp_curr.head(10)) if not grp_curr.empty else None,
-            "season_last5":   _ref_stats(grp_curr.head(5))  if not grp_curr.empty else None,
+            "season_last10":  get_weighted_referee_form(grp_curr, max_matches=10, min_matches=3) if not grp_curr.empty else None,
+            "season_last5":   get_weighted_referee_form(grp_curr, max_matches=5, min_matches=3) if not grp_curr.empty else None,
         }
         results.append(record)
 
-    existing_keys = {(r["league"], r["name"]) for r in results}
+    existing_keys = {(r["league"], _referee_key(r["name"])) for r in results}
     for (div, referee), season_stats in season_aggregates.items():
-        if (div, referee) in existing_keys:
+        if (div, _referee_key(referee)) in existing_keys:
             continue
         results.append({
             "name": referee,
@@ -1138,6 +1190,7 @@ def main():
             referees_payload,
             suspensions_payload,
             leagues,
+            live_scores=_read_existing_json("live_scores.json"),
         ),
         "data_health.json",
     )

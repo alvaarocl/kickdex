@@ -262,30 +262,35 @@ header {
 
 .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted2); }
 .tab-btn.active .live-dot { background: var(--live, var(--brand2)); box-shadow: 0 0 10px var(--brand2); }
-.live-empty { padding: clamp(24px, 5vw, 56px); text-align: center; overflow: hidden; position: relative; }
-.live-empty::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(rgba(91,214,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(91,214,255,.04) 1px, transparent 1px);
-  background-size: 32px 32px;
+
+/* ── Tab Directo: marcador con retraso (football-data.org) ─────────────── */
+.live-banner {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 14px 18px; margin-bottom: 14px;
 }
-.live-empty > * { position: relative; }
+.live-banner p { margin: 0; color: var(--muted); font-size: .85rem; line-height: 1.5; }
 .live-status-chip {
   display: inline-flex; padding: 6px 10px; border-radius: 999px;
-  border: 1px solid rgba(91,214,255,.28); color: var(--brand2);
-  font: 700 .68rem var(--font-data); letter-spacing: .08em;
+  border: 1px solid var(--border2); color: var(--muted);
+  font: 700 .68rem var(--font-data); letter-spacing: .08em; white-space: nowrap;
 }
-.live-empty h2 { margin: 18px 0 8px; font-size: clamp(1.45rem, 3vw, 2.2rem); }
-.live-empty > p { max-width: 680px; margin: 0 auto; color: var(--text2); line-height: 1.65; }
-.live-empty > small { display: block; margin-top: 22px; color: var(--muted); }
-.live-contract-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; max-width: 760px; margin: 28px auto 0; }
-.live-contract-grid div { padding: 18px; border: 1px solid var(--border); background: rgba(5,7,13,.72); border-radius: 12px; display: grid; gap: 6px; }
-.live-contract-grid strong { color: var(--brand2); font-family: var(--font-data); }
-.live-contract-grid span { color: var(--muted); font-size: .8rem; }
+.live-status-chip--on { border-color: rgba(91,214,255,.28); color: var(--brand2); }
+.live-match-status {
+  font-size: .62rem; font-weight: 700; padding: 3px 9px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: .6px;
+  background: rgba(255,255,255,.06); color: var(--muted);
+}
+.live-match-status--live { background: rgba(46,230,166,.15); color: var(--brand); }
+.live-match-status--finished { background: rgba(255,255,255,.06); color: var(--text2); }
+.live-match-status--suspended, .live-match-status--postponed, .live-match-status--cancelled { background: rgba(255,107,107,.12); color: var(--red, #ff6b6b); }
+.live-minute {
+  font-family: var(--font-data); font-weight: 800; font-size: .78rem;
+  color: var(--brand); margin-left: 8px;
+}
 
 @media (max-width: 780px) {
   .kdx-global-search { order: 3; width: 100%; }
   .header-inner > div:last-child { width: 100%; }
-  .live-contract-grid { grid-template-columns: 1fr; }
   .fx-team .entity-media { width: 30px; height: 30px; flex-basis: 30px; }
 }
 

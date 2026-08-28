@@ -12,6 +12,25 @@ def _now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _live_scores_domain(live_scores: dict[str, Any] | None) -> dict[str, Any]:
+    if not live_scores or not live_scores.get("enabled"):
+        return {
+            "status": "unavailable",
+            "updated_at": (live_scores or {}).get("updated_at"),
+            "records": 0,
+            "note": (live_scores or {}).get("note") or "Directo desactivado: falta configurar FOOTBALL_DATA_API_KEY.",
+        }
+    matches = live_scores.get("matches") or []
+    return {
+        # "fresh" incluso con 0 partidos: puede ser honestamente que hoy no
+        # haya partidos en ninguna de las ligas cubiertas.
+        "status": "fresh",
+        "updated_at": live_scores.get("updated_at"),
+        "records": len(matches),
+        "note": live_scores.get("note"),
+    }
+
+
 def build_data_health(
     meta: dict[str, Any],
     fixtures: dict[str, Any],
@@ -19,6 +38,7 @@ def build_data_health(
     referees: list[dict[str, Any]],
     suspensions: dict[str, Any],
     leagues: dict[str, Any],
+    live_scores: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     fixture_meta = fixtures.get("meta") or {}
     fixture_download = fixture_meta.get("fixture_download") or {}
@@ -83,6 +103,7 @@ def build_data_health(
             "updated_at": suspensions.get("updated_at"),
             "records": len(suspension_items),
         },
+        "live_scores": _live_scores_domain(live_scores),
     }
     essential_statuses = [domains["calendar"]["status"], domains["teams"]["status"]]
     return {

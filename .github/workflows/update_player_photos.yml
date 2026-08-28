@@ -1,0 +1,56 @@
+name: Update Player Photos (Wikidata)
+
+# Fotos de jugadores vía Wikidata — gratis, sin clave. No necesita cadencia
+# diaria (las fotos de un jugador casi nunca cambian), así que va en su
+# propio workflow semanal, separado del refresco diario de datos.
+
+on:
+  schedule:
+    - cron: '30 4 * * 1'  # Lunes 04:30 UTC
+  workflow_dispatch:
+    inputs:
+      team:
+        description: 'Procesar un único equipo (deja vacío para todos)'
+        required: false
+        default: ''
+
+concurrency:
+  group: update-player-photos
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update player photos from Wikidata
+        env:
+          TEAM_FILTER: ${{ github.event.inputs.team }}
+        run: |
+          if [ -n "$TEAM_FILTER" ]; then
+            python scripts/update_player_photos_wikidata.py --team "$TEAM_FILTER"
+          else
+            python scripts/update_player_photos_wikidata.py
+          fi
+
+      - name: Commit updated player photos
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/player_assets.json
+          git diff --staged --quiet || git commit -m "chore: update player photos (wikidata) $(date -u +%Y-%m-%d) [skip ci]"
+          git push

@@ -51,7 +51,7 @@ def api_get(path: str, key: str) -> list:
     return payload.get("response") or []
 
 
-def enrich(key: str, max_player_teams: int = 10) -> tuple[int, int]:
+def enrich(key: str, max_player_teams: int = 10, force: bool = False) -> tuple[int, int]:
     leagues = _read("leagues.json", {})
     players = _read("players.json", {})
     team_manifest = build_team_assets(leagues, _read("team_assets.json", {}))
@@ -78,6 +78,12 @@ def enrich(key: str, max_player_teams: int = 10) -> tuple[int, int]:
     for name, asset in team_manifest["teams"].items():
         provider = provider_teams.get(_norm(name))
         if not provider:
+            continue
+        if asset.get("crest") and not force:
+            # No pisar un escudo ya presente (p.ej. los arreglados a mano vía
+            # update_team_crests.py) con lo que devuelva esta otra fuente.
+            if provider.get("id"):
+                team_ids.append(int(provider["id"]))
             continue
         asset.update({
             "id": provider.get("id"),
@@ -108,7 +114,12 @@ def enrich(key: str, max_player_teams: int = 10) -> tuple[int, int]:
                     if _norm(item.get("team")) == _norm(team_name) and _norm(item.get("name")) == _norm(provider.get("name"))
                 ]
                 for key_name in candidates:
-                    player_manifest["players"][key_name].update({
+                    existing = player_manifest["players"][key_name]
+                    if existing.get("photo") and not force:
+                        # No pisar una foto ya presente (p.ej. Wikidata) con
+                        # la de esta otra fuente.
+                        continue
+                    existing.update({
                         "id": provider.get("id"),
                         "photo": provider.get("photo"),
                         "source": "api-football",
@@ -124,12 +135,13 @@ def enrich(key: str, max_player_teams: int = 10) -> tuple[int, int]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--max-player-teams", type=int, default=10)
+    parser.add_argument("--force", action="store_true", help="Sobrescribe escudos/fotos ya presentes en vez de preservarlos")
     args = parser.parse_args()
     key = os.getenv("APIFOOTBALL_KEY") or os.getenv("API_FOOTBALL_KEY")
     if not key:
         print("SKIP entity assets: APIFOOTBALL_KEY is not configured")
         return 0
-    teams, players = enrich(key, max_player_teams=max(0, args.max_player_teams))
+    teams, players = enrich(key, max_player_teams=max(0, args.max_player_teams), force=args.force)
     print(f"OK entity assets teams={teams} players={players}")
     return 0
 
