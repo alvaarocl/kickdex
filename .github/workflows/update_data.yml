@@ -80,7 +80,9 @@ jobs:
         run: python scripts/update_suspensions.py --fetch
 
       - name: Update player data
-        run: python scripts/update_player_data.py --skip-scrape
+        continue-on-error: true
+        timeout-minutes: 12
+        run: python scripts/update_player_data.py --leagues SP1 E0 I1 D1 F1
 
       - name: Enrich team and player identity assets
         continue-on-error: true

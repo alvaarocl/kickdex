@@ -19,6 +19,7 @@ from app.data.loader import load_players
 from app.data.player_scraper import update_players
 from scripts.build_data import (
     OUTPUT_DIR,
+    add_player_percentiles,
     build_player_coverage,
     build_player_coverage_from_json,
     build_data_status,
@@ -55,9 +56,9 @@ def main() -> int:
             print("Warning: player scrape produced no fresh rows; using existing local/player JSON data when available.")
 
     df_players = load_players()
-    players = build_players(df_players)
-    players_detail = build_players_detail(df_players)
     leagues = _read_json(OUTPUT_DIR / "leagues.json", {})
+    players = add_player_percentiles(build_players(df_players), leagues)
+    players_detail = build_players_detail(df_players)
 
     write_player_json(players, "players.json")
     write_player_json(players_detail, "players_detail.json")

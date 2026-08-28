@@ -2205,15 +2205,7 @@ tbody td b { font-family: var(--font-data); }
 .lp-nav-links a:hover::after,
 .lp-nav-links a.lp-nav-active::after { width: 100%; }
 
-/* ── Feat card hover lift ───────────────────────────────── */
-.lp-feat-card {
-  transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, border-color .25s;
-}
-.lp-feat-card:hover {
-  transform: translateY(-6px) scale(1.015);
-  box-shadow: 0 20px 60px -12px rgba(46,230,166,.12), 0 0 0 1px rgba(46,230,166,.15);
-  border-color: rgba(46,230,166,.2) !important;
-}
+/* .lp-feat-card hover: consolidado en la definición base más abajo (~L2530). */
 
 /* ── Scroll hint — animated drop line ───────────────────── */
 .lp-scroll-hint {
@@ -2540,6 +2532,7 @@ tbody td b { font-family: var(--font-data); }
               box-shadow .25s ease;
   display: flex; flex-direction: column; gap: 12px;
   position: relative; overflow: hidden;
+  transform-style: preserve-3d;
 }
 .lp-feat-card::before {
   content: '';
@@ -2707,17 +2700,7 @@ tbody td b { font-family: var(--font-data); }
   pointer-events: none;
 }
 
-/* ── Feature card hover glow ────────────────────────────── */
-.lp-feat-card {
-  transition: transform .22s cubic-bezier(.2,.8,.2,1),
-              border-color .22s ease,
-              box-shadow .22s ease;
-}
-.lp-feat-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(46,230,166,.3);
-  box-shadow: 0 20px 48px -12px rgba(0,0,0,.7), 0 0 0 1px rgba(46,230,166,.12);
-}
+/* .lp-feat-card hover glow: consolidado en la definición base (~L2527). */
 
 /* ── League pill hover ──────────────────────────────────── */
 .lp-league-pill {
@@ -2727,9 +2710,7 @@ tbody td b { font-family: var(--font-data); }
 .lp-league-pill:hover { transform: translateY(-2px) scale(1.03); }
 
 /* ── CTA primary ripple ─────────────────────────────────── */
-.lp-cta-primary {
-  position: relative; overflow: hidden;
-}
+/* position:relative + overflow:hidden ya vienen del grupo .lp-cta-* (~L2160). */
 .lp-cta-primary::after {
   content: "";
   position: absolute; inset: 0; border-radius: inherit;
@@ -2884,10 +2865,7 @@ tbody td b { font-family: var(--font-data); }
   transition: transform .3s ease;
 }
 
-/* Feat card tilt — leave transition only for non-tilt props */
-.lp-feat-card {
-  transform-style: preserve-3d;
-}
+/* .lp-feat-card { transform-style: preserve-3d } → movido a la base (~L2527). */
 
 /* ══════════════════════════════════════════════════════════
    F4 — Mobile optimization (comprehensive)

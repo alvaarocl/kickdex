@@ -114,6 +114,7 @@ function renderArbitros() {
   <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">
     La columna PJ corresponde a la ventana seleccionada, no al total historico.
     Perfil: <b style="color:var(--gold)">OVER</b> ≥ 5.0 amarillas/p · <b style="color:var(--brand)">UNDER</b> ≤ 2.8.
+    <span class="jug-sort-hint">⇧+clic en una cabecera para ordenar por varias columnas</span>
   </p>
   ${unavailableNote}
   <div class="table-wrap">

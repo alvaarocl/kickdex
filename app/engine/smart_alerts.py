@@ -90,7 +90,7 @@ def _home_alerts(home: dict, n: int) -> list[Alert]:
     r = home.get("over25_rate", 0.0)
     if r >= 0.55:
         alerts.append(Alert(
-            text=f"{team} ha jugado con más de 2.5 goles en el {_pct(r)} de sus últimos {n} partidos",
+            text=f"{team} ha jugado con más de 2.5 goles en el {_pct(r)} de sus partidos como local (muestra {n}, peso reciente)",
             type=AlertType.OVER_UNDER, strength=_strength(r), confidence=r, source="home"
         ))
 
@@ -98,7 +98,7 @@ def _home_alerts(home: dict, n: int) -> list[Alert]:
     r = home.get("btts_rate", 0.0)
     if r >= 0.55:
         alerts.append(Alert(
-            text=f"Ambos equipos han marcado en el {_pct(r)} de los partidos de {team} (últimos {n})",
+            text=f"Ambos equipos han marcado en el {_pct(r)} de los partidos de {team} (muestra {n}, peso reciente)",
             type=AlertType.BTTS, strength=_strength(r), confidence=r, source="home"
         ))
 
@@ -106,7 +106,7 @@ def _home_alerts(home: dict, n: int) -> list[Alert]:
     r = home.get("avg_goals", 0.0)
     if r >= 2.0:
         alerts.append(Alert(
-            text=f"{team} promedia {r:.1f} goles por partido como local (últimos {n})",
+            text=f"{team} promedia {r:.1f} goles por partido como local (muestra {n}, peso reciente)",
             type=AlertType.GOALS, strength=AlertStrength.HIGH if r >= 2.5 else AlertStrength.MEDIUM,
             confidence=min(r / 3, 0.99), source="home"
         ))
@@ -131,7 +131,7 @@ def _home_alerts(home: dict, n: int) -> list[Alert]:
     wr = home.get("win_rate", 0.0)
     if wr >= 0.60:
         alerts.append(Alert(
-            text=f"{team} gana el {_pct(wr)} de sus partidos como local (últimos {n})",
+            text=f"{team} gana el {_pct(wr)} de sus partidos como local (muestra {n}, peso reciente)",
             type=AlertType.FORM, strength=_strength(wr), confidence=wr, source="home"
         ))
 
@@ -159,14 +159,14 @@ def _away_alerts(away: dict, n: int) -> list[Alert]:
     r = away.get("avg_goals_against", 0.0)
     if r >= 1.5:
         alerts.append(Alert(
-            text=f"{team} concede {r:.1f} goles de media como visitante (últimos {n})",
+            text=f"{team} concede {r:.1f} goles de media como visitante (muestra {n}, peso reciente)",
             type=AlertType.DEFENSE, strength=_strength(r / 3), confidence=min(r / 3, 0.99), source="away"
         ))
 
     r = away.get("avg_goals", 0.0)
     if r >= 1.5:
         alerts.append(Alert(
-            text=f"{team} anota {r:.1f} goles de media como visitante (últimos {n})",
+            text=f"{team} anota {r:.1f} goles de media como visitante (muestra {n}, peso reciente)",
             type=AlertType.GOALS, strength=AlertStrength.HIGH if r >= 2.0 else AlertStrength.MEDIUM,
             confidence=min(r / 3, 0.99), source="away"
         ))
@@ -174,7 +174,7 @@ def _away_alerts(away: dict, n: int) -> list[Alert]:
     wr = away.get("win_rate", 0.0)
     if wr >= 0.50:
         alerts.append(Alert(
-            text=f"{team} gana el {_pct(wr)} de sus partidos fuera de casa (últimos {n})",
+            text=f"{team} gana el {_pct(wr)} de sus partidos fuera de casa (muestra {n}, peso reciente)",
             type=AlertType.FORM, strength=_strength(wr), confidence=wr, source="away"
         ))
 

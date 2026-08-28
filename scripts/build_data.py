@@ -317,6 +317,11 @@ def _write_alerts_json(fixtures_payload: dict):
         if not home_stats or not away_stats:
             continue
 
+        # Inyectar el nombre para que smart_alerts escriba "Racing promedia..."
+        # en vez de "Local promedia..." (las sub-claves home/away no lo llevan).
+        home_stats = {**home_stats, "team": home}
+        away_stats = {**away_stats, "team": away}
+
         # La clave en h2h.json es "{alphabetically_first}|{alphabetically_second}"
         h2h_key = "|".join(sorted([home, away]))
         h2h_entry = h2h_data.get(h2h_key)
@@ -552,8 +557,13 @@ def add_player_percentiles(players_payload: dict, leagues: dict) -> dict:
         by_league.setdefault(code, []).extend(players)
 
     for code, players in by_league.items():
+        # Pool de comparación: solo jugadores con minutos reales, para que los
+        # suplentes que juegan 5' no aplasten a todos al percentil 100.
+        pool = [p for p in players if isinstance(p.get("min"), (int, float)) and p["min"] >= 30]
+        if len(pool) < 8:
+            pool = players
         for m in metrics:
-            vals = sorted(p[m] for p in players if isinstance(p.get(m), (int, float)))
+            vals = sorted(p[m] for p in pool if isinstance(p.get(m), (int, float)))
             n = len(vals)
             if n < 5:
                 continue
@@ -561,14 +571,9 @@ def add_player_percentiles(players_payload: dict, leagues: dict) -> dict:
                 v = p.get(m)
                 if not isinstance(v, (int, float)):
                     continue
-                # percentil = fracción de jugadores con valor <= v
-                lo = 0
-                for x in vals:
-                    if x <= v:
-                        lo += 1
-                    else:
-                        break
-                p[f"{m}_pct"] = round(lo / n * 100)
+                # percentil = fracción del pool con valor <= v
+                lo = sum(1 for x in vals if x <= v)
+                p[f"{m}_pct"] = max(0, min(100, round(lo / n * 100)))
     return players_payload
 
 

@@ -91,6 +91,18 @@ function getBestTrend(homeTeam, awayTeam) {
   });
 }
 
+// El campo text de trends.py trae "local/visitante/global" pero no el equipo.
+// Prefija el nombre corto para que se lea "Racing +2.5 goles L8/9 local".
+function trendChipText(trend) {
+  var base = trend.text || "";
+  var team = trend.team;
+  if (!team) return base;
+  var label = (typeof teamShortLabel === "function") ? teamShortLabel(team)
+            : (typeof teamDisplayName === "function") ? teamDisplayName(team)
+            : team;
+  return label + " " + base;
+}
+
 // ── Radar de la jornada ────────────────────────────────────────────────────
 
 function buildJornadaRadar(fixtures) {
@@ -620,11 +632,12 @@ function buildFixtureCard(f, isResult) {
   var trendChip = "";
   var bestTrend = getBestTrend(f.home, f.away);
   if (bestTrend) {
-    var icon     = bestTrend.rate >= 0.9 ? "↑" : "↗";
-    var hitsStr  = bestTrend.hits + "/" + bestTrend.window;
+    var icon      = bestTrend.rate >= 0.9 ? "↑" : "↗";
+    var hitsStr   = bestTrend.hits + "/" + bestTrend.window;
+    var trendText = trendChipText(bestTrend);
     trendChip = '<span class="fx-dr-trend" title="' +
-      escHtml(bestTrend.text || "") + " (" + escHtml(hitsStr) + ')">' +
-      icon + " " + escHtml(bestTrend.text || "") +
+      escHtml(trendText) + " (" + escHtml(hitsStr) + ')">' +
+      icon + " " + escHtml(trendText) +
       '</span>';
   }
 

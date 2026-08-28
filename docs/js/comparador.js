@@ -164,7 +164,7 @@ function buildComparadorHTML(home, away, homeData, awayData, ctx, h2hData, h2hSu
   </div>
 
   <div class="card stagger-item" style="margin-bottom:20px;">
-    <div class="section-title">Jugadores destacados</div>
+    <div class="section-title">Jugadores destacados <span class="jug-sort-hint">⇧+clic en cabecera para ordenar por varias</span></div>
     ${buildBlockPlayers(home, away, ctx)}
   </div>
 

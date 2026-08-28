@@ -72,15 +72,14 @@ FOOTBALL_DATA_ORG_COMPETITION_CODES = {
 # The Odds API (the-odds-api.com) sport keys — usados por scripts/update_odds.py
 # para cuotas de partidos FUTUROS (Fase 4). Sin THE_ODDS_API_KEY el script
 # escribe odds.json con enabled=false y el edge sigue siendo solo retrospectivo.
-# El tier gratuito (500 req/mes) no cubre segundas divisiones salvo Championship.
+# Solo las 5 grandes de momento para no agotar el tier gratuito (500 req/mes):
+# 5 ligas × 2 builds/día ≈ 300 req/mes. Ampliar a E1/N1 si se sube de plan.
 THE_ODDS_API_SPORT_KEYS = {
     "SP1": "soccer_spain_la_liga",
     "E0":  "soccer_epl",
-    "E1":  "soccer_efl_champ",
     "I1":  "soccer_italy_serie_a",
     "D1":  "soccer_germany_bundesliga",
     "F1":  "soccer_france_ligue_one",
-    "N1":  "soccer_netherlands_eredivisie",
 }
 
 # Public World Soccer Data paths for referee season aggregates.
