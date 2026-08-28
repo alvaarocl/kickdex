@@ -160,9 +160,21 @@ Cada partido del array `matches` de cada par:
 - Build offline (`KICKDEX_SKIP_DOWNLOADS=1`) → exit 0, sin warnings de alertas
 - `node --check` de los 10 módulos JS → OK
 
-## Pendiente / fuera de la Fase 0 entregada
+## Tab "Clasificación" — MANTENIDA (decisión del usuario, 2026-08-28)
 
-- **Tab "Clasificación"** (standings + goleadores vía football-data.org):
-  añadido por el agente de pipeline sin estar en el plan. Pendiente de decisión
-  del usuario (mantener / quitar). Ver `standings.js`, `update_standings.py`,
-  `standings.json`, `scorers.json`, `app/config.py`, tab en `index.html`.
+Añadida fuera del plan por el agente de pipeline, pero funciona con la
+`FOOTBALL_DATA_API_KEY` ya configurada (misma que `update_live_scores.py`) y
+football-data.org sí sirve la temporada 2026/27. Cron diario propio
+(`update_standings.py`), degrada a `enabled:false` sin key.
+
+- Archivos: `standings.js`, `update_standings.py`, `standings.json`,
+  `scorers.json`, `app/config.py` (`FOOTBALL_DATA_ORG_COMPETITION_CODES`),
+  tab `#tab-clasificacion` en `index.html`, `test_standings.py`.
+- Bug corregido: la columna `#` usaba `row.position` de football-data.org, que
+  empata a inicio de temporada. Ahora usa el índice de fila (tabla ya ordenada).
+- Reutiliza el sistema de diseño existente, sin CSS nuevo.
+
+## `scorers.json`
+
+Mismo contrato que `standings.json`. Por liga: `competition_name`, `scorers[]`
+con `rank, player, team, goals, assists, penalties, played_matches`.

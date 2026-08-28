@@ -124,19 +124,22 @@ function renderStandings() {
         </tr>
       </thead>
       <tbody>
-        ${league.table.map(standingsRow).join("")}
+        ${league.table.map((row, i) => standingsRow(row, i)).join("")}
       </tbody>
     </table>
   </div>`;
   setTimeout(() => initAllTables(root), 50);
 }
 
-function standingsRow(row) {
+function standingsRow(row, index) {
   const media = typeof entityMedia === "function" ? entityMedia("team", row.team) : "";
   const name = typeof teamDisplayName === "function" ? teamDisplayName(row.team) : row.team;
+  // Posición por orden de la tabla (ya viene ordenada de football-data.org);
+  // `row.position` puede empatar a inicio de temporada sin desempate aplicado.
+  const pos = Number.isInteger(index) ? index + 1 : row.position;
   return `
   <tr>
-    <td>${row.position}</td>
+    <td>${pos}</td>
     <td><span class="fx-team">${media}<b>${escHtml(name)}</b></span></td>
     <td>${row.played}</td>
     <td>${row.won}</td>

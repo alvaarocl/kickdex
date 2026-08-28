@@ -108,6 +108,7 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
   <!-- ── Fixture header ── -->
   <div class="fixture-header stagger-item">
     <div class="fixture-team">
+      ${typeof entityMedia === "function" ? entityMedia("team", home, "", "entity-media--hero") : ""}
       <div class="fixture-team-info">
         <div class="fixture-team-name">${teamDisplayName(home)}</div>
         <div class="fixture-team-sub">${homeWinRate}</div>
@@ -118,6 +119,7 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
       <div class="fixture-sub-text">KICKDEX</div>
     </div>
     <div class="fixture-team away">
+      ${typeof entityMedia === "function" ? entityMedia("team", away, "", "entity-media--hero") : ""}
       <div class="fixture-team-info">
         <div class="fixture-team-name">${teamDisplayName(away)}</div>
         <div class="fixture-team-sub">${awayWinRate}</div>
