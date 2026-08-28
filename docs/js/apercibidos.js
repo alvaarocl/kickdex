@@ -11,12 +11,15 @@ document.addEventListener("DOMContentLoaded", initDisciplinePage);
 
 async function initDisciplinePage() {
   try {
-    const [feed, leagues] = await Promise.all([
+    const [feed, leagues, teamAssets, playerAssets] = await Promise.all([
       fetchJSON("suspensions.json"),
       fetchJSON("leagues.json").catch(() => ({})),
+      fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
+      fetchJSON("player_assets.json").catch(() => ({ players: {} })),
     ]);
     DISC.feed = feed;
     DISC.leagues = leagues;
+    window.KDXEntities?.configure(teamAssets, playerAssets);
     renderDisciplinePage();
   } catch (err) {
     document.getElementById("discipline-root").innerHTML = `<div class="state-box"><div class="icon">!</div><p>No se pudo cargar el feed de apercibidos.</p></div>`;
@@ -129,7 +132,7 @@ function buildWatchTable(items) {
         <tbody>
           ${items.map(item => `
             <tr>
-              <td><a href="${playerHref(item.team, item.player)}"><b>${esc(item.player)}</b></a></td>
+              <td><a href="${playerHref(item.team, item.player)}"><span class="player-cell">${window.KDXEntities?.media("player", item.player, item.team) || ""}<b>${esc(item.player)}</b></span></a></td>
               <td>${esc(typeof teamDisplayName === "function" ? teamDisplayName(item.team) : item.team)}</td>
               <td>${esc(item.league_name || item.league || "-")}</td>
               <td>${statusBadge(item)}</td>

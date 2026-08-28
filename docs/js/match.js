@@ -132,7 +132,7 @@ function officialSuspensionsForTeam(team) {
 function apercibidosBlock(team, items) {
   const rows = items.map(item => `
     <tr>
-      <td><a href="${playerHref(team, item.player)}"><b>${esc(item.player)}</b></a></td>
+      <td><a href="${playerHref(team, item.player)}"><span class="player-cell">${window.KDXEntities?.media("player", item.player, team) || ""}<b>${esc(item.player)}</b></span></a></td>
       <td>${statusBadge(item)}</td>
       <td>${cardCount(item)}</td>
       <td>${sourceLink(item)}</td>
@@ -188,7 +188,7 @@ function buildDisciplineSection(f) {
 function disciplineBlock(team, items) {
   const rows = items.slice(0, 6).map(item => `
     <tr>
-      <td><a href="${playerHref(team, item.player)}">${esc(item.player)}</a></td>
+      <td><a href="${playerHref(team, item.player)}"><span class="player-cell">${window.KDXEntities?.media("player", item.player, team) || ""}${esc(item.player)}</span></a></td>
       <td>${fmt(item.yellow_cards_per_match, 2)}</td>
       <td>${fmt(item.yellow_cards_p90, 2)}</td>
       <td><span class="discipline-risk discipline-risk--${esc(item.risk)}">${esc(item.risk)}</span></td>
@@ -389,7 +389,7 @@ function buildPlayersSection(f) {
 function playersBlock(team, players) {
   const rows = players.map(p => `
     <tr>
-      <td>${esc(p.player)}</td>
+      <td><span class="player-cell">${window.KDXEntities?.media("player", p.player, team) || ""}${esc(p.player)}</span></td>
       <td>${fmt(p.gls, 2)}</td>
       <td>${fmt(p.ast, 2)}</td>
       <td>${fmt(p.sh, 2)}</td>
