@@ -3229,6 +3229,14 @@ tbody td b { font-family: var(--font-data); }
   width: 0.45em;
   height: 0.95em;
 }
+/* Subtítulo de página en cabeceras secundarias (ficha de partido, jugador,
+   árbitro...) junto a la marca .lp-brand-mark. */
+.logo-page-label {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-left: 4px;
+}
 
 /* — Hero Edge Card — */
 .lp-edge-card {
@@ -3382,4 +3390,366 @@ tbody td b { font-family: var(--font-data); }
 .lang-btn--lp:hover {
   border-color: var(--brand);
   color: var(--brand);
+}
+
+/* ============================================================
+   FASE 1 — Inicio fixture-first (fila densa) · 2026-08-28
+   Tokens: solo los 6 de marca + opacidades. Sin colores nuevos.
+   ============================================================ */
+
+/* ── Day strip ───────────────────────────────────────────────── */
+.day-strip {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0 0 14px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.day-strip::-webkit-scrollbar { display: none; }
+
+.day-strip-btn {
+  flex-shrink: 0;
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: .73rem;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 34px;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.day-strip-btn:hover {
+  border-color: rgba(46, 230, 166, .35);
+  color: var(--text2);
+}
+.day-strip-btn.active {
+  background: rgba(46, 230, 166, .12);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+/* ── Radar de la jornada ─────────────────────────────────────── */
+.fx-radar-section {
+  margin-bottom: 20px;
+}
+.fx-radar-title {
+  font-size: .65rem;
+  font-family: var(--font-data);
+  text-transform: uppercase;
+  letter-spacing: .10em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.fx-radar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.fx-radar-card {
+  display: block;
+  text-decoration: none;
+  padding: 14px 16px 12px;
+  /* .card provides bg, border, radius, hover */
+}
+.fx-radar-card .card-value {
+  font-size: 1.05rem;
+  line-height: 1.2;
+  color: var(--brand);
+  margin-bottom: 4px;
+}
+.fx-radar-card .card-sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fx-radar-icon {
+  font-size: 1.3rem;
+  margin-bottom: 5px;
+  display: block;
+}
+.fx-radar-sub2 {
+  font-size: .68rem;
+  color: var(--muted);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Dense fixture card header ───────────────────────────────── */
+.fx-dr-card { /* .fx-card supplies bg, border, radius, hover, margin */ }
+
+.fx-dr-hd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.fx-dr-meta {
+  font-family: var(--font-data);
+  font-size: .70rem;
+  color: var(--muted);
+  letter-spacing: .04em;
+}
+
+/* ── Teams grid (desktop) ────────────────────────────────────── */
+/*
+  Columns: [team-name 1fr] [form 70px] [GF 38px] [GC 38px] [TIR 42px] [CÓR 38px] [TARJ 38px]
+  All rows (col-hd + 2 team rows) share the same template → perfect alignment.
+*/
+.fx-dr-grid {
+  width: 100%;
+  overflow-x: auto;          /* allows inner scroll; body stays still */
+  scrollbar-width: none;
+}
+.fx-dr-grid::-webkit-scrollbar { display: none; }
+
+.fx-dr-col-hd,
+.fx-dr-team-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 70px 38px 38px 42px 38px 38px;
+  align-items: center;
+  gap: 0 6px;
+  min-width: 330px;          /* prevents collapse below readable size */
+}
+
+/* Column label row */
+.fx-dr-col-hd {
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, .05);
+  margin-bottom: 4px;
+}
+.fx-dr-th-name { /* spacer for name column */ }
+.fx-dr-th {
+  font-family: var(--font-data);
+  font-size: .56rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted2);
+  text-align: right;
+}
+.fx-dr-th--form { text-align: left; }
+
+/* Team rows */
+.fx-dr-team-row { padding: 5px 0; }
+.fx-dr-team-row + .fx-dr-team-row {
+  border-top: 1px solid rgba(255, 255, 255, .04);
+}
+
+/* Team name cell */
+.fx-dr-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.fx-dr-name b {
+  font: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Form dots (compact — 8px, no outer margin) */
+.fx-dr-form-wrap {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.fx-dr-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: default;
+  transition: transform .15s;
+}
+.fx-dr-dot:hover { transform: scale(1.5); }
+.fx-dr-dot.w { background: var(--brand); box-shadow: 0 0 6px rgba(46, 230, 166, .5); }
+.fx-dr-dot.d { background: var(--gold);  box-shadow: 0 0 6px rgba(245, 185, 60, .4); }
+.fx-dr-dot.l { background: var(--red);   box-shadow: 0 0 6px rgba(255, 90, 110, .3); }
+.fx-dr-dot-empty { background: rgba(255, 255, 255, .10); }
+.fx-dr-dash { color: var(--muted2); font-size: .8rem; }
+
+/* Numeric stat cells */
+.fx-dr-val {
+  font-family: var(--font-data);
+  font-size: .82rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text2);
+  text-align: right;
+  white-space: nowrap;
+}
+.fx-dr-val--dash { color: var(--muted2); }
+
+/* ── Card footer (trend · referee · → button) ────────────────── */
+.fx-dr-ft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, .05);
+}
+.fx-dr-trend {
+  font-family: var(--font-data);
+  font-size: .70rem;
+  color: var(--brand);
+  background: rgba(46, 230, 166, .08);
+  border: 1px solid rgba(46, 230, 166, .20);
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: default;
+  white-space: nowrap;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fx-dr-ref {
+  font-family: var(--font-data);
+  font-size: .70rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.fx-dr-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(46, 230, 166, .10);
+  border: 1px solid rgba(46, 230, 166, .24);
+  color: var(--brand);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+.fx-dr-btn:hover {
+  background: rgba(46, 230, 166, .20);
+  border-color: rgba(46, 230, 166, .48);
+}
+.fx-dr-btn--alone { /* no additional style needed; margin-left:auto does the job */ }
+
+/* ── Result card variant ─────────────────────────────────────── */
+.fx-dr-card--result .fx-dr-res-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fx-dr-res-teams {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fx-dr-res-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.fx-dr-res-team .fx-dr-name {
+  flex: 1;
+  min-width: 0;
+}
+.fx-dr-score {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-data);
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* ── Mobile — stacked layout (≤ 680px) ──────────────────────── */
+@media (max-width: 680px) {
+  /* Hide desktop column-header row */
+  .fx-dr-col-hd { display: none; }
+
+  /* Collapse the grid: switch each team row to flex-wrap */
+  .fx-dr-team-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    min-width: 0;
+  }
+
+  /* Row 1: name (grows) + form dots (shrinks to fit) */
+  .fx-dr-name       { flex: 1 1 0; min-width: 0; }
+  .fx-dr-form-wrap  { flex-shrink: 0; order: 0; }
+
+  /* Row 2: stats as labeled mini-chips (3 per visual row with 33%) */
+  .fx-dr-val {
+    flex: 0 0 calc(33.33% - 7px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    font-size: .78rem;
+    order: 1;
+  }
+  .fx-dr-val::before {
+    content: attr(data-label);
+    display: block;
+    font-size: .50rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 1px;
+  }
+
+  /* Result card: stack vertically */
+  .fx-dr-card--result .fx-dr-res-body {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .fx-dr-card--result .fx-dr-score {
+    align-self: center;
+  }
+  .fx-dr-card--result .fx-dr-btn {
+    align-self: flex-end;
+  }
+
+  /* Radar grid: single column on small screens */
+  .fx-radar-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .fx-radar-grid { grid-template-columns: 1fr; }
+}
+
+/* Respect reduced-motion for day strip and radar card hover */
+@media (prefers-reduced-motion: reduce) {
+  .day-strip-btn,
+  .fx-dr-btn,
+  .fx-dr-dot,
+  .fx-radar-card {
+    transition: none !important;
+    transform: none !important;
+  }
 }
