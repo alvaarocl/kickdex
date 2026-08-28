@@ -46,8 +46,20 @@
   --yellow:    var(--gold);
   --red:       #FF5A6E;
   --blue:      var(--brand2);
-  --purple:    #a78bfa;
-  --orange:    #fb923c;
+  /* --purple / --orange fuera de la paleta de 6 tokens (BRAND_GUIDE §3):
+     se mantienen como alias hacia el acento válido más cercano para no
+     romper usos heredados. No usar en código nuevo. */
+  --purple:    var(--brand2);
+  --orange:    var(--gold);
+
+  /* ── Spacing scale ────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  22px;
+  --space-6:  28px;
+  --space-8:  40px;
 
   /* ── Gradients ────────────────────────────────────── */
   --grad-brand:  linear-gradient(135deg, #2EE6A6 0%, #5BD6FF 100%);
@@ -56,7 +68,7 @@
   --grad-glow:
     radial-gradient(800px 450px at 3% -8%, rgba(46,230,166,.11) 0%, transparent 55%),
     radial-gradient(650px 380px at 97% 3%, rgba(91,214,255,.07) 0%, transparent 55%),
-    radial-gradient(500px 280px at 50% 105%, rgba(124,58,237,.07) 0%, transparent 60%);
+    radial-gradient(500px 280px at 50% 105%, rgba(46,230,166,.05) 0%, transparent 60%);
 
   /* ── Radii ────────────────────────────────────────── */
   --radius:    16px;
@@ -3753,3 +3765,349 @@ tbody td b { font-family: var(--font-data); }
     transform: none !important;
   }
 }
+
+/* ============================================================
+   FASE 2 — Ficha de partido con tabs + bloques compartidos
+   Tokens: solo los de marca. blocks/*.js emiten estas clases.
+   ============================================================ */
+
+/* ── Tab nav de la ficha ─────────────────────────────────────── */
+.match-tabs { margin-top: 22px; }
+
+.match-tab-nav {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.match-tab-nav::-webkit-scrollbar { display: none; }
+
+.match-tab-btn {
+  flex: 0 0 auto;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: .9rem;
+  font-weight: 600;
+  padding: 12px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .15s ease, border-color .15s ease;
+}
+.match-tab-btn:hover { color: var(--text2); }
+.match-tab-btn.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+.match-tab-panel { display: none; padding-top: 20px; }
+.match-tab-panel.active { display: block; }
+
+.match-section { margin-bottom: 18px; }
+.match-section > h2 {
+  font-family: var(--font-data);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+.match-section > h2 small {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted2);
+  font-size: .82em;
+  margin-left: 6px;
+}
+
+/* ── Controles de localía / muestra (tab Previa) ─────────────── */
+.match-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.match-ctrl-group { display: flex; flex-direction: column; gap: 6px; }
+.match-ctrl-label {
+  font-family: var(--font-data);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted2);
+}
+.match-ctrl-btns { display: inline-flex; gap: 2px; background: var(--bg1); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 2px; }
+.match-ctrl-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: .78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background .12s ease, color .12s ease;
+}
+.match-ctrl-btn:hover:not(.active) { color: var(--text2); }
+.match-ctrl-btn.active { background: var(--brand-soft); color: var(--brand); }
+
+/* ── Estado vacío de bloque ─────────────────────────────────── */
+.blk-empty {
+  padding: 22px 16px;
+  text-align: center;
+  border: 1px dashed var(--border2);
+  border-radius: var(--radius-sm);
+}
+.blk-empty p { margin: 4px 0; }
+
+/* ── Bloque: probabilidades ─────────────────────────────────── */
+.blk-probs { display: flex; flex-direction: column; gap: 16px; }
+
+.blk-prob-1x2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.blk-prob-box {
+  background: var(--bg1);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px;
+  text-align: center;
+}
+.blk-prob-box--winner { border-color: var(--brand); background: var(--brand-soft); }
+.blk-prob-code { font-family: var(--font-data); font-size: .72rem; color: var(--muted2); letter-spacing: .1em; }
+.blk-prob-name {
+  font-size: .82rem;
+  color: var(--text2);
+  margin: 4px 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.blk-prob-pct { font-family: var(--font-data); font-size: 1.5rem; font-weight: 700; color: var(--text); font-feature-settings: "tnum"; }
+.blk-prob-track { height: 4px; border-radius: 2px; background: var(--bg3); margin-top: 8px; overflow: hidden; }
+.blk-prob-fill { height: 100%; background: var(--grad-brand); border-radius: 2px; }
+
+.blk-prob-extra { display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--border2); border-radius: var(--radius-sm); overflow: hidden; }
+.blk-prob-extra-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg1);
+  font-size: .85rem;
+  color: var(--muted);
+}
+.blk-prob-extra-row strong { font-family: var(--font-data); color: var(--text2); font-feature-settings: "tnum"; }
+
+.blk-section-label {
+  font-family: var(--font-data);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted2);
+  margin-bottom: 8px;
+}
+
+/* Heatmap de marcadores más probables */
+.blk-score-heatmap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.blk-score-cell {
+  position: relative;
+  border-radius: 8px;
+  padding: 10px 6px;
+  text-align: center;
+  background: var(--bg1);
+  border: 1px solid var(--border2);
+  overflow: hidden;
+}
+.blk-score-cell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--brand);
+  opacity: calc(var(--score-op, .2) * 0.55);
+}
+.blk-score-cell > * { position: relative; }
+.blk-score-label { font-family: var(--font-data); font-weight: 700; font-size: .95rem; color: var(--text); }
+.blk-score-pct { font-family: var(--font-data); font-size: .72rem; color: var(--text2); margin-top: 2px; }
+
+/* Tabla O/U */
+.blk-ou-table { width: 100%; }
+.blk-ou-table th { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted2); }
+.blk-ou-table td { font-family: var(--font-data); font-feature-settings: "tnum"; }
+.blk-ou-over { color: var(--brand); }
+.blk-ou-under { color: var(--muted); }
+
+/* ── Bloque: hit-rates (frecuencias de apuesta) ─────────────── */
+.blk-hr-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.blk-hr-label { font-family: var(--font-data); font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted2); }
+.blk-hr-win-btn {
+  appearance: none;
+  background: var(--bg1);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: .75rem;
+  font-weight: 600;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+.blk-hr-win-btn:hover:not(.active) { color: var(--text2); }
+.blk-hr-win-btn.active { background: var(--brand-soft); color: var(--brand); border-color: var(--brand); }
+
+.blk-hr-header,
+.blk-hr-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 150px) 1fr 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.blk-hr-header { padding-bottom: 8px; border-bottom: 1px solid var(--border2); margin-bottom: 6px; }
+.blk-hr-row { padding: 5px 0; }
+.blk-hr-row + .blk-hr-row { border-top: 1px solid var(--border); }
+
+.blk-hr-metric { font-size: .8rem; color: var(--text2); }
+.blk-hr-team-label { font-family: var(--font-data); font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+
+.blk-hr-side { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.blk-hr-side--home { flex-direction: row-reverse; }
+.blk-hr-header .blk-hr-side--home { justify-content: flex-start; }
+.blk-hr-header .blk-hr-side--away { justify-content: flex-start; }
+
+.blk-hr-val {
+  flex: 0 0 auto;
+  font-family: var(--font-data);
+  font-size: .74rem;
+  color: var(--muted);
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+}
+.blk-hr-val.leading { color: var(--text); font-weight: 700; }
+
+.blk-hr-bar-wrap { flex: 1 1 auto; height: 6px; border-radius: 3px; background: var(--bg3); overflow: hidden; display: flex; }
+.blk-hr-bar-wrap--away { justify-content: flex-start; }
+.blk-hr-side--home .blk-hr-bar-wrap { justify-content: flex-end; }
+.blk-hr-bar { height: 100%; border-radius: 3px; }
+.blk-hr-bar--home { background: var(--brand); }
+.blk-hr-bar--away { background: var(--gold); }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .match-controls { gap: 14px; }
+  .blk-prob-1x2 { grid-template-columns: 1fr; }
+  .blk-prob-pct { font-size: 1.3rem; }
+  .blk-score-heatmap { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .blk-score-label { font-size: .82rem; }
+  .blk-score-pct { font-size: .64rem; }
+
+  /* hit-rates: apilar métrica arriba, los dos lados debajo */
+  .blk-hr-header { display: none; }
+  .blk-hr-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "metric metric" "home away";
+    gap: 4px 10px;
+    padding: 8px 0;
+  }
+  .blk-hr-metric { grid-area: metric; font-weight: 600; }
+  .blk-hr-side--home { grid-area: home; }
+  .blk-hr-side--away { grid-area: away; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .match-tab-btn,
+  .match-ctrl-btn,
+  .blk-hr-win-btn { transition: none !important; }
+}
+
+/* ============================================================
+   FASE 3 — Jugadores (ranking) · Árbitros · hints
+   ============================================================ */
+
+.jug-metric-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 4px 0 18px;
+}
+.jug-metric-chip {
+  appearance: none;
+  background: var(--bg1);
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: .78rem;
+  font-weight: 600;
+  padding: 7px 15px;
+  cursor: pointer;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+.jug-metric-chip:hover:not(.active) { color: var(--text2); }
+.jug-metric-chip.active {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border-color: var(--brand);
+}
+
+.jug-sort-hint {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: .72rem;
+  color: var(--muted2);
+}
+
+.jug-pct {
+  font-family: var(--font-data);
+  font-size: .64rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 5px;
+  vertical-align: middle;
+}
+.jug-pct--hi  { background: var(--brand-soft); color: var(--brand); }
+.jug-pct--mid { background: rgba(255,255,255,.06); color: var(--muted); }
+.jug-pct--lo  { background: rgba(255,255,255,.03); color: var(--muted2); }
+
+.jug-back {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: .78rem;
+  padding: 7px 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: color .12s ease, border-color .12s ease;
+}
+.jug-back:hover { color: var(--brand); border-color: var(--brand); }
+
+@media (max-width: 680px) {
+  .jug-metric-chips { gap: 4px; }
+  .jug-metric-chip { padding: 6px 12px; font-size: .72rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jug-metric-chip, .jug-back { transition: none !important; }
+}
+
+/* Línea de backtest del modelo de edge bajo el Radar de la jornada */
+.fx-edge-backtest {
+  font-size: .78rem;
+  margin: 10px 2px 0;
+  line-height: 1.5;
+}
+.fx-edge-backtest b { color: var(--text2); font-family: var(--font-data); }
+.fx-edge-backtest a { color: var(--brand); }

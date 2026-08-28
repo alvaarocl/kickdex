@@ -98,10 +98,14 @@ function renderArbitros() {
   const leagueLabel = `${referees.length} arbitros - ${leagueName}`;
   const unavailableCount = byLeague.length - referees.length;
   const unavailableNote = unavailableCount > 0
-    ? `<p style="color:var(--yellow);font-size:.82rem;margin-bottom:14px;">
+    ? `<p style="color:var(--gold);font-size:.82rem;margin-bottom:14px;">
         ${unavailableCount} arbitros omitidos: no hay datos para "${windowLabel}".
        </p>`
     : "";
+
+  // Ocultar la columna de faltas si NINGÚN árbitro visible tiene ese dato
+  // (World Soccer Data no lo trae para la mayoría de ligas).
+  const showFouls = referees.some(({ stats }) => stats.fouls_per_match != null);
 
   box.innerHTML = `
   <div class="section-title" style="margin-bottom:16px;">
@@ -109,6 +113,7 @@ function renderArbitros() {
   </div>
   <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px;">
     La columna PJ corresponde a la ventana seleccionada, no al total historico.
+    Perfil: <b style="color:var(--gold)">OVER</b> ≥ 5.0 amarillas/p · <b style="color:var(--brand)">UNDER</b> ≤ 2.8.
   </p>
   ${unavailableNote}
   <div class="table-wrap">
@@ -119,12 +124,12 @@ function renderArbitros() {
           <th title="Partidos pitados">PJ</th>
           <th title="Amarillas por partido">Amar./p</th>
           <th title="Rojas por partido">Rojas/p</th>
-          <th title="Faltas por partido">Faltas/p</th>
-          <th title="Tendencia disciplinaria" data-nosort>Tendencia</th>
+          ${showFouls ? '<th title="Faltas por partido">Faltas/p</th>' : ''}
+          <th title="Perfil disciplinario (ordena por amarillas/p)">Perfil</th>
         </tr>
       </thead>
       <tbody>
-        ${referees.map(({ r, stats }) => buildRefereeRow(r, stats)).join("")}
+        ${referees.map(({ r, stats }) => buildRefereeRow(r, stats, showFouls)).join("")}
       </tbody>
     </table>
   </div>
@@ -135,7 +140,7 @@ function renderArbitros() {
   setTimeout(() => initAllTables(box), 50);
 }
 
-function buildRefereeRow(r, stats) {
+function buildRefereeRow(r, stats, showFouls) {
   const name = r.name || "-";
   const href = refereeHref(r);
   const yp = stats.yellows_per_match ?? 0;
@@ -143,19 +148,18 @@ function buildRefereeRow(r, stats) {
   const fp = stats.fouls_per_match;
   const pj = stats.matches ?? 0;
 
-  const ypColor = yp >= 5.5 ? "var(--red)" : yp >= 4.5 ? "var(--yellow)" : yp >= 3.5 ? "var(--text)" : "var(--green)";
-  const fpColor = fp == null ? "var(--muted)" : fp >= 28 ? "var(--red)" : fp <= 22 ? "var(--green)" : "var(--text)";
-  const fpLabel = fp == null ? "n/d" : fmt(fp, 1);
-  const fpSort = fp == null ? -1 : fp;
+  const ypColor = yp >= 5.5 ? "var(--red)" : yp >= 4.5 ? "var(--gold)" : yp >= 3.5 ? "var(--text)" : "var(--brand)";
+  const fpColor = fp == null ? "var(--muted)" : fp >= 28 ? "var(--red)" : fp <= 22 ? "var(--brand)" : "var(--text)";
+  const foulsCell = showFouls
+    ? `<td style="color:${fpColor}" data-sort="${fp == null ? -1 : fp}">${fp == null ? "—" : fmt(fp, 1)}</td>`
+    : "";
 
-  let badge, badgeCls;
-  if (yp >= 5.0) {
-    badge = "OVER"; badgeCls = "badge-over-card";
-  } else if (yp <= 2.8) {
-    badge = "UNDER"; badgeCls = "badge-under-card";
-  } else {
-    badge = "NEUTRO"; badgeCls = "badge-fair";
-  }
+  // NEUTRO no aporta señal (la mayoría de árbitros con muestra corta caen ahí):
+  // solo se marca OVER / UNDER, el resto queda en blanco.
+  let badge = "";
+  if (yp >= 5.0) badge = `<span class="badge-over-card" style="font-size:.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">OVER</span>`;
+  else if (yp <= 2.8) badge = `<span class="badge-under-card" style="font-size:.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">UNDER</span>`;
+  else badge = `<span class="muted" style="font-size:.72rem;">—</span>`;
 
   return `
   <tr>
@@ -163,8 +167,8 @@ function buildRefereeRow(r, stats) {
     <td class="muted" data-sort="${pj}">${pj}</td>
     <td style="color:${ypColor};font-weight:600;" data-sort="${yp}">${fmt(yp, 2)}</td>
     <td data-sort="${rp}">${fmt(rp, 2)}</td>
-    <td style="color:${fpColor}" data-sort="${fpSort}">${fpLabel}</td>
-    <td><span class="${badgeCls}" style="font-size:.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">${badge}</span></td>
+    ${foulsCell}
+    <td data-sort="${yp}">${badge}</td>
   </tr>`;
 }
 

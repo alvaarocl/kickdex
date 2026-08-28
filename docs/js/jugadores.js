@@ -5,35 +5,202 @@
 "use strict";
 
 let sparkCharts = {};
+let _jugMetric = "gls";
+let _jugInit = false;
+
+// Métricas del ranking (chips). label para cabecera de columna destacada.
+const JUG_METRICS = {
+  gls:  "Goles/p",
+  ast:  "Asist/p",
+  sh:   "Disp/p",
+  sot:  "SoT/p",
+  crdy: "TA/p",
+  fls:  "Faltas/p",
+  min:  "Min/p",
+};
 
 function initJugadores() {
-  document.getElementById("jug-run").addEventListener("click", runJugadores);
+  if (_jugInit) { renderJugadores(); return; }
+  _jugInit = true;
+
+  const runBtn = document.getElementById("jug-run");
+  if (runBtn) runBtn.addEventListener("click", renderJugadores);
 
   document.getElementById("jug-team").addEventListener("change", () => {
     populatePlayerSelect();
     updatePlayerSuggestions();
+    renderJugadores();
+  });
+
+  const leagueSel = document.getElementById("jugLeagueFilter");
+  if (leagueSel) leagueSel.addEventListener("change", () => renderJugadores());
+
+  // Chips de métrica → ordenación del ranking.
+  document.querySelectorAll(".jug-metric-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      _jugMetric = chip.dataset.metric || "gls";
+      document.querySelectorAll(".jug-metric-chip").forEach(c => c.classList.toggle("active", c === chip));
+      const sortSel = document.getElementById("jug-sort");
+      if (sortSel) sortSel.value = _jugMetric;
+      renderJugadores();
+    });
   });
 
   initPlayerSearch();
 
-  ["jug-search", "jug-sort"].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener("input", () => {
-      if (id === "jug-search") updatePlayerSuggestions();
+  const search = document.getElementById("jug-search");
+  if (search) {
+    search.addEventListener("input", () => {
+      updatePlayerSuggestions();
       const team = document.getElementById("jug-team").value;
       const player = document.getElementById("jug-player").value;
-      if (team && !player) runJugadores();
+      if (team && !player) renderJugadores();
+    });
+  }
+
+  document.addEventListener("kdx:tab-open", e => {
+    if (e.detail?.tab === "jugadores") renderJugadores();
+  });
+
+  renderJugadores();
+}
+
+// Dispatcher: jugador → ficha; equipo → jugadores del equipo; nada → ranking de liga.
+function renderJugadores() {
+  const team   = document.getElementById("jug-team")?.value || "";
+  const player  = document.getElementById("jug-player")?.value || "";
+  if (team) { runJugadores(); return; }
+
+  const box = document.getElementById("jug-result");
+  if (!box) return;
+  const leagueCode = document.getElementById("jugLeagueFilter")?.value || "all";
+  renderLeaderboard(box, leagueCode, _jugMetric);
+}
+
+// ── Ranking de liga (vista por defecto) ────────────────────────────────────
+
+function renderLeaderboard(box, leagueCode, metric) {
+  const teams = (typeof getPlayerTeamsByLeague === "function")
+    ? getPlayerTeamsByLeague(leagueCode)
+    : Object.keys(APP.players || {});
+
+  const rows = [];
+  teams.forEach(team => {
+    (APP.players[team] || []).forEach(p => {
+      if ((Number(p.min) || 0) < 1 && (Number(p[metric]) || 0) === 0) return; // descarta ruido
+      rows.push({ ...p, _team: team });
     });
   });
 
-  const jugWindow = document.getElementById("jug-window");
-  if (jugWindow) {
-    jugWindow.addEventListener("change", () => {
-      const player = document.getElementById("jug-player").value;
-      if (player) runJugadores();
-    });
+  rows.sort((a, b) => (Number(b[metric]) || 0) - (Number(a[metric]) || 0)
+                   || (Number(b.gls) || 0) - (Number(a.gls) || 0));
+
+  const top = rows.slice(0, 60);
+  const leagueName = leagueCode === "all"
+    ? "todas las ligas con datos"
+    : (APP.leagues?.[leagueCode]?.name || leagueCode);
+  const metricLabel = JUG_METRICS[metric] || metric;
+
+  if (!top.length) {
+    box.className = "state-box";
+    box.innerHTML = `<div class="icon">·</div><p>Sin datos de jugadores para ${escHtml(leagueName)}.</p>
+      <p class="muted" style="font-size:.82rem;">La cobertura depende de FBref/Understat — SP1, E0, I1, D1 y F1 tienen datos; las segundas divisiones no.</p>`;
+    return;
   }
+
+  box.className = "";
+  box.innerHTML = `
+    <div class="section-title" style="margin-bottom:6px;">
+      Ranking · ${escHtml(leagueName)}
+      <small>top ${top.length} por ${escHtml(metricLabel.replace('/p',' por partido'))} · promedio de temporada</small>
+    </div>
+    <p class="muted" style="font-size:.78rem;margin-bottom:14px;">
+      Promedios por partido de toda la temporada. La fuente no da estadísticas partido a partido, así que no hay ventana de últimos 5/10.
+      ${chartHintHtml()}
+    </p>
+    <div class="table-wrap">
+      <table id="jugLeaderTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Jugador</th>
+            <th>Equipo</th>
+            ${leaderColHeader("gls", "Goles/p", metric)}
+            ${leaderColHeader("ast", "Asist/p", metric)}
+            ${leaderColHeader("sh", "Disp/p", metric)}
+            ${leaderColHeader("sot", "SoT/p", metric)}
+            ${metric === "fls" ? '<th class="sorted">Faltas/p</th>' : ''}
+            ${leaderColHeader("min", "Min/p", metric)}
+            ${leaderColHeader("crdy", "TA/p", metric)}
+          </tr>
+        </thead>
+        <tbody>
+          ${top.map((p, i) => `
+          <tr data-team="${escAttr(p._team)}" data-player="${escAttr(p.player)}">
+            <td class="muted">${i + 1}</td>
+            <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, p._team) : ""}<b><a href="${playerHref(p._team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a></b></span></td>
+            <td class="muted">${escHtml(teamDisplayName(p._team))}</td>
+            ${leaderCell(p, "gls", metric, 2)}
+            ${leaderCell(p, "ast", metric, 2)}
+            ${leaderCell(p, "sh", metric, 1)}
+            ${leaderCell(p, "sot", metric, 1)}
+            ${metric === "fls" ? `<td class="sorted"><b>${fmt(p.fls, 1)}</b></td>` : ''}
+            ${leaderCell(p, "min", metric, 0)}
+            ${leaderCell(p, "crdy", metric, 2)}
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>`;
+
+  setTimeout(() => {
+    initAllTables(box);
+    box.querySelectorAll("#jugLeaderTable tbody tr").forEach(row => {
+      row.style.cursor = "pointer";
+      row.addEventListener("click", () => {
+        const teamSel = document.getElementById("jug-team");
+        const playerSel = document.getElementById("jug-player");
+        if (teamSel) teamSel.value = row.dataset.team;
+        populatePlayerSelect();
+        if (playerSel) playerSel.value = row.dataset.player;
+        renderJugadores();
+        document.getElementById("tab-jugadores")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  }, 50);
+}
+
+function jugBackToRanking() {
+  const teamSel = document.getElementById("jug-team");
+  const playerSel = document.getElementById("jug-player");
+  if (teamSel) teamSel.value = "";
+  if (playerSel) { while (playerSel.options.length > 1) playerSel.remove(1); playerSel.value = ""; }
+  const search = document.getElementById("jug-search");
+  if (search) search.value = "";
+  renderJugadores();
+}
+
+function leaderColHeader(col, label, activeMetric) {
+  return `<th class="${col === activeMetric ? "sorted" : ""}">${label}</th>`;
+}
+
+function leaderCell(p, col, activeMetric, dec) {
+  const v = p[col];
+  const disp = v == null ? "—" : fmt(v, dec);
+  if (col === activeMetric) {
+    return `<td class="sorted"><b>${disp}</b>${pctBadge(p[col + "_pct"])}</td>`;
+  }
+  return `<td>${disp}</td>`;
+}
+
+// Percentil vs la liga (players.json *_pct, de add_player_percentiles).
+function pctBadge(pct) {
+  if (pct == null) return "";
+  const cls = pct >= 80 ? "jug-pct--hi" : pct >= 50 ? "jug-pct--mid" : "jug-pct--lo";
+  return ` <span class="jug-pct ${cls}" title="Percentil ${pct} en su liga">P${pct}</span>`;
+}
+
+function chartHintHtml() {
+  return `<span class="jug-sort-hint">⇧+clic en una cabecera para ordenar por varias columnas</span>`;
 }
 
 function initPlayerSearch() {
@@ -162,28 +329,26 @@ function runJugadores() {
   const team   = document.getElementById("jug-team").value;
   const player = document.getElementById("jug-player").value;
   const box    = document.getElementById("jug-result");
+  if (!team) { renderJugadores(); return; }
 
-  if (!team) {
-    box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Selecciona un equipo</p></div>`;
-    return;
-  }
+  box.className = "";
 
   // Destroy old sparklines
   Object.values(sparkCharts).forEach(c => c.destroy());
   sparkCharts = {};
 
+  const backLink = `<button class="jug-back" onclick="jugBackToRanking()">&larr; volver al ranking</button>`;
+
   if (player) {
     // Single player detail
     const allDetail = APP.playersDetail[team]?.[player];
     if (!allDetail || allDetail.length === 0) {
-      box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos para este jugador</p></div>`;
+      box.className = "state-box";
+      box.innerHTML = `<div class="icon">·</div><p>Sin datos para este jugador</p>`;
       return;
     }
-    const windowVal = document.getElementById("jug-window")?.value || "all";
-    const detail = windowVal === "5"  ? allDetail.slice(0, 5)
-                 : windowVal === "10" ? allDetail.slice(0, 10)
-                 : allDetail;
-    box.innerHTML = buildPlayerDetail(team, player, detail);
+    const detail = allDetail;
+    box.innerHTML = backLink + buildPlayerDetail(team, player, detail);
     setTimeout(() => {
       drawPlayerSparklines(player, detail);
       initAllTables(box);
@@ -192,10 +357,11 @@ function runJugadores() {
     // All players summary
     const players = filterAndSortPlayers(APP.players[team] || []);
     if (!players || players.length === 0) {
-      box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos de jugadores para este equipo</p></div>`;
+      box.className = "state-box";
+      box.innerHTML = `<div class="icon">·</div><p>Sin datos de jugadores para este equipo</p>`;
       return;
     }
-    box.innerHTML = buildTeamPlayersHTML(team, players);
+    box.innerHTML = backLink + buildTeamPlayersHTML(team, players);
     setTimeout(() => {
       drawTeamSparklines(team);
       initAllTables(box);

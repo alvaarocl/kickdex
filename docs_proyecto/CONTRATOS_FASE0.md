@@ -178,3 +178,38 @@ football-data.org sí sirve la temporada 2026/27. Cron diario propio
 
 Mismo contrato que `standings.json`. Por liga: `competition_name`, `scorers[]`
 con `rank, player, team, goals, assists, penalties, played_matches`.
+
+---
+
+## Fase 3 — `players.json` gana `*_pct`
+
+Cada jugador lleva ahora `gls_pct`, `ast_pct`, `sh_pct`, `sot_pct` (percentil
+0-100 vs los jugadores de su liga). De `add_player_percentiles()` en
+`build_data.py`, que conecta la lógica de `calculate_player_percentiles`.
+
+## Fase 4 — `odds.json` (NUEVO) + edge en partidos futuros
+
+`scripts/update_odds.py` (The Odds API). Sin `THE_ODDS_API_KEY` → `enabled:false`.
+
+```json
+{
+  "updated_at": "...", "enabled": true, "source": "the-odds-api.com",
+  "note": "...", "leagues_covered": ["SP1","E0",...],
+  "matches": {
+    "SP1|2026-08-29|Girona|Mallorca": {
+      "commence_time": "2026-08-29T19:00:00Z",
+      "bookmaker_count": 8,
+      "markets": {
+        "h2h":    {"home": 1.95, "draw": 3.60, "away": 3.80},
+        "totals": {"2.5": {"over": 1.90, "under": 1.95}}
+      },
+      "fetched_at": "..."
+    }
+  }
+}
+```
+
+`edges.json` — cuando `odds.json` está activo, `add_odds_based_edges()` añade
+items con `status:"upcoming"`, `odds_source:"the-odds-api.com"`,
+`bookmaker_count`, `result` todo null, y actualiza `stats.upcoming_edges`,
+`stats.upcoming_evaluated`, `status:"live_edges"`, `top`.

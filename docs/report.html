@@ -276,62 +276,134 @@
 
     <div class="r-edge-block">
       <div>
-        <div class="r-edge-label">EDGE detected</div>
-        <div class="r-edge-value" id="rEdge">+12.8%</div>
+        <div class="r-edge-label" id="rEdgeLabel">Favorito del modelo</div>
+        <div class="r-edge-value" id="rEdge">—</div>
         <div class="r-edge-spark"></div>
-        <div class="r-edge-caption" id="rEdgeCaption">Real Madrid · ML · Bet365 1.92</div>
+        <div class="r-edge-caption" id="rEdgeCaption">probabilidad KICKDEX · modelo Poisson + Dixon-Coles</div>
       </div>
       <div class="r-probs">
-        <div class="r-prob-row"><span>Modelo</span><b>54.9% / 22.0% / 23.1%</b></div>
-        <div class="r-prob-bar"><span class="home" style="width:54.9%"></span><span class="draw" style="width:22%"></span><span class="away" style="width:23.1%"></span></div>
-        <div class="r-prob-row"><span>Implícita (Bet365)</span><b>52.1% / 25.0% / 22.9%</b></div>
-        <div class="r-prob-row"><span>Over 2.5</span><b style="color:var(--turf);">63.4%</b></div>
-        <div class="r-prob-row"><span>BTTS</span><b style="color:var(--turf);">58.1%</b></div>
+        <div class="r-prob-row"><span>Modelo 1X2</span><b id="rProbText">—</b></div>
+        <div class="r-prob-bar" id="rProbBar"><span class="home" style="width:33%"></span><span class="draw" style="width:34%"></span><span class="away" style="width:33%"></span></div>
+        <div class="r-prob-row"><span>Marcador más probable</span><b id="rTopScore">—</b></div>
+        <div class="r-prob-row"><span>Over 2.5</span><b style="color:var(--turf);" id="rOver25">—</b></div>
+        <div class="r-prob-row"><span>BTTS — ambos marcan</span><b style="color:var(--turf);" id="rBtts">—</b></div>
       </div>
     </div>
 
     <div class="r-grid">
       <div class="r-card">
-        <h3>HOME · forma</h3>
-        <div class="r-stat"><span>Últimos 5</span><b><span class="r-form"><span class="w">V</span><span class="w">V</span><span class="d">E</span><span class="w">V</span><span class="l">D</span></span></b></div>
-        <div class="r-stat"><span>Goles a favor / 90'</span><b>2.1</b></div>
-        <div class="r-stat"><span>Tiros a puerta / 90'</span><b>6.8</b></div>
-        <div class="r-stat"><span>xG / 90'</span><b>1.9</b></div>
+        <h3 id="rHomeCardTitle">Local · forma</h3>
+        <div class="r-stat"><span>Últimos partidos</span><b><span class="r-form" id="rHomeForm"></span></b></div>
+        <div class="r-stat"><span>Goles a favor / p</span><b id="rHomeGF">—</b></div>
+        <div class="r-stat"><span>Tiros a puerta / p</span><b id="rHomeSoT">—</b></div>
+        <div class="r-stat"><span>xG proxy / p</span><b id="rHomeXG">—</b></div>
       </div>
       <div class="r-card">
-        <h3>AWAY · forma</h3>
-        <div class="r-stat"><span>Últimos 5</span><b><span class="r-form"><span class="w">V</span><span class="d">E</span><span class="w">V</span><span class="l">D</span><span class="w">V</span></span></b></div>
-        <div class="r-stat"><span>Goles a favor / 90'</span><b>1.8</b></div>
-        <div class="r-stat"><span>Tiros a puerta / 90'</span><b>5.4</b></div>
-        <div class="r-stat"><span>xG / 90'</span><b>1.6</b></div>
+        <h3 id="rAwayCardTitle">Visitante · forma</h3>
+        <div class="r-stat"><span>Últimos partidos</span><b><span class="r-form" id="rAwayForm"></span></b></div>
+        <div class="r-stat"><span>Goles a favor / p</span><b id="rAwayGF">—</b></div>
+        <div class="r-stat"><span>Tiros a puerta / p</span><b id="rAwaySoT">—</b></div>
+        <div class="r-stat"><span>xG proxy / p</span><b id="rAwayXG">—</b></div>
       </div>
     </div>
 
     <div class="r-foot">
-      <span>&gt; RISK NOTICE: edges are estimates, not guarantees. Play responsibly.</span>
-      <a href="kickdex.com/methodology">kickdex.com/methodology</a>
+      <span>&gt; RISK NOTICE: los datos son estadísticos, no consejos de apuesta. Juega con responsabilidad.</span>
+      <a href="methodology.html">kickdex · methodology</a>
     </div>
   </div>
 </div>
 
+<script src="js/team_names.js?v=20260825a"></script>
+<script src="js/probability.js?v=20260827weighted"></script>
 <script>
-  // ── Read URL params and populate report ─────────────────
   const qs = new URLSearchParams(location.search);
-  const setText = (id, val) => { if (val) document.getElementById(id).textContent = val; };
-  setText('rHome', qs.get('home'));
-  setText('rAway', qs.get('away'));
-  setText('rEdge', qs.get('edge') ? formatEdge(qs.get('edge')) : null);
-  setText('rEdgeCaption', qs.get('caption'));
+  const $ = id => document.getElementById(id);
+  const setText = (id, val) => { if (val != null && val !== "") $(id).textContent = val; };
+
+  // Nombres canónicos (para joins con team_stats/h2h) y de display.
+  const homeKey = qs.get('homeKey') || qs.get('home') || '';
+  const awayKey = qs.get('awayKey') || qs.get('away') || '';
+  const dispName = k => (typeof teamDisplayName === 'function' ? teamDisplayName(k) : k) || k;
+
+  setText('rHome', dispName(homeKey));
+  setText('rAway', dispName(awayKey));
+  $('rHomeCardTitle').textContent = `${dispName(homeKey)} · forma`;
+  $('rAwayCardTitle').textContent = `${dispName(awayKey)} · forma`;
   if (qs.get('league')) {
-    document.getElementById('rMeta').textContent =
-      `MATCH REPORT · ${qs.get('league').toUpperCase()} · ${new Date().toISOString().slice(0,10)}`;
+    $('rMeta').textContent = `MATCH REPORT · ${qs.get('league').toUpperCase()} · ${new Date().toISOString().slice(0,10)}`;
   }
 
-  function formatEdge(v) {
-    const n = parseFloat(v);
-    if (Number.isNaN(n)) return v;
-    return (n > 0 ? '+' : '') + n.toFixed(1) + '%';
+  const pctS = v => (v == null || isNaN(v)) ? '—' : (v * 100).toFixed(1) + '%';
+  const fmtS = (v, d = 2) => (v == null || isNaN(v)) ? '—' : Number(v).toFixed(d);
+
+  function formDots(matchLog) {
+    if (!matchLog || !matchLog.length) return '<span class="d">—</span>';
+    return matchLog.slice(0, 6).map(m => {
+      const r = (m.result || '').toUpperCase();
+      const cls = r === 'W' ? 'w' : r === 'D' ? 'd' : 'l';
+      const lbl = r === 'W' ? 'V' : r === 'D' ? 'E' : 'D';
+      return `<span class="${cls}">${lbl}</span>`;
+    }).join('');
   }
+
+  async function buildReport() {
+    let teamStats = {}, h2h = {}, modelConfig = null;
+    try {
+      [teamStats, h2h, modelConfig] = await Promise.all([
+        fetch('data/team_stats.json?v=20260828fase2').then(r => r.json()).catch(() => ({})),
+        fetch('data/h2h.json?v=20260828fase2').then(r => r.json()).catch(() => ({})),
+        fetch('data/model_config.json?v=20260828fase2').then(r => r.json()).catch(() => null),
+      ]);
+    } catch (_) { /* degradación: se queda con guiones */ }
+
+    const homeData = teamStats[homeKey] || {};
+    const awayData = teamStats[awayKey] || {};
+    const hH = homeData.home || homeData.away || {};
+    const aA = awayData.away || awayData.home || {};
+
+    // Forma y medias
+    $('rHomeForm').innerHTML = formDots(hH.match_log);
+    $('rAwayForm').innerHTML = formDots(aA.match_log);
+    setText('rHomeGF',  fmtS(hH.avg_goals));
+    setText('rHomeSoT', fmtS(hH.avg_shots_on, 1));
+    setText('rHomeXG',  fmtS(hH.avg_xg_proxy));
+    setText('rAwayGF',  fmtS(aA.avg_goals));
+    setText('rAwaySoT', fmtS(aA.avg_shots_on, 1));
+    setText('rAwayXG',  fmtS(aA.avg_xg_proxy));
+
+    // Probabilidades reales
+    const h2hEntry = h2h[homeKey + '|' + awayKey] || h2h[awayKey + '|' + homeKey] || null;
+    const probs = (typeof calcProbabilities === 'function')
+      ? calcProbabilities(homeData, awayData, h2hEntry?.summary || null, modelConfig || (typeof DEFAULT_MODEL_CONFIG !== 'undefined' ? DEFAULT_MODEL_CONFIG : null))
+      : null;
+
+    if (probs) {
+      const outcomes = [
+        { key: '1', label: dispName(homeKey), p: probs.home },
+        { key: 'X', label: 'Empate',           p: probs.draw },
+        { key: '2', label: dispName(awayKey), p: probs.away },
+      ].sort((a, b) => b.p - a.p);
+      const fav = outcomes[0];
+
+      $('rEdge').textContent = pctS(fav.p);
+      $('rEdgeLabel').textContent = `Favorito del modelo · ${fav.key}`;
+      $('rEdgeCaption').textContent = `${fav.label} · modelo Poisson + Dixon-Coles`;
+      $('rProbText').textContent = `${pctS(probs.home)} / ${pctS(probs.draw)} / ${pctS(probs.away)}`;
+      $('rProbBar').innerHTML =
+        `<span class="home" style="width:${(probs.home * 100).toFixed(1)}%"></span>` +
+        `<span class="draw" style="width:${(probs.draw * 100).toFixed(1)}%"></span>` +
+        `<span class="away" style="width:${(probs.away * 100).toFixed(1)}%"></span>`;
+      setText('rOver25', pctS(probs.over25));
+      setText('rBtts', pctS(probs.btts));
+      const top = (probs.topScores || [])[0];
+      if (top) $('rTopScore').textContent = `${top.score}  (${pctS(top.prob)})`;
+    } else {
+      $('rEdgeCaption').textContent = 'Sin muestra suficiente para el modelo de este partido.';
+    }
+  }
+
+  buildReport();
 
   // ── Export PDF ──────────────────────────────────────────
   document.getElementById('exportBtn').addEventListener('click', async () => {

@@ -11,7 +11,7 @@
   <meta property="og:description" content="Qué ligas cubrimos hoy y con qué profundidad." />
   <meta property="og:image" content="og.png" />
   <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
-  <link rel="stylesheet" href="css/app.css?v=20260828headerfix" />
+  <link rel="stylesheet" href="css/app.css?v=20260828fase3" />
   <style>
     .legal-page { max-width: 980px; margin: 0 auto; padding: 56px 20px 80px; }
     .legal-page h1 { margin-bottom: 12px; font-size: clamp(2rem, 4vw, 4rem); }
@@ -27,16 +27,25 @@
   <main class="legal-page">
     <a href="index.html">&lt; volver a KICKDEX</a>
     <h1>Cobertura de datos</h1>
-    <p>Esta pagina documenta la cobertura real del MVP. KICKDEX se actualiza por pipeline batch y cada JSON publicado incluye su fecha de actualizacion.</p>
+    <p>Cifras en vivo desde los JSON publicados. KICKDEX se actualiza por pipeline batch;
+       <span id="covUpdated">cargando fecha de actualización…</span></p>
 
-    <h2>Ligas</h2>
-    <div class="coverage-grid">
-      <div class="coverage-card"><strong>Espana</strong><span>La Liga y Segunda: historico profundo, temporada actual, calendario y cuotas historicas cuando football-data las publica.</span></div>
-      <div class="coverage-card"><strong>Inglaterra</strong><span>Premier League y Championship: historico amplio, temporada actual, calendario, jugadores y arbitros con mejor cobertura reciente.</span></div>
-      <div class="coverage-card"><strong>Italia</strong><span>Serie A y Serie B: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
-      <div class="coverage-card"><strong>Alemania</strong><span>Bundesliga y 2. Bundesliga: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
-      <div class="coverage-card"><strong>Francia</strong><span>Ligue 1 y Ligue 2: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
-      <div class="coverage-card"><strong>Paises Bajos</strong><span>Eredivisie: partidos historicos, temporada actual, fixtures y cuotas historicas disponibles.</span></div>
+    <h2>Resumen</h2>
+    <div class="coverage-grid" id="covSummary">
+      <div class="coverage-card"><strong id="covMatches">—</strong><span>partidos históricos</span></div>
+      <div class="coverage-card"><strong id="covSeason">—</strong><span>partidos temporada 2026/27</span></div>
+      <div class="coverage-card"><strong id="covCalendar">—</strong><span>partidos en calendario</span></div>
+      <div class="coverage-card"><strong id="covLeagues">—</strong><span>ligas</span></div>
+      <div class="coverage-card"><strong id="covPlayerRows">—</strong><span>registros de jugadores</span></div>
+      <div class="coverage-card"><strong id="covReferees">—</strong><span>árbitros</span></div>
+    </div>
+
+    <h2>Por liga</h2>
+    <div class="table-wrap">
+      <table id="covLeagueTable">
+        <thead><tr><th>Liga</th><th>Roster</th><th>Jugadores</th><th>Cobertura jugadores</th></tr></thead>
+        <tbody><tr><td colspan="4" class="muted">Cargando…</td></tr></tbody>
+      </table>
     </div>
 
     <h2>Jugadores y arbitros</h2>
@@ -52,5 +61,52 @@
     <h2>Fotos e identidad visual</h2>
     <p>Los escudos de equipo se completan desde un repositorio publico de SVGs. Las fotos de jugadores, cuando existen, vienen de Wikidata/Wikimedia Commons — una fuente libre, sin clave ni coste, con cobertura fuerte en primeras divisiones y mas irregular en filiales y ligas menores. Cuando no hay foto disponible, KICKDEX muestra las iniciales del jugador en vez de una imagen generica o inventada.</p>
   </main>
+
+<script>
+  (async () => {
+    const V = '?v=20260828fase3';
+    const get = f => fetch('data/' + f + V).then(r => r.json()).catch(() => null);
+    const [meta, cov, leagues, referees, health] = await Promise.all([
+      get('meta.json'), get('player_coverage.json'), get('leagues.json'),
+      get('referees.json'), get('data_health.json'),
+    ]);
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
+    const nf = n => Number(n).toLocaleString('es-ES');
+
+    if (meta) {
+      set('covMatches', nf(meta.total_matches));
+      set('covSeason', nf(meta.current_season_matches));
+      set('covUpdated', 'última actualización: ' + (meta.updated_at || health?.updated_at || '—').slice(0, 10));
+    }
+    if (leagues) set('covLeagues', Object.keys(leagues).length);
+    if (Array.isArray(referees)) set('covReferees', referees.length);
+
+    const calRecords = health?.domains?.calendar?.records;
+    if (calRecords) set('covCalendar', nf(calRecords));
+
+    const playerRows = health?.domains?.players?.records
+      ?? cov?.totals?.player_rows
+      ?? (cov?.by_league ? Object.values(cov.by_league).reduce((a, x) => a + (x.player_rows || 0), 0) : null);
+    if (playerRows != null) set('covPlayerRows', nf(playerRows));
+
+    if (cov && cov.by_league) {
+      let rows = Object.entries(cov.by_league);
+      const tbody = document.querySelector('#covLeagueTable tbody');
+      tbody.innerHTML = rows.map(([code, x]) => {
+        const rate = x.coverage_rate != null ? Math.round(x.coverage_rate * 100) + '%' : '—';
+        const rosterOk = leagues?.[code]?.roster_status === 'complete' ? 'completo' : (leagues?.[code]?.roster_status || '—');
+        return `<tr>
+          <td>${x.name || code}</td>
+          <td class="muted">${rosterOk}</td>
+          <td>${nf(x.player_rows || 0)}</td>
+          <td>${rate}</td>
+        </tr>`;
+      }).join('');
+    } else {
+      document.querySelector('#covLeagueTable tbody').innerHTML =
+        '<tr><td colspan="4" class="muted">No se pudo cargar player_coverage.json</td></tr>';
+    }
+  })();
+</script>
 </body>
 </html>

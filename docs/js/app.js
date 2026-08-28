@@ -470,7 +470,7 @@ async function loadAllData() {
 
   try {
     // Critical path: everything except H2H (4.4MB) which loads in background
-    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets, modelConfig, trends] = await Promise.all([
+    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets, modelConfig, trends, alerts] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -492,6 +492,8 @@ async function loadAllData() {
       fetchJSON("model_config.json").catch(() => null),
       // Tendencias de equipo — Fase 1 fixture-first
       fetchJSON("trends.json").catch(() => ({ teams: {} })),
+      // Smart alerts pre-generadas (smart_alerts.py) — Fase 2
+      fetchJSON("alerts.json").catch(() => ({ matches: {} })),
     ]);
 
     APP.meta           = meta;
@@ -499,6 +501,7 @@ async function loadAllData() {
     APP.teamStats      = teamStats;
     APP.modelConfig    = modelConfig || DEFAULT_MODEL_CONFIG;
     APP.trends         = trends;
+    APP.alerts         = alerts || { matches: {} };
     APP.h2h            = {};
     APP.h2hReady       = false;
     APP.players        = players;

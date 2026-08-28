@@ -531,6 +531,47 @@ def build_players(df_players) -> dict:
     return result
 
 
+def add_player_percentiles(players_payload: dict, leagues: dict) -> dict:
+    """Añade *_pct (percentil 0-100 vs la liga del jugador) a players.json.
+
+    Da contexto comparativo: "gls_pct: 92" = mete más goles/p que el 92% de los
+    jugadores de su liga. Se calcula por liga, no global, para que comparar un
+    delantero de 2ª con uno de 1ª no distorsione. Conecta la lógica de
+    calculate_player_percentiles() de app/engine/metrics.py, que estaba muerta.
+    """
+    metrics = ("gls", "ast", "sh", "sot")
+    team_to_league = {}
+    for code, info in (leagues or {}).items():
+        for team in info.get("teams", []):
+            team_to_league[str(team)] = code
+
+    # Agrupar jugadores por liga
+    by_league: dict[str, list[dict]] = {}
+    for team, players in players_payload.items():
+        code = team_to_league.get(str(team), "_unknown")
+        by_league.setdefault(code, []).extend(players)
+
+    for code, players in by_league.items():
+        for m in metrics:
+            vals = sorted(p[m] for p in players if isinstance(p.get(m), (int, float)))
+            n = len(vals)
+            if n < 5:
+                continue
+            for p in players:
+                v = p.get(m)
+                if not isinstance(v, (int, float)):
+                    continue
+                # percentil = fracción de jugadores con valor <= v
+                lo = 0
+                for x in vals:
+                    if x <= v:
+                        lo += 1
+                    else:
+                        break
+                p[f"{m}_pct"] = round(lo / n * 100)
+    return players_payload
+
+
 def build_players_detail(df_players) -> dict:
     """Datos partido a partido para Player Props (últimos 20 por jugador)."""
     if df_players is None or df_players.empty:
@@ -890,6 +931,113 @@ def build_edges(df) -> dict:
             "settled_edges": len(settled),
         },
     }
+
+
+def add_odds_based_edges(edges_payload: dict, df, fixtures_payload: dict) -> dict:
+    """Fusiona en edges.json el edge de partidos FUTUROS usando odds.json.
+
+    build_edges() solo produce edge retrospectivo (cuotas de cierre Bet365 que
+    llegan tras el partido). Aquí, si hay odds.json con enabled=true, se calcula
+    para cada fixture próximo: prob del modelo (forma ponderada sobre todo el
+    historial, as_of = fecha del fixture) − prob implícita de la mejor cuota.
+
+    Sin odds.json / enabled=false: no-op, edges.json queda igual (solo settled).
+    """
+    import pandas as pd
+    from app.config import LEAGUES
+
+    odds_data = _read_existing_json("odds.json") or {}
+    if not odds_data.get("enabled") or not odds_data.get("matches"):
+        return edges_payload
+
+    upcoming_fixtures = (fixtures_payload or {}).get("upcoming", [])
+    if df is None or df.empty or not upcoming_fixtures:
+        return edges_payload
+
+    data = df.copy()
+    data["Date"] = pd.to_datetime(data["Date"], errors="coerce")
+    data = data.dropna(subset=["Date", "HomeTeam", "AwayTeam"])
+
+    market_labels = {"home": "Home", "draw": "Draw", "away": "Away"}
+    new_items = []
+    seen = 0
+    for fx in upcoming_fixtures:
+        league = fx.get("league", "")
+        date = fx.get("date", "")
+        home = fx.get("home", "")
+        away = fx.get("away", "")
+        if not (league and date and home and away):
+            continue
+        entry = odds_data["matches"].get(f"{league}|{date}|{home}|{away}")
+        if not entry:
+            continue
+        h2h = (entry.get("markets") or {}).get("h2h") or {}
+        if not h2h:
+            continue
+
+        as_of = pd.Timestamp(date)
+        league_mask = data["Div"].eq(league) if "Div" in data.columns else True
+        history = data[league_mask & (data["Date"] < as_of)]
+        home_form = get_weighted_form(history, home, venue="Home", as_of=as_of)
+        away_form = get_weighted_form(history, away, venue="Away", as_of=as_of)
+        if not home_form or not away_form:
+            continue
+        if home_form.get("effective_matches", 0) < 3 or away_form.get("effective_matches", 0) < 3:
+            continue
+        h2h_summary = get_weighted_h2h_summary(history, home, away, as_of=as_of)
+        probs = calculate_probabilities(home_form, away_form, h2h_summary).as_dict()
+        seen += 1
+
+        for market, odd in h2h.items():
+            model_p = probs.get(market)
+            edge_pct = calculate_edge(model_p, odd)
+            if edge_pct is None or edge_pct < 1 or edge_pct > 25:
+                continue
+            if not 0.08 <= float(model_p) <= 0.80:
+                continue
+            selection = home if market == "home" else away if market == "away" else "Empate"
+            new_items.append({
+                "id": f"{league}-{date.replace('-', '')}-{home}-{away}-{market}".replace(" ", "_"),
+                "date": date,
+                "time": fx.get("time", ""),
+                "league": league,
+                "league_name": LEAGUES.get(league, league),
+                "home": home,
+                "away": away,
+                "market": market,
+                "market_label": market_labels.get(market, market),
+                "selection": selection,
+                "odds": round(float(odd), 2),
+                "probability": _safe(model_p, decimals=4),
+                "implied_probability": _safe(implied_probability(odd), decimals=4),
+                "edge_pct": round(edge_pct, 2),
+                "status": "upcoming",
+                "confidence": edge_confidence(edge_pct, home_form.get("matches_analyzed", 0), away_form.get("matches_analyzed", 0)),
+                "result": {"home_score": None, "away_score": None, "outcome": None, "hit": None},
+                "model": {
+                    "home_matches": int(home_form.get("matches_analyzed", 0)),
+                    "away_matches": int(away_form.get("matches_analyzed", 0)),
+                },
+                "odds_source": "the-odds-api.com",
+                "bookmaker_count": entry.get("bookmaker_count"),
+            })
+
+    if not new_items:
+        return edges_payload
+
+    merged = new_items + list(edges_payload.get("items", []))
+    merged.sort(key=lambda x: (1 if x["status"] == "upcoming" else 0, x["date"], x["edge_pct"]), reverse=True)
+    stats = dict(edges_payload.get("stats", {}))
+    stats["upcoming_edges"] = len(new_items)
+    stats["positive_edges"] = stats.get("positive_edges", 0) + len(new_items)
+    stats["upcoming_evaluated"] = seen
+    edges_payload["items"] = merged[:300]
+    edges_payload["stats"] = stats
+    edges_payload["status"] = "live_edges"
+    edges_payload["source"] = "the-odds-api.com (futuros) + football-data.co.uk Bet365 (histórico)"
+    edges_payload["top"] = max(new_items, key=lambda x: x["edge_pct"])
+    edges_payload["updated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return edges_payload
 
 
 def _normalise_referee_frame(df, source: str = "csv"):
@@ -1332,6 +1480,7 @@ def main():
     # 6. Players + Leagues + Fixtures + Referees
     print("\n[6/7] players.json, players_detail.json, referees.json...")
     players_payload = build_players(df_players)
+    players_payload = add_player_percentiles(players_payload, leagues)
     write_player_json(players_payload, "players.json")
     write_player_json(build_players_detail(df_players), "players_detail.json")
     coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
@@ -1354,7 +1503,9 @@ def main():
     if skip_heavy_rebuild:
         print("     Conservados edges.json y trends.json por KICKDEX_SKIP_HEAVY_REBUILD=1")
     else:
-        write_json(build_edges(df), "edges.json")
+        edges_payload = build_edges(df)
+        edges_payload = add_odds_based_edges(edges_payload, df, fixtures_payload)
+        write_json(edges_payload, "edges.json")
         # Rachas sobre todo el historial (los últimos 20 partidos por equipo),
         # no solo la temporada actual: con ~1,6 partidos/equipo en 2026/27 ninguna
         # TrendRule llegaba a disparar. Ver plan fixture-first, Fase 0.1.

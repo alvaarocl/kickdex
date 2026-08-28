@@ -172,7 +172,31 @@ function buildJornadaRadar(fixtures) {
   }
 
   if (cards.length === 0) return "";
-  return '<div class="fx-radar-grid">' + cards.join("") + '</div>';
+  return '<div class="fx-radar-grid">' + cards.join("") + '</div>' + _buildEdgeBacktestLine();
+}
+
+// Prueba retrospectiva del modelo de edge (edges.json stats). Honesto: es
+// backtest sobre cuotas de cierre, no un histórico de aciertos "en vivo".
+function _buildEdgeBacktestLine() {
+  var s = (APP.edges && APP.edges.stats) || {};
+  var evaluated = Number(s.evaluated_matches || 0);
+  var positive  = Number(s.positive_edges || 0);
+  var upcoming   = Number(s.upcoming_edges || 0);
+  if (!evaluated && !positive) return "";
+  var hits = (APP.edges.items || []).filter(function (x) {
+    return x.result && x.result.hit === true;
+  }).length;
+  var settled = (APP.edges.items || []).filter(function (x) {
+    return x.result && x.result.hit != null;
+  }).length;
+  var hitRate = settled ? Math.round(hits / settled * 100) : null;
+  var parts = [];
+  if (settled) parts.push('<b>' + hits + '/' + settled + '</b> edges acertados en backtest' + (hitRate != null ? ' (' + hitRate + '%)' : ''));
+  parts.push(evaluated.toLocaleString('es-ES') + ' partidos evaluados');
+  if (upcoming) parts.push('<b class="text-gold">' + upcoming + '</b> edges en próximos partidos');
+  else parts.push('sin cuotas de partidos futuros (edge solo retrospectivo)');
+  return '<p class="fx-edge-backtest muted">' + parts.join(' · ') +
+    ' — <a href="methodology.html">metodología</a></p>';
 }
 
 function _buildRadarCard(title, value, desc, sub, icon, href) {
@@ -525,14 +549,19 @@ function buildFixtureCard(f, isResult) {
   var topEdge = fixtureEdges
     .slice()
     .sort(function (a, b) { return (b.edge_pct || 0) - (a.edge_pct || 0); })[0];
-  var edgeBadge = topEdge
-    ? '<span class="fx-edge-badge" title="' + escHtml(String(topEdge.selection || "")) +
-      " · Bet365 " + escHtml(String(topEdge.odds || "")) + '">' +
+  var edgeBadge = "";
+  if (topEdge) {
+    var edgeSrc = topEdge.odds_source
+      ? "mejor cuota " + escHtml(String(topEdge.odds || ""))
+      : "Bet365 cierre " + escHtml(String(topEdge.odds || ""));
+    var conf = topEdge.confidence ? " · confianza " + escHtml(String(topEdge.confidence)) : "";
+    edgeBadge = '<span class="fx-edge-badge" title="' + escHtml(String(topEdge.selection || "")) +
+      " · " + edgeSrc + conf + '">' +
       (typeof formatEdgePercent === "function"
         ? formatEdgePercent(topEdge.edge_pct)
         : "+" + topEdge.edge_pct + "%") +
-      " EDGE</span>"
-    : "";
+      " EDGE</span>";
+  }
 
   var homeName  = typeof teamDisplayName === "function" ? teamDisplayName(f.home) : f.home;
   var awayName  = typeof teamDisplayName === "function" ? teamDisplayName(f.away) : f.away;

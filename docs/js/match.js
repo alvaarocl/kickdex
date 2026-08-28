@@ -1,5 +1,7 @@
 /**
- * match.js - standalone match intelligence page.
+ * match.js - Ficha de partido con tabs (Fase 2).
+ * Tabs: Previa | H2H | Forma | Árbitro | Jugadores
+ * Los bloques compartidos viven en js/blocks/*.js (cargados antes en match.html).
  */
 
 "use strict";
@@ -7,26 +9,40 @@
 const DATA_BASE = "./data/";
 
 const state = {
-  fixtures: { recent: [], upcoming: [], calendar: [] },
-  leagues: {},
-  teamStats: {},
-  h2h: {},
-  edges: { items: [], top: null },
-  trends: { teams: {} },
-  players: {},
-  referees: [],
+  fixtures:    { recent: [], upcoming: [], calendar: [] },
+  leagues:     {},
+  teamStats:   {},
+  h2h:         {},
+  edges:       { items: [], top: null },
+  trends:      { teams: {} },
+  players:     {},
+  referees:    [],
   suspensions: { by_team: {}, items: [], totals: {} },
-  discipline: { by_team: {}, top: [] },
-  teamAssets: { teams: {} },
-  playerAssets: { players: {} },
-  modelConfig: null, // fallback a DEFAULT_MODEL_CONFIG (probability.js) si el fetch falla
+  discipline:  { by_team: {}, top: [] },
+  teamAssets:  { teams: {} },
+  playerAssets:{ players: {} },
+  modelConfig: null,
+  alerts:      { matches: {} },
 };
+
+// Venue state para los controles de la tab Previa
+let _matchHomeVenue = "home";
+let _matchAwayVenue = "away";
+
+// Contexto cacheado del partido actual (usado por lazy tab renders)
+let _mFixture    = null;
+let _mProbs      = null;
+let _mH2HData    = null;
+let _mReferee    = null;
+let _mLeagueRefs = null;
+let _mTopEdge    = null;
 
 document.addEventListener("DOMContentLoaded", initMatchPage);
 
 async function initMatchPage() {
   try {
-    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets, modelConfig] = await Promise.all([
+    const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees,
+           suspensions, discipline, teamAssets, playerAssets, modelConfig, alerts] = await Promise.all([
       fetchJSON("fixtures.json"),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("team_stats.json").catch(() => ({})),
@@ -40,8 +56,11 @@ async function initMatchPage() {
       fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
       fetchJSON("player_assets.json").catch(() => ({ players: {} })),
       fetchJSON("model_config.json").catch(() => null),
+      fetchJSON("alerts.json").catch(() => ({ matches: {} })),
     ]);
-    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players, referees, suspensions, discipline, teamAssets, playerAssets, modelConfig });
+    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players,
+                            referees, suspensions, discipline, teamAssets, playerAssets,
+                            modelConfig, alerts });
     window.KDXEntities?.configure(teamAssets, playerAssets);
     renderMatch();
   } catch (err) {
@@ -52,10 +71,12 @@ async function initMatchPage() {
 }
 
 async function fetchJSON(file) {
-  const res = await fetch(`${DATA_BASE}${file}?v=20260823a`);
+  const res = await fetch(`${DATA_BASE}${file}?v=20260828fase2`);
   if (!res.ok) throw new Error(`HTTP ${res.status} loading ${file}`);
   return res.json();
 }
+
+// ── Main render (con tabs) ───────────────────────────────────────
 
 function renderMatch() {
   const root = document.getElementById("match-root");
@@ -64,41 +85,224 @@ function renderMatch() {
     root.innerHTML = `
       <div class="state-box">
         <div class="icon">?</div>
-        <p>No encontramos ese partido. Vuelve al calendario y abre la ficha desde alli.</p>
+        <p>No encontramos ese partido. Vuelve al calendario y abre la ficha desde allí.</p>
         <p><a class="btn btn-primary btn-sm" href="index.html">Volver al calendario</a></p>
       </div>`;
     return;
   }
 
-  const homeStats = state.teamStats[fixture.home] || {};
-  const awayStats = state.teamStats[fixture.away] || {};
-  const h2hData = getH2H(fixture.home, fixture.away);
-  const probs = calcProbabilities(homeStats, awayStats, h2hData?.summary || null, state.modelConfig);
+  const homeStats  = state.teamStats[fixture.home] || {};
+  const awayStats  = state.teamStats[fixture.away] || {};
+  const h2hData    = getH2H(fixture.home, fixture.away);
+  const probs      = calcProbabilities(homeStats, awayStats, h2hData?.summary || null, state.modelConfig);
   const matchEdges = getFixtureEdges(fixture);
-  const topEdge = matchEdges[0] || null;
-  const referee = getAssignedReferee(fixture);
+  const topEdge    = matchEdges[0] || null;
+  const referee    = getAssignedReferee(fixture);
   const leagueRefs = getLeagueRefereeContext(fixture.league);
 
+  // Cachear para los lazy-renders de tabs
+  _mFixture    = fixture;
+  _mProbs      = probs;
+  _mH2HData    = h2hData;
+  _mReferee    = referee;
+  _mLeagueRefs = leagueRefs;
+  _mTopEdge    = topEdge;
+
   document.title = `${teamDisplayName(fixture.home)} vs ${teamDisplayName(fixture.away)} - KICKDEX`;
+
   root.innerHTML = `
     ${buildHero(fixture, topEdge, probs)}
+    <div class="match-tabs">
+      <nav class="match-tab-nav" role="tablist">
+        <button class="match-tab-btn active" data-tab="previa"    onclick="matchSwitchTab('previa')">Previa</button>
+        <button class="match-tab-btn"        data-tab="h2h"       onclick="matchSwitchTab('h2h')">H2H</button>
+        <button class="match-tab-btn"        data-tab="forma"     onclick="matchSwitchTab('forma')">Forma</button>
+        <button class="match-tab-btn"        data-tab="arbitro"   onclick="matchSwitchTab('arbitro')">Árbitro</button>
+        <button class="match-tab-btn"        data-tab="jugadores" onclick="matchSwitchTab('jugadores')">Jugadores</button>
+      </nav>
+      <div class="match-tab-panel active" id="mtab-previa">
+        ${renderPreviaTab(fixture, probs)}
+      </div>
+      <div class="match-tab-panel" id="mtab-h2h"       data-lazy="1"></div>
+      <div class="match-tab-panel" id="mtab-forma"     data-lazy="1"></div>
+      <div class="match-tab-panel" id="mtab-arbitro"   data-lazy="1"></div>
+      <div class="match-tab-panel" id="mtab-jugadores" data-lazy="1"></div>
+    </div>`;
+}
+
+// ── Tab switching ─────────────────────────────────────────────────
+
+function matchSwitchTab(tabId) {
+  document.querySelectorAll(".match-tab-btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.tab === tabId)
+  );
+  document.querySelectorAll(".match-tab-panel").forEach(p =>
+    p.classList.toggle("active", p.id === "mtab-" + tabId)
+  );
+
+  const panel = document.getElementById("mtab-" + tabId);
+  if (!panel || !panel.dataset.lazy) return;
+  delete panel.dataset.lazy;
+
+  const f = _mFixture;
+  switch (tabId) {
+    case "h2h":
+      panel.innerHTML = renderH2HTab(f);
+      if (_mH2HData && _mH2HData.matches && _mH2HData.matches.length && typeof drawH2HChart === "function") {
+        setTimeout(() => drawH2HChart(_mH2HData.team1, _mH2HData.team2, _mH2HData.matches), 50);
+      }
+      break;
+    case "forma":
+      panel.innerHTML = renderFormaTab(f);
+      break;
+    case "arbitro":
+      panel.innerHTML = renderArbitroTab(f);
+      break;
+    case "jugadores":
+      panel.innerHTML = renderJugadoresTab(f);
+      break;
+  }
+}
+
+// ── Venue controls ────────────────────────────────────────────────
+
+function matchSwitchVenue(which, venue, btn) {
+  if (which === "home") _matchHomeVenue = venue;
+  else _matchAwayVenue = venue;
+
+  if (btn) {
+    const group = btn.closest(".match-ctrl-btns");
+    if (group) group.querySelectorAll(".match-ctrl-btn").forEach(b => b.classList.toggle("active", b === btn));
+  }
+
+  const blocksEl = document.getElementById("mtab-previa-blocks");
+  if (blocksEl && _mFixture) {
+    blocksEl.innerHTML = renderPreviaBlocks(_mFixture, _mProbs);
+  }
+}
+
+// ── Shared ctx builder ────────────────────────────────────────────
+
+function _buildMatchCtx(fixture) {
+  return {
+    homeVenue:   _matchHomeVenue,
+    awayVenue:   _matchAwayVenue,
+    window:      "l20",
+    teamStats:   state.teamStats,
+    h2h:         state.h2h,
+    modelConfig: state.modelConfig,
+    alerts:      state.alerts,
+    probs:       _mProbs,
+    league:      fixture.league,
+    date:        fixture.date,
+  };
+}
+
+// ── Tab content builders ──────────────────────────────────────────
+
+function renderPreviaTab(fixture, probs) {
+  const home  = fixture.home;
+  const away  = fixture.away;
+  const hName = teamDisplayName(home);
+  const aName = teamDisplayName(away);
+
+  const venueOpts = [
+    { val: "home", label: "Local"     },
+    { val: "all",  label: "Todos"     },
+    { val: "away", label: "Visitante" },
+  ];
+
+  function ctrlGroup(which, active) {
+    const label = which === "home" ? hName : aName;
+    const btns = venueOpts.map(o =>
+      `<button class="match-ctrl-btn${o.val === active ? " active" : ""}"
+        onclick="matchSwitchVenue('${which}','${o.val}',this)">${esc(o.label)}</button>`
+    ).join("");
+    return `
+      <div class="match-ctrl-group">
+        <span class="match-ctrl-label">${esc(label)}</span>
+        <div class="match-ctrl-btns" role="group">${btns}</div>
+      </div>`;
+  }
+
+  return `
+    <div class="match-controls card">
+      ${ctrlGroup("home", _matchHomeVenue)}
+      ${ctrlGroup("away", _matchAwayVenue)}
+    </div>
+    <div id="mtab-previa-blocks">
+      ${renderPreviaBlocks(fixture, probs)}
+    </div>`;
+}
+
+function renderPreviaBlocks(fixture, probs) {
+  const ctx  = _buildMatchCtx(fixture);
+  ctx.probs  = probs;
+  const home = fixture.home;
+  const away = fixture.away;
+  const vH   = _blkVenueLabel(_matchHomeVenue);
+  const vA   = _blkVenueLabel(_matchAwayVenue);
+
+  return `
+    <section class="card match-section">
+      <h2>Alertas</h2>
+      ${buildBlockAlerts(home, away, ctx)}
+    </section>
+    <section class="card match-section">
+      <h2>Modelo KICKDEX</h2>
+      ${buildBlockProbabilities(home, away, ctx)}
+    </section>
+    <section class="card match-section">
+      <h2>Duelo de estadísticas <small>${esc(vH)} vs ${esc(vA)}</small></h2>
+      ${buildBlockStatDuel(home, away, ctx)}
+    </section>
+    <section class="card match-section">
+      <h2>Frecuencias de apuesta</h2>
+      ${buildBlockHitRates(home, away, ctx)}
+    </section>`;
+}
+
+function renderH2HTab(fixture) {
+  return `
+    <section class="card match-section">
+      <h2>H2H — Enfrentamientos directos</h2>
+      ${buildBlockH2H(fixture.home, fixture.away, _buildMatchCtx(fixture))}
+    </section>`;
+}
+
+function renderFormaTab(fixture) {
+  return `
+    <section class="card match-section">
+      <h2>Forma reciente</h2>
+      ${buildBlockForm(fixture.home, fixture.away, _buildMatchCtx(fixture))}
+    </section>
+    <section class="card match-section">
+      <h2>Tendencias y rachas</h2>
+      ${buildTrendsSection(fixture)}
+    </section>`;
+}
+
+function renderArbitroTab(fixture) {
+  return `
     <div class="match-layout">
       <section class="match-main">
-        ${buildProbabilitySection(fixture, probs, topEdge)}
-        ${buildTrendsSection(fixture)}
-        ${buildFormSection(fixture, homeStats, awayStats)}
-        ${buildH2HSection(fixture, h2hData)}
         ${buildApercibidosSection(fixture)}
         ${buildDisciplineSection(fixture)}
-        ${buildPlayersSection(fixture)}
       </section>
       <aside class="match-side">
-        ${buildMatchFacts(fixture, referee)}
-        ${buildRefereeSection(fixture, referee, leagueRefs)}
-        ${buildDataQuality(fixture, topEdge)}
+        ${buildMatchFacts(fixture, _mReferee)}
+        ${buildRefereeSection(fixture, _mReferee, _mLeagueRefs)}
+        ${buildDataQuality(fixture, _mTopEdge)}
       </aside>
-    </div>
-  `;
+    </div>`;
+}
+
+function renderJugadoresTab(fixture) {
+  return `
+    <section class="card match-section">
+      <h2>Jugadores destacados</h2>
+      ${buildBlockPlayers(fixture.home, fixture.away, _buildMatchCtx(fixture))}
+    </section>`;
 }
 
 function buildApercibidosSection(f) {
@@ -527,6 +731,18 @@ function fmt(v, dec = 2) {
 function pct(v, dec = 0) {
   const n = Number(v);
   return Number.isFinite(n) ? `${(n * 100).toFixed(dec)}%` : "-";
+}
+
+// Helpers que js/h2h.js espera como globales (en index.html los da app.js;
+// aquí, en la ficha standalone, los aporta match.js).
+function statRow(label, value) {
+  return `<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`;
+}
+
+function wdlTag(r) {
+  if (r === "W") return `<span class="tag tag-w">V</span>`;
+  if (r === "D") return `<span class="tag tag-d">E</span>`;
+  return `<span class="tag tag-l">D</span>`;
 }
 
 function formatSigned(v) {

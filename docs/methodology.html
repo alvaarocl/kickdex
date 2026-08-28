@@ -11,7 +11,7 @@
   <meta property="og:description" content="Modelo Poisson, edges, fuentes y limitaciones de cobertura." />
   <meta property="og:image" content="og.png" />
   <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
-  <link rel="stylesheet" href="css/app.css?v=20260828headerfix" />
+  <link rel="stylesheet" href="css/app.css?v=20260828fase3" />
   <style>
     .legal-page { max-width: 920px; margin: 0 auto; padding: 56px 20px 80px; }
     .legal-page h1 { margin-bottom: 12px; font-size: clamp(2rem, 4vw, 4rem); }
@@ -26,18 +26,30 @@
     <h1>Metodologia</h1>
     <p>KICKDEX es una herramienta informativa. Sus probabilidades son estimaciones matematicas basadas en datos historicos y no son garantias, picks ni recomendaciones de apuesta.</p>
 
+    <h2>Fuentes de datos</h2>
+    <p>Resultados históricos, calendario, plantillas y cuotas de cierre Bet365: football-data.co.uk (~92.000 partidos desde 2004/05). Calendario futuro: FixtureDownload. Estadísticas de jugadores: FBref / Understat, agregadas por temporada. Árbitros: football-data.co.uk (partido a partido en Premier y Championship) y World Soccer Data (agregado de temporada para el resto). Clasificación y goleadores: football-data.org. Escudos: repositorio público de SVG. Fotos de jugador: Wikidata / Wikimedia Commons.</p>
+
     <h2>Probabilidades</h2>
-    <p>El comparador usa forma reciente local/visitante, goles a favor, goles en contra, over 2.5, BTTS e historial H2H cuando existe muestra suficiente. Con esos datos estima probabilidades 1X2 mediante un modelo Poisson con ajuste Dixon-Coles para marcadores bajos.</p>
+    <p>El modelo usa forma reciente local/visitante ponderada por antigüedad (los partidos recientes pesan más, con decaimiento exponencial sobre todo el historial), goles a favor y en contra, over 2.5, BTTS e historial H2H cuando hay muestra suficiente. Con esos parámetros estima los goles esperados de cada equipo y construye una matriz de marcadores 8×8 con distribución de Poisson y ajuste Dixon-Coles (ρ = −0,12) para corregir la infravaloración de los marcadores bajos (0-0, 1-0, 0-1, 1-1). De esa matriz se derivan el 1X2, los marcadores exactos más probables y las líneas Over/Under de 0,5 a 4,5. El mismo modelo corre en Python (pipeline) y en JavaScript (navegador) para que no diverjan.</p>
+
+    <h2>Frecuencias de apuesta</h2>
+    <p>El panel de frecuencias no es el modelo Poisson: cuenta cuántas veces ha ocurrido cada evento (over 1.5, BTTS, +8,5 córners, +3,5 tarjetas…) en las últimas 5, 10, 20 o todas las apariciones del equipo en la localía correspondiente. Cada porcentaje se muestra siempre con su tamaño de muestra, <code>62% (12/20)</code>, para que se vea sobre cuántos partidos se calcula.</p>
 
     <h2>Edge</h2>
-    <p>El edge se calcula como: probabilidad del modelo menos probabilidad implicita de la cuota. La probabilidad implicita de una cuota decimal es <code>1 / cuota</code>. Por ejemplo, si el modelo estima 55% y la cuota implica 50%, el edge mostrado es +5.0 puntos porcentuales.</p>
-    <p>Cuando existen cuotas Bet365 en football-data.co.uk, KICKDEX usa columnas de cierre <code>B365CH/B365CD/B365CA</code>; si no estan disponibles usa <code>B365H/B365D/B365A</code>. Si el feed no trae cuotas futuras, el hero muestra el mejor edge historico reciente y lo etiqueta como historico.</p>
+    <p>El edge se calcula como: probabilidad del modelo menos probabilidad implícita de la cuota. La probabilidad implícita de una cuota decimal es <code>1 / cuota</code>. Por ejemplo, si el modelo estima 55% y la cuota implica 50%, el edge mostrado es +5,0 puntos porcentuales. Solo se muestran edges de entre +1 y +25 puntos y con una probabilidad de modelo entre 8% y 80%, para descartar ruido y muestras frágiles.</p>
+    <p><strong>Edge retrospectivo (siempre disponible):</strong> football-data.co.uk publica las cuotas de cierre Bet365 <em>después</em> de cada partido (<code>B365CH/B365CD/B365CA</code>, o <code>B365H/B365D/B365A</code> si faltan). Con ellas KICKDEX hace un backtest anti-fuga: cada edge se evalúa con la forma calculada solo con partidos anteriores a esa fecha. El resultado ("N edges acertados de M") mide si el modelo bate a la casa históricamente.</p>
+    <p><strong>Edge en partidos futuros (si hay clave de cuotas):</strong> con una <code>THE_ODDS_API_KEY</code> configurada, un cron diario recoge la mejor cuota disponible entre casas para los próximos partidos (mercados 1X2 y Over/Under) y calcula el edge en vivo. Sin esa clave, KICKDEX solo muestra el edge retrospectivo y lo etiqueta como tal — nunca presenta un edge histórico como si fuera de un partido por jugar.</p>
+    <p>Las cuotas de cierre no son cuotas en vivo: se mueven entre el cierre del mercado y el pitido inicial. Trátalas como una referencia, no como la cuota que encontrarás.</p>
 
     <h2>Control de calidad</h2>
     <p>El pipeline evita usar el propio partido para calcular la forma: cada edge se calcula con partidos anteriores a la fecha analizada. Tambien se excluyen muestras demasiado pequenas y outliers extremos para que la superficie publica no dependa de una lectura estadistica fragil.</p>
 
+    <h2>Limitaciones de jugadores y árbitros</h2>
+    <p>Las estadísticas de jugador son <strong>promedios de toda la temporada</strong>, no partido a partido: la fuente gratuita disponible no da el desglose por encuentro, así que no hay ventana de "últimos 5/10" para jugadores. La cobertura es fuerte en La Liga, Premier League, Championship, Serie A, Bundesliga y Ligue 1, y nula en las segundas divisiones de España, Italia, Alemania y Francia.</p>
+    <p>Los perfiles arbitrales mezclan partido a partido (Premier, Championship) con agregado de temporada (resto). El dato de faltas por partido no existe para la mayoría de ligas y se oculta cuando falta. Las designaciones arbitrales previas a un partido no están en las fuentes actuales, así que la ficha solo muestra el árbitro una vez disputado el encuentro.</p>
+
     <h2>Aviso de riesgo</h2>
-    <p>Los edges son estimaciones. Una cuota puede moverse, un modelo puede equivocarse y una ventaja estadistica no implica resultado. KICKDEX no gestiona apuestas, no enlaza casas de apuestas y no promete rentabilidad.</p>
+    <p>Todo en KICKDEX es información estadística, no un consejo de apuesta. Un modelo puede equivocarse y una frecuencia histórica no implica un resultado futuro. KICKDEX no gestiona apuestas, no enlaza casas de apuestas y no promete rentabilidad.</p>
   </main>
 </body>
 </html>

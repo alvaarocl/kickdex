@@ -1,5 +1,10 @@
 /**
- * comparador.js — Tab "Comparador": fixture header, stat-duel, form dots, radar, alerts, players, calculator
+ * comparador.js — Tab "Comparador": compara dos equipos cualesquiera.
+ *
+ * Fase 2: los bloques de análisis (duelo, probabilidades, forma, H2H,
+ * jugadores, alertas, frecuencias) viven en js/blocks/*.js y se comparten
+ * con la ficha de partido (match.js). Aquí solo quedan lo propio del
+ * Comparador: la cabecera de enfrentamiento, el radar y el Match Report.
  */
 
 "use strict";
@@ -10,11 +15,8 @@ function emptyTeamStats(team) {
   return { team, home: null, away: null, sample_scope: 'none', season_matches: 0, historical_matches: 0 };
 }
 
-// Las estadísticas ahora vienen de get_weighted_form (app/engine/metrics.py):
-// todo el historial disponible, con más peso a los partidos recientes en vez
-// de cortar a los últimos 5. matches_analyzed = partidos reales incluidos;
-// effective_matches = tamaño de muestra "efectivo" una vez aplicado el peso
-// (siempre <= matches_analyzed, y mucho menor si la mayoría son antiguos).
+// matches_analyzed = partidos reales incluidos; effective_matches = tamaño de
+// muestra "efectivo" tras el decaimiento por antigüedad (get_weighted_form).
 function sampleLabel(data, venue) {
   const block = data?.[venue];
   const count = Number(block?.matches_analyzed || 0);
@@ -25,11 +27,6 @@ function sampleLabel(data, venue) {
   return count + suffix + weightNote;
 }
 
-// El aviso de "muestra orientativa" solo tiene sentido cuando el peso
-// efectivo real es bajo — no siempre, como pasaba con el texto fijo antiguo.
-// homeData/awayData son los team_stats completos de cada equipo; solo importa
-// el lado que realmente se muestra (local del equipo local, visitante del
-// equipo visitante), igual que sampleLabel() más abajo.
 function hasThinSample(homeData, awayData) {
   const homeEff = Number(homeData?.home?.effective_matches ?? Infinity);
   const awayEff = Number(awayData?.away?.effective_matches ?? Infinity);
@@ -44,39 +41,48 @@ function initComparador() {
   document.getElementById("cmp-run").addEventListener("click", runComparador);
 }
 
+// Contexto que consumen los bloques compartidos (js/blocks/*.js).
+function buildComparadorCtx(home, away, probs) {
+  return {
+    homeVenue:   "home",
+    awayVenue:   "away",
+    window:      "l20",
+    teamStats:   APP.teamStats,
+    h2h:         APP.h2h,
+    modelConfig: APP.modelConfig,
+    alerts:      APP.alerts,
+    probs,
+    // El Comparador no analiza un fixture concreto: sin league/date, el bloque
+    // de alertas cae al generateAlerts() en vivo (fallback previsto).
+    league: null,
+    date:   null,
+  };
+}
+
 function runComparador() {
-  const home    = document.getElementById("cmp-home").value;
-  const away    = document.getElementById("cmp-away").value;
-  const box     = document.getElementById("cmp-result");
+  const home = document.getElementById("cmp-home").value;
+  const away = document.getElementById("cmp-away").value;
+  const box  = document.getElementById("cmp-result");
 
   if (!home || !away) {
-    box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Selecciona ambos equipos</p></div>`;
+    box.innerHTML = `<div class="state-box"><div class="icon">!</div><p>Selecciona ambos equipos</p></div>`;
     return;
   }
   if (home === away) {
-    box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Selecciona equipos diferentes</p></div>`;
+    box.innerHTML = `<div class="state-box"><div class="icon">!</div><p>Selecciona equipos diferentes</p></div>`;
     return;
   }
 
   const homeData = APP.teamStats[home] || emptyTeamStats(home);
   const awayData = APP.teamStats[away] || emptyTeamStats(away);
 
-  if (!homeData || !awayData) {
-    box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos suficientes para estos equipos</p></div>`;
-    return;
-  }
-
-  homeData._name = home;
-  awayData._name = away;
-
   const h2hData    = getH2H(home, away);
   const h2hSummary = h2hData?.summary || null;
   const probs      = calcProbabilities(homeData, awayData, h2hSummary, APP.modelConfig);
-  const alerts     = generateAlerts(homeData, awayData, h2hSummary);
+  const ctx        = buildComparadorCtx(home, away, probs);
 
-  box.innerHTML = buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary, h2hData)
-    + buildPlayerComparison(home, away)
-    + buildMasterCalculatorJS(home, away)
+  box.innerHTML =
+      buildComparadorHTML(home, away, homeData, awayData, ctx, h2hData, h2hSummary)
     + buildExportReport(home, away, probs);
 
   setTimeout(() => {
@@ -91,21 +97,17 @@ function runComparador() {
 
 // ── Main HTML builder ──────────────────────────────────────
 
-function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hSummary, h2hData) {
+function buildComparadorHTML(home, away, homeData, awayData, ctx, h2hData, h2hSummary) {
   const hH = statsForVenue(homeData, 'home');
   const aA = statsForVenue(awayData, 'away');
 
-  const svgDuel  = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`;
-  const svgHome  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
-  const svgAway  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19.5 2.5S18 2 16.5 3.5L13 7 4.8 5.2a1 1 0 0 0-.8.3L2.7 7.7a.5.5 0 0 0 .1.7L7 11l-2 3H2l-1 1 3 2 2 3 1-1v-3l3-2 3.3 4.2a.5.5 0 0 0 .7.1l2.2-1.4a1 1 0 0 0 .3-.8z"/></svg>`;
   const svgRadar = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><path d="M2 8.5h20M2 15.5h20"/></svg>`;
-  const svgAlert = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`;
+  const svgAlert = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`;
 
   const homeWinRate = hH.win_rate != null ? pct(hH.win_rate) + " casa" : "Local";
   const awayWinRate = aA.win_rate != null ? pct(aA.win_rate) + " fuera" : "Visitante";
 
   return `
-  <!-- ── Fixture header ── -->
   <div class="fixture-header stagger-item">
     <div class="fixture-team">
       ${typeof entityMedia === "function" ? entityMedia("team", home, "", "entity-media--hero") : ""}
@@ -127,31 +129,29 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
     </div>
   </div>
 
-  <!-- ── Stat duel comparison ── -->
   <div class='cmp-sample-note'>Muestra disponible: ${sampleLabel(homeData, 'home')} · ${sampleLabel(awayData, 'away')}. Ponderado por antigüedad — los partidos recientes pesan más.${hasThinSample(homeData, awayData) ? ' Peso efectivo bajo: el análisis es orientativo.' : ''}</div>
+
   <div class="card stagger-item" style="margin-bottom:20px;">
-    <div class="section-title">${svgDuel} Comparativa de estadísticas <small>local vs visitante</small></div>
-    ${buildStatDuel(home, away, hH, aA)}
+    <div class="section-title">Comparativa de estadísticas <small>local vs visitante</small></div>
+    ${buildBlockStatDuel(home, away, ctx)}
   </div>
 
-  <!-- ── Form logs ── -->
-  <div class="grid-2 stagger-item" style="margin-bottom:20px;">
-    <div class="card">
-      <div class="section-title">${svgHome} ${teamDisplayName(home)} <small>en casa</small></div>
-      ${buildFormDots(hH)}
-      ${buildMatchLog(hH.match_log)}
-    </div>
-    <div class="card">
-      <div class="section-title">${svgAway} ${teamDisplayName(away)} <small>fuera</small></div>
-      ${buildFormDots(aA)}
-      ${buildMatchLog(aA.match_log)}
-    </div>
+  ${ctx.probs ? `
+  <div class="card stagger-item" style="margin-bottom:20px;">
+    <div class="section-title">Modelo KICKDEX</div>
+    ${buildBlockProbabilities(home, away, ctx)}
+  </div>` : ""}
+
+  <div class="card stagger-item" style="margin-bottom:20px;">
+    <div class="section-title">Frecuencias de apuesta <small>con muestra</small></div>
+    ${buildBlockHitRates(home, away, ctx)}
   </div>
 
-  <!-- ── Probabilities ── -->
-  ${probs ? buildProbSection(home, away, probs) : ""}
+  <div class="card stagger-item" style="margin-bottom:20px;">
+    <div class="section-title">Forma reciente</div>
+    ${buildBlockForm(home, away, ctx)}
+  </div>
 
-  <!-- ── Radar + Alerts ── -->
   <div class="grid-2 stagger-item" style="margin-bottom:20px;">
     <div class="chart-box">
       <div class="section-title">${svgRadar} Radar comparativo</div>
@@ -159,128 +159,27 @@ function buildComparadorHTML(home, away, homeData, awayData, probs, alerts, h2hS
     </div>
     <div class="card">
       <div class="section-title">${svgAlert} Alertas inteligentes</div>
-      ${buildAlertsHTML(alerts)}
+      ${buildBlockAlerts(home, away, ctx)}
     </div>
   </div>
 
-  ${buildH2HIntegratedSection(home, away, h2hData, h2hSummary)}
+  <div class="card stagger-item" style="margin-bottom:20px;">
+    <div class="section-title">Jugadores destacados</div>
+    ${buildBlockPlayers(home, away, ctx)}
+  </div>
+
+  ${buildH2HIntegratedSection(home, away, h2hData, h2hSummary, ctx)}
   `;
 }
 
-function buildStatDuel(home, away, hStats, aStats) {
-  const rows = [
-    { label: "Victorias",    hv: hStats.win_rate,             av: aStats.win_rate,             max: 1,    pct: true                 },
-    { label: "Goles/p",      hv: hStats.avg_goals,            av: aStats.avg_goals,            max: 3.5,  dec: 2                    },
-    { label: "Gc enc./p",    hv: hStats.avg_goals_against,    av: aStats.avg_goals_against,    max: 3.5,  dec: 2,  invert: true     },
-    { label: "xG proxy",     hv: hStats.avg_xg_proxy,         av: aStats.avg_xg_proxy,         max: 3.0,  dec: 2                    },
-    { label: "Tiros/p",      hv: hStats.avg_shots,            av: aStats.avg_shots,            max: 22,   dec: 1                    },
-    { label: "SoT/p",        hv: hStats.avg_shots_on,         av: aStats.avg_shots_on,         max: 10,   dec: 1                    },
-    { label: "Córners/p",    hv: hStats.avg_corners,          av: aStats.avg_corners,          max: 14,   dec: 1                    },
-    { label: "Over 2.5",     hv: hStats.over25_rate,          av: aStats.over25_rate,          max: 1,    pct: true                 },
-    { label: "BTTS",         hv: hStats.btts_rate,            av: aStats.btts_rate,            max: 1,    pct: true                 },
-    { label: "P. a cero",    hv: hStats.clean_sheet_rate,     av: aStats.clean_sheet_rate,     max: 1,    pct: true                 },
-  ];
-
-  const header = `
-  <div class="duel-header">
-    <div style="text-align:right;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:var(--brand);font-weight:800;">${teamShortLabel(home)}</div>
-    <div></div><div></div><div></div>
-    <div style="text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:#fb7185;font-weight:800;">${teamShortLabel(away)}</div>
-  </div>`;
-
-  const rowsHtml = rows.map(r => {
-    const hv = r.hv ?? 0; const av = r.av ?? 0; const max = r.max || 1;
-    const hBar = Math.min(r.invert ? (max - hv) / max : hv / max, 1) * 100;
-    const aBar = Math.min(r.invert ? (max - av) / max : av / max, 1) * 100;
-    const hDisp = r.pct ? pct(hv) : fmt(hv, r.dec ?? 1);
-    const aDisp = r.pct ? pct(av) : fmt(av, r.dec ?? 1);
-    const hBetter = r.invert ? (hv < av) : (hv > av);
-    const aBetter = r.invert ? (av < hv) : (av > hv);
-
-    return `
-    <div class="duel-row">
-      <div class="duel-val-home${hBetter ? " leading" : ""}">${hDisp}</div>
-      <div class="duel-track-home"><div class="duel-bar-home" style="width:${hBar.toFixed(1)}%"></div></div>
-      <div class="duel-label">${r.label}</div>
-      <div class="duel-track-away"><div class="duel-bar-away" style="width:${aBar.toFixed(1)}%"></div></div>
-      <div class="duel-val-away${aBetter ? " leading" : ""}">${aDisp}</div>
-    </div>`;
-  }).join("");
-
-  return `${header}<div class="stat-duel">${rowsHtml}</div>`;
-}
-
-function buildFormDots(stats) {
-  const log = stats.match_log;
-  if (!log || log.length === 0) return "";
-  const dots = log.slice(0, 10).map(m => {
-    const r = (m.result || "").toUpperCase();
-    const cls = r === "W" ? "w" : r === "D" ? "d" : "l";
-    return `<span class="form-dot ${cls}"></span>`;
-  }).join("");
-  return `<div class="form-dots">${dots}</div>`;
-}
-
-function buildMatchLog(log) {
-  if (!log || log.length === 0) return "";
-  const items = log.slice(0, 6).map(m => `
-    <div class="match-row">
-      ${wdlTag(m.result)}
-      <b>${teamDisplayName(m.opponent)}</b>
-      <span class="score">${m.score || ""}</span>
-    </div>`).join("");
-  return `<hr/><div class="match-log" style="margin-top:8px;">${items}</div>`;
-}
-
-function buildProbSection(home, away, probs) {
-  const maxP = Math.max(probs.home, probs.draw, probs.away);
-  const homeWin = probs.home === maxP ? "winner" : "";
-  const drawWin = probs.draw === maxP ? "winner" : "";
-  const awayWin = probs.away === maxP ? "winner" : "";
-
-  return `
-  <div class="card stagger-item" style="margin-bottom:20px;">
-    <div class="section-title">Probabilidades KICKDEX</div>
-    <div class="prob-1x2">
-      <div class="prob-1x2-box ${homeWin}"><div class="prob-1x2-label">1</div><div class="prob-1x2-pct">${(probs.home*100).toFixed(1)}%</div></div>
-      <div class="prob-1x2-box ${drawWin}"><div class="prob-1x2-label">X</div><div class="prob-1x2-pct">${(probs.draw*100).toFixed(1)}%</div></div>
-      <div class="prob-1x2-box ${awayWin}"><div class="prob-1x2-label">2</div><div class="prob-1x2-pct">${(probs.away*100).toFixed(1)}%</div></div>
-    </div>
-    <div style="border-top:1px solid var(--border);padding-top:16px;">
-      ${probRow("Over 2.5 goles", probs.over25, "var(--blue)")}
-      ${probRow("BTTS — Ambos marcan", probs.btts, "var(--purple)")}
-    </div>
-  </div>`;
-}
-
-function buildAlertsHTML(alerts) {
-  if (!alerts || alerts.length === 0) return `<div class="muted">No hay alertas</div>`;
-  return `<div class="alerts-list">${alerts.map(a => `<div class="alert-card ${a.strength.toLowerCase()}">${a.text}</div>`).join("")}</div>`;
-}
-
-function buildH2HMiniSection(summary) {
-  return `
-  <div class="card stagger-item" style="margin-bottom:20px;">
-    <div class="section-title">Resumen H2H <small>${summary.total} partidos</small></div>
-    <div class="h2h-summary">
-      <div class="h2h-box"><div class="val" style="color:var(--green)">${summary.wins1}</div><div class="lbl">V Local</div></div>
-      <div class="h2h-box"><div class="val" style="color:var(--yellow)">${summary.draws}</div><div class="lbl">Empates</div></div>
-      <div class="h2h-box"><div class="val" style="color:var(--red)">${summary.wins2}</div><div class="lbl">V Vis.</div></div>
-      <div class="h2h-box"><div class="val">${fmt(summary.avg_goals)}</div><div class="lbl">Goles/p</div></div>
-      <div class="h2h-box"><div class="val">${pct(summary.over25_rate)}</div><div class="lbl">O2.5</div></div>
-    </div>
-  </div>`;
-}
-
-function buildH2HIntegratedSection(home, away, h2hData, h2hSummary) {
-  if (h2hData?.matches?.length && typeof buildH2HHTML === "function") {
+function buildH2HIntegratedSection(home, away, h2hData, h2hSummary, ctx) {
+  if (h2hData?.matches?.length || h2hSummary) {
     return `
     <div class="stagger-item" style="margin-bottom:20px;">
       <div class="section-title">H2H completo <small>integrado en el comparador</small></div>
-      ${buildH2HHTML(h2hData.team1, h2hData.team2, h2hData)}
+      ${buildBlockH2H(home, away, ctx)}
     </div>`;
   }
-  if (h2hSummary) return buildH2HMiniSection(h2hSummary);
   return `
   <div class="card stagger-item" style="margin-bottom:20px;">
     <div class="section-title">H2H completo</div>
@@ -298,160 +197,30 @@ function drawRadar(home, away, homeData, awayData) {
     data: {
       labels: ["Goles", "Victorias", "Tiros", "xG", "Over 2.5", "BTTS", "Defensa"],
       datasets: [
-        { label: teamDisplayName(home), data: [normalize(hH.avg_goals, 3), normalize(hH.win_rate, 1), normalize(hH.avg_shots, 20), normalize(hH.avg_xg_proxy, 2.5), normalize(hH.over25_rate, 1), normalize(hH.btts_rate, 1), normalize(1-hH.avg_goals_against/3, 1)], borderColor: "rgba(0,212,170,1)", backgroundColor: "rgba(0,212,170,0.1)" },
-        { label: teamDisplayName(away), data: [normalize(aA.avg_goals, 3), normalize(aA.win_rate, 1), normalize(aA.avg_shots, 20), normalize(aA.avg_xg_proxy, 2.5), normalize(aA.over25_rate, 1), normalize(aA.btts_rate, 1), normalize(1-aA.avg_goals_against/3, 1)], borderColor: "#fb7185", backgroundColor: "rgba(251,113,133,0.1)" }
+        { label: teamDisplayName(home), data: [normalize(hH.avg_goals, 3), normalize(hH.win_rate, 1), normalize(hH.avg_shots, 20), normalize(hH.avg_xg_proxy, 2.5), normalize(hH.over25_rate, 1), normalize(hH.btts_rate, 1), normalize(1-hH.avg_goals_against/3, 1)], borderColor: "rgba(46,230,166,1)", backgroundColor: "rgba(46,230,166,0.1)" },
+        { label: teamDisplayName(away), data: [normalize(aA.avg_goals, 3), normalize(aA.win_rate, 1), normalize(aA.avg_shots, 20), normalize(aA.avg_xg_proxy, 2.5), normalize(aA.over25_rate, 1), normalize(aA.btts_rate, 1), normalize(1-aA.avg_goals_against/3, 1)], borderColor: "#F5B93C", backgroundColor: "rgba(245,185,60,0.1)" }
       ]
     },
-    options: { scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: "rgba(255,255,255,0.05)" } } }, plugins: { legend: { labels: { color: "#8b9ab0" } } } }
+    options: { scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: "rgba(255,255,255,0.05)" } } }, plugins: { legend: { labels: { color: "#8A94AB" } } } }
   });
-}
-
-// ── Player comparison ─────────────────────────────────────
-
-function buildPlayerComparison(home, away) {
-  const homePlayers = (APP.players || {})[home] || [];
-  const awayPlayers = (APP.players || {})[away] || [];
-
-  if (!homePlayers.length && !awayPlayers.length) {
-    return `<div class="card stagger-item" style="margin-bottom:20px;">
-      <div class="section-title">📊 Comparativa de Jugadores Pro</div>
-      <p style="color:var(--muted);font-size:.85rem;line-height:1.6;">
-        Sin stats de jugadores para esta liga en el feed actual.
-        La cobertura de player scouting depende de FBref/soccerdata, que no incluye todas las divisiones.
-        Consulta <a href="coverage.html" style="color:var(--brand);">cobertura de datos</a>
-        para ver qué ligas tienen player stats.
-      </p>
-    </div>`;
-  }
-
-  function playerTable(players, team) {
-    const teamLabel = teamDisplayName(team);
-    if (!players.length) {
-      return `<div class="players-col-title">${teamLabel}</div>
-              <p style="color:var(--muted);font-size:.82rem;">Sin datos</p>`;
-    }
-    const rows = players.map(p => `
-      <tr>
-        <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, team) : ""}<b>${escHtml(p.player)}</b></span></td>
-        <td class="mono">${fmt(p.sh, 1)}</td>
-        <td class="mono">${fmt(p.sot, 1)}</td>
-        <td class="mono">${fmt(p.gls, 1)}</td>
-        <td class="mono">${fmt(p.ast, 1)}</td>
-        <td class="mono">${p.fls ? fmt(p.fls, 1) : "—"}</td>
-        <td class="mono">${p.crdy != null ? fmt(p.crdy, 2) : "—"}</td>
-      </tr>`).join("");
-
-    return `
-    <div class="players-col-title">${teamLabel}</div>
-    <div class="table-wrap players-table-wrap" style="overflow-x:auto; max-height:450px; overflow-y:auto;">
-      <table>
-        <thead><tr><th>Jugador</th><th>Sh</th><th>SoT</th><th>Gls</th><th>Ast</th><th>Fls</th><th>TA</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
-  }
-
-  return `
-  <div class="card stagger-item players-panel" style="margin-bottom:20px;">
-    <div class="section-title">📊 Comparativa de Jugadores Pro</div>
-    <p style="color:var(--muted);font-size:.78rem;margin-bottom:10px;">
-      Promedio por partido de toda la temporada — la fuente disponible no da partido a partido,
-      así que no hay ventana de últimos 5/10 partidos para jugadores todavía.
-    </p>
-    <div class="players-comparison">
-      <div class="players-team-panel">${playerTable(homePlayers, home)}</div>
-      <div class="players-team-panel">${playerTable(awayPlayers, away)}</div>
-    </div>
-  </div>`;
-}
-
-// ── Master Calculator (JS Version) ────────────────────────
-
-function _calcRow(label, hVal, aVal, format, higherIsBetter) {
-  const h = hVal ?? 0;
-  const a = aVal ?? 0;
-  const hBetter = higherIsBetter ? h > a : h < a;
-  const aBetter = higherIsBetter ? a > h : a < h;
-  const hStyle  = hBetter ? "color:var(--brand);font-weight:700;" : "";
-  const aStyle  = aBetter ? "color:#fb7185;font-weight:700;" : "";
-  const fmtVal  = v => format === "pct" ? (v * 100).toFixed(1) + "%" : v.toFixed(format);
-  return `
-  <tr>
-    <td style="color:var(--muted);font-size:.8rem;">${label}</td>
-    <td style="text-align:right;${hStyle}">${fmtVal(h)}</td>
-    <td style="text-align:right;${aStyle}">${fmtVal(a)}</td>
-  </tr>`;
-}
-
-function buildMasterCalculatorJS(home, away) {
-  const hd = APP.teamStats[home] || {};
-  const ad = APP.teamStats[away] || {};
-  const hH = statsForVenue(hd, 'home');
-  const hA = statsForVenue(hd, 'away');
-  const aH = statsForVenue(ad, 'home');
-  const aA = statsForVenue(ad, 'away');
-
-  const rows = [
-    _calcRow("Win Rate (local/visitante)",   hH.win_rate,           aA.win_rate,           "pct", true),
-    _calcRow("Goles marcados/p",             hH.avg_goals,          aA.avg_goals,          1,     true),
-    _calcRow("Goles encajados/p",            hH.avg_goals_against,  aA.avg_goals_against,  1,     false),
-    _calcRow("xG proxy/p",                   hH.avg_xg_proxy,       aA.avg_xg_proxy,       2,     true),
-    _calcRow("Tiros/p",                      hH.avg_shots,          aA.avg_shots,          1,     true),
-    _calcRow("Tiros a puerta/p",             hH.avg_shots_on,       aA.avg_shots_on,       1,     true),
-    _calcRow("Córners/p",                    hH.avg_corners,        aA.avg_corners,        1,     true),
-    _calcRow("Tarjetas/p",                   hH.avg_cards,          aA.avg_cards,          1,     false),
-    _calcRow("Faltas/p",                     hH.avg_fouls,          aA.avg_fouls,          1,     false),
-    _calcRow("Over 2.5",                     hH.over25_rate,        aA.over25_rate,        "pct", true),
-    _calcRow("BTTS",                         hH.btts_rate,          aA.btts_rate,          "pct", true),
-    _calcRow("Portería a cero",              hH.clean_sheet_rate,   aA.clean_sheet_rate,   "pct", true),
-  ];
-
-  const hMatches = hH.matches_analyzed || 0;
-  const aMatches = aA.matches_analyzed || 0;
-  const hEffective = hH.effective_matches;
-  const aEffective = aA.effective_matches;
-  const hSuffix = Number.isFinite(hEffective) ? `${hMatches} partidos, peso efectivo ≈${Math.round(hEffective * 10) / 10}` : `${hMatches} partidos`;
-  const aSuffix = Number.isFinite(aEffective) ? `${aMatches} partidos, peso efectivo ≈${Math.round(aEffective * 10) / 10}` : `${aMatches} partidos`;
-
-  return `
-  <div class="card stagger-item" style="margin-bottom:40px; border:1px solid var(--brand-dim);">
-    <div class="section-title">🔍 KICKDEX Terminal — Calculadora Maestra</div>
-    <p style="color:var(--muted);font-size:.82rem;margin-bottom:18px;">
-      Análisis completo: <b style="color:var(--brand)">${teamDisplayName(home)}</b> (como local, ${hSuffix})
-      vs <b style="color:#fb7185">${teamDisplayName(away)}</b> (como visitante, ${aSuffix})
-    </p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Métrica</th>
-            <th style="text-align:right;color:var(--brand);">${teamDisplayName(home)}</th>
-            <th style="text-align:right;color:#fb7185;">${teamDisplayName(away)}</th>
-          </tr>
-        </thead>
-        <tbody>${rows.join("")}</tbody>
-      </table>
-    </div>
-  </div>`;
 }
 
 // ── Export report ──────────────────────────────────────────
 
 function buildExportReport(home, away, probs) {
-  // Edge from probabilities for the favored side, computing implied vs model
-  // We don't have live odds in this view, so report uses model probability as headline.
-  const homePct = probs?.home != null ? (probs.home * 100).toFixed(1) : "—";
   const homeLabel = teamDisplayName(home);
   const awayLabel = teamDisplayName(away);
-  const url = "report.html?"
-    + `home=${encodeURIComponent(homeLabel)}`
-    + `&away=${encodeURIComponent(awayLabel)}`
-    + `&edge=${encodeURIComponent(homePct)}`
-    + `&caption=${encodeURIComponent(homeLabel + " · model probability")}`
-    + `&league=${encodeURIComponent("KICKDEX analysis")}`;
+  const params = new URLSearchParams({
+    home: homeLabel,
+    away: awayLabel,
+    homeKey: home,
+    awayKey: away,
+    league: "KICKDEX analysis",
+  });
+  const url = `report.html?${params.toString()}`;
   return `
   <div class="card stagger-item" style="margin-bottom:40px; text-align:center; padding:28px 24px;">
-    <div class="section-title" style="justify-content:center;">📄 Match Report</div>
+    <div class="section-title" style="justify-content:center;">Match Report</div>
     <p style="color:var(--muted);font-size:.85rem;margin-bottom:16px;line-height:1.55;">
       Genera un report en una página (light mode) con el análisis del partido. Compartible en WhatsApp, X o como PDF.
     </p>
