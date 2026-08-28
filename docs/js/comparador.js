@@ -324,14 +324,15 @@ function buildPlayerComparison(home, away) {
     </div>`;
   }
 
-  function playerTable(players, teamName) {
+  function playerTable(players, team) {
+    const teamLabel = teamDisplayName(team);
     if (!players.length) {
-      return `<div class="players-col-title">${teamName}</div>
+      return `<div class="players-col-title">${teamLabel}</div>
               <p style="color:var(--muted);font-size:.82rem;">Sin datos</p>`;
     }
     const rows = players.map(p => `
       <tr>
-        <td>${p.player}</td>
+        <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, team) : ""}<b>${escHtml(p.player)}</b></span></td>
         <td class="mono">${fmt(p.sh, 1)}</td>
         <td class="mono">${fmt(p.sot, 1)}</td>
         <td class="mono">${fmt(p.gls, 1)}</td>
@@ -341,7 +342,7 @@ function buildPlayerComparison(home, away) {
       </tr>`).join("");
 
     return `
-    <div class="players-col-title">${teamName}</div>
+    <div class="players-col-title">${teamLabel}</div>
     <div class="table-wrap players-table-wrap" style="overflow-x:auto; max-height:450px; overflow-y:auto;">
       <table>
         <thead><tr><th>Jugador</th><th>Sh</th><th>SoT</th><th>Gls</th><th>Ast</th><th>Fls</th><th>TA</th></tr></thead>
@@ -358,8 +359,8 @@ function buildPlayerComparison(home, away) {
       así que no hay ventana de últimos 5/10 partidos para jugadores todavía.
     </p>
     <div class="players-comparison">
-      <div class="players-team-panel">${playerTable(homePlayers, teamDisplayName(home))}</div>
-      <div class="players-team-panel">${playerTable(awayPlayers, teamDisplayName(away))}</div>
+      <div class="players-team-panel">${playerTable(homePlayers, home)}</div>
+      <div class="players-team-panel">${playerTable(awayPlayers, away)}</div>
     </div>
   </div>`;
 }

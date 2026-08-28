@@ -470,7 +470,7 @@ async function loadAllData() {
 
   try {
     // Critical path: everything except H2H (4.4MB) which loads in background
-    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets, modelConfig] = await Promise.all([
+    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets, modelConfig, trends] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -490,12 +490,15 @@ async function loadAllData() {
       // no diverja de edges.json. Fallback = las mismas constantes por si
       // el fetch falla.
       fetchJSON("model_config.json").catch(() => null),
+      // Tendencias de equipo — Fase 1 fixture-first
+      fetchJSON("trends.json").catch(() => ({ teams: {} })),
     ]);
 
     APP.meta           = meta;
     APP.teams          = teams;
     APP.teamStats      = teamStats;
     APP.modelConfig    = modelConfig || DEFAULT_MODEL_CONFIG;
+    APP.trends         = trends;
     APP.h2h            = {};
     APP.h2hReady       = false;
     APP.players        = players;
