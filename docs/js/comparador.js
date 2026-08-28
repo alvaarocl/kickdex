@@ -224,7 +224,7 @@ function buildMatchLog(log) {
   const items = log.slice(0, 6).map(m => `
     <div class="match-row">
       ${wdlTag(m.result)}
-      <b>${m.opponent}</b>
+      <b>${teamDisplayName(m.opponent)}</b>
       <span class="score">${m.score || ""}</span>
     </div>`).join("");
   return `<hr/><div class="match-log" style="margin-top:8px;">${items}</div>`;

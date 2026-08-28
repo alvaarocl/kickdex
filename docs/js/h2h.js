@@ -1,53 +1,15 @@
 /**
  * h2h.js — Tab "H2H": head-to-head history, summary stats, goals chart
+ *
+ * Fase 0.6: usa los campos separados home/away/home_score/away_score de
+ * h2h.json en vez de parsear la cadena "result". initH2H/runH2H eliminados
+ * (buscaban #h2h-run, #h2h-t1, #h2h-t2, #h2h-result que no existen en
+ * ninguna página). parseResult eliminado.
  */
 
 "use strict";
 
 let h2hGoalsChart = null;
-
-function initH2H() {
-  const btn = document.getElementById("h2h-run");
-  if (!btn) return;
-  btn.addEventListener("click", runH2H);
-}
-
-function runH2H() {
-  const t1 = document.getElementById("h2h-t1").value;
-  const t2 = document.getElementById("h2h-t2").value;
-  const box = document.getElementById("h2h-result");
-
-  if (!t1 || !t2) {
-    box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Selecciona ambos equipos</p></div>`;
-    return;
-  }
-  if (t1 === t2) {
-    box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Selecciona equipos diferentes</p></div>`;
-    return;
-  }
-
-  if (typeof isH2HReady === "function" && !isH2HReady()) {
-    box.innerHTML = `<div class="state-box"><div class="icon"><span class="spinner"></span></div><p>Cargando historial H2H…</p></div>`;
-    document.addEventListener("kdx:h2h-ready", runH2H, { once: true });
-    return;
-  }
-
-  const data = getH2H(t1, t2);
-  if (!data || !data.matches || data.matches.length === 0) {
-    box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin historial disponible entre estos equipos</p></div>`;
-    return;
-  }
-
-  // Determine canonical order from data
-  const team1 = data.team1;
-  const team2 = data.team2;
-
-  box.innerHTML = buildH2HHTML(team1, team2, data);
-  setTimeout(() => {
-    drawH2HChart(team1, team2, data.matches);
-    initAllTables(box);
-  }, 50);
-}
 
 function buildH2HHTML(team1, team2, data) {
   const s = data.summary;
@@ -118,13 +80,15 @@ function buildH2HDetailStats(team1, team2, matches) {
   let t1wins = 0, t2wins = 0, draws = 0;
 
   matches.forEach(m => {
-    const res = parseResult(m.result, team1, team2);
-    if (!res) return;
-    const tg = res.hg + res.ag;
+    if (m.home_score == null || m.away_score == null) return;
+    const t1IsHome = m.home === team1;
+    const t1g = t1IsHome ? m.home_score : m.away_score;
+    const t2g = t1IsHome ? m.away_score : m.home_score;
+    const tg = m.home_score + m.away_score;
     if (tg > 3) goalsOver3++;
     if (tg === 0) goalsExact0++;
-    if (res.winner === "t1") t1wins++;
-    else if (res.winner === "t2") t2wins++;
+    if (t1g > t2g) t1wins++;
+    else if (t1g < t2g) t2wins++;
     else draws++;
   });
 
@@ -141,16 +105,27 @@ function buildH2HDetailStats(team1, team2, matches) {
 
 function buildH2HTable(team1, team2, matches) {
   const rows = matches.map(m => {
-    const res = parseResult(m.result, team1, team2);
-    const resultTag = !res ? `<span class="tag tag-d">${m.result}</span>` :
-      res.winner === "t1" ? `<span class="tag tag-w">${m.result}</span>` :
-      res.winner === "t2" ? `<span class="tag tag-l">${m.result}</span>` :
-      `<span class="tag tag-d">${m.result}</span>`;
+    let scoreStr;
+    let winnerClass = "tag-d";
+
+    if (m.home_score != null && m.away_score != null) {
+      const homeDisplay = teamDisplayName(m.home || "");
+      const awayDisplay = teamDisplayName(m.away || "");
+      scoreStr = `${homeDisplay} ${m.home_score}-${m.away_score} ${awayDisplay}`;
+      const t1IsHome = m.home === team1;
+      const t1g = t1IsHome ? m.home_score : m.away_score;
+      const t2g = t1IsHome ? m.away_score : m.home_score;
+      if (t1g > t2g) winnerClass = "tag-w";
+      else if (t1g < t2g) winnerClass = "tag-l";
+    } else {
+      // Fallback al campo result (retrocompat)
+      scoreStr = m.result || "?-?";
+    }
 
     return `
     <tr>
       <td class="muted">${m.date || "—"}</td>
-      <td>${resultTag}</td>
+      <td><span class="tag ${winnerClass}">${scoreStr}</span></td>
       <td class="muted">${m.league || "—"}</td>
     </tr>`;
   }).join("");
@@ -168,29 +143,6 @@ function buildH2HTable(team1, team2, matches) {
   </table>`;
 }
 
-/**
- * Parse "HomeTeam 2-1 AwayTeam" results from h2h.json.
- * Returns { hg, ag, t1g, t2g, winner: "t1"|"t2"|"draw" } or null.
- * hg/ag = home/away goals; t1g/t2g = goals attributed to team1/team2 regardless of who was home.
- */
-function parseResult(result, team1, team2) {
-  if (!result) return null;
-  const m = result.match(/^(.+?)\s+(\d+)[–\-](\d+)\s+(.+)$/);
-  if (!m) return null;
-  const homeTeamInResult = m[1].trim();
-  const hg = parseInt(m[2]);
-  const ag = parseInt(m[3]);
-  // Determine which team was home in this specific match
-  const team1IsHome = homeTeamInResult === team1;
-  const t1g = team1IsHome ? hg : ag;
-  const t2g = team1IsHome ? ag : hg;
-  let winner;
-  if (t1g > t2g) winner = "t1";
-  else if (t1g < t2g) winner = "t2";
-  else winner = "draw";
-  return { hg, ag, t1g, t2g, winner };
-}
-
 function drawH2HChart(team1, team2, matches) {
   const ctx = document.getElementById("h2hGoalsChart");
   if (!ctx) return;
@@ -201,11 +153,13 @@ function drawH2HChart(team1, team2, matches) {
   const goalsA = [];
 
   matches.slice().reverse().forEach(m => {
-    const r = parseResult(m.result, team1, team2);
-    if (!r) return;
+    if (m.home_score == null || m.away_score == null) return;
+    const t1IsHome = m.home === team1;
+    const t1g = t1IsHome ? m.home_score : m.away_score;
+    const t2g = t1IsHome ? m.away_score : m.home_score;
     labels.push(m.date ? m.date.slice(0, 7) : "—");
-    goalsH.push(r.t1g);
-    goalsA.push(r.t2g);
+    goalsH.push(t1g);
+    goalsA.push(t2g);
   });
 
   h2hGoalsChart = new Chart(ctx, {

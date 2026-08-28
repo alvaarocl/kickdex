@@ -17,7 +17,7 @@ from functools import lru_cache
 
 from app.config import (
     DATA_DIR, CURRENT_SEASON_START, CURRENT_SEASON_CODE,
-    LEAGUES, TEAM_ALIASES, MIN_MATCHES_FOR_STATS,
+    LEAGUES, TEAM_ALIASES, FOOTBALL_DATA_ORG_TEAM_ALIASES, MIN_MATCHES_FOR_STATS,
 )
 
 logger = logging.getLogger(__name__)
@@ -45,6 +45,23 @@ def normalize_team_name(name: str) -> str:
     if not isinstance(name, str):
         return name
     return TEAM_ALIASES.get(_normalize_str(name), name)
+
+
+def normalize_fd_org_team_name(name: str) -> str:
+    """
+    Igual que normalize_team_name() pero para nombres tal cual los devuelve
+    football-data.org (nombres legales/formales, ej. "Real Madrid CF",
+    "FC Internazionale Milano") en vez de los de football-data.co.uk.
+
+    Usa una tabla dedicada (FOOTBALL_DATA_ORG_TEAM_ALIASES) por exact-match
+    en vez de fuzzy — un fuzzy-match genérico da falsos positivos peligrosos
+    aquí (ej. "RCD Espanyol de Barcelona" -> "Barcelona" por terminar en
+    "de Barcelona", o "FC Internazionale Milano" -> "Milan" por contener
+    "milan" dentro de "milano").
+    """
+    if not isinstance(name, str):
+        return name
+    return FOOTBALL_DATA_ORG_TEAM_ALIASES.get(name, name)
 
 
 def _load_single_csv(path: Path) -> pd.DataFrame | None:

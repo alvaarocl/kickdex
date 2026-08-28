@@ -9,7 +9,7 @@
 const I18N = {
   es: {
     tab_inicio: "Inicio", tab_comparador: "Comparador", tab_h2h: "H2H",
-    tab_jugadores: "Jugadores", tab_arbitros: "Árbitros", tab_live: "Directo",
+    tab_jugadores: "Jugadores", tab_arbitros: "Árbitros", tab_live: "Directo", tab_clasificacion: "Clasificación",
     arb_title: "Árbitros", arb_subtitle: "Perfil disciplinario histórico. Identifica árbitros con tendencia a sacar más o menos tarjetas.",
     league_all: "Todas", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendario y Partidos",
@@ -121,7 +121,7 @@ const I18N = {
   },
   en: {
     tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
-    tab_jugadores: "Players", tab_arbitros: "Referees", tab_live: "Live",
+    tab_jugadores: "Players", tab_arbitros: "Referees", tab_live: "Live", tab_clasificacion: "Standings",
     arb_title: "Referees", arb_subtitle: "Historical disciplinary profile. Identify referees with a tendency to show more or fewer cards.",
     league_all: "All", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendar & Matches",
@@ -434,15 +434,6 @@ function getFixtureEdges(fixture) {
   return (APP.edges?.items || []).filter(edge => matchEdgeKey(edge) === key);
 }
 
-function updateLandingMetrics() {
-  const total = Number(APP.meta?.total_matches);
-  const first = document.querySelector(".lp-stat-num[data-counter]");
-  if (first && Number.isFinite(total) && total > 0) {
-    first.dataset.counter = String(total);
-    first.textContent = total >= 1000 ? `${Math.round(total / 1000)}k+` : `${total}+`;
-  }
-}
-
 function updateCoverageStrip() {
   const el = document.getElementById("coverageStrip");
   if (!el) return;
@@ -471,68 +462,6 @@ function updateCoverageStrip() {
   el.innerHTML = parts.join(sep) + (updatedLabel ? `${sep}${updatedLabel}` : "")
     + `${sep}<a href="coverage.html">${t("footer_coverage") || "Coverage"} →</a>`;
   el.hidden = false;
-}
-
-function updateHeroEdge() {
-  const target = document.getElementById("hero-edge");
-  if (!target) return;
-
-  const edge = APP.edges?.top || (APP.edges?.items || [])[0];
-  const statusEl = document.getElementById("hero-edge-status");
-  const matchEl = document.getElementById("hero-edge-match");
-  const probEl = document.getElementById("hero-edge-prob");
-  const impliedEl = document.getElementById("hero-edge-implied");
-  const sampleEl = document.getElementById("hero-edge-sample");
-
-  if (!edge) {
-    if (statusEl) statusEl.textContent = "data · sin cuotas";
-    if (matchEl) matchEl.innerHTML = "Sin edges <em>con</em> cuotas";
-    if (probEl) probEl.textContent = "—";
-    if (impliedEl) impliedEl.textContent = "—";
-    if (sampleEl) sampleEl.textContent = "0 evaluados";
-    if (window.KDXEdge?.renderEdgeNumber) {
-      window.KDXEdge.renderEdgeNumber(target, {
-        value: 0,
-        label: "EDGE",
-        caption: "Sin cuotas Bet365 disponibles en el feed actual",
-        size: "xxl",
-        tone: "neutral",
-      });
-    }
-    return;
-  }
-
-  const isLive = edge.status === "upcoming";
-  const sourceLabel = isLive ? "live · Bet365" : "histórico · Bet365";
-  const matchLabel = `${teamDisplayName(edge.home) || "Local"} <em>vs</em> ${teamDisplayName(edge.away) || "Visitante"}`;
-  const selectionLabel = edge.selection && (edge.selection === edge.home || edge.selection === edge.away)
-    ? teamDisplayName(edge.selection)
-    : edge.selection;
-  const caption = `${selectionLabel || edge.market_label} · ${edge.market_label || "1X2"} · Bet365 ${edge.odds || "—"}`;
-
-  if (statusEl) statusEl.textContent = sourceLabel;
-  if (matchEl) matchEl.innerHTML = matchLabel;
-  if (probEl) probEl.textContent = formatPercent(edge.probability);
-  if (impliedEl) impliedEl.textContent = formatPercent(edge.implied_probability);
-  if (sampleEl) {
-    const hm = edge.model?.home_matches || 0;
-    const am = edge.model?.away_matches || 0;
-    sampleEl.textContent = `${Math.min(hm, am)} partidos`;
-  }
-
-  if (window.KDXEdge?.renderEdgeNumber) {
-    window.KDXEdge.renderEdgeNumber(target, {
-      value: Number(edge.edge_pct),
-      label: "EDGE",
-      caption,
-      size: "xxl",
-      tone: Number(edge.edge_pct) >= 0 ? "value" : "risk",
-    });
-  } else {
-    target.dataset.edge = String(edge.edge_pct || 0);
-    target.dataset.edgeCaption = caption;
-    target.dataset.edgeTone = Number(edge.edge_pct) >= 0 ? "value" : "risk";
-  }
 }
 
 async function loadAllData() {
@@ -583,8 +512,6 @@ async function loadAllData() {
     APP.loaded         = true;
 
     updateHeader();
-    updateLandingMetrics();
-    updateHeroEdge();
     populateAllSelects();
     initSegControls();
     initModules();
@@ -840,7 +767,7 @@ function applyRouteParams() {
 }
 
 function initModules() {
-  ["initInicio", "initComparador", "initH2H", "initJugadores", "initArbitros", "initLive"].forEach(name => {
+  ["initInicio", "initComparador", "initJugadores", "initArbitros", "initLive", "initStandings"].forEach(name => {
     const initializer = window[name];
     if (typeof initializer !== "function") return;
     try {
@@ -1118,5 +1045,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const lt = document.getElementById("langToggle");
   if (lt) lt.textContent = LANG === "es" ? "🇪🇸 ES" : "🇬🇧 EN";
   initTabs();
+  window.addEventListener("hashchange", () => { openTab(currentRoute(), false); });
   loadAllData();
 });

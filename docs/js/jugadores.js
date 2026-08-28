@@ -1,5 +1,5 @@
 ﻿/**
- * jugadores.js â€” Tab "Jugadores": per-player stats, sparklines, detail table
+ * jugadores.js — Tab "Jugadores": per-player stats, sparklines, detail table
  */
 
 "use strict";
@@ -164,7 +164,7 @@ function runJugadores() {
   const box    = document.getElementById("jug-result");
 
   if (!team) {
-    box.innerHTML = `<div class="state-box"><div class="icon">âš ï¸</div><p>Selecciona un equipo</p></div>`;
+    box.innerHTML = `<div class="state-box"><div class="icon">⚠️</div><p>Selecciona un equipo</p></div>`;
     return;
   }
 
@@ -176,7 +176,7 @@ function runJugadores() {
     // Single player detail
     const allDetail = APP.playersDetail[team]?.[player];
     if (!allDetail || allDetail.length === 0) {
-      box.innerHTML = `<div class="state-box"><div class="icon">ðŸ“­</div><p>Sin datos para este jugador</p></div>`;
+      box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos para este jugador</p></div>`;
       return;
     }
     const windowVal = document.getElementById("jug-window")?.value || "all";
@@ -192,7 +192,7 @@ function runJugadores() {
     // All players summary
     const players = filterAndSortPlayers(APP.players[team] || []);
     if (!players || players.length === 0) {
-      box.innerHTML = `<div class="state-box"><div class="icon">ðŸ“­</div><p>Sin datos de jugadores para este equipo</p></div>`;
+      box.innerHTML = `<div class="state-box"><div class="icon">📭</div><p>Sin datos de jugadores para este equipo</p></div>`;
       return;
     }
     box.innerHTML = buildTeamPlayersHTML(team, players);
@@ -216,7 +216,7 @@ function runJugadores() {
   }
 }
 
-// â”€â”€ Team overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Team overview ──────────────────────────────────────────────────────────
 
 function buildTeamPlayersHTML(team, players) {
   const svgUser = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
@@ -260,7 +260,7 @@ function buildPlayerRow(team, p) {
     <td>${fmt(p.gls, 2)}</td>
     <td>${fmt(p.ast, 2)}</td>
     <td>${fmt(p.fls, 1)}</td>
-    <td>${p.crdy != null ? fmt(p.crdy, 2) : "â€”"}</td>
+    <td>${p.crdy != null ? fmt(p.crdy, 2) : "—"}</td>
     <td><canvas id="${sparkId}" width="80" height="30" style="display:block;"></canvas></td>
   </tr>`;
 }
@@ -282,7 +282,7 @@ function drawTeamSparklines(team) {
   });
 }
 
-// â”€â”€ Single player detail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Single player detail ───────────────────────────────────────────────────
 
 function buildPlayerDetail(team, player, detail) {
   const avg = aggregatePlayerStats(detail);
@@ -340,13 +340,13 @@ function buildPlayerDetail(team, player, detail) {
         ${detail.map(d => `
         <tr>
           <td class="muted">${d.date}</td>
-          <td>${d.gls > 0 ? `<b style="color:var(--green)">${d.gls}</b>` : d.gls ?? "â€”"}</td>
-          <td>${d.ast > 0 ? `<b style="color:var(--blue)">${d.ast}</b>` : d.ast ?? "â€”"}</td>
-          <td>${d.min ?? "â€”"}</td>
-          <td>${d.sh ?? "â€”"}</td>
-          <td>${d.sot ?? "â€”"}</td>
-          <td>${d.fls ?? "â€”"}</td>
-          <td>${d.crdy > 0 ? `<b style="color:var(--yellow)">${d.crdy}</b>` : d.crdy ?? "â€”"}</td>
+          <td>${d.gls > 0 ? `<b style="color:var(--green)">${d.gls}</b>` : d.gls ?? "—"}</td>
+          <td>${d.ast > 0 ? `<b style="color:var(--blue)">${d.ast}</b>` : d.ast ?? "—"}</td>
+          <td>${d.min ?? "—"}</td>
+          <td>${d.sh ?? "—"}</td>
+          <td>${d.sot ?? "—"}</td>
+          <td>${d.fls ?? "—"}</td>
+          <td>${d.crdy > 0 ? `<b style="color:var(--yellow)">${d.crdy}</b>` : d.crdy ?? "—"}</td>
         </tr>`).join("")}
       </tbody>
     </table>
@@ -370,7 +370,7 @@ function drawPlayerSparklines(player, detail) {
   if (sotCtx) sparkCharts["sparkSot"] = new Chart(sotCtx, lineConfig(labels, sot, "rgba(41,182,246,.9)", "SoT"));
 }
 
-// â”€â”€ Chart helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Chart helpers ──────────────────────────────────────────────────────────
 
 function sparklineConfig(data, color) {
   return {
@@ -427,7 +427,7 @@ function lineConfig(labels, data, color, label) {
   };
 }
 
-// â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Utilities ──────────────────────────────────────────────────────────────
 
 function aggregatePlayerStats(detail) {
   const n = detail.length || 1;

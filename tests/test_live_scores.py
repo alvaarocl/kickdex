@@ -30,10 +30,29 @@ def test_normalise_match_maps_in_play_status_and_score():
     row = update_live_scores._normalise_match(raw, "SP1")
 
     assert row["league"] == "SP1"
+    # football-data.org da nombres legales ("Real Madrid CF") — deben
+    # normalizarse a los nombres cortos que usa el resto del motor.
+    assert row["home"] == "Real Madrid"
+    assert row["away"] == "Barcelona"
     assert row["status"] == "live"
     assert row["minute"] == 63
     assert row["home_score"] == 1
     assert row["away_score"] == 2
+
+
+def test_normalise_match_does_not_confuse_espanyol_with_barcelona():
+    # Bug real: un fuzzy-match generico mapeaba "RCD Espanyol de Barcelona"
+    # a "Barcelona" porque termina literalmente en "de Barcelona".
+    raw = {
+        "homeTeam": {"name": "RCD Espanyol de Barcelona"},
+        "awayTeam": {"name": "Getafe CF"},
+        "status": "SCHEDULED",
+        "utcDate": "2026-08-27T18:00:00Z",
+        "score": {"fullTime": {"home": None, "away": None}},
+    }
+    row = update_live_scores._normalise_match(raw, "SP1")
+    assert row["home"] == "Espanol"
+    assert row["away"] == "Getafe"
 
 
 def test_normalise_match_returns_none_without_team_names():

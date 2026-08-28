@@ -454,8 +454,10 @@ def get_h2h(df: pd.DataFrame, team1: str, team2: str) -> pd.DataFrame | None:
         axis=1,
     )
 
-    cols = ["Date", "Resultado"]
-    for c in ["Liga"]:
+    # Incluir campos separados de equipo y marcador para que el pipeline
+    # pueda emitirlos en h2h.json en vez de la cadena combinada "Resultado".
+    cols = ["Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Resultado"]
+    for c in ["Liga", "Div"]:
         if c in h2h.columns:
             cols.append(c)
 

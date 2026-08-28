@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +35,10 @@ class MatchProbabilities:
     away: float    # P(victoria visitante)
     over25: float  # P(más de 2.5 goles)
     btts: float    # P(ambos marcan)
+    lam_home: float = 0.0            # Goles esperados modelo (local)
+    lam_away: float = 0.0            # Goles esperados modelo (visitante)
+    top_scores: list = field(default_factory=list)   # Top 8 marcadores exactos [{score, prob}]
+    ou_lines: dict = field(default_factory=dict)     # O/U por línea {str(line): {over, under}}
 
     def as_dict(self) -> dict:
         return {
@@ -43,6 +47,10 @@ class MatchProbabilities:
             "away": self.away,
             "over25": self.over25,
             "btts": self.btts,
+            "lam_home": round(self.lam_home, 4),
+            "lam_away": round(self.lam_away, 4),
+            "top_scores": self.top_scores,
+            "ou_lines": self.ou_lines,
         }
 
 def _poisson_prob(lam: float, k: int) -> float:
@@ -69,27 +77,38 @@ def _dixon_coles_adjustment(hg: int, ag: int, lam_h: float, lam_a: float, rho: f
     return 1.0
 
 
-def _poisson_matrix(lam_home: float, lam_away: float, max_goals: int = 8) -> tuple[float, float, float]:
+def _poisson_matrix(
+    lam_home: float, lam_away: float, max_goals: int = 8
+) -> tuple[float, float, float, dict]:
     """
     Calcula matriz de probabilidades con ajuste Dixon-Coles.
+
+    Returns:
+        (p_home, p_draw, p_away, score_probs)
+        donde score_probs[(hg, ag)] = probabilidad normalizada de ese marcador exacto.
     """
     p_home = p_draw = p_away = 0.0
+    raw: dict[tuple[int, int], float] = {}
 
     for hg in range(max_goals + 1):
         p_h = _poisson_prob(lam_home, hg)
         for ag in range(max_goals + 1):
             p_a = _poisson_prob(lam_away, ag)
             prob = p_h * p_a * _dixon_coles_adjustment(hg, ag, lam_home, lam_away, _DIXON_COLES_RHO)
-            
+            raw[(hg, ag)] = prob
+
             if hg > ag:
                 p_home += prob
             elif hg == ag:
                 p_draw += prob
             else:
                 p_away += prob
-    
+
     total = p_home + p_draw + p_away
-    return p_home / total, p_draw / total, p_away / total
+    if total > 0:
+        score_probs = {k: v / total for k, v in raw.items()}
+        return p_home / total, p_draw / total, p_away / total, score_probs
+    return p_home, p_draw, p_away, raw
 
 
 def _estimate_lambda(
@@ -138,8 +157,8 @@ def calculate_probabilities(
     lam_home = _estimate_lambda(home_attack, away_defend, half_avg, _HOME_ADVANTAGE)
     lam_away = _estimate_lambda(away_attack, home_defend, half_avg, 1.0)
 
-    # Probabilidades Poisson
-    p_home, p_draw, p_away = _poisson_matrix(lam_home, lam_away)
+    # Probabilidades Poisson + matriz de marcadores
+    p_home, p_draw, p_away, score_probs = _poisson_matrix(lam_home, lam_away)
 
     # Si hay H2H, ponderar (30% H2H, 70% forma reciente). Si el resumen trae
     # tasas ponderadas por antigüedad (get_weighted_h2h_summary), se prefieren
@@ -190,10 +209,28 @@ def calculate_probabilities(
     def _clamp(x):
         return max(0.01, min(0.99, x))
 
+    # Top 8 marcadores exactos (ordenados por probabilidad, sin blend H2H)
+    sorted_scores = sorted(score_probs.items(), key=lambda x: x[1], reverse=True)
+    top_scores = [
+        {"score": f"{hg}-{ag}", "prob": round(prob, 4)}
+        for (hg, ag), prob in sorted_scores[:8]
+    ]
+
+    # Líneas O/U derivadas de la misma matriz
+    ou_lines: dict = {}
+    for line in [0.5, 1.5, 2.5, 3.5, 4.5]:
+        p_over = sum(p for (hg, ag), p in score_probs.items() if hg + ag > line)
+        p_over = max(0.0, min(1.0, p_over))
+        ou_lines[str(line)] = {"over": round(p_over, 4), "under": round(1 - p_over, 4)}
+
     return MatchProbabilities(
         home=_clamp(p_home),
         draw=_clamp(p_draw),
         away=_clamp(p_away),
         over25=_clamp(p_over25),
         btts=_clamp(p_btts),
+        lam_home=lam_home,
+        lam_away=lam_away,
+        top_scores=top_scores,
+        ou_lines=ou_lines,
     )

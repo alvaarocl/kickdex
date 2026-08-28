@@ -71,6 +71,96 @@ def _serialize_form(form: dict | None) -> dict | None:
     return result
 
 
+def _compute_hit_rates(df, team: str, venue: str) -> dict:
+    """
+    Calcula hit-rates de métricas de apuestas para un equipo y localía dados.
+
+    Args:
+        df: DataFrame completo de partidos (todas las temporadas).
+        team: Nombre canónico del equipo.
+        venue: 'home' o 'away'.
+
+    Returns:
+        Dict con claves l5/l10/l20/all; cada una contiene un sub-dict de
+        métrica -> {hits: int, total: int, rate: float}.
+        Si una ventana tiene menos partidos que su tamaño, `total` refleja
+        los reales disponibles.
+    """
+    import pandas as pd
+    import math as _math
+
+    if venue == 'home':
+        mask = df['HomeTeam'] == team
+    else:
+        mask = df['AwayTeam'] == team
+
+    scored_mask = df['FTHG'].notna() & df['FTAG'].notna()
+    matches = df[mask & scored_mask].sort_values('Date', ascending=False).copy()
+
+    def _sf(val) -> float:
+        try:
+            f = float(val)
+            return 0.0 if _math.isnan(f) or _math.isinf(f) else f
+        except Exception:
+            return 0.0
+
+    metric_keys = [
+        'goals_over_05', 'goals_over_15', 'goals_over_25', 'goals_over_35',
+        'btts', 'clean_sheet', 'team_no_score', 'team_over_05', 'team_over_15',
+        'corners_over_85', 'corners_over_95',
+        'cards_over_35', 'cards_over_45',
+        'fouls_over_205', 'fouls_over_245',
+    ]
+
+    def _window(subset) -> dict:
+        total = len(subset)
+        if total == 0:
+            return {}
+        counters = {k: 0 for k in metric_keys}
+        for _, row in subset.iterrows():
+            hg = _sf(row.get('FTHG', 0))
+            ag = _sf(row.get('FTAG', 0))
+            gf = hg if venue == 'home' else ag
+            gc = ag if venue == 'home' else hg
+            tg = hg + ag
+            hc = _sf(row.get('HC', 0))
+            ac = _sf(row.get('AC', 0))
+            tc = hc + ac
+            hy = _sf(row.get('HY', 0))
+            ay = _sf(row.get('AY', 0))
+            hr = _sf(row.get('HR', 0))
+            ar = _sf(row.get('AR', 0))
+            tk = hy + ay + hr + ar
+            hf = _sf(row.get('HF', 0))
+            af = _sf(row.get('AF', 0))
+            tf = hf + af
+            if tg > 0.5: counters['goals_over_05'] += 1
+            if tg > 1.5: counters['goals_over_15'] += 1
+            if tg > 2.5: counters['goals_over_25'] += 1
+            if tg > 3.5: counters['goals_over_35'] += 1
+            if gf > 0 and gc > 0: counters['btts'] += 1
+            if gc == 0: counters['clean_sheet'] += 1
+            if gf == 0: counters['team_no_score'] += 1
+            if gf > 0.5: counters['team_over_05'] += 1
+            if gf > 1.5: counters['team_over_15'] += 1
+            if tc > 8.5: counters['corners_over_85'] += 1
+            if tc > 9.5: counters['corners_over_95'] += 1
+            if tk > 3.5: counters['cards_over_35'] += 1
+            if tk > 4.5: counters['cards_over_45'] += 1
+            if tf > 20.5: counters['fouls_over_205'] += 1
+            if tf > 24.5: counters['fouls_over_245'] += 1
+        return {
+            m: {'hits': h, 'total': total, 'rate': round(h / total, 3)}
+            for m, h in counters.items()
+        }
+
+    result = {}
+    for key, n in [('l5', 5), ('l10', 10), ('l20', 20), ('all', None)]:
+        subset = matches.head(n) if n is not None else matches
+        result[key] = _window(subset)
+    return result
+
+
 def write_json(data, filename: str):
     path = OUTPUT_DIR / filename
     with open(path, "w", encoding="utf-8") as f:
@@ -195,6 +285,73 @@ def build_player_coverage_from_json(leagues: dict) -> dict:
     return coverage
 
 
+def _write_alerts_json(fixtures_payload: dict):
+    """
+    Genera docs/data/alerts.json a partir de smart_alerts.py.
+    Itera sobre los próximos partidos de fixtures_payload y llama a
+    generate_alerts() con los stats de team_stats.json y h2h.json
+    (ya escritos en disco en los pasos anteriores del build).
+    """
+    team_stats_data = _read_existing_json("team_stats.json") or {}
+    h2h_data = _read_existing_json("h2h.json") or {}
+
+    upcoming = fixtures_payload.get("upcoming", [])
+    matches_alerts: dict = {}
+
+    for fixture in upcoming:
+        home = fixture.get("home", "")
+        away = fixture.get("away", "")
+        league = fixture.get("league", "")
+        date = fixture.get("date", "")
+        if not home or not away:
+            continue
+
+        key = f"{league}|{date}|{home}|{away}"
+
+        home_team_data = team_stats_data.get(home, {})
+        away_team_data = team_stats_data.get(away, {})
+        # Usar stats del venue correspondiente; fallback al otro venue si no existe.
+        home_stats = home_team_data.get("home") or home_team_data.get("away")
+        away_stats = away_team_data.get("away") or away_team_data.get("home")
+
+        if not home_stats or not away_stats:
+            continue
+
+        # La clave en h2h.json es "{alphabetically_first}|{alphabetically_second}"
+        h2h_key = "|".join(sorted([home, away]))
+        h2h_entry = h2h_data.get(h2h_key)
+        h2h_summary = h2h_entry.get("summary") if isinstance(h2h_entry, dict) else None
+
+        n = max(int(home_stats.get("matches_analyzed") or 5), 1)
+        try:
+            alerts = generate_alerts(home_stats, away_stats, h2h_summary, n=n)
+        except Exception as exc:
+            print(f"  Warning alerts {key}: {exc}")
+            continue
+
+        if alerts:
+            matches_alerts[key] = [
+                {
+                    "type": a.type.value,
+                    "strength": a.strength.value,
+                    "text": a.text,
+                    "emoji": a.emoji,
+                    "color": a.color,
+                    "confidence": round(a.confidence, 3),
+                    "source": a.source,
+                }
+                for a in alerts
+            ]
+
+    write_json(
+        {
+            "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "matches": matches_alerts,
+        },
+        "alerts.json",
+    )
+
+
 def build_data_status(coverage: dict, source: str = "build_data") -> dict:
     by_league = coverage.get("by_league") or {}
     return {
@@ -273,6 +430,10 @@ def build_team_stats(df, teams: list) -> dict:
             'sample_scope': scope,
             'season_matches': (home or {}).get('current_season_matches', 0) + (away or {}).get('current_season_matches', 0),
             'historical_matches': (home or {}).get('matches_analyzed', 0) + (away or {}).get('matches_analyzed', 0),
+            'hit_rates': {
+                'home': _compute_hit_rates(df, team, 'home'),
+                'away': _compute_hit_rates(df, team, 'away'),
+            },
         }
     return result
 
@@ -300,18 +461,25 @@ def build_h2h(df, teams: list) -> dict:
             continue
 
         matches = []
+        import pandas as pd
         for _, row in h2h_df.head(25).iterrows():
+            hg = row.get("FTHG")
+            ag = row.get("FTAG")
             m = {
                 "date": row["Date"].strftime("%Y-%m-%d") if hasattr(row["Date"], "strftime") else str(row["Date"]),
-                "result": row["Resultado"],
+                "result": row.get("Resultado", "?-?"),  # retrocompat — una versión más
+                "home": str(row.get("HomeTeam", "")),
+                "away": str(row.get("AwayTeam", "")),
+                "home_score": int(float(hg)) if pd.notna(hg) else None,
+                "away_score": int(float(ag)) if pd.notna(ag) else None,
             }
-            for col, key in [("Liga", "league")]:
-                if col in row.index:
+            # Liga/Div como campo league
+            for col, key in [("Liga", "league"), ("Div", "league")]:
+                if col in row.index and "league" not in m:
                     v = row[col]
                     try:
-                        import pandas as pd
                         if pd.notna(v):
-                            m[key] = round(float(v), 2) if key != "league" else str(v)
+                            m[key] = str(v)
                     except Exception:
                         pass
             matches.append(m)
@@ -494,6 +662,11 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
                 "time": str(row.get("Time", "") or "").strip(),
                 "home": normalize_team_name(str(row.get("HomeTeam", ""))),
                 "away": normalize_team_name(str(row.get("AwayTeam", ""))),
+                # Árbitro: football-data.co.uk no asigna árbitro a partidos futuros,
+                # solo a partidos ya disputados. La asignación previa es imposible
+                # a partir de estas fuentes. Fase 0.5: campo estructural en null.
+                "referee": None,
+                "referee_yellows_per_match": None,
             }
             if has_score:
                 item["home_score"] = int(row["FTHG"])
@@ -535,6 +708,14 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     recent = _merge_fixture_lists(primary=recent, secondary=fd_recent)
     upcoming = _merge_fixture_lists(primary=fd_upcoming, secondary=upcoming)
     calendar = _merge_fixture_lists(primary=calendar, secondary=fd_calendar)
+
+    # Forma uniforme: FixtureDownload no trae árbitro; football-data.co.uk solo
+    # lo asigna a partidos ya disputados. Fase 0.5: campos estructurales en null
+    # en todo lo que no lo tenga (asignación previa imposible con estas fuentes).
+    for _bucket in (recent, upcoming, calendar):
+        for _item in _bucket:
+            _item.setdefault("referee", None)
+            _item.setdefault("referee_yellows_per_match", None)
 
     recent.sort(key=lambda x: (x["date"], x.get("time", "")), reverse=True)
     upcoming.sort(key=lambda x: (x["date"], x.get("time", ""), x.get("league", "")))
@@ -1169,11 +1350,15 @@ def main():
     write_json(leagues, "leagues.json")
     fixtures_payload = build_fixtures(df, leagues)
     fixtures_payload = write_fixtures_json(fixtures_payload)
+    _write_alerts_json(fixtures_payload)
     if skip_heavy_rebuild:
         print("     Conservados edges.json y trends.json por KICKDEX_SKIP_HEAVY_REBUILD=1")
     else:
         write_json(build_edges(df), "edges.json")
-        write_json(build_trends_payload(df, teams, season_start=CURRENT_SEASON_START), "trends.json")
+        # Rachas sobre todo el historial (los últimos 20 partidos por equipo),
+        # no solo la temporada actual: con ~1,6 partidos/equipo en 2026/27 ninguna
+        # TrendRule llegaba a disparar. Ver plan fixture-first, Fase 0.1.
+        write_json(build_trends_payload(df, teams), "trends.json")
     write_json(
         build_team_assets(leagues, _read_existing_json("team_assets.json")),
         "team_assets.json",
@@ -1191,6 +1376,8 @@ def main():
             suspensions_payload,
             leagues,
             live_scores=_read_existing_json("live_scores.json"),
+            standings=_read_existing_json("standings.json"),
+            scorers=_read_existing_json("scorers.json"),
         ),
         "data_health.json",
     )

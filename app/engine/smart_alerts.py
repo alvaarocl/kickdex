@@ -64,6 +64,22 @@ def _pct(rate: float) -> str:
     return f"{int(round(rate * 100))}%"
 
 
+def _clean_stats(stats: dict | None) -> dict:
+    """Coerce None numeric values to 0.0 so comparisons don't blow up.
+
+    team_stats.json stores explicit nulls for teams with thin history
+    (recién ascendidos, filiales); ``dict.get(k, default)`` doesn't help
+    because the key is present with value None.
+    """
+    if not stats:
+        return {}
+    cleaned = dict(stats)
+    for key, value in stats.items():
+        if value is None and key != "team":
+            cleaned[key] = 0.0
+    return cleaned
+
+
 # ─── Generadores de alertas ──────────────────────────────────────────────────
 
 def _home_alerts(home: dict, n: int) -> list[Alert]:
@@ -251,6 +267,10 @@ def generate_alerts(
     Returns:
         Lista de Alert ordenada por confidence desc.
     """
+    home_stats = _clean_stats(home_stats)
+    away_stats = _clean_stats(away_stats)
+    h2h_summary = _clean_stats(h2h_summary) or None
+
     team1 = home_stats.get("team", "Local")
     team2 = away_stats.get("team", "Visitante")
 

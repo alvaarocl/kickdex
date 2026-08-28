@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from app.config import FOOTBALL_DATA_ORG_COMPETITION_CODES
-from app.data.loader import normalize_team_name
+from app.data.loader import normalize_fd_org_team_name
 
 API_BASE = "https://api.football-data.org/v4"
 OUT_PATH = ROOT / "docs" / "data" / "live_scores.json"
@@ -92,8 +92,8 @@ def _normalise_match(raw: dict[str, Any], league_code: str) -> dict[str, Any] | 
 
     return {
         "league": league_code,
-        "home": normalize_team_name(home),
-        "away": normalize_team_name(away),
+        "home": normalize_fd_org_team_name(home),
+        "away": normalize_fd_org_team_name(away),
         "status": STATUS_MAP.get(status_raw, "scheduled"),
         "utc_date": raw.get("utcDate"),
         "minute": minute,

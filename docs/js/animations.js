@@ -511,9 +511,6 @@ function _checkReveal() {
   });
 }
 
-// ── Parallax placeholder (handled in scroll handler above) ──
-function _setupParallax() {}
-
 // ── Mockup: staggered form badges + rows + alert ─────────────
 function _setupMockupAnimation() {
   document.querySelectorAll(".lp-mock-form span").forEach((el, i) => {

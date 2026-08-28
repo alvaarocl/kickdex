@@ -70,10 +70,13 @@ function calcProbabilities(homeStats, awayStats, h2hSummary, modelConfig) {
 
   const MAX_GOALS = 8;
   let home = 0, draw = 0, away = 0;
+  // Captura la matriz cruda para derivar marcadores exactos y líneas O/U.
+  const matrixRaw = [];
   for (let i = 0; i <= MAX_GOALS; i++) {
     const pH = poissonPMF(i, lambdaH);
     for (let j = 0; j <= MAX_GOALS; j++) {
       const p = pH * poissonPMF(j, lambdaA) * _dixonColesAdjustment(i, j, lambdaH, lambdaA, cfg.dixon_coles_rho);
+      matrixRaw.push({ hg: i, ag: j, prob: p });
       if (i > j) home += p;
       else if (i === j) draw += p;
       else away += p;
@@ -81,6 +84,24 @@ function calcProbabilities(homeStats, awayStats, h2hSummary, modelConfig) {
   }
   const total = home + draw + away || 1;
   home /= total; draw /= total; away /= total;
+
+  // Matriz normalizada (misma normalización que Python)
+  const matrixNorm = matrixRaw.map(e => ({ hg: e.hg, ag: e.ag, prob: e.prob / total }));
+
+  // Top 8 marcadores exactos por probabilidad
+  const topScores = matrixNorm
+    .slice()
+    .sort((a, b) => b.prob - a.prob)
+    .slice(0, 8)
+    .map(e => ({ score: `${e.hg}-${e.ag}`, prob: Math.round(e.prob * 10000) / 10000 }));
+
+  // Líneas O/U derivadas de la misma matriz (paridad con Python)
+  const ouLines = {};
+  for (const line of [0.5, 1.5, 2.5, 3.5, 4.5]) {
+    const over = matrixNorm.reduce((acc, e) => acc + (e.hg + e.ag > line ? e.prob : 0), 0);
+    const overR = Math.round(over * 10000) / 10000;
+    ouLines[String(line)] = { over: overR, under: Math.round((1 - overR) * 10000) / 10000 };
+  }
 
   // Blend H2H (prefiere tasas ponderadas por antigüedad si el resumen las
   // trae — ver get_weighted_h2h_summary en app/engine/metrics.py).
@@ -120,12 +141,14 @@ function calcProbabilities(homeStats, awayStats, h2hSummary, modelConfig) {
 
   const clamp01 = (x) => Math.max(0.01, Math.min(0.99, x));
   return {
-    home:     clamp01(home),
-    draw:     clamp01(draw),
-    away:     clamp01(away),
-    over25:   clamp01(over25),
-    btts:     clamp01(btts),
-    lambda_h: lambdaH,
-    lambda_a: lambdaA,
+    home:      clamp01(home),
+    draw:      clamp01(draw),
+    away:      clamp01(away),
+    over25:    clamp01(over25),
+    btts:      clamp01(btts),
+    lambda_h:  lambdaH,
+    lambda_a:  lambdaA,
+    topScores: topScores,
+    ouLines:   ouLines,
   };
 }

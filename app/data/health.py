@@ -31,6 +31,27 @@ def _live_scores_domain(live_scores: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def _fd_org_domain(payload: dict[str, Any] | None, disabled_note: str, count_key: str) -> dict[str, Any]:
+    """Contrato compartido por standings.json/scorers.json: mismo tier
+    gratuito de football-data.org, misma forma enabled/leagues."""
+    if not payload or not payload.get("enabled"):
+        return {
+            "status": "unavailable",
+            "updated_at": (payload or {}).get("updated_at"),
+            "records": 0,
+            "note": (payload or {}).get("note") or disabled_note,
+        }
+    leagues_data = payload.get("leagues") or {}
+    total = sum(len((info or {}).get(count_key) or []) for info in leagues_data.values())
+    return {
+        "status": "fresh" if leagues_data else "unavailable",
+        "updated_at": payload.get("updated_at"),
+        "records": total,
+        "leagues_covered": sorted(leagues_data.keys()),
+        "note": payload.get("note"),
+    }
+
+
 def build_data_health(
     meta: dict[str, Any],
     fixtures: dict[str, Any],
@@ -39,6 +60,8 @@ def build_data_health(
     suspensions: dict[str, Any],
     leagues: dict[str, Any],
     live_scores: dict[str, Any] | None = None,
+    standings: dict[str, Any] | None = None,
+    scorers: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     fixture_meta = fixtures.get("meta") or {}
     fixture_download = fixture_meta.get("fixture_download") or {}
@@ -104,6 +127,8 @@ def build_data_health(
             "records": len(suspension_items),
         },
         "live_scores": _live_scores_domain(live_scores),
+        "standings": _fd_org_domain(standings, "Clasificacion desactivada: falta configurar FOOTBALL_DATA_API_KEY.", "table"),
+        "scorers": _fd_org_domain(scorers, "Goleadores desactivados: falta configurar FOOTBALL_DATA_API_KEY.", "scorers"),
     }
     essential_statuses = [domains["calendar"]["status"], domains["teams"]["status"]]
     return {

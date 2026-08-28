@@ -89,6 +89,7 @@ function renderMatch() {
         ${buildFormSection(fixture, homeStats, awayStats)}
         ${buildH2HSection(fixture, h2hData)}
         ${buildApercibidosSection(fixture)}
+        ${buildDisciplineSection(fixture)}
         ${buildPlayersSection(fixture)}
       </section>
       <aside class="match-side">
