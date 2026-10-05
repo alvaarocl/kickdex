@@ -23,3 +23,14 @@ def test_canonical_team_handles_current_season_feed_names():
     ) == "Espanol"
     assert _canonical_team("Internazionale", ["Inter", "Milan"]) == "Inter"
     assert _canonical_team("Fortuna Sittard", ["For Sittard", "Ajax"]) == "For Sittard"
+
+
+def test_midnight_utc_is_treated_as_unconfirmed_kickoff():
+    from datetime import datetime, timezone
+    from zoneinfo import ZoneInfo
+    from app.data.fixture_download import _local_date_time
+
+    madrid = ZoneInfo("Europe/Madrid")
+    # Marcador de FixtureDownload: no es "viernes 02:00" en Madrid.
+    assert _local_date_time(datetime(2026, 10, 9, 0, 0, tzinfo=timezone.utc), madrid) == ("2026-10-09", "")
+    assert _local_date_time(datetime(2026, 10, 10, 13, 30, tzinfo=timezone.utc), madrid) == ("2026-10-10", "15:30")

@@ -90,6 +90,30 @@ function renderDisabledState(message) {
   if (scorersRoot) scorersRoot.innerHTML = "";
 }
 
+// Zonas orientativas por liga (posiciones 1-based). Pueden variar por
+// coeficientes UEFA o ganadores de copa: se etiqueta como "orientativo".
+const CLASIF_ZONES = {
+  SP1: { ucl: [1, 4], uel: [5, 5], uecl: [6, 6], rel: [18, 20] },
+  E0:  { ucl: [1, 4], uel: [5, 5], uecl: [6, 6], rel: [18, 20] },
+  I1:  { ucl: [1, 4], uel: [5, 5], uecl: [6, 6], rel: [18, 20] },
+  D1:  { ucl: [1, 4], uel: [5, 5], uecl: [6, 6], po: [16, 16], rel: [17, 18] },
+  F1:  { ucl: [1, 4], uel: [5, 5], uecl: [6, 6], po: [16, 16], rel: [17, 18] },
+  N1:  { ucl: [1, 2], uel: [3, 3], uecl: [4, 4], po: [16, 16], rel: [17, 18] },
+  E1:  { promo: [1, 2], po: [3, 6], rel: [22, 24] },
+};
+const CLASIF_ZONE_LABELS = {
+  ucl: "Champions League", uel: "Europa League", uecl: "Conference League",
+  promo: "Ascenso directo", po: "Playoff", rel: "Descenso",
+};
+
+function clasifZone(code, pos, total) {
+  const zones = CLASIF_ZONES[code] || { rel: [total - 2, total] };
+  for (const [zone, [from, to]] of Object.entries(zones)) {
+    if (pos >= from && pos <= to) return zone;
+  }
+  return "";
+}
+
 function renderStandings() {
   const root = document.getElementById("clasif-table-root");
   if (!root) return;
@@ -104,50 +128,92 @@ function renderStandings() {
     return;
   }
   const updated = data.updated_at ? new Date(data.updated_at).toLocaleString("es-ES") : "—";
+  const table = league.table || [];
+  const total = table.length;
+  const maxPts = Math.max(...table.map(r => Number(r.points) || 0), 1);
+  const played = table.map(r => Math.max(1, Number(r.played) || 1));
+  const rankGF = kdxRanker(table.map((r, i) => r.goals_for / played[i]));
+  const rankGA = kdxRanker(table.map((r, i) => r.goals_against / played[i]));
+  const fixtureLists = [APP.fixtures?.calendar, APP.fixtures?.recent];
+
+  const zonesUsed = new Set();
+  let prevZone = null;
+  const rows = table.map((row, i) => {
+    const pos = i + 1;
+    const zone = clasifZone(_clasifLeague, pos, total);
+    if (zone) zonesUsed.add(zone);
+    const cut = i > 0 && zone !== prevZone;
+    prevZone = zone;
+    return standingsRow(row, i, {
+      zone, cut, maxPts, fixtureLists,
+      gfClass: kdxHeatClass(rankGF(row.goals_for / played[i]), "good"),
+      gaClass: kdxHeatClass(rankGA(row.goals_against / played[i]), "risk"),
+    });
+  }).join("");
+
+  const legend = [...zonesUsed].map(z =>
+    `<span><i style="background:var(--zone-${z})"></i>${CLASIF_ZONE_LABELS[z]}</span>`).join("");
+
   root.innerHTML = `
   <div class="disclaimer" style="margin-bottom:12px;">
     Jornada ${league.matchday ?? "—"} · actualizado ${updated} · ${escHtml(data.note || "")}
   </div>
   <div class="table-wrap">
-    <table>
+    <table class="ktable" id="clasifTable">
       <thead>
         <tr>
-          <th data-nosort>#</th>
+          <th data-nosort class="ctr">#</th>
           <th>Equipo</th>
-          <th title="Partidos jugados">PJ</th>
-          <th title="Ganados">G</th>
-          <th title="Empatados">E</th>
-          <th title="Perdidos">P</th>
-          <th title="Goles a favor / en contra">GF/GC</th>
-          <th title="Diferencia de goles">DG</th>
+          <th class="num" title="Partidos jugados">PJ</th>
+          <th class="num hide-xs" title="Ganados">G</th>
+          <th class="num hide-xs" title="Empatados">E</th>
+          <th class="num hide-xs" title="Perdidos">P</th>
+          <th class="num hide-sm" title="Goles a favor (color: ataque relativo por partido)">GF</th>
+          <th class="num hide-sm" title="Goles en contra (rojo: defensa más débil)">GC</th>
+          <th class="num" title="Diferencia de goles">DG</th>
           <th title="Puntos">Pts</th>
+          <th data-nosort class="hide-sm" title="Últimos 5 partidos registrados (antiguo → reciente)">Forma</th>
         </tr>
       </thead>
-      <tbody>
-        ${league.table.map((row, i) => standingsRow(row, i)).join("")}
-      </tbody>
+      <tbody>${rows}</tbody>
     </table>
-  </div>`;
+  </div>
+  <div class="klegend">${legend}<span class="muted">Zonas orientativas: pueden cambiar por copas o coeficientes UEFA.</span></div>`;
   setTimeout(() => initAllTables(root), 50);
 }
 
-function standingsRow(row, index) {
+function standingsRow(row, index, o = {}) {
   const media = typeof entityMedia === "function" ? entityMedia("team", row.team) : "";
   const name = typeof teamDisplayName === "function" ? teamDisplayName(row.team) : row.team;
   // Posición por orden de la tabla (ya viene ordenada de football-data.org);
   // `row.position` puede empatar a inicio de temporada sin desempate aplicado.
   const pos = Number.isInteger(index) ? index + 1 : row.position;
+
+  // Forma: primero desde fixtures.json (orden conocido); si no hay, la de la API.
+  let form = typeof kdxTeamForm === "function" ? kdxTeamForm(o.fixtureLists, row.team, 5) : [];
+  let formHtml;
+  if (form.length) {
+    formHtml = kdxFormPills(form.map(f => f.res), form.map(f => f.title));
+  } else if (row.form) {
+    formHtml = kdxFormPills(String(row.form).split(",").map(x => x.trim()).filter(Boolean).slice(-5));
+  } else {
+    formHtml = kdxFormPills([]);
+  }
+
+  const gd = Number(row.goal_diff) || 0;
   return `
-  <tr>
-    <td>${pos}</td>
+  <tr${o.zone ? ` data-zone="${o.zone}" title="${CLASIF_ZONE_LABELS[o.zone]}"` : ""}${o.cut ? ' class="zone-cut"' : ""}>
+    <td class="ctr" data-sort="${pos}"><span class="krank">${pos}</span></td>
     <td><span class="fx-team">${media}<b>${escHtml(name)}</b></span></td>
-    <td>${row.played}</td>
-    <td>${row.won}</td>
-    <td>${row.draw}</td>
-    <td>${row.lost}</td>
-    <td>${row.goals_for}-${row.goals_against}</td>
-    <td>${row.goal_diff > 0 ? "+" : ""}${row.goal_diff}</td>
-    <td><b>${row.points}</b></td>
+    <td class="num muted">${row.played}</td>
+    <td class="num hide-xs">${row.won}</td>
+    <td class="num hide-xs">${row.draw}</td>
+    <td class="num hide-xs">${row.lost}</td>
+    <td class="num hide-sm ${o.gfClass || ""}" data-sort="${row.goals_for}">${row.goals_for}</td>
+    <td class="num hide-sm ${o.gaClass || ""}" data-sort="${row.goals_against}">${row.goals_against}</td>
+    <td class="num" data-sort="${gd}">${typeof kdxDiff === "function" ? kdxDiff(gd, 0, false) : gd}</td>
+    <td data-sort="${row.points}"><span class="kcell-bar"><span class="kpts">${row.points}</span>${typeof kdxBar === "function" ? kdxBar(row.points, o.maxPts || row.points, "brand") : ""}</span></td>
+    <td class="hide-sm">${formHtml}</td>
   </tr>`;
 }
 
@@ -164,36 +230,47 @@ function renderScorers() {
     root.innerHTML = `<div class="fx-empty">Sin goleadores disponibles para esta liga.</div>`;
     return;
   }
+  const list = league.scorers;
+  const maxGoals = Math.max(...list.map(r => Number(r.goals) || 0), 1);
+  const rankGpm = kdxRanker(list.map(r => r.played_matches ? r.goals / r.played_matches : null));
   root.innerHTML = `
   <div class="table-wrap">
-    <table>
+    <table class="ktable">
       <thead>
         <tr>
-          <th data-nosort>#</th>
+          <th data-nosort class="ctr">#</th>
           <th>Jugador</th>
-          <th>Equipo</th>
+          <th class="hide-xs">Equipo</th>
           <th title="Goles">Goles</th>
-          <th title="Partidos jugados">PJ</th>
-          <th title="De penalti">Pen.</th>
+          <th class="num hide-sm" title="Asistencias">Asist.</th>
+          <th class="num" title="Partidos jugados">PJ</th>
+          <th class="num" title="Goles por partido">Goles/p</th>
+          <th class="num hide-sm" title="De penalti">Pen.</th>
         </tr>
       </thead>
       <tbody>
-        ${league.scorers.map(scorerRow).join("")}
+        ${list.map((row, i) => scorerRow(row, i, maxGoals, rankGpm)).join("")}
       </tbody>
     </table>
   </div>`;
   setTimeout(() => initAllTables(root), 50);
 }
 
-function scorerRow(row) {
+function scorerRow(row, index = 0, maxGoals = 1, rankGpm = () => null) {
   const teamName = typeof teamDisplayName === "function" ? teamDisplayName(row.team) : row.team;
+  const crest = typeof entityMedia === "function" ? entityMedia("team", row.team) : "";
+  const photo = typeof entityMedia === "function" ? entityMedia("player", row.player, row.team) : "";
+  const gpm = row.played_matches ? row.goals / row.played_matches : null;
+  const rank = Number(row.rank) || index + 1;
   return `
   <tr>
-    <td>${row.rank}</td>
-    <td>${escHtml(row.player || "—")}</td>
-    <td>${escHtml(teamName)}</td>
-    <td><b>${row.goals}</b></td>
-    <td>${row.played_matches ?? "—"}</td>
-    <td>${row.penalties ?? 0}</td>
+    <td class="ctr" data-sort="${rank}"><span class="krank ${rank <= 3 ? `krank--${rank}` : ""}">${rank}</span></td>
+    <td><span class="player-cell">${photo}<b style="font-family:var(--font-ui)">${escHtml(row.player || "—")}</b></span></td>
+    <td class="hide-xs"><span class="fx-team">${crest}<span class="muted">${escHtml(teamName)}</span></span></td>
+    <td data-sort="${row.goals}"><span class="kcell-bar"><span class="kpts">${row.goals}</span>${kdxBar(row.goals, maxGoals, "gold")}</span></td>
+    <td class="num hide-sm">${row.assists ?? "—"}</td>
+    <td class="num muted">${row.played_matches ?? "—"}</td>
+    <td class="num ${kdxHeatClass(rankGpm(gpm), "good")}" data-sort="${gpm ?? -1}">${gpm == null ? "—" : gpm.toFixed(2)}</td>
+    <td class="num hide-sm muted">${row.penalties ?? 0}</td>
   </tr>`;
 }

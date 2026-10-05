@@ -79,6 +79,9 @@ def _standings_for_league(payload: dict[str, Any]) -> dict[str, Any] | None:
                 "goals_against": row.get("goalsAgainst"),
                 "goal_diff": row.get("goalDifference"),
                 "points": row.get("points"),
+                # "W,D,L,W,W". Suele venir null en el plan gratuito; la UI usa
+                # primero la racha calculada desde fixtures.json.
+                "form": row.get("form"),
             }
             for row in totals.get("table") or []
         ],

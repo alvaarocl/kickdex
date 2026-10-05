@@ -201,3 +201,39 @@ def test_stale_worldsoccerdata_season_aggregate_never_overrides_real_current_sea
 
     assert record["overall"] is not None
     assert record["season"] is None
+
+
+def test_build_referees_exposes_career_total_match_log_and_active_flag(tmp_path, monkeypatch):
+    # `overall.matches` está topado por la ventana ponderada; la UI necesita
+    # el total real, el registro partido a partido y si el árbitro sigue en activo.
+    monkeypatch.setattr("app.config.DATA_DIR", str(tmp_path))
+    dates = pd.date_range("2010-01-01", periods=70, freq="7D").append(pd.DatetimeIndex(["2026-09-20"]))
+    n = len(dates)
+    base = pd.DataFrame({
+        "Date": dates,
+        "Div": ["E0"] * n,
+        "Referee": ["M Oliver"] * (n - 1) + ["M Oliver"],
+        "HomeTeam": ["Arsenal"] * n,
+        "AwayTeam": ["Chelsea"] * n,
+        "FTHG": [2] * n,
+        "FTAG": [1] * n,
+        "HY": [2] * n, "AY": [1] * n, "HR": [0] * (n - 1) + [1], "AR": [0] * n,
+        "HF": [10] * n, "AF": [12] * n,
+    })
+    retired = pd.DataFrame({
+        "Date": pd.date_range("2008-01-01", periods=5, freq="7D"),
+        "Div": ["E0"] * 5, "Referee": ["S Bennett"] * 5,
+        "HY": [1] * 5, "AY": [1] * 5, "HR": [0] * 5, "AR": [0] * 5,
+    })
+    refs = {r["name"]: r for r in build_referees(pd.concat([base, retired], ignore_index=True), base.iloc[-1:])}
+
+    oliver = refs["M Oliver"]
+    assert oliver["overall"]["matches"] <= 60
+    assert oliver["career_matches"] == n
+    assert oliver["first_match"] == "2010-01-01"
+    assert len(oliver["recent_matches"]) == 10
+    latest = oliver["recent_matches"][0]
+    assert latest == {"date": "2026-09-20", "home": "Arsenal", "away": "Chelsea", "home_score": 2,
+                      "away_score": 1, "yellows": 3, "reds": 1, "fouls": 22}
+    assert oliver["active"] is True
+    assert refs["S Bennett"]["active"] is False

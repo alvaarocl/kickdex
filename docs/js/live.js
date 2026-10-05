@@ -74,7 +74,8 @@ function renderLive(data) {
     root.innerHTML = `
     <div class="fx-empty">
       No hay partidos hoy en las ligas cubiertas (${(data.leagues_covered || []).join(", ")}).
-    </div>`;
+    </div>
+    ${buildLiveFallback()}`;
     return;
   }
 
@@ -132,4 +133,56 @@ function liveMatchCard(m) {
       ${scoreBlock}
     </div>
   </div>`;
+}
+
+// Sin partidos hoy: últimos resultados registrados + próximos partidos, para
+// que la pestaña no quede vacía (fuente: fixtures.json, no el feed en directo).
+function buildLiveFallback() {
+  const fx = APP.fixtures || {};
+  const seen = new Set();
+  const finished = [...(fx.recent || []), ...(fx.calendar || [])].filter(f => {
+    if (f.status !== "finished" || f.home_score == null) return false;
+    const key = `${f.date}|${f.home}|${f.away}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.time || "").localeCompare(String(a.time || "")));
+  const lastDates = [...new Set(finished.map(f => f.date))].slice(0, 2);
+  const results = finished.filter(f => lastDates.includes(f.date)).slice(0, 18);
+
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = (fx.upcoming || []).filter(f => f.date >= today && f.status !== "finished");
+  const nextDates = [...new Set(upcoming.map(f => f.date))].slice(0, 2);
+  const next = upcoming.filter(f => nextDates.includes(f.date)).slice(0, 18);
+
+  const dayLabel = d => new Date(`${d}T12:00:00`).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" });
+  const name = t => escHtml(typeof teamDisplayName === "function" ? teamDisplayName(t) : t);
+  const crest = t => typeof entityMedia === "function" ? entityMedia("team", t) : "";
+  const href = f => typeof buildMatchHref === "function" ? buildMatchHref(f) : "#";
+
+  const resultCard = f => {
+    const hw = f.home_score > f.away_score, aw = f.away_score > f.home_score;
+    return `
+    <a class="live-mini" href="${href(f)}">
+      <span class="lm-team ${hw ? "win" : aw ? "lose" : ""}">${crest(f.home)}<span>${name(f.home)}</span></span>
+      <span class="lm-score">${f.home_score}</span>
+      <span class="lm-team ${aw ? "win" : hw ? "lose" : ""}">${crest(f.away)}<span>${name(f.away)}</span></span>
+      <span class="lm-score">${f.away_score}</span>
+      <span class="lm-meta">${escHtml(APP.leagues?.[f.league]?.name || f.league_name || f.league)} · ${dayLabel(f.date)}</span>
+    </a>`;
+  };
+  const nextCard = f => `
+    <a class="live-mini" href="${href(f)}">
+      <span class="lm-team">${crest(f.home)}<span>${name(f.home)}</span></span>
+      <span class="lm-score muted" style="font-size:.74rem;">${escHtml(f.time || "por confirmar")}</span>
+      <span class="lm-team">${crest(f.away)}<span>${name(f.away)}</span></span>
+      <span></span>
+      <span class="lm-meta">${escHtml(APP.leagues?.[f.league]?.name || f.league_name || f.league)} · ${dayLabel(f.date)}</span>
+    </a>`;
+
+  return `
+    ${next.length ? `<div class="live-fallback-title">Próximos partidos <small>${nextDates.map(dayLabel).join(" · ")}</small></div>
+      <div class="live-grid">${next.map(nextCard).join("")}</div>` : ""}
+    ${results.length ? `<div class="live-fallback-title">Últimos resultados registrados <small>${lastDates.map(dayLabel).join(" · ")}</small></div>
+      <div class="live-grid">${results.map(resultCard).join("")}</div>` : ""}`;
 }

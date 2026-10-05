@@ -21,5 +21,10 @@ function buildBlockH2H(homeTeam, awayTeam, ctx) {
     return `<div class="blk-empty"><p class="muted">Módulo H2H no cargado — asegúrate de incluir js/h2h.js.</p></div>`;
   }
 
+  // h2h.json guarda los equipos en orden alfabético; se muestra local → visitante.
+  if (h2hData.team2 === homeTeam && h2hData.team1 === awayTeam) {
+    const s = h2hData.summary;
+    return buildH2HHTML(homeTeam, awayTeam, { ...h2hData, team1: homeTeam, team2: awayTeam, summary: { ...s, wins1: s.wins2, wins2: s.wins1 } });
+  }
   return buildH2HHTML(h2hData.team1, h2hData.team2, h2hData);
 }

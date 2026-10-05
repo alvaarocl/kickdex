@@ -77,7 +77,7 @@ function runComparador() {
   const awayData = APP.teamStats[away] || emptyTeamStats(away);
 
   const h2hData    = getH2H(home, away);
-  const h2hSummary = h2hData?.summary || null;
+  const h2hSummary = orientH2HSummary(h2hData, home);
   const probs      = calcProbabilities(homeData, awayData, h2hSummary, APP.modelConfig);
   const ctx        = buildComparadorCtx(home, away, probs);
 
@@ -88,7 +88,7 @@ function runComparador() {
   setTimeout(() => {
     drawRadar(home, away, homeData, awayData);
     if (h2hData?.matches?.length && typeof drawH2HChart === "function") {
-      drawH2HChart(h2hData.team1, h2hData.team2, h2hData.matches);
+      drawH2HChart(...(h2hData.team2 === home ? [home, away] : [h2hData.team1, h2hData.team2]), h2hData.matches);
     }
     if (typeof triggerAnimations === "function") triggerAnimations(box);
     initAllTables(box);

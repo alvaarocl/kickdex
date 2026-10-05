@@ -550,7 +550,7 @@ function sortFixtures(fixtures) {
 function buildFixtureCard(f, isResult) {
   var leagueCls   = f.league ? f.league.toLowerCase().replace(/\d/g, "") : "other";
   var leagueLabel = (APP.leagues && APP.leagues[f.league] && APP.leagues[f.league].name) || f.league || "—";
-  var timeLabel   = f.time && f.time !== "nan" ? f.time : "";
+  var timeLabel   = f.time && f.time !== "nan" ? f.time : (isResult ? "" : "hora por confirmar");
   var roundLabel  = f.round ? "J" + f.round : "";
   var metaParts   = [];
   if (timeLabel)  metaParts.push(timeLabel);

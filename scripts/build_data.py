@@ -514,6 +514,7 @@ def build_h2h(df, teams: list) -> dict:
 
 
 def build_players(df_players) -> dict:
+    import pandas as pd
     if df_players is None or df_players.empty:
         return {}
     result = {}
@@ -531,6 +532,12 @@ def build_players(df_players) -> dict:
                 "fls":  _safe(last["fls"].mean()),
                 "crdy": _safe(last["crdy"].mean()),
             })
+            # Partidos jugados (solo en scrapes que lo traen; las caches
+            # antiguas no tienen la columna).
+            if "mp" in pg.columns:
+                mp = pd.to_numeric(last["mp"], errors="coerce").max()
+                if pd.notna(mp):
+                    players[-1]["mp"] = int(mp)
         players.sort(key=lambda x: (x["sh"] or 0), reverse=True)
         result[str(team)] = players
     return result
@@ -559,7 +566,8 @@ def add_player_percentiles(players_payload: dict, leagues: dict) -> dict:
     for code, players in by_league.items():
         # Pool de comparación: solo jugadores con minutos reales, para que los
         # suplentes que juegan 5' no aplasten a todos al percentil 100.
-        pool = [p for p in players if isinstance(p.get("min"), (int, float)) and p["min"] >= 30]
+        pool = [p for p in players if isinstance(p.get("min"), (int, float)) and p["min"] >= 30
+                and (p.get("mp") is None or p["mp"] >= 3)]
         if len(pool) < 8:
             pool = players
         for m in metrics:
@@ -1296,6 +1304,64 @@ def _ref_stats(grp):
     }
 
 
+REFEREE_RECENT_MATCHES = 10
+# Un árbitro sin partidos en este plazo se marca como inactivo (retirado,
+# ascendido/descendido de categoría...). La UI lo oculta por defecto.
+REFEREE_ACTIVE_DAYS = 450
+
+
+def _referee_match_log(grp, limit: int = REFEREE_RECENT_MATCHES) -> list:
+    """Últimos partidos pitados (más reciente primero) para la ficha del árbitro.
+    Solo existe en fuentes partido a partido (football-data.co.uk, API-Football)."""
+    import pandas as pd
+    if grp is None or grp.empty or "Date" not in grp.columns:
+        return []
+    rows = grp.dropna(subset=["Date"]).sort_values("Date", ascending=False).head(limit)
+    from app.data.loader import normalize_team_name
+
+    def _team(value):
+        if value is None or (isinstance(value, float) and pd.isna(value)):
+            return None
+        text = str(value).strip()
+        return normalize_team_name(text) if text else None
+
+    def _int(value):
+        n = pd.to_numeric(value, errors="coerce")
+        return None if pd.isna(n) else int(n)
+
+    def _first(r, *cols):
+        # football-data.co.uk (HomeTeam/FTHG) e incremental API-Football
+        # (home/home_score) pueden convivir en el mismo grupo tras el concat.
+        for col in cols:
+            value = r.get(col)
+            if value is not None and not (isinstance(value, float) and pd.isna(value)):
+                return value
+        return None
+
+    has_fouls = "HF" in grp.columns or "fouls" in grp.columns
+    log = []
+    for _, r in rows.iterrows():
+        log.append({
+            "date": r["Date"].strftime("%Y-%m-%d"),
+            "home": _team(_first(r, "HomeTeam", "home")),
+            "away": _team(_first(r, "AwayTeam", "away")),
+            "home_score": _int(_first(r, "FTHG", "home_score")),
+            "away_score": _int(_first(r, "FTAG", "away_score")),
+            "yellows": _int(r.get("_Y")),
+            "reds": _int(r.get("_R")),
+            "fouls": _int(r.get("_F")) if has_fouls else None,
+        })
+    return log
+
+
+def _referee_is_active(last_match, today=None) -> bool:
+    import pandas as pd
+    if not last_match:
+        return False
+    today = pd.Timestamp(today) if today is not None else pd.Timestamp.utcnow().tz_localize(None)
+    return (today - pd.Timestamp(last_match)).days <= REFEREE_ACTIVE_DAYS
+
+
 def build_referees(df, df_current=None) -> list:
     import pandas as pd
     if "Referee" not in df.columns or "Div" not in df.columns:
@@ -1372,7 +1438,14 @@ def build_referees(df, df_current=None) -> list:
             "season":         season_stats,
             "season_last10":  get_weighted_referee_form(grp_curr, max_matches=10, min_matches=3) if not grp_curr.empty else None,
             "season_last5":   get_weighted_referee_form(grp_curr, max_matches=5, min_matches=3) if not grp_curr.empty else None,
+            # `overall.matches` está topado por la ventana ponderada (60); este
+            # es el total real de partidos pitados en la fuente.
+            "career_matches": int(grp["Date"].notna().sum()) if "Date" in grp.columns else int(len(grp)),
+            "first_match":    grp["Date"].min().strftime("%Y-%m-%d") if "Date" in grp.columns and pd.notna(grp["Date"].min()) else None,
+            "recent_matches": _referee_match_log(grp),
         }
+        last_seen = max(filter(None, [overall.get("last_match"), (season_stats or {}).get("last_match")]), default=None)
+        record["active"] = bool(season_stats) or _referee_is_active(last_seen)
         results.append(record)
 
     existing_keys = {(r["league"], _referee_key(r["name"])) for r in results}
@@ -1395,6 +1468,11 @@ def build_referees(df, df_current=None) -> list:
             "season": season_stats,
             "season_last10": None,
             "season_last5": None,
+            "career_matches": season_stats["matches"],
+            "first_match": None,
+            "recent_matches": [],
+            # Solo existe en el agregado de la temporada actual → activo.
+            "active": True,
         })
 
     # Merge manual overrides (e.g. SP1/SP2 refs not provided by football-data.co.uk)

@@ -52,6 +52,25 @@ function _estimateLambda(teamAvgGoals, oppAvgConceded, leagueAvg, advantageFacto
  * @param modelConfig Constantes del modelo (docs/data/model_config.json);
  *                    si se omite se usa DEFAULT_MODEL_CONFIG.
  */
+/**
+ * h2h.json guarda cada par en orden alfabético (team1 < team2), pero
+ * calcProbabilities() interpreta *1 como el LOCAL. Sin orientar, cuando el
+ * local es el segundo alfabéticamente el blend H2H (30%) se aplicaba al revés.
+ * @param entry     Entrada completa de h2h.json ({team1, team2, summary}).
+ * @param homeTeam  Clave canónica del equipo local.
+ */
+function orientH2HSummary(entry, homeTeam) {
+  const s = entry && entry.summary;
+  if (!s) return null;
+  if (entry.team2 !== homeTeam) return s;
+  return {
+    ...s,
+    wins1: s.wins2, wins2: s.wins1,
+    wins_team1: s.wins_team2, wins_team2: s.wins_team1,
+    weighted_win_rate1: s.weighted_win_rate2, weighted_win_rate2: s.weighted_win_rate1,
+  };
+}
+
 function calcProbabilities(homeStats, awayStats, h2hSummary, modelConfig) {
   const hHome = homeStats?.home || homeStats?.away;
   const aAway = awayStats?.away || awayStats?.home;

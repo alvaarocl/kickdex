@@ -94,7 +94,7 @@ function renderMatch() {
   const homeStats  = state.teamStats[fixture.home] || {};
   const awayStats  = state.teamStats[fixture.away] || {};
   const h2hData    = getH2H(fixture.home, fixture.away);
-  const probs      = calcProbabilities(homeStats, awayStats, h2hData?.summary || null, state.modelConfig);
+  const probs      = calcProbabilities(homeStats, awayStats, orientH2HSummary(h2hData, fixture.home), state.modelConfig);
   const matchEdges = getFixtureEdges(fixture);
   const topEdge    = matchEdges[0] || null;
   const referee    = getAssignedReferee(fixture);
@@ -287,6 +287,7 @@ function renderArbitroTab(fixture) {
     <div class="match-layout">
       <section class="match-main">
         ${buildApercibidosSection(fixture)}
+        ${buildLeagueRefereePool(fixture)}
         ${buildDisciplineSection(fixture)}
       </section>
       <aside class="match-side">
@@ -681,13 +682,60 @@ function getAssignedReferee(f) {
   return state.referees.find(r => norm(r.name) === norm(name)) || { name };
 }
 
+function refStatsBlock(r) {
+  return r.season || r.overall || r;
+}
+
+function refActive(r) {
+  if (typeof r.active === "boolean") return r.active;
+  if (r.season) return true;
+  const last = r.overall?.last_match || r.last_match;
+  return !last || (Date.now() - new Date(last).getTime()) / 86400000 <= 450;
+}
+
+// Contexto arbitral con árbitros en activo y muestra mínima (antes promediaba
+// también retirados de hace 15 años con 3 partidos).
 function getLeagueRefereeContext(league) {
-  const refs = (state.referees || []).filter(r => r.league === league);
+  const refs = (state.referees || []).filter(r => r.league === league && refActive(r));
+  const sample = refs.filter(r => Number(refStatsBlock(r).matches || 0) >= 5);
+  const pool = sample.length >= 3 ? sample : refs;
   const avg = (key) => {
-    const vals = refs.map(r => Number(r[key])).filter(Number.isFinite);
+    const vals = pool.map(r => Number(refStatsBlock(r)[key])).filter(Number.isFinite);
     return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
   };
-  return { count: refs.length, yellows: avg("yellows_per_match"), reds: avg("reds_per_match") };
+  const ranked = pool.slice().sort((a, b) =>
+    (Number(refStatsBlock(b).yellows_per_match) || 0) - (Number(refStatsBlock(a).yellows_per_match) || 0));
+  return { count: pool.length, yellows: avg("yellows_per_match"), reds: avg("reds_per_match"), ranked };
+}
+
+function buildLeagueRefereePool(f) {
+  const ctx = _mLeagueRefs || getLeagueRefereeContext(f.league);
+  if (!ctx.ranked?.length) return "";
+  const rank = typeof kdxRanker === "function" ? kdxRanker(ctx.ranked.map(r => refStatsBlock(r).yellows_per_match)) : () => null;
+  const maxY = Math.max(...ctx.ranked.map(r => Number(refStatsBlock(r).yellows_per_match) || 0), 1);
+  // Árbitros que han pitado recientemente a alguno de los dos equipos.
+  const seenTeams = r => (r.recent_matches || []).filter(m => [m.home, m.away].some(t => t === f.home || t === f.away)).length;
+  const rows = ctx.ranked.map((r, i) => {
+    const st = refStatsBlock(r);
+    const yp = Number(st.yellows_per_match);
+    const hits = seenTeams(r);
+    return `
+      <tr>
+        <td class="ctr"><span class="krank ${i < 3 ? `krank--${i + 1}` : ""}">${i + 1}</span></td>
+        <td><a href="referee.html?${new URLSearchParams({ name: r.name, league: r.league })}">${esc(r.name)}</a>${hits ? ` <span class="kchip" title="Ha pitado ${hits} de sus últimos 10 partidos a alguno de estos equipos">${hits}× estos equipos</span>` : ""}</td>
+        <td class="num muted">${r.season ? st.matches : (r.career_matches ?? st.matches ?? "—")}</td>
+        <td class="${typeof kdxHeatClass === "function" ? kdxHeatClass(rank(yp), "risk") : ""}" data-sort="${yp}"><span class="kcell-bar">${fmt(yp, 2)}${typeof kdxBar === "function" ? kdxBar(yp, maxY, "risk") : ""}</span></td>
+        <td class="num">${fmt(st.reds_per_match, 2)}</td>
+      </tr>`;
+  }).join("");
+  return sectionCard("Árbitros de la liga", `
+    <p class="match-note" style="margin-top:0;">El árbitro de este partido aún no está publicado. Estos son los ${ctx.count} árbitros en activo de la liga, de más a menos tarjetero: el rango posible de tarjetas va de ${fmt(Number(refStatsBlock(ctx.ranked[ctx.ranked.length - 1]).yellows_per_match), 2)} a ${fmt(Number(refStatsBlock(ctx.ranked[0]).yellows_per_match), 2)} amarillas/p (media ${fmt(ctx.yellows, 2)}).</p>
+    <div class="table-wrap ktable-wrap" style="max-height:420px;">
+      <table class="ktable">
+        <thead><tr><th data-nosort class="ctr">#</th><th data-nosort>Árbitro</th><th data-nosort class="num">PJ</th><th data-nosort>Amarillas/p</th><th data-nosort class="num">Rojas/p</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`);
 }
 
 function playerHref(team, player) {

@@ -315,7 +315,7 @@
 </div>
 
 <script src="js/team_names.js?v=20260825a"></script>
-<script src="js/probability.js?v=20260827weighted"></script>
+<script src="js/probability.js?v=20261005a"></script>
 <script>
   const qs = new URLSearchParams(location.search);
   const $ = id => document.getElementById(id);
@@ -375,7 +375,7 @@
     // Probabilidades reales
     const h2hEntry = h2h[homeKey + '|' + awayKey] || h2h[awayKey + '|' + homeKey] || null;
     const probs = (typeof calcProbabilities === 'function')
-      ? calcProbabilities(homeData, awayData, h2hEntry?.summary || null, modelConfig || (typeof DEFAULT_MODEL_CONFIG !== 'undefined' ? DEFAULT_MODEL_CONFIG : null))
+      ? calcProbabilities(homeData, awayData, orientH2HSummary(h2hEntry, homeKey), modelConfig || (typeof DEFAULT_MODEL_CONFIG !== 'undefined' ? DEFAULT_MODEL_CONFIG : null))
       : null;
 
     if (probs) {

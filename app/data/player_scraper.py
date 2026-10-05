@@ -156,8 +156,8 @@ def update_players(leagues: list[str] | None = None) -> bool:
                     return pd.Series(0.0, index=df.index)
                 return pd.to_numeric(df[col], errors="coerce").fillna(0.0)
 
-            mp = _num("playing time_mp")
-            mp = mp.mask(mp <= 0, 1)
+            mp_raw = _num("playing time_mp")
+            mp = mp_raw.mask(mp_raw <= 0, 1)
 
             team = df["team"].apply(normalize_team_name)
             player = df["player"].astype(str).str.strip()
@@ -166,6 +166,8 @@ def update_players(leagues: list[str] | None = None) -> bool:
                 "date": pd.Timestamp.utcnow().date().isoformat(),
                 "team": team,
                 "player": player,
+                # Partidos jugados: sin esto la UI no distingue 1 partido de 30.
+                "mp": mp_raw.astype(int),
                 "min": (_num("playing time_min") / mp).round(2),
                 "gls": (_num("performance_gls") / mp).round(3),
                 "ast": (_num("performance_ast") / mp).round(3),
@@ -190,8 +192,8 @@ def update_players(leagues: list[str] | None = None) -> bool:
                     return pd.Series(0.0, index=df.index)
                 return pd.to_numeric(df[col], errors="coerce").fillna(0.0)
 
-            mp = _num("matches")
-            mp = mp.mask(mp <= 0, 1)
+            mp_raw = _num("matches")
+            mp = mp_raw.mask(mp_raw <= 0, 1)
 
             team = df["team"].apply(normalize_team_name)
             player = df["player"].astype(str).str.strip()
@@ -200,6 +202,7 @@ def update_players(leagues: list[str] | None = None) -> bool:
                 "date": pd.Timestamp.utcnow().date().isoformat(),
                 "team": team,
                 "player": player,
+                "mp": mp_raw.astype(int),
                 "min": (_num("minutes") / mp).round(2),
                 "gls": (_num("goals") / mp).round(3),
                 "ast": (_num("assists") / mp).round(3),
@@ -226,6 +229,12 @@ def update_players(leagues: list[str] | None = None) -> bool:
                 cached_df = pd.read_csv(cached_path, low_memory=False)
             except Exception:
                 return fresh
+            # Las caches antiguas no traen partidos jugados: se toman de Understat.
+            if "mp" in fresh.columns and {"team", "player"} <= set(cached_df.columns):
+                fresh_mp = fresh.set_index(["team", "player"])["mp"]
+                fresh_mp = fresh_mp[~fresh_mp.index.duplicated()]
+                keys = pd.MultiIndex.from_frame(cached_df[["team", "player"]].astype(str))
+                cached_df["mp"] = fresh_mp.reindex(keys).to_numpy()
             existing_teams = set(cached_df["team"].astype(str)) if "team" in cached_df.columns else set()
             new_rows = fresh[~fresh["team"].isin(existing_teams)]
             if new_rows.empty:

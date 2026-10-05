@@ -140,6 +140,17 @@ def _canonical_team(name: str, league_teams: list[str]) -> str:
     return lookup[match[0]] if match else str(name)
 
 
+def _local_date_time(dt_utc: datetime, tz) -> tuple[str, str]:
+    """Fecha/hora local (Madrid). FixtureDownload publica 00:00 UTC como
+    marcador de "hora por confirmar" (p. ej. Bundesliga antes de fijar el
+    horario de la jornada); convertirlo daba un falso "viernes 02:00".
+    En ese caso se conserva la fecha UTC y la hora queda vacía."""
+    if (dt_utc.hour, dt_utc.minute, dt_utc.second) == (0, 0, 0):
+        return dt_utc.strftime("%Y-%m-%d"), ""
+    dt_local = dt_utc.astimezone(tz)
+    return dt_local.strftime("%Y-%m-%d"), dt_local.strftime("%H:%M")
+
+
 def _parse_feed_datetime(value: str) -> datetime | None:
     if not value:
         return None
@@ -183,15 +194,15 @@ def fetch_fixture_download_calendar(
             dt_utc = _parse_feed_datetime(match.get("DateUtc"))
             if not dt_utc:
                 continue
-            dt_local = dt_utc.astimezone(madrid)
+            date_str, time_str = _local_date_time(dt_utc, madrid)
             home_score = match.get("HomeTeamScore")
             away_score = match.get("AwayTeamScore")
             has_score = home_score is not None and away_score is not None
             item = {
                 "league": code,
                 "league_name": leagues.get(code, code),
-                "date": dt_local.strftime("%Y-%m-%d"),
-                "time": dt_local.strftime("%H:%M"),
+                "date": date_str,
+                "time": time_str,
                 "home": _canonical_team(match.get("HomeTeam", ""), league_teams.get(code, [])),
                 "away": _canonical_team(match.get("AwayTeam", ""), league_teams.get(code, [])),
                 "round": match.get("RoundNumber"),

@@ -84,18 +84,29 @@ function renderLeaderboard(box, leagueCode, metric) {
     ? getPlayerTeamsByLeague(leagueCode)
     : Object.keys(APP.players || {});
 
-  const rows = [];
+  const all = [];
   teams.forEach(team => {
     (APP.players[team] || []).forEach(p => {
       if ((Number(p.min) || 0) < 1 && (Number(p[metric]) || 0) === 0) return; // descarta ruido
-      rows.push({ ...p, _team: team });
+      all.push({ ...p, _team: team });
     });
   });
+  // Sin mínimo de muestra, un suplente con 1 partido y 1 gol (1.00/p) lideraba
+  // el ranking por delante de Haaland. Mínimo adaptativo a la temporada.
+  const maxMp = Math.max(0, ...all.map(p => Number(p.mp) || 0));
+  const minMp = maxMp ? Math.max(2, Math.min(5, Math.round(maxMp * 0.4))) : 0;
+  const rows = all.filter(p => !isTinyPlayerSample(p, minMp));
+  const hiddenShort = all.length - rows.length;
 
   rows.sort((a, b) => (Number(b[metric]) || 0) - (Number(a[metric]) || 0)
                    || (Number(b.gls) || 0) - (Number(a.gls) || 0));
 
   const top = rows.slice(0, 60);
+  const showMp = top.some(p => p.mp != null);
+  const heat = {};
+  // Calor contra titulares habituales (≥30 min/p), no contra suplentes.
+  const regulars = rows.filter(p => (Number(p.min) || 0) >= 30);
+  ["gls", "ast", "sh", "sot", "min", "crdy", "fls"].forEach(col => { heat[col] = kdxRanker(regulars.map(p => p[col])); });
   const leagueName = leagueCode === "all"
     ? "todas las ligas con datos"
     : (APP.leagues?.[leagueCode]?.name || leagueCode);
@@ -116,15 +127,17 @@ function renderLeaderboard(box, leagueCode, metric) {
     </div>
     <p class="muted" style="font-size:.78rem;margin-bottom:14px;">
       Promedios por partido de toda la temporada. La fuente no da estadísticas partido a partido, así que no hay ventana de últimos 5/10.
+      ${hiddenShort ? `Se ocultan ${hiddenShort} jugadores con muestra mínima (${minMp ? `menos de ${minMp} partidos` : "1-2 partidos"}). ` : ""}Color: verde = top de la liga; en tarjetas y faltas, rojo = más.
       ${chartHintHtml()}
     </p>
     <div class="table-wrap">
-      <table id="jugLeaderTable">
+      <table id="jugLeaderTable" class="ktable">
         <thead>
           <tr>
-            <th>#</th>
+            <th data-nosort class="ctr">#</th>
             <th>Jugador</th>
-            <th>Equipo</th>
+            <th class="hide-sm">Equipo</th>
+            ${showMp ? '<th class="num" title="Partidos jugados">PJ</th>' : ""}
             ${leaderColHeader("gls", "Goles/p", metric)}
             ${leaderColHeader("ast", "Asist/p", metric)}
             ${leaderColHeader("sh", "Disp/p", metric)}
@@ -137,16 +150,17 @@ function renderLeaderboard(box, leagueCode, metric) {
         <tbody>
           ${top.map((p, i) => `
           <tr data-team="${escAttr(p._team)}" data-player="${escAttr(p.player)}">
-            <td class="muted">${i + 1}</td>
-            <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, p._team) : ""}<b><a href="${playerHref(p._team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a></b></span></td>
-            <td class="muted">${escHtml(teamDisplayName(p._team))}</td>
-            ${leaderCell(p, "gls", metric, 2)}
-            ${leaderCell(p, "ast", metric, 2)}
-            ${leaderCell(p, "sh", metric, 1)}
-            ${leaderCell(p, "sot", metric, 1)}
-            ${metric === "fls" ? `<td class="sorted"><b>${fmt(p.fls, 1)}</b></td>` : ''}
-            ${leaderCell(p, "min", metric, 0)}
-            ${leaderCell(p, "crdy", metric, 2)}
+            <td class="ctr"><span class="krank ${i < 3 ? `krank--${i + 1}` : ""}">${i + 1}</span></td>
+            <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, p._team) : ""}<span class="kent-name"><a href="${playerHref(p._team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a><small class="show-sm-only">${escHtml(teamDisplayName(p._team))}</small></span></span></td>
+            <td class="muted hide-sm"><span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", p._team) : ""}${escHtml(teamDisplayName(p._team))}</span></td>
+            ${showMp ? `<td class="num muted">${p.mp ?? "—"}</td>` : ""}
+            ${leaderCell(p, "gls", metric, 2, heat)}
+            ${leaderCell(p, "ast", metric, 2, heat)}
+            ${leaderCell(p, "sh", metric, 1, heat)}
+            ${leaderCell(p, "sot", metric, 1, heat)}
+            ${metric === "fls" ? leaderCell(p, "fls", metric, 1, heat) : ''}
+            ${leaderCell(p, "min", metric, 0, heat)}
+            ${leaderCell(p, "crdy", metric, 2, heat)}
           </tr>`).join("")}
         </tbody>
       </table>
@@ -183,13 +197,27 @@ function leaderColHeader(col, label, activeMetric) {
   return `<th class="${col === activeMetric ? "sorted" : ""}">${label}</th>`;
 }
 
-function leaderCell(p, col, activeMetric, dec) {
+const JUG_RISK_COLS = new Set(["crdy", "fls"]);
+
+function leaderCell(p, col, activeMetric, dec, heat) {
   const v = p[col];
   const disp = v == null ? "—" : fmt(v, dec);
+  const tone = JUG_RISK_COLS.has(col) ? "risk" : "good";
+  const cls = heat?.[col] && col !== "min" ? kdxHeatClass(heat[col](v), tone) : "";
   if (col === activeMetric) {
-    return `<td class="sorted"><b>${disp}</b>${pctBadge(p[col + "_pct"])}</td>`;
+    return `<td class="sorted ${cls}" data-sort="${v ?? -1}"><b>${disp}</b>${pctBadge(p[col + "_pct"])}</td>`;
   }
-  return `<td>${disp}</td>`;
+  return `<td class="${cls}" data-sort="${v ?? -1}">${disp}</td>`;
+}
+
+// Muestra mínima. Con `mp` (partidos jugados) es directo; las caches antiguas
+// no lo traen, así que se detecta por granularidad: con 1-2 partidos todas
+// las medias son múltiplos exactos de 1 o 1/2 (minutos incluidos).
+function isTinyPlayerSample(p, minMp) {
+  if (p.mp != null) return Number(p.mp) < (minMp || 2);
+  const cols = ["gls", "ast", "sh", "sot", "fls", "crdy", "min"].map(c => Number(p[c])).filter(Number.isFinite);
+  if (!cols.length) return false;
+  return [1, 2].some(n => cols.every(v => Math.abs(v * n - Math.round(v * n)) < 0.011));
 }
 
 // Percentil vs la liga (players.json *_pct, de add_player_percentiles).

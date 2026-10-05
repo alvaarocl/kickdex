@@ -17,7 +17,7 @@ function buildBlockProbabilities(homeTeam, awayTeam, ctx) {
     const homeData = ctx.teamStats[homeTeam] || {};
     const awayData = ctx.teamStats[awayTeam] || {};
     const h2dData = _blkGetH2H(homeTeam, awayTeam, ctx.h2h || {});
-    probs = calcProbabilities(homeData, awayData, h2dData?.summary || null, ctx.modelConfig || null);
+    probs = calcProbabilities(homeData, awayData, orientH2HSummary(h2dData, homeTeam), ctx.modelConfig || null);
   }
   if (!probs) {
     return '<div class="blk-empty"><p class="muted">Sin muestra suficiente para calcular probabilidades.</p></div>';

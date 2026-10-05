@@ -275,7 +275,7 @@ function applyI18n() {
 // ── Routing ─────────────────────────────────────────────────────────────────
 function currentRoute() {
   const hash = String(location.hash || '').replace(/^#/, '').split('?')[0];
-  return ['inicio', 'comparador', 'jugadores', 'arbitros', 'live'].includes(hash) ? hash : 'inicio';
+  return ['inicio', 'comparador', 'jugadores', 'arbitros', 'live', 'clasificacion'].includes(hash) ? hash : 'inicio';
 }
 
 function setRoute(route, replace = false) {
