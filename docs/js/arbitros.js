@@ -16,7 +16,8 @@ let _arbShowAll = false;
 let _arbInit = false;
 
 const ARB_PAGE = 40;
-const ARB_MIN_SAMPLE = 5;         // PJ mínimos para entrar en los "destacados"
+const ARB_MIN_SAMPLE = 5;         // PJ mínimos (máximo) para entrar en los "destacados"
+let _arbMin = ARB_MIN_SAMPLE;     // adaptativo: a principio de temporada nadie tiene 5
 const ARB_ACTIVE_DAYS = 450;      // mismo umbral que REFEREE_ACTIVE_DAYS (build_data.py)
 
 function initArbitros() {
@@ -127,6 +128,9 @@ function renderArbitros() {
     .filter(({ stats }) => stats && Number(stats.matches || 0) > 0)
     .map(row => ({ ...row, pj: refMatches(row.r, row.stats), yp: Number(row.stats.yellows_per_match) || 0 }));
 
+  // Mínimo de muestra según lo avanzada que va la ventana (60% del máximo de PJ, entre 2 y 5).
+  const maxPj = Math.max(0, ...rows.map(x => x.pj));
+  _arbMin = Math.max(2, Math.min(ARB_MIN_SAMPLE, Math.round(maxPj * 0.6)));
   const inactiveCount = rows.filter(x => !x.active).length;
   if (_arbActiveOnly) rows = rows.filter(x => x.active);
   const q = arbNorm(_arbQuery);
@@ -146,7 +150,7 @@ function renderArbitros() {
   const byCode = {};
   rows.forEach(x => (byCode[x.r.league] = byCode[x.r.league] || []).push(x));
   Object.entries(byCode).forEach(([code, list]) => {
-    const pool = list.filter(x => x.pj >= ARB_MIN_SAMPLE);
+    const pool = list.filter(x => x.pj >= _arbMin);
     const src = pool.length >= 3 ? pool : list;
     leagueAvg[code] = {
       y: src.reduce((s, x) => s + x.yp, 0) / src.length,
@@ -155,7 +159,7 @@ function renderArbitros() {
   });
 
   // Muestra corta al final: un 7.00 con 1 partido no es "el más tarjetero".
-  rows.sort((a, b) => (a.pj < ARB_MIN_SAMPLE) - (b.pj < ARB_MIN_SAMPLE) || b.yp - a.yp || b.pj - a.pj);
+  rows.sort((a, b) => (a.pj < _arbMin) - (b.pj < _arbMin) || b.yp - a.yp || b.pj - a.pj);
 
   if (summary) summary.innerHTML = buildRefSummary(rows, leagueAvg);
   if (countEl) {
@@ -165,10 +169,10 @@ function renderArbitros() {
 
   const showFouls = rows.some(({ stats }) => Number(stats.fouls_per_match) > 0);
   const showRecent = rows.some(({ r }) => (r.recent_matches || []).length);
-  const rankY = kdxRanker(rows.filter(x => x.pj >= ARB_MIN_SAMPLE).map(x => x.yp));
-  const rankR = kdxRanker(rows.filter(x => x.pj >= ARB_MIN_SAMPLE).map(x => x.stats.reds_per_match));
+  const rankY = kdxRanker(rows.filter(x => x.pj >= _arbMin).map(x => x.yp));
+  const rankR = kdxRanker(rows.filter(x => x.pj >= _arbMin).map(x => x.stats.reds_per_match));
   const rankF = kdxRanker(rows.map(x => Number(x.stats.fouls_per_match)).filter(v => v > 0));
-  const maxY = Math.max(...rows.filter(x => x.pj >= ARB_MIN_SAMPLE).map(x => x.yp), 1);
+  const maxY = Math.max(...rows.filter(x => x.pj >= _arbMin).map(x => x.yp), 1);
   const visible = _arbShowAll ? rows : rows.slice(0, ARB_PAGE);
   const showLeague = _arbLeague === "all";
 
@@ -201,7 +205,7 @@ function renderArbitros() {
     <span>Perfil: <b style="color:#FF8A98">TARJETERO</b> ≥ +20% sobre su liga · <b style="color:var(--brand)">PERMISIVO</b> ≤ −20%</span>
   </div>
   <div class="disclaimer" style="margin-top:14px;">
-    Fuente: football-data.co.uk (Premier League y Championship, partido a partido) y World Soccer Data (resto de ligas, agregado de temporada). Medias ponderadas por antigüedad: los partidos recientes pesan más. Con menos de ${ARB_MIN_SAMPLE} partidos la muestra es corta y no se colorea.
+    Fuente: football-data.co.uk (Premier League y Championship, partido a partido) y World Soccer Data (resto de ligas, agregado de temporada). Medias ponderadas por antigüedad: los partidos recientes pesan más. Con menos de ${_arbMin} partidos la muestra es corta y no se colorea.
     <span class="jug-sort-hint">⇧+clic en una cabecera para ordenar por varias columnas</span>
   </div>`;
 
@@ -213,7 +217,7 @@ function renderArbitros() {
 }
 
 function buildRefSummary(rows, leagueAvg) {
-  const pool = rows.filter(x => x.pj >= ARB_MIN_SAMPLE);
+  const pool = rows.filter(x => x.pj >= _arbMin);
   const src = pool.length ? pool : rows;
   const strict = src.reduce((a, b) => (b.yp > a.yp ? b : a), src[0]);
   const lenient = src.reduce((a, b) => (b.yp < a.yp ? b : a), src[0]);
@@ -222,7 +226,7 @@ function buildRefSummary(rows, leagueAvg) {
   const link = x => `<a href="${refereeHref(x.r)}">${escHtml(x.r.name)}</a>${_arbLeague === "all" ? ` · ${escHtml(x.r.league)}` : ""}`;
   return `
   <div class="kstat-grid">
-    <div class="kstat kstat--blue"><span>Media amarillas/p</span><strong>${fmt(avgY, 2)}</strong><small>${src.length} árbitros con ≥${ARB_MIN_SAMPLE} PJ</small></div>
+    <div class="kstat kstat--blue"><span>Media amarillas/p</span><strong>${fmt(avgY, 2)}</strong><small>${src.length} árbitros con ≥${_arbMin} PJ</small></div>
     <div class="kstat kstat--red"><span>Más tarjetero</span><strong>${fmt(strict.yp, 2)}</strong><small>${link(strict)}</small></div>
     <div class="kstat kstat--green"><span>Más permisivo</span><strong>${fmt(lenient.yp, 2)}</strong><small>${link(lenient)}</small></div>
     <div class="kstat kstat--gold"><span>Más rojas/p</span><strong>${fmt(reds.stats.reds_per_match, 2)}</strong><small>${link(reds)}</small></div>
@@ -233,13 +237,13 @@ function buildRefereeRow(x, index, o) {
   const { r, stats, pj, yp, active } = x;
   const rp = Number(stats.reds_per_match) || 0;
   const fp = Number(stats.fouls_per_match) > 0 ? Number(stats.fouls_per_match) : null; // 0 = sin dato
-  const short = pj < ARB_MIN_SAMPLE;
+  const short = pj < _arbMin;
   const avgY = o.avg?.y;
   const diff = Number.isFinite(avgY) ? yp - avgY : null;
   const ratio = Number.isFinite(avgY) && avgY > 0 ? yp / avgY : 1;
 
   let profile = `<span class="kchip kchip--mid">NEUTRO</span>`;
-  if (short) profile = `<span class="kchip kchip--off" title="Menos de ${ARB_MIN_SAMPLE} partidos">MUESTRA CORTA</span>`;
+  if (short) profile = `<span class="kchip kchip--off" title="Menos de ${_arbMin} partidos">MUESTRA CORTA</span>`;
   else if (ratio >= 1.2) profile = `<span class="kchip kchip--over">TARJETERO</span>`;
   else if (ratio <= 0.8) profile = `<span class="kchip kchip--under">PERMISIVO</span>`;
 

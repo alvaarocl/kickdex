@@ -222,7 +222,7 @@ function buildLeagueComparison(ref, context) {
         </div>`;
       }).join("")}
     </div>
-    <p class="match-note">La marca blanca es la media de los ${context.count} árbitros de ${esc(REF.leagues[ref.league]?.name || ref.league || "la liga")} con al menos ${REF_MIN_SAMPLE} partidos.</p>
+    <p class="match-note">La marca blanca es la media de los ${context.count} árbitros de ${esc(REF.leagues[ref.league]?.name || ref.league || "la liga")} con al menos ${context.minSample} partidos.</p>
   `);
 }
 
@@ -279,7 +279,7 @@ function buildLeagueRanking(ref, context) {
     </li>`;
   };
   return sectionCard("Ranking de la liga", `
-    <p class="match-note" style="margin-top:0;">Más amarillas por partido · árbitros en activo con ≥${REF_MIN_SAMPLE} PJ.</p>
+    <p class="match-note" style="margin-top:0;">Más amarillas por partido · árbitros en activo con ≥${context.minSample} PJ.</p>
     <ol style="list-style:none;margin:0;padding:0;">
       ${show.map((r, i) => row(r, i)).join("")}
       ${extra.length ? `<li class="muted" style="text-align:center;padding:4px 0;">…</li>${row(extra[0], pos)}` : ""}
@@ -306,7 +306,9 @@ function isActive(r) {
 
 function leagueContext(league) {
   const refs = REF.referees.filter(r => r.league === league && isActive(r));
-  const sample = refs.filter(r => Number((r.season || r.overall || {}).matches || 0) >= REF_MIN_SAMPLE);
+  const maxPj = Math.max(0, ...refs.map(r => Number((r.season || r.overall || {}).matches || 0)));
+  const minSample = Math.max(2, Math.min(REF_MIN_SAMPLE, Math.round(maxPj * 0.6)));
+  const sample = refs.filter(r => Number((r.season || r.overall || {}).matches || 0) >= minSample);
   const pool = sample.length >= 3 ? sample : refs;
   // Faltas = 0 significa "sin dato en la fuente", no un árbitro sin faltas.
   const vals = key => pool.map(r => (r.season || r.overall || {})[key])
@@ -317,6 +319,7 @@ function leagueContext(league) {
   const ranked = pool.slice().sort((a, b) =>
     (Number((b.season || b.overall || {}).yellows_per_match) || 0) - (Number((a.season || a.overall || {}).yellows_per_match) || 0));
   return {
+    minSample,
     count: pool.length,
     yellows: avg("yellows_per_match"), reds: avg("reds_per_match"), fouls: avg("fouls_per_match"),
     maxYellows: max("yellows_per_match"), maxReds: max("reds_per_match"), maxFouls: max("fouls_per_match"),

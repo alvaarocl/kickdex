@@ -36,7 +36,8 @@ def test_data_health_marks_partial_enrichments_without_hiding_calendar():
         {"SP1": {"teams": ["A", "B"], "expected_teams": 2}},
     )
 
-    assert payload["season"] == "2026/27"
+    from app.config import CURRENT_SEASON_LABEL
+    assert payload["season"] == CURRENT_SEASON_LABEL
     assert payload["domains"]["calendar"]["status"] == "fresh"
     assert payload["domains"]["players"]["status"] == "partial"
     assert payload["overall"] == "partial"
@@ -75,3 +76,26 @@ def test_preserved_calendar_is_returned_for_health_checks(tmp_path, monkeypatch)
     })
 
     assert actual == existing
+
+
+def test_player_json_merges_per_team_instead_of_freezing(tmp_path, monkeypatch):
+    # Antes: 96 equipos frescos < 109 viejos (con descendidos) → se descartaba todo.
+    monkeypatch.setattr(build_data, "OUTPUT_DIR", tmp_path)
+    old = {f"T{i}": [{"player": "old"}] for i in range(5)}
+    old["Relegated"] = [{"player": "gone"}]
+    (tmp_path / "players.json").write_text(json.dumps(old), encoding="utf-8")
+    fresh = {"T0": [{"player": "new", "mp": 7}], "T1": [{"player": "new"}]}
+
+    build_data.write_player_json(fresh, "players.json", current_teams={f"T{i}" for i in range(5)})
+    out = json.loads((tmp_path / "players.json").read_text(encoding="utf-8"))
+
+    assert out["T0"] == [{"player": "new", "mp": 7}]   # fresco manda
+    assert out["T4"] == [{"player": "old"}]            # equipo actual sin scrape: se conserva
+    assert "Relegated" not in out                      # fuera de la temporada: se retira
+
+
+def test_player_json_keeps_existing_when_scrape_is_empty(tmp_path, monkeypatch):
+    monkeypatch.setattr(build_data, "OUTPUT_DIR", tmp_path)
+    (tmp_path / "players.json").write_text(json.dumps({"A": []}), encoding="utf-8")
+    build_data.write_player_json({}, "players.json", current_teams={"A"})
+    assert json.loads((tmp_path / "players.json").read_text(encoding="utf-8")) == {"A": []}

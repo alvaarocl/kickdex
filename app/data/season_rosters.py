@@ -12,6 +12,10 @@ from app.config import CURRENT_SEASON_LABEL
 
 
 ROSTER_VERIFIED_AT = "2026-08-24"
+# Temporada a la que corresponden estas listas. Cuando cambie la temporada
+# (config la calcula sola) dejan de aplicarse y el build usa los equipos
+# observados en los datos, en vez de mostrar plantillas del año anterior.
+ROSTER_SEASON = "2026/27"
 
 CURRENT_SEASON_ROSTERS: dict[str, dict[str, object]] = {
     "SP1": {
@@ -115,7 +119,13 @@ CURRENT_SEASON_ROSTERS: dict[str, dict[str, object]] = {
 }
 
 
+def _rosters_current() -> bool:
+    return ROSTER_SEASON == CURRENT_SEASON_LABEL
+
+
 def roster_for(league_code: str) -> dict[str, object] | None:
+    if not _rosters_current():
+        return None
     roster = CURRENT_SEASON_ROSTERS.get(league_code)
     if not roster:
         return None
@@ -127,6 +137,8 @@ def roster_for(league_code: str) -> dict[str, object] | None:
 
 
 def all_roster_teams() -> list[str]:
+    if not _rosters_current():
+        return []
     return sorted({
         team
         for roster in CURRENT_SEASON_ROSTERS.values()

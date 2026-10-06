@@ -178,15 +178,34 @@ def _read_existing_json(filename: str):
         return None
 
 
-def write_player_json(data, filename: str):
-    """Preserve existing player JSON if the fresh scrape has lower coverage."""
+def write_player_json(data, filename: str, current_teams: set | None = None):
+    """Fusiona por equipo: los datos frescos mandan; de lo existente solo se
+    conservan equipos que no vinieron en el scrape y siguen en la temporada.
+
+    Antes, "menos equipos que el fichero anterior" descartaba TODO el scrape:
+    el fichero viejo tenía 109 equipos (con 13 descendidos) y uno completo de
+    las 5 ligas tiene 96, así que players.json se quedó congelado semanas.
+    """
     existing = _read_existing_json(filename)
-    existing_teams = len(existing) if isinstance(existing, dict) else 0
-    new_teams = len(data) if isinstance(data, dict) else 0
-    if existing_teams > 0 and new_teams < existing_teams:
-        print(f"  KEEP {filename}  (nuevo: {new_teams} equipos, existente: {existing_teams})")
+    existing = existing if isinstance(existing, dict) else {}
+    if not isinstance(data, dict) or not data:
+        if existing:
+            print(f"  KEEP {filename}  (scrape vacío, existente: {len(existing)} equipos)")
+            return
+        write_json(data or {}, filename)
         return
-    write_json(data, filename)
+    merged = dict(data)
+    kept = [t for t in existing if t not in data and (current_teams is None or t in current_teams)]
+    for team in kept:
+        merged[team] = existing[team]
+    dropped = len(existing) - len(kept) - len(set(existing) & set(data))
+    print(f"  MERGE {filename}  (frescos: {len(data)}, conservados: {len(kept)}, retirados: {dropped})")
+    write_json(merged, filename)
+
+
+def current_season_teams(leagues: dict | None) -> set | None:
+    teams = {str(t) for info in (leagues or {}).values() for t in (info.get("teams") or [])}
+    return teams or None
 
 
 def write_fixtures_json(data, filename: str = "fixtures.json"):
@@ -445,23 +464,25 @@ def build_team_stats(df, teams: list) -> dict:
 
 def build_h2h(df, teams: list) -> dict:
     result = {}
-    
-    # Find unique pairs that actually played against each other
-    actual_pairs = set()
-    for _, row in df[['HomeTeam', 'AwayTeam']].dropna().drop_duplicates().iterrows():
-        t1, t2 = sorted([row['HomeTeam'], row['AwayTeam']])
-        if t1 in teams and t2 in teams:
-            actual_pairs.add((t1, t2))
-            
-    pairs = list(actual_pairs)
-    print(f"    Calculando {len(pairs)} pares reales (filtrado de {len(teams) * (len(teams)-1) // 2} posibles)...")
 
-    for t1, t2 in pairs:
-        summary = get_weighted_h2h_summary(df, t1, t2)
+    # Agrupar UNA vez por pareja (orden alfabético). Antes cada pareja filtraba
+    # el frame completo (~92k partidos) dos veces → ~70% del tiempo del build.
+    team_set = set(teams)
+    base = df.dropna(subset=["HomeTeam", "AwayTeam"])
+    base = base[base["HomeTeam"].isin(team_set) & base["AwayTeam"].isin(team_set)]
+    lo = base["HomeTeam"].where(base["HomeTeam"] <= base["AwayTeam"], base["AwayTeam"])
+    hi = base["AwayTeam"].where(base["HomeTeam"] <= base["AwayTeam"], base["HomeTeam"])
+    groups = base.groupby([lo, hi], sort=False)
+    print(f"    Calculando {groups.ngroups} pares reales (filtrado de {len(teams) * (len(teams)-1) // 2} posibles)...")
+
+    for (t1, t2), pair_df in groups:
+        if t1 == t2:
+            continue
+        summary = get_weighted_h2h_summary(pair_df, t1, t2)
         if not summary or summary.get("total", 0) < 1:
             continue
 
-        h2h_df = get_h2h(df, t1, t2)
+        h2h_df = get_h2h(pair_df, t1, t2)
         if h2h_df is None or h2h_df.empty:
             continue
 
@@ -1080,8 +1101,10 @@ def _normalise_referee_frame(df, source: str = "csv"):
     if has_incremental_cols:
         out["_Y"] = _num_col("yellow_cards")
         out["_R"] = _num_col("red_cards")
-        out["_F"] = _num_col("fouls")
-        out["_P"] = _num_col("penalties")
+        # Fuentes sin faltas/penaltis (World Soccer Data): NaN, no 0 — así las
+        # medias salen None ("sin dato") en vez de un falso 0.00.
+        out["_F"] = _num_col("fouls") if "fouls" in out.columns else float("nan")
+        out["_P"] = _num_col("penalties") if "penalties" in out.columns else float("nan")
     else:
         for col in ["HY", "AY", "HR", "AR", "HF", "AF"]:
             if col not in out.columns:
@@ -1110,9 +1133,29 @@ def _load_incremental_referees():
         return pd.DataFrame()
 
 
-def _load_referee_season_aggregates():
+def _load_wsd_referee_matches():
+    """Partidos por árbitro de World Soccer Data (todas las ligas, varias
+    temporadas) — ver scripts/update_worldsoccerdata_referee_data.py."""
     import pandas as pd
     from app.config import DATA_DIR
+    path = Path(DATA_DIR) / "referees_wsd_matches.csv"
+    if not path.exists():
+        return pd.DataFrame()
+    try:
+        raw = pd.read_csv(path, low_memory=False)
+    except Exception as e:
+        print(f"  Warning: could not read {path}: {e}")
+        return pd.DataFrame()
+    return _normalise_referee_frame(raw, "worldsoccerdata")
+
+
+def _load_referee_season_aggregates(max_rounds: dict | None = None):
+    """Agregados de temporada (World Soccer Data). Se descartan los que no
+    pueden ser de esta temporada: scrapeados antes de su inicio o con más
+    partidos que jornadas disputadas en la liga (bug 2026-10: salían 19-22 PJ
+    "esta temporada" que eran de la temporada anterior)."""
+    import pandas as pd
+    from app.config import CURRENT_SEASON_START, DATA_DIR
     path = Path(DATA_DIR) / "referees_season.csv"
     if not path.exists():
         return {}
@@ -1134,6 +1177,11 @@ def _load_referee_season_aggregates():
         referee = str(row.get("referee") or "").strip()
         league = str(row.get("league") or "").strip()
         if not referee or not league or matches <= 0:
+            continue
+        updated = str(row.get("updated_at") or "")[:10]
+        if updated and updated < CURRENT_SEASON_START:
+            continue
+        if max_rounds and league in max_rounds and matches > max_rounds[league]:
             continue
 
         yellow_cards = pd.to_numeric(pd.Series([row.get("yellow_cards")]), errors="coerce").fillna(0).iloc[0]
@@ -1362,17 +1410,73 @@ def _referee_is_active(last_match, today=None) -> bool:
     return (today - pd.Timestamp(last_match)).days <= REFEREE_ACTIVE_DAYS
 
 
+def _unified_referee_keys(names_frame) -> dict:
+    """(liga, nombre) -> clave común. Además de "M Oliver" ~ "Michael Oliver"
+    (apellido + inicial), une nombres españoles con apellidos compuestos:
+    "Ortiz Arias" ⊂ "Miguel Angel Ortiz Arias" en la misma liga."""
+    import re
+    import unicodedata
+
+    def tokens(name):
+        text = unicodedata.normalize("NFKD", str(name or ""))
+        text = "".join(c for c in text if not unicodedata.combining(c)).lower()
+        return [t for t in re.sub(r"[^a-z\s]", " ", text).split() if t]
+
+    out = {}
+    if names_frame is None or names_frame.empty:
+        return out
+    for div, grp in names_frame.dropna().drop_duplicates().groupby("Div"):
+        names = sorted(set(grp["Referee"].astype(str)), key=lambda n: -len(tokens(n)))
+        for name in names:
+            toks = tokens(name)
+            target = name
+            if len(toks) >= 2 and all(len(t) > 1 for t in toks):
+                for longer in names:
+                    lt = tokens(longer)
+                    if len(lt) > len(toks) and lt[-len(toks):] == toks:
+                        target = longer
+                        break
+            out[(div, name)] = _referee_key(target)
+    return out
+
+
+def _dedupe_referee_matches(frame):
+    import pandas as pd
+    if frame is None or frame.empty or "Date" not in frame.columns:
+        return frame
+    keyed = frame.assign(_day=pd.to_datetime(frame["Date"], errors="coerce").dt.normalize())
+    return keyed.drop_duplicates(subset=["Div", "_key", "_day"], keep="first").drop(columns="_day")
+
+
+def _league_rounds_played(df_current) -> dict:
+    """Máximo de partidos jugados por un equipo esta temporada, por liga
+    (tope de partidos que puede haber pitado un árbitro en esa liga)."""
+    if df_current is None or df_current.empty or not {"Div", "HomeTeam", "AwayTeam"} <= set(df_current.columns):
+        return {}
+    played = df_current.dropna(subset=["FTHG"]) if "FTHG" in df_current.columns else df_current
+    out = {}
+    for div, grp in played.groupby("Div"):
+        counts = grp["HomeTeam"].value_counts().add(grp["AwayTeam"].value_counts(), fill_value=0)
+        if len(counts):
+            # margen: la fuente del calendario puede ir 1-2 jornadas por detrás
+            out[str(div)] = int(counts.max()) + 2
+    return out
+
+
 def build_referees(df, df_current=None) -> list:
     import pandas as pd
     if "Referee" not in df.columns or "Div" not in df.columns:
         return []
     rdf = _normalise_referee_frame(df, "football-data")
-    incremental = _load_incremental_referees()
-    season_aggregates = _load_referee_season_aggregates()
+    wsd = _load_wsd_referee_matches()
+    sources = [f for f in (_load_incremental_referees(), wsd) if not f.empty]
+    incremental = pd.concat(sources, ignore_index=True) if sources else pd.DataFrame()
+    season_aggregates = _load_referee_season_aggregates(_league_rounds_played(df_current))
     if not incremental.empty:
         rdf = pd.concat([rdf, incremental], ignore_index=True)
     if rdf.empty:
-        return []
+        # Sin partido a partido: aún pueden existir agregados de temporada.
+        rdf = pd.DataFrame(columns=["Date", "Div", "Referee", "_Y", "_R", "_F", "_P", "_source"])
 
     if df_current is not None and not df_current.empty and "Referee" in df_current.columns:
         rdf_curr = _normalise_referee_frame(df_current, "football-data")
@@ -1383,14 +1487,24 @@ def build_referees(df, df_current=None) -> list:
         inc_curr = incremental[incremental["Date"] >= pd.Timestamp(CURRENT_SEASON_START)].copy()
         rdf_curr = pd.concat([rdf_curr, inc_curr], ignore_index=True)
 
-    rdf["_key"] = rdf["Referee"].apply(_referee_key)
+    key_map = _unified_referee_keys(pd.concat(
+        [f[["Div", "Referee"]] for f in (rdf, rdf_curr) if not f.empty and "Referee" in f.columns]
+        + [pd.DataFrame([{"Div": d, "Referee": n} for d, n in season_aggregates])],
+        ignore_index=True,
+    ))
+    rdf["_key"] = [key_map.get((d, n), _referee_key(n)) for d, n in zip(rdf["Div"], rdf["Referee"])]
     if not rdf_curr.empty:
-        rdf_curr["_key"] = rdf_curr["Referee"].apply(_referee_key)
+        rdf_curr["_key"] = [key_map.get((d, n), _referee_key(n)) for d, n in zip(rdf_curr["Div"], rdf_curr["Referee"])]
+    # Un mismo partido puede venir de varias fuentes (football-data + World
+    # Soccer Data en Premier/Championship): se queda la primera (football-data,
+    # que trae faltas).
+    rdf = _dedupe_referee_matches(rdf)
+    rdf_curr = _dedupe_referee_matches(rdf_curr)
 
     # Las claves de los agregados de temporada (worldsoccerdata) se
     # normalizan igual, para que "Anthony Taylor" cruce con "A Taylor".
     season_aggregates_by_key = {
-        (div, _referee_key(name)): stats for (div, name), stats in season_aggregates.items()
+        (div, key_map.get((div, name), _referee_key(name))): stats for (div, name), stats in season_aggregates.items()
     }
 
     results = []
@@ -1417,7 +1531,7 @@ def build_referees(df, df_current=None) -> list:
         if grp_curr.empty:
             season_stats = season_aggregates_by_key.get((div, key))
         else:
-            season_stats = get_weighted_referee_form(grp_curr)
+            season_stats = get_weighted_referee_form(grp_curr, min_matches=1)  # la UI marca <5 como muestra corta
 
         record = {
             "name":    display_name,
@@ -1448,9 +1562,9 @@ def build_referees(df, df_current=None) -> list:
         record["active"] = bool(season_stats) or _referee_is_active(last_seen)
         results.append(record)
 
-    existing_keys = {(r["league"], _referee_key(r["name"])) for r in results}
+    existing_keys = {(r["league"], key_map.get((r["league"], r["name"]), _referee_key(r["name"]))) for r in results}
     for (div, referee), season_stats in season_aggregates.items():
-        if (div, _referee_key(referee)) in existing_keys:
+        if (div, key_map.get((div, referee), _referee_key(referee))) in existing_keys:
             continue
         results.append({
             "name": referee,
@@ -1483,11 +1597,21 @@ def build_referees(df, df_current=None) -> list:
             manual = _json.loads(manual_path.read_text(encoding="utf-8"))
             existing = {(r["name"], r["league"]) for r in results}
             added = 0
+            names_by_league: dict = {}
+            for r in results:
+                names_by_league.setdefault(r["league"], []).append(r["name"])
             for r in manual:
                 key = (r.get("name"), r.get("league"))
-                if key not in existing:
-                    results.append(r)
-                    added += 1
+                league_names = names_by_league.get(r.get("league"), [])
+                probe = _unified_referee_keys(pd.DataFrame(
+                    [{"Div": r.get("league"), "Referee": n} for n in league_names + [r.get("name")]]))
+                manual_key = probe.get((r.get("league"), r.get("name")))
+                if key in existing or any(probe.get((r.get("league"), n)) == manual_key for n in league_names):
+                    continue
+                # Ficha manual estática: si no aparece en ninguna fuente viva
+                # no ha pitado esta temporada → inactivo.
+                results.append({**r, "active": False, "career_matches": r.get("matches"), "recent_matches": []})
+                added += 1
             print(f"     Merged {added} manual referees from {manual_path}")
         except Exception as e:
             print(f"  Warning: could not merge manual referees: {e}")
@@ -1564,8 +1688,8 @@ def main():
     print("\n[6/7] players.json, players_detail.json, referees.json...")
     players_payload = build_players(df_players)
     players_payload = add_player_percentiles(players_payload, leagues)
-    write_player_json(players_payload, "players.json")
-    write_player_json(build_players_detail(df_players), "players_detail.json")
+    write_player_json(players_payload, "players.json", current_season_teams(leagues))
+    write_player_json(build_players_detail(df_players), "players_detail.json", current_season_teams(leagues))
     coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
     write_json(coverage, "player_coverage.json")
     players_for_watch = _read_existing_json("players.json") or players_payload

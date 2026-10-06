@@ -78,7 +78,7 @@ def test_build_referees_uses_season_aggregate_file(tmp_path, monkeypatch):
         "\n".join(
             [
                 "league,league_name,referee,matches,yellow_cards,second_yellow_cards,red_cards,source,updated_at",
-                "SP1,La Liga,Season Ref,10,52,2,1,worldsoccerdata,2026-04-30T00:00:00Z",
+                "SP1,La Liga,Season Ref,10,52,2,1,worldsoccerdata,2026-09-30T00:00:00Z",
             ]
         ),
         encoding="utf-8",
@@ -200,7 +200,10 @@ def test_stale_worldsoccerdata_season_aggregate_never_overrides_real_current_sea
     record = next(r for r in refs if r["league"] == "E0")
 
     assert record["overall"] is not None
-    assert record["season"] is None
+    # Temporada = el único partido real de esta temporada (5 amarillas), nunca
+    # el agregado desfasado de World Soccer Data.
+    assert record["season"]["matches"] == 1
+    assert record["season"]["yellows_per_match"] == 5.0
 
 
 def test_build_referees_exposes_career_total_match_log_and_active_flag(tmp_path, monkeypatch):
@@ -237,3 +240,67 @@ def test_build_referees_exposes_career_total_match_log_and_active_flag(tmp_path,
                       "away_score": 1, "yellows": 3, "reds": 1, "fouls": 22}
     assert oliver["active"] is True
     assert refs["S Bennett"]["active"] is False
+
+
+def test_stale_or_impossible_season_aggregates_are_ignored(tmp_path, monkeypatch):
+    # Bug 2026-10: agregados scrapeados antes del inicio de temporada (o con
+    # más partidos que jornadas jugadas) se mostraban como "esta temporada".
+    data_dir = tmp_path / "datos"
+    data_dir.mkdir()
+    (data_dir / "referees_season.csv").write_text("\n".join([
+        "league,league_name,referee,matches,yellow_cards,second_yellow_cards,red_cards,source,updated_at",
+        "SP1,La Liga,Old Ref,22,90,0,4,worldsoccerdata,2026-07-22T00:00:00Z",
+        "SP1,La Liga,Too Many,19,80,0,2,worldsoccerdata,2026-09-30T00:00:00Z",
+        "SP1,La Liga,Fine Ref,3,12,0,0,worldsoccerdata,2026-09-30T00:00:00Z",
+    ]), encoding="utf-8")
+    monkeypatch.setattr("app.config.DATA_DIR", str(data_dir))
+    current = pd.DataFrame({
+        "Date": pd.to_datetime(["2026-08-20", "2026-08-27", "2026-09-03"]),
+        "Div": ["SP1"] * 3, "HomeTeam": ["A", "A", "B"], "AwayTeam": ["B", "C", "C"],
+        "FTHG": [1, 2, 0], "FTAG": [0, 1, 0], "Referee": [None] * 3,
+    })
+    refs = {r["name"]: r for r in build_referees(current, current)}
+    assert "Old Ref" not in refs
+    assert "Too Many" not in refs           # 19 PJ con solo 2 jornadas jugadas
+    assert refs["Fine Ref"]["season"]["matches"] == 3
+
+
+def test_build_referees_uses_worldsoccerdata_match_log(tmp_path, monkeypatch):
+    data_dir = tmp_path / "datos"
+    data_dir.mkdir()
+    (data_dir / "referees_wsd_matches.csv").write_text("\n".join([
+        "date,league,referee,home,away,home_score,away_score,yellow_cards,red_cards,season,source,updated_at",
+        "2026-09-20,SP1,Log Ref,Atletico Madrid,Real Madrid,2,1,4,1,2026,worldsoccerdata,x",
+        "2026-09-13,SP1,Log Ref,Sevilla,Betis,0,0,6,0,2026,worldsoccerdata,x",
+        "2026-08-30,SP1,Log Ref,Elche,Getafe,1,0,2,0,2026,worldsoccerdata,x",
+        "2026-05-10,SP1,Log Ref,Elche,Getafe,1,0,5,0,2025,worldsoccerdata,x",
+    ]), encoding="utf-8")
+    monkeypatch.setattr("app.config.DATA_DIR", str(data_dir))
+    empty = pd.DataFrame({"Date": pd.to_datetime([]), "Div": [], "Referee": [], "HomeTeam": [], "AwayTeam": []})
+    ref = {r["name"]: r for r in build_referees(empty, empty)}["Log Ref"]
+    assert ref["season"]["matches"] == 3
+    assert ref["career_matches"] == 4
+    assert ref["season"]["fouls_per_match"] is None   # fuente sin faltas: sin dato, no 0
+    assert ref["recent_matches"][0]["yellows"] == 4
+
+
+def test_compound_spanish_names_merge_into_one_referee(tmp_path, monkeypatch):
+    data_dir = tmp_path / "datos"
+    data_dir.mkdir()
+    (data_dir / "referees_matches.csv").write_text("\n".join([
+        "date,league,referee,home,away,home_score,away_score,yellow_cards,red_cards,fouls,penalties",
+        "2025-04-01,SP1,Ortiz Arias,A,B,1,0,5,0,24,0",
+        "2025-04-08,SP1,Ortiz Arias,C,D,1,1,3,1,22,1",
+        "2025-04-15,SP1,Ortiz Arias,E,F,0,0,4,0,20,0",
+    ]), encoding="utf-8")
+    (data_dir / "referees_wsd_matches.csv").write_text("\n".join([
+        "date,league,referee,home,away,home_score,away_score,yellow_cards,red_cards,season,source,updated_at",
+        "2026-09-20,SP1,Miguel Angel Ortiz Arias,G,H,2,1,4,1,2026,worldsoccerdata,x",
+    ]), encoding="utf-8")
+    monkeypatch.setattr("app.config.DATA_DIR", str(data_dir))
+    empty = pd.DataFrame({"Date": pd.to_datetime([]), "Div": [], "Referee": [], "HomeTeam": [], "AwayTeam": []})
+    refs = [r for r in build_referees(empty, empty) if "Arias" in r["name"]]
+    assert len(refs) == 1
+    assert refs[0]["name"] == "Miguel Angel Ortiz Arias"
+    assert refs[0]["career_matches"] == 4
+    assert refs[0]["season"]["matches"] == 1

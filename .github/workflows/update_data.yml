@@ -50,8 +50,12 @@ jobs:
           REFEREE_LEAGUES: ${{ github.event.inputs.referee_leagues || 'SP1 SP2' }}
         run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES" --leagues $REFEREE_LEAGUES
 
-      - name: Update referee season aggregates
-        run: python scripts/update_worldsoccerdata_referee_data.py --sleep 0.25 --timeout 45 --concurrency 2
+      - name: Update referee season aggregates + match logs (World Soccer Data)
+        # Incremental: solo descarga perfiles con partidos nuevos. Con presupuesto
+        # de tiempo; lo pendiente se completa en la siguiente ejecución.
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python scripts/update_worldsoccerdata_referee_data.py --sleep 0.25 --timeout 45 --concurrency 2 --max-seconds 420
 
       - name: Update match odds (The Odds API)
         continue-on-error: true
@@ -108,6 +112,14 @@ jobs:
           git add docs/data/
           test ! -f DATOS/referees_matches.csv || git add DATOS/referees_matches.csv
           test ! -f DATOS/referees_season.csv || git add DATOS/referees_season.csv
+          test ! -f DATOS/referees_wsd_matches.csv || git add DATOS/referees_wsd_matches.csv
           test ! -f DATOS/suspensions_manual.csv || git add DATOS/suspensions_manual.csv
           git diff --staged --quiet || git commit -m "chore: update data $(date -u +%Y-%m-%d) [skip ci]"
+          # El workflow de directo puede haber empujado mientras tanto.
+          git pull --rebase -X theirs origin main || true
           git push
+
+      - name: Data freshness watchdog
+        # Después del commit: nunca bloquea la publicación. Si algún dominio
+        # lleva demasiado sin actualizarse el job falla y GitHub avisa por email.
+        run: python scripts/check_freshness.py

@@ -4,10 +4,20 @@ Un único lugar para cambiar temporadas, ligas y parámetros globales.
 """
 
 # ── Temporada actual ──────────────────────────────────────────────────────────
-CURRENT_SEASON_CODE = "2627"
-CURRENT_SEASON_START = "2026-08-01"   # Cambiar cada año en pretemporada
-CURRENT_SEASON_LABEL = "2026/27"
-CURRENT_SEASON_YEAR = 2026
+# Se calcula sola: a partir del 1 de julio cuenta la temporada nueva (antes
+# había que editar esto a mano cada verano). KICKDEX_SEASON_YEAR la fuerza.
+import os as _os
+from datetime import date as _date
+
+
+def season_year_for(day: _date) -> int:
+    return day.year if day.month >= 7 else day.year - 1
+
+
+CURRENT_SEASON_YEAR = int(_os.getenv("KICKDEX_SEASON_YEAR") or season_year_for(_date.today()))
+CURRENT_SEASON_CODE = f"{str(CURRENT_SEASON_YEAR)[-2:]}{str(CURRENT_SEASON_YEAR + 1)[-2:]}"
+CURRENT_SEASON_START = f"{CURRENT_SEASON_YEAR}-08-01"
+CURRENT_SEASON_LABEL = f"{CURRENT_SEASON_YEAR}/{str(CURRENT_SEASON_YEAR + 1)[-2:]}"
 
 # ── Ligas cubiertas ───────────────────────────────────────────────────────────
 LEAGUES = {
@@ -86,7 +96,7 @@ THE_ODDS_API_SPORT_KEYS = {
 # Used as a free fallback when per-match referee feeds are unavailable.
 WORLDSOCCERDATA_REFEREE_PATHS = {
     "SP1": "spain/laliga",
-    "SP2": "spain/la-liga2",
+    "SP2": "spain/laliga2",
     "E0": "england/premier-league",
     "E1": "england/championship",
     "I1": "italy/seriea",

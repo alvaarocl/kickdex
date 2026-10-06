@@ -382,16 +382,21 @@ def get_weighted_referee_form(
             "weight": weight,
             "yellows": float(r.get("_Y", 0) or 0),
             "reds": float(r.get("_R", 0) or 0),
-            "fouls": float(r.get("_F", 0) or 0),
-            "penalties": float(r.get("_P", 0) or 0),
+            # NaN = la fuente no trae el dato (≠ 0); se excluye de la media.
+            "fouls": float(r.get("_F", 0) if r.get("_F", 0) is not None else float("nan")),
+            "penalties": float(r.get("_P", 0) if r.get("_P", 0) is not None else float("nan")),
         })
 
     total_weight = sum(r["weight"] for r in rows)
     if total_weight <= 0:
         return None
 
-    def _wavg(key: str) -> float:
-        return round(sum(r["weight"] * r[key] for r in rows) / total_weight, 2)
+    def _wavg(key: str) -> float | None:
+        valid = [r for r in rows if r[key] == r[key]]  # descarta NaN
+        weight = sum(r["weight"] for r in valid)
+        if not valid or weight <= 0:
+            return None
+        return round(sum(r["weight"] * r[key] for r in valid) / weight, 2)
 
     return {
         "matches": len(rows),

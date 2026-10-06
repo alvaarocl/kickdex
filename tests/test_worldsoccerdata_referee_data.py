@@ -1,6 +1,8 @@
 import requests
 
-from scripts.update_worldsoccerdata_referee_data import _parse_cards, _parse_referee_links, _request, fetch_league
+from scripts.update_worldsoccerdata_referee_data import (
+    _parse_cards, _parse_match_log, _parse_referee_links, _request, fetch_league,
+)
 
 
 def test_parse_worldsoccerdata_referee_links():
@@ -85,7 +87,8 @@ def test_fetch_league_combines_list_and_profile(monkeypatch):
 
     monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data._request", fake_request)
 
-    rows = fetch_league("SP1", "spain/laliga", season=2025, timeout=1, sleep_seconds=0, concurrency=1)
+    rows, matches, refreshed = fetch_league("SP1", "spain/laliga", season=2025, timeout=1, sleep_seconds=0, concurrency=1)
+    assert refreshed == {"Test Ref"}
 
     assert rows == [
         {
@@ -123,7 +126,7 @@ def test_request_falls_back_to_reader_on_forbidden(monkeypatch):
     monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data.requests.get", fake_get)
 
     assert _request("https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025", timeout=1) == "reader ok"
-    assert calls[1] == "https://r.jina.ai/http://https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025"
+    assert calls[1] == "https://r.jina.ai/https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025"
 
 
 def test_request_retries_reader_rate_limit(monkeypatch):
@@ -151,3 +154,78 @@ def test_request_retries_reader_rate_limit(monkeypatch):
 
     assert _request("https://www.worldsoccerdata.com/stats/spain/laliga/referees/2025", timeout=1) == "reader ok"
     assert len(calls) == 3
+
+
+def test_request_falls_back_to_reader_on_mod_security_406(monkeypatch):
+    # Desde 2026-08 el WAF responde 406 a los runners; antes eso abortaba la liga.
+    calls = []
+
+    class FakeResponse:
+        def __init__(self, status_code, text):
+            self.status_code = status_code
+            self.text = text
+
+        def raise_for_status(self):
+            if self.status_code >= 400:
+                raise requests.HTTPError(f"{self.status_code} error")
+
+    def fake_get(url, headers, timeout):
+        calls.append(url)
+        return FakeResponse(406, "") if len(calls) == 1 else FakeResponse(200, "reader ok")
+
+    monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data.requests.get", fake_get)
+    assert _request("https://www.worldsoccerdata.com/x", timeout=1) == "reader ok"
+
+
+PROFILE_MD = """
+#### Cards (avg)
+
+4.2 YC · 0.6 RC
+
+Totals: 9Y / 1R
+
+### Matches 2026-2027
+
+| Date | Match | FT (HT) | BTTS | Over 2.5 | Over 1.5 HT | HT/FT | Cards |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 20 Sep 2026 | [Atletico Madrid vs Real Madrid](http://www.worldsoccerdata.com/m/1) | 2-1 (0-0) | ✓ | ✓ | – | X/1 | 4 1 |
+| 17 Sep 2026 | [Malaga vs Villarreal](http://www.worldsoccerdata.com/m/2) | 1-3 (1-2) | ✓ | ✓ | ✓ | 2/2 | 5 0 |
+
+| [Atletico Madrid](http://www.worldsoccerdata.com/t/1) | 1 |
+
+### Matches 2025-2026
+
+| 17 May 2026 | [Osasuna vs Espanyol](http://www.worldsoccerdata.com/m/3) | 1-2 (0-1) | ✓ | ✓ | – | 2/2 | 3 0 |
+"""
+
+
+def test_parse_match_log_reads_every_season_table():
+    log = _parse_match_log(PROFILE_MD)
+    assert [m["season"] for m in log] == [2026, 2026, 2025]
+    assert log[0] == {"date": "2026-09-20", "home": "Atletico Madrid", "away": "Real Madrid",
+                      "home_score": 2, "away_score": 1, "yellow_cards": 4, "red_cards": 1, "season": 2026}
+
+
+def test_fetch_league_is_incremental(monkeypatch):
+    list_md = (
+        "| [Same Ref](https://www.worldsoccerdata.com/stats/spain/laliga/referees/same) | 2 | 4.0 |\n"
+        "| [New Ref](https://www.worldsoccerdata.com/stats/spain/laliga/referees/new) | 2 | 4.0 |\n"
+    )
+    fetched = []
+
+    def fake_request(url, timeout):
+        fetched.append(url)
+        return PROFILE_MD if "/referees/new" in url or "/referees/same" in url else list_md
+
+    monkeypatch.setattr("scripts.update_worldsoccerdata_referee_data._request", fake_request)
+    prev = {"Same Ref": {"league": "SP1", "referee": "Same Ref", "matches": "2", "yellow_cards": "8"}}
+    rows, matches, refreshed = fetch_league(
+        "SP1", "spain/laliga", season=2026, timeout=1, sleep_seconds=0, concurrency=1,
+        existing_season=prev, existing_logged={"Same Ref": 2},
+    )
+    assert refreshed == {"New Ref"}
+    assert not any("/referees/same" in u for u in fetched)  # no se vuelve a descargar
+    new = next(r for r in rows if r["referee"] == "New Ref")
+    # Totales desde el registro partido a partido de esta temporada (4+5 / 1+0).
+    assert (new["yellow_cards"], new["red_cards"]) == (9, 1)
+    assert len(matches) == 3
