@@ -7,112 +7,114 @@
   </picture>
 </a>
 
-### La terminal de inteligencia futbolística
+### The football intelligence terminal
 
-Calendario, previas, comparador, jugadores, árbitros, clasificación y directo de **11 ligas europeas**.<br>
-Datos partido a partido, actualizados solos cada día. **Sin login. Sin anuncios. Sin picks.**
+Fixtures, previews, team comparison, players, referees, standings and live scores for **11 European leagues**.<br>
+Match-by-match data, refreshed automatically every day. **No login. No ads. No picks.**
 
 [![Web](https://img.shields.io/badge/web-kickdex.alvarocarpintero.com-2EE6A6?style=flat-square&labelColor=05070D)](https://kickdex.alvarocarpintero.com)
-[![Update Data](https://img.shields.io/github/actions/workflow/status/alvaarocl/kickdex/update_data.yml?branch=main&style=flat-square&label=datos&labelColor=05070D)](https://github.com/alvaarocl/kickdex/actions/workflows/update_data.yml)
+[![Update Data](https://img.shields.io/github/actions/workflow/status/alvaarocl/kickdex/update_data.yml?branch=main&style=flat-square&label=data&labelColor=05070D)](https://github.com/alvaarocl/kickdex/actions/workflows/update_data.yml)
 [![Python](https://img.shields.io/badge/python-3.11-5BD6FF?style=flat-square&labelColor=05070D)](requirements.txt)
-[![Stack](https://img.shields.io/badge/stack-est%C3%A1tico%20%C2%B7%20GitHub%20Pages-F5B93C?style=flat-square&labelColor=05070D)](#arquitectura)
-[![Coste](https://img.shields.io/badge/coste-0%20%E2%82%AC-2EE6A6?style=flat-square&labelColor=05070D)](#fuentes-de-datos)
+[![Stack](https://img.shields.io/badge/stack-static%20%C2%B7%20GitHub%20Pages-F5B93C?style=flat-square&labelColor=05070D)](#architecture)
+[![Cost](https://img.shields.io/badge/cost-%E2%82%AC0-2EE6A6?style=flat-square&labelColor=05070D)](#data-sources)
 
-[**Abrir la app →**](https://kickdex.alvarocarpintero.com) &nbsp;·&nbsp; [Metodología](https://kickdex.alvarocarpintero.com/methodology.html) &nbsp;·&nbsp; [Cobertura](https://kickdex.alvarocarpintero.com/coverage.html)
+[**Open the app →**](https://kickdex.alvarocarpintero.com) &nbsp;·&nbsp; [Methodology](https://kickdex.alvarocarpintero.com/methodology.html) &nbsp;·&nbsp; [Coverage](https://kickdex.alvarocarpintero.com/coverage.html)
 
 <br>
 
-<img src=".github/assets/inicio.jpg" alt="KICKDEX — calendario con radar de la jornada" width="100%">
+<img src=".github/assets/inicio.jpg" alt="KICKDEX — fixtures with the matchday radar" width="100%">
+
+<sub>The interface is in Spanish, with an English language toggle.</sub>
 
 </div>
 
 ---
 
-## Índice
+## Contents
 
-- [Qué hace](#qué-hace)
-- [Cobertura](#cobertura)
-- [Arquitectura](#arquitectura)
-- [Automatización](#automatización)
-- [Fuentes de datos](#fuentes-de-datos)
-- [El modelo](#el-modelo)
-- [Desarrollo local](#desarrollo-local)
-- [Estructura del repositorio](#estructura-del-repositorio)
-- [Límites conocidos](#límites-conocidos)
-- [Uso responsable y legal](#uso-responsable-y-legal)
+- [Features](#features)
+- [Coverage](#coverage)
+- [Architecture](#architecture)
+- [Automation](#automation)
+- [Data sources](#data-sources)
+- [The model](#the-model)
+- [Local development](#local-development)
+- [Repository layout](#repository-layout)
+- [Known limitations](#known-limitations)
+- [Responsible use & legal](#responsible-use--legal)
 
 ---
 
-## Qué hace
+## Features
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-**Ficha de partido**<br>
-Previa con probabilidades 1X2 (Poisson + Dixon-Coles), marcadores más probables, líneas Over/Under, duelo de 12 métricas, frecuencias de apuesta con muestra visible `(n/N)` y alertas. Pestañas de H2H, forma, árbitro y jugadores.
+**Match page**<br>
+Preview with 1X2 probabilities (Poisson + Dixon-Coles), most likely scorelines, Over/Under lines, a 12-metric stat duel, betting-market frequencies with a visible sample `(n/N)`, and alerts. Tabs for H2H, form, referee and players.
 
 </td>
 <td width="50%" valign="top">
 
-**Comparador**<br>
-Dos equipos cualquiera frente a frente: estadísticas local/visitante ponderadas por antigüedad, radar, modelo, H2H completo y jugadores. Exportable como informe.
+**Team comparison**<br>
+Any two teams head to head: recency-weighted home/away stats, radar chart, model output, full H2H and players. Exportable as a report.
 
 </td>
 </tr>
 <tr>
-<td><img src=".github/assets/ficha-partido.jpg" alt="Ficha de partido"></td>
-<td><img src=".github/assets/comparador.jpg" alt="Comparador"></td>
-</tr>
-<tr>
-<td valign="top">
-
-**Jugadores: faltas, tarjetas y ataque**<br>
-Faltas cometidas y recibidas, amarillas, tiros y goles por jugador, con ventana *Temporada / últimos 5, 10, 15* y frecuencias `1+ / 2+ / 3+`. Ranking por liga en medias, totales o últimos 5.
-
-</td>
-<td valign="top">
-
-**Árbitros**<br>
-Perfil disciplinario de cada árbitro en activo: amarillas, rojas y faltas por partido comparadas con su liga, sus últimos partidos y el ranking de la liga.
-
-</td>
-</tr>
-<tr>
-<td><img src=".github/assets/jugadores-faltas.jpg" alt="Faltas por jugador"></td>
-<td><img src=".github/assets/arbitros.jpg" alt="Árbitros"></td>
+<td><img src=".github/assets/ficha-partido.jpg" alt="Match page"></td>
+<td><img src=".github/assets/comparador.jpg" alt="Team comparison"></td>
 </tr>
 <tr>
 <td valign="top">
 
-**Clasificación**<br>
-Tabla y goleadores de las 11 ligas, con zonas (Champions, ascenso, playoff, descenso), forma de los últimos 5 y ataque/defensa coloreados.
+**Players: fouls, cards and attack**<br>
+Fouls committed and suffered, yellow cards, shots and goals per player, with a *Season / last 5, 10, 15* window and `1+ / 2+ / 3+` hit rates. League leaderboards by per-match average, season totals or last 5.
 
 </td>
 <td valign="top">
 
-**Directo**<br>
-Marcadores casi en tiempo real (< 1 min) con minuto, goleadores y expulsiones. Si no hay partidos, muestra los próximos y los últimos resultados.
+**Referees**<br>
+Disciplinary profile of every active referee: yellows, reds and fouls per match compared with their league, their latest matches and the league ranking.
 
 </td>
 </tr>
 <tr>
-<td><img src=".github/assets/clasificacion.jpg" alt="Clasificación"></td>
-<td><img src=".github/assets/directo.jpg" alt="Directo"></td>
+<td><img src=".github/assets/jugadores-faltas.jpg" alt="Player fouls"></td>
+<td><img src=".github/assets/arbitros.jpg" alt="Referees"></td>
+</tr>
+<tr>
+<td valign="top">
+
+**Standings**<br>
+Tables and top scorers for all 11 leagues, with zones (Champions League, promotion, play-offs, relegation), last-5 form and heat-coloured attack/defence.
+
+</td>
+<td valign="top">
+
+**Live**<br>
+Near real-time scores (< 1 min delay) with match minute, scorers and red cards. When nothing is on, it shows the next fixtures and the latest results.
+
+</td>
+</tr>
+<tr>
+<td><img src=".github/assets/clasificacion.jpg" alt="Standings"></td>
+<td><img src=".github/assets/directo.jpg" alt="Live scores"></td>
 </tr>
 </table>
 
 <details>
-<summary><b>Ficha de árbitro</b></summary>
+<summary><b>Referee profile</b></summary>
 <br>
-<img src=".github/assets/arbitro.jpg" alt="Ficha de árbitro" width="100%">
+<img src=".github/assets/arbitro.jpg" alt="Referee profile" width="100%">
 </details>
 
 ---
 
-## Cobertura
+## Coverage
 
-| Liga | Calendario | Estadísticas de equipo | Jugadores | Árbitros | Clasificación |
+| League | Fixtures | Team stats | Players | Referees | Standings |
 |---|:-:|:-:|:-:|:-:|:-:|
 | 🇪🇸 LaLiga · Segunda División | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League · Championship | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -121,26 +123,26 @@ Marcadores casi en tiempo real (< 1 min) con minuto, goleadores y expulsiones. S
 | 🇫🇷 Ligue 1 · Ligue 2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 🇳🇱 Eredivisie | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-**~93.000 partidos** históricos desde 2004/05 · **216 equipos** · **~4.900 jugadores** con registro partido a partido · árbitros en activo de las 11 ligas. El detalle vivo está en la [página de cobertura](https://kickdex.alvarocarpintero.com/coverage.html).
+**~93,000** historical matches since 2004/05 · **216 teams** · **~4,900 players** with match-by-match records · active referees in all 11 leagues. Live figures are on the [coverage page](https://kickdex.alvarocarpintero.com/coverage.html).
 
 ---
 
-## Arquitectura
+## Architecture
 
-KICKDEX es **estático**: la web es HTML/CSS/JS sin frameworks servido por GitHub Pages, y los datos son JSON generados por un pipeline batch en GitHub Actions. No hay servidor ni base de datos en producción.
+KICKDEX is **static**: the site is framework-free HTML/CSS/JS served by GitHub Pages, and the data is JSON produced by a batch pipeline on GitHub Actions. There is no server or database in production.
 
 ```mermaid
 flowchart LR
-    subgraph Fuentes
-        FD[football-data.co.uk<br/>resultados + cuotas]
-        FX[FixtureDownload<br/>calendario]
-        ESPN[ESPN<br/>jugadores · árbitros · próximos · tablas]
-        FDO[football-data.org<br/>clasificación]
-        ODDS[The Odds API<br/>cuotas]
+    subgraph Sources
+        FD[football-data.co.uk<br/>results + odds]
+        FX[FixtureDownload<br/>fixtures]
+        ESPN[ESPN<br/>players · referees · upcoming · tables]
+        FDO[football-data.org<br/>standings]
+        ODDS[The Odds API<br/>odds]
     end
-    subgraph "GitHub Actions (2×/día)"
+    subgraph "GitHub Actions (2×/day)"
         SYNC[update_espn_data.py]
-        BUILD[build_data.py<br/>modelo · H2H · tendencias · edges]
+        BUILD[build_data.py<br/>model · H2H · trends · edges]
         WATCH[check_freshness.py]
     end
     FD & FX & FDO & ODDS --> BUILD
@@ -148,147 +150,147 @@ flowchart LR
     BUILD --> JSON[(docs/data/*.json)]
     JSON --> WATCH
     JSON --> PAGES[GitHub Pages<br/>kickdex.alvarocarpintero.com]
-    ESPN -. directo, desde el navegador .-> PAGES
+    ESPN -. live, from the browser .-> PAGES
 ```
 
-- **Frontend** (`docs/`): JavaScript vanilla modular. Los bloques de análisis (`docs/js/blocks/`) se comparten entre la ficha de partido y el Comparador.
-- **Pipeline** (`app/`, `scripts/`): Python + pandas. Descarga, normaliza nombres de equipo, calcula y escribe los JSON con contratos estables.
-- **Directo**: el navegador consulta el marcador público de ESPN cada 30 s mientras la pestaña está abierta; si falla, cae al JSON con retraso.
+- **Frontend** (`docs/`): modular vanilla JavaScript. The analysis blocks (`docs/js/blocks/`) are shared between the match page and the team comparison.
+- **Pipeline** (`app/`, `scripts/`): Python + pandas. Downloads, normalises team names, computes and writes JSON with stable contracts.
+- **Live**: the browser polls ESPN's public scoreboard every 30 s while the tab is open; if that fails it falls back to a delayed JSON snapshot.
 
 ---
 
-## Automatización
+## Automation
 
-Todo se actualiza solo; no hay que tocar nada entre temporadas.
+Everything refreshes itself — nothing to touch between seasons.
 
-| Workflow | Cuándo | Qué hace |
+| Workflow | When | What it does |
 |---|---|---|
-| [`update_data.yml`](.github/workflows/update_data.yml) | 06:10 y 13:10 UTC | Sincroniza ESPN, cuotas, clasificación y regenera todos los JSON (~4 min). Termina con un vigilante de frescura que **falla (y avisa por email)** si algún dato se queda viejo. |
-| [`update_standings.yml`](.github/workflows/update_standings.yml) | 05:20 UTC | Clasificación y goleadores. |
-| [`update_live_scores.yml`](.github/workflows/update_live_scores.yml) | periódico | Copia de respaldo del directo. |
-| [`update_player_photos.yml`](.github/workflows/update_player_photos.yml) | lunes | Fotos de jugadores (Wikidata / Wikimedia Commons). |
+| [`update_data.yml`](.github/workflows/update_data.yml) | 06:10 and 13:10 UTC | Syncs ESPN, odds and standings, then rebuilds every JSON (~4 min). Ends with a freshness watchdog that **fails (and emails you)** if any dataset goes stale. |
+| [`update_standings.yml`](.github/workflows/update_standings.yml) | 05:20 UTC | Standings and top scorers. |
+| [`update_live_scores.yml`](.github/workflows/update_live_scores.yml) | periodic | Backup snapshot for the live tab. |
+| [`update_player_photos.yml`](.github/workflows/update_player_photos.yml) | Mondays | Player photos (Wikidata / Wikimedia Commons). |
 
-- La **temporada se calcula sola** (cambia el 1 de julio); se puede forzar con `KICKDEX_SEASON_YEAR`.
-- La sincronización con ESPN es **incremental** (solo partidos nuevos) y con presupuesto de tiempo.
-- Los CSV históricos se cachean entre ejecuciones.
+- The **season is computed automatically** (it rolls over on 1 July); override with `KICKDEX_SEASON_YEAR`.
+- The ESPN sync is **incremental** (new matches only) and runs within a time budget.
+- Historical CSVs are cached between runs.
 
 ---
 
-## Fuentes de datos
+## Data sources
 
-| Fuente | Uso |
+| Source | Used for |
 |---|---|
-| [football-data.co.uk](https://www.football-data.co.uk) | Resultados, estadísticas de equipo y cuotas de cierre desde 2004/05. |
-| [FixtureDownload](https://fixturedownload.com) | Calendario completo de 7 ligas. |
-| ESPN (marcador público) | Estadísticas de jugador y árbitro por partido, próximos partidos de las segundas divisiones, clasificaciones y directo. API no oficial. |
-| [football-data.org](https://www.football-data.org) | Clasificación y goleadores (plan gratuito). |
-| [The Odds API](https://the-odds-api.com) | Cuotas de mercado para el cálculo de edge (5 grandes ligas). |
-| World Soccer Data | Histórico arbitral de temporadas anteriores. |
-| [football-logos](https://github.com/JoseArroyave/football-logos) · Wikidata | Escudos (MIT) y fotos de jugador. Las marcas pertenecen a sus clubes. |
+| [football-data.co.uk](https://www.football-data.co.uk) | Results, team stats and closing odds since 2004/05. |
+| [FixtureDownload](https://fixturedownload.com) | Full season fixtures for 7 leagues. |
+| ESPN (public scoreboard) | Per-match player and referee stats, upcoming fixtures for the second divisions, standings and live scores. Unofficial API. |
+| [football-data.org](https://www.football-data.org) | Standings and top scorers (free tier). |
+| [The Odds API](https://the-odds-api.com) | Market odds for edge estimates (top 5 leagues). |
+| World Soccer Data | Referee history from previous seasons. |
+| [football-logos](https://github.com/JoseArroyave/football-logos) · Wikidata | Club crests (MIT) and player photos. Trademarks belong to their clubs. |
 
 ---
 
-## El modelo
+## The model
 
-- **Forma ponderada por antigüedad**: cada partido pesa `0.5^(días / 270)`; lo reciente cuenta más sin descartar el histórico.
-- **Probabilidades**: Poisson bivariante con corrección **Dixon-Coles**, mezclado con el H2H (orientado local/visitante).
-- **Edge**: probabilidad del modelo frente a la probabilidad implícita de la cuota (`1 / cuota`). Se publica con su backtest.
-- **Frecuencias con muestra visible**: toda tasa se muestra como `n/N`, nunca como porcentaje suelto.
+- **Recency-weighted form**: each match weighs `0.5^(days / 270)`, so recent games count more without discarding history.
+- **Probabilities**: bivariate Poisson with the **Dixon-Coles** correction, blended with the head-to-head record (oriented home/away).
+- **Edge**: model probability versus the odds-implied probability (`1 / odds`), published together with its backtest.
+- **Visible sample sizes**: every rate is shown as `n/N`, never as a bare percentage.
 
-Detalle completo en la [metodología](https://kickdex.alvarocarpintero.com/methodology.html).
+Full details in the [methodology](https://kickdex.alvarocarpintero.com/methodology.html) (Spanish).
 
 ---
 
-## Desarrollo local
+## Local development
 
 ```bash
-# Web (sin dependencias)
+# Website (no dependencies)
 cd docs && python -m http.server 8080        # http://localhost:8080
 
 # Pipeline
 pip install -r requirements.txt
-python scripts/update_espn_data.py           # jugadores, árbitros, próximos, tablas
-python scripts/build_data.py                 # genera docs/data/*.json
+python scripts/update_espn_data.py           # players, referees, upcoming fixtures, tables
+python scripts/build_data.py                 # writes docs/data/*.json
 
-# Iterar rápido sin descargas
+# Fast iteration without downloads
 KICKDEX_SKIP_DOWNLOADS=1 KICKDEX_SKIP_FIXTURE_DOWNLOADS=1 python scripts/build_data.py
 
-# Tests y validación
+# Tests and validation
 python -m pytest tests -q
 python scripts/validate_static_data.py
 python scripts/check_freshness.py
 ```
 
 <details>
-<summary><b>Variables de entorno</b></summary>
+<summary><b>Environment variables</b></summary>
 
-| Variable | Para qué |
+| Variable | Purpose |
 |---|---|
-| `FOOTBALL_DATA_API_KEY` | Clasificación y goleadores de football-data.org (sin ella se usa ESPN). |
-| `THE_ODDS_API_KEY` | Cuotas para edges en próximos partidos. |
-| `KICKDEX_SEASON_YEAR` | Forzar una temporada (por defecto se calcula por fecha). |
-| `KICKDEX_SKIP_DOWNLOADS` / `KICKDEX_SKIP_FIXTURE_DOWNLOADS` | Reutilizar los CSV locales. |
-| `KICKDEX_SKIP_HEAVY_REBUILD` | Conservar H2H, tendencias y edges ya generados. |
+| `FOOTBALL_DATA_API_KEY` | Standings and top scorers from football-data.org (ESPN is used without it). |
+| `THE_ODDS_API_KEY` | Odds for edges on upcoming fixtures. |
+| `KICKDEX_SEASON_YEAR` | Force a season (computed from the date by default). |
+| `KICKDEX_SKIP_DOWNLOADS` / `KICKDEX_SKIP_FIXTURE_DOWNLOADS` | Reuse local CSVs. |
+| `KICKDEX_SKIP_HEAVY_REBUILD` | Keep previously generated H2H, trends and edges. |
 
 </details>
 
 <details>
-<summary><b>Otras utilidades</b></summary>
+<summary><b>Other utilities</b></summary>
 
-- **Imágenes Open Graph por partido**: `python -m app.og --home "Real Madrid" --away "Barcelona" --league "LA LIGA"` → `docs/og/`.
-- **Informe de partido**: `docs/report.html?homeKey=…&awayKey=…` genera un informe exportable a PDF en el navegador.
-- **Histórico arbitral (World Soccer Data)**: bloquea las IPs de GitHub; se refresca desde local con `python scripts/update_worldsoccerdata_referee_data.py`.
+- **Per-match Open Graph images**: `python -m app.og --home "Real Madrid" --away "Barcelona" --league "LA LIGA"` → `docs/og/`.
+- **Match report**: `docs/report.html?homeKey=…&awayKey=…` builds a report exportable to PDF in the browser.
+- **Referee history (World Soccer Data)**: blocks GitHub's IP ranges, so it is refreshed locally with `python scripts/update_worldsoccerdata_referee_data.py`.
 
 </details>
 
 ---
 
-## Estructura del repositorio
+## Repository layout
 
 ```
 kickdex/
-├── docs/                      Producto público (GitHub Pages)
-│   ├── index.html             App: Inicio, Comparador, Jugadores, Árbitros, Directo, Clasificación
+├── docs/                      Public product (GitHub Pages)
+│   ├── index.html             App: Home, Compare, Players, Referees, Live, Standings
 │   ├── match.html · player.html · referee.html · report.html
-│   ├── methodology.html · coverage.html · páginas legales
-│   ├── js/                    Módulos vanilla + js/blocks/ (bloques compartidos)
-│   ├── css/app.css            Sistema visual (tokens de marca, tablas con calor)
-│   ├── brand/                 Logos y guía de marca
-│   └── data/                  JSON generados — no editar a mano
+│   ├── methodology.html · coverage.html · legal pages
+│   ├── js/                    Vanilla modules + js/blocks/ (shared blocks)
+│   ├── css/app.css            Design system (brand tokens, heat-coloured tables)
+│   ├── brand/                 Logos and brand guide
+│   └── data/                  Generated JSON — do not edit by hand
 ├── app/
-│   ├── data/                  Carga, normalización de equipos, calendario, activos
-│   └── engine/                Probabilidad, métricas ponderadas, alertas, edge
-├── scripts/                   Pipeline y sincronizaciones (update_*.py, build_data.py)
+│   ├── data/                  Loading, team-name normalisation, fixtures, assets
+│   └── engine/                Probability, weighted metrics, alerts, edge
+├── scripts/                   Pipeline and syncs (update_*.py, build_data.py)
 ├── tests/                     pytest (130 tests)
-├── DATOS/                     CSV de origen y registros partido a partido versionados
-├── worker/                    Worker de Cloudflare para directo (inactivo)
-├── docs_proyecto/             Contratos de datos, planes y documentación histórica
-└── .github/                   Workflows y capturas del README
+├── DATOS/                     Source CSVs and versioned match-by-match logs
+├── worker/                    Cloudflare Worker for live data (inactive)
+├── docs_proyecto/             Data contracts, plans and historical docs
+└── .github/                   Workflows and README screenshots
 ```
 
 ---
 
-## Límites conocidos
+## Known limitations
 
-KICKDEX prefiere decir “sin dato” a inventarlo:
+KICKDEX would rather say "no data" than make it up:
 
-- Los **minutos de jugador son estimados** (alineación, cambios y expulsiones, sin añadido).
-- Las **cuotas** son de referencia, no una oferta; el edge es una **estimación**.
-- El **directo** depende de una API pública no oficial; si falla, se muestra la copia con retraso.
-- La **designación arbitral** previa al partido solo aparece si la fuente la publica antes.
-- Algunas estadísticas de equipo no existen para clubes recién ascendidos desde categorías sin datos; se muestran como “—”.
+- **Player minutes are estimated** (line-ups, substitutions and red cards; stoppage time not included).
+- **Odds** are a reference, not an offer; the edge is an **estimate**.
+- **Live scores** rely on an unofficial public API; if it fails, the delayed snapshot is shown.
+- **Referee appointments** only appear before kick-off if the source publishes them.
+- Some team stats don't exist for clubs promoted from tiers without data; they are shown as “—”.
 
 ---
 
-## Uso responsable y legal
+## Responsible use & legal
 
 > **RISK NOTICE:** edges are estimates, not guarantees. Play responsibly.
 
-KICKDEX ofrece análisis histórico y estadístico **con fines informativos**; no es asesoramiento de apuestas ni garantiza resultados. +18. Si el juego deja de ser un entretenimiento, busca ayuda en [jugarbien.es](https://www.jugarbien.es).
+KICKDEX provides historical and statistical analysis **for informational purposes only**; it is not betting advice and does not guarantee outcomes. 18+ only. If gambling stops being fun, get help at [jugarbien.es](https://www.jugarbien.es) (Spain) or [begambleaware.org](https://www.begambleaware.org).
 
-[Aviso legal](https://kickdex.alvarocarpintero.com/aviso-legal.html) · [Privacidad](https://kickdex.alvarocarpintero.com/privacidad.html) · [Cookies](https://kickdex.alvarocarpintero.com/cookies.html) · [Términos](https://kickdex.alvarocarpintero.com/terminos.html)
+[Legal notice](https://kickdex.alvarocarpintero.com/aviso-legal.html) · [Privacy](https://kickdex.alvarocarpintero.com/privacidad.html) · [Cookies](https://kickdex.alvarocarpintero.com/cookies.html) · [Terms](https://kickdex.alvarocarpintero.com/terminos.html)
 
 <div align="center">
 <br>
-<sub>Hecho por <a href="https://alvarocarpintero.com">Álvaro Carpintero</a> · <code>Football intelligence, indexed.</code></sub>
+<sub>Built by <a href="https://alvarocarpintero.com">Álvaro Carpintero</a> · <code>Football intelligence, indexed.</code></sub>
 </div>
