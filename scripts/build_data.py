@@ -566,8 +566,12 @@ def build_players(df_players) -> dict:
 
 # ── Jugadores desde ESPN (partido a partido, 11 ligas) ─────────────────────
 
-PLAYER_DETAIL_COLUMNS = ["date", "opp", "venue", "min", "gls", "ast", "sh", "sot", "fls", "crdy", "crdr", "starter"]
-PLAYER_DETAIL_MATCHES = 10
+PLAYER_DETAIL_COLUMNS = ["date", "opp", "venue", "min", "gls", "ast", "sh", "sot", "fls", "fld", "crdy", "crdr", "starter"]
+PLAYER_DETAIL_MATCHES = 15
+# Secuencias (más reciente primero) que viajan en players.json para calcular
+# en la web las ventanas 5/10/15 y frecuencias tipo "comete ≥2 faltas en n/N".
+PLAYER_SEQ_FIELDS = {"fls": "fls", "fld": "fld", "crdy": "crdy", "min": "minutes"}
+PLAYER_SEQ_MATCHES = 15
 
 
 def _espn_sync_time() -> str | None:
@@ -609,6 +613,7 @@ def build_players_from_matches(df) -> dict:
         players = []
         for pid, pg in grp.groupby("player_id"):
             mp = int(len(pg))
+            recent = pg.sort_values("date", ascending=False).head(PLAYER_SEQ_MATCHES)
             tot = {c: int(pg[c].sum()) for c in ["gls", "ast", "sh", "sot", "fls", "fld", "crdy", "crdr"]}
             minutes = int(pg["minutes"].sum())
             pos = pg["position"].dropna().astype(str)
@@ -624,11 +629,12 @@ def build_players_from_matches(df) -> dict:
                 "min": _safe(minutes / mp),
                 "gls": _safe(tot["gls"] / mp), "ast": _safe(tot["ast"] / mp),
                 "sh": _safe(tot["sh"] / mp), "sot": _safe(tot["sot"] / mp),
-                "fls": _safe(tot["fls"] / mp), "crdy": _safe(tot["crdy"] / mp),
+                "fls": _safe(tot["fls"] / mp), "fld": _safe(tot["fld"] / mp), "crdy": _safe(tot["crdy"] / mp),
                 "crdr": _safe(tot["crdr"] / mp),
                 # totales de temporada
                 "gls_tot": tot["gls"], "ast_tot": tot["ast"], "sh_tot": tot["sh"], "sot_tot": tot["sot"],
                 "fls_tot": tot["fls"], "fld_tot": tot["fld"], "crdy_tot": tot["crdy"], "crdr_tot": tot["crdr"],
+                "seq": {k: [int(v) for v in recent[col]] for k, col in PLAYER_SEQ_FIELDS.items()},
             })
         players.sort(key=lambda x: (-(x["min_total"] or 0), x["player"]))
         result[str(team)] = players
@@ -649,7 +655,7 @@ def build_players_detail_from_matches(df) -> dict:
             rows.append([
                 r["date"].strftime("%Y-%m-%d"), str(r.get("opponent") or ""), str(r.get("venue") or ""),
                 int(r["minutes"]), int(r["gls"]), int(r["ast"]), int(r["sh"]), int(r["sot"]),
-                int(r["fls"]), int(r["crdy"]), int(r["crdr"]), int(r["starter"]),
+                int(r["fls"]), int(r.get("fld", 0) or 0), int(r["crdy"]), int(r["crdr"]), int(r["starter"]),
             ])
         teams.setdefault(str(team), {})[name] = rows
     return {"columns": PLAYER_DETAIL_COLUMNS, "teams": teams}
@@ -663,7 +669,7 @@ def add_player_percentiles(players_payload: dict, leagues: dict) -> dict:
     delantero de 2ª con uno de 1ª no distorsione. Conecta la lógica de
     calculate_player_percentiles() de app/engine/metrics.py, que estaba muerta.
     """
-    metrics = ("gls", "ast", "sh", "sot", "fls", "crdy")
+    metrics = ("gls", "ast", "sh", "sot", "fls", "fld", "crdy")
     team_to_league = {}
     for code, info in (leagues or {}).items():
         for team in info.get("teams", []):

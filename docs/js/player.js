@@ -148,6 +148,8 @@ function buildCoreMetrics(avg) {
       ${metric("Asist/p", fmt(avg.ast, 2), "blue")}
       ${metric("Disp/p", fmt(avg.sh, 1))}
       ${metric("SoT/p", fmt(avg.sot, 1), "hot")}
+      ${metric("F. com./p", fmt(avg.fls, 1), "warn")}
+      ${metric("F. rec./p", fmt(avg.fld, 1), "blue")}
       ${metric("TA/p", fmt(avg.crdy, 2), "warn")}
     </div>
   `);
@@ -160,7 +162,8 @@ function buildPer90Metrics(avg) {
       ${metric("Asist P90", fmt(per90(avg.ast, avg.min), 2), "blue")}
       ${metric("Disp P90", fmt(per90(avg.sh, avg.min), 1))}
       ${metric("SoT P90", fmt(per90(avg.sot, avg.min), 1), "hot")}
-      ${metric("Faltas P90", fmt(per90(avg.fls, avg.min), 1), "warn")}
+      ${metric("F. com. P90", fmt(per90(avg.fls, avg.min), 1), "warn")}
+      ${metric("F. rec. P90", fmt(per90(avg.fld, avg.min), 1), "blue")}
       ${metric("TA P90", fmt(per90(avg.crdy, avg.min), 2), "warn")}
     </div>
     <p class="match-note">P90 transforma el promedio por partido a una base de 90 minutos usando los minutos medios del jugador.</p>
@@ -174,7 +177,8 @@ function buildRankSection(ranks, total) {
       ${rankMetric("SoT", ranks.sot, total)}
       ${rankMetric("Goles", ranks.gls, total)}
       ${rankMetric("Asist.", ranks.ast, total)}
-      ${rankMetric("Faltas", ranks.fls, total)}
+      ${rankMetric("F. cometidas", ranks.fls, total)}
+      ${rankMetric("F. recibidas", ranks.fld, total)}
       ${rankMetric("Tarjetas", ranks.crdy, total)}
     </div>
   `);
@@ -202,7 +206,8 @@ function buildDetailSection(matchLog, rawDetail) {
             <th>Asist</th>
             <th>Disp</th>
             <th>SoT</th>
-            <th>Faltas</th>
+            <th title="Faltas cometidas">F. com.</th>
+            <th title="Faltas recibidas">F. rec.</th>
             <th>TA</th>
           </tr>
         </thead>
@@ -217,6 +222,7 @@ function buildDetailSection(matchLog, rawDetail) {
               <td>${cell(row.sh, 0)}</td>
               <td>${cell(row.sot, 0)}</td>
               <td>${cell(row.fls, 0)}</td>
+              <td>${cell(row.fld, 0)}</td>
               <td>${cell(row.crdy, 0, "warn")}</td>
             </tr>
           `).join("")}
@@ -279,7 +285,7 @@ function buildRanks(rows, player) {
     const idx = sorted.findIndex(r => norm(r.player) === norm(player));
     return idx >= 0 ? idx + 1 : null;
   };
-  return { sh: rank("sh"), sot: rank("sot"), gls: rank("gls"), ast: rank("ast"), fls: rank("fls"), crdy: rank("crdy") };
+  return { sh: rank("sh"), sot: rank("sot"), gls: rank("gls"), ast: rank("ast"), fls: rank("fls"), fld: rank("fld"), crdy: rank("crdy") };
 }
 
 function rankMetric(label, rank, total) {
@@ -305,7 +311,7 @@ function aggregateStats(detail) {
   const rows = detail || [];
   const n = rows.length || 1;
   const sum = key => rows.reduce((acc, row) => acc + (Number(row[key]) || 0), 0);
-  return { sh: sum("sh") / n, sot: sum("sot") / n, gls: sum("gls") / n, ast: sum("ast") / n, min: sum("min") / n, fls: sum("fls") / n, crdy: sum("crdy") / n };
+  return { sh: sum("sh") / n, sot: sum("sot") / n, gls: sum("gls") / n, ast: sum("ast") / n, min: sum("min") / n, fls: sum("fls") / n, fld: sum("fld") / n, crdy: sum("crdy") / n };
 }
 
 function realMatchLog(detail) {

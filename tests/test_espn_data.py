@@ -118,3 +118,5 @@ def test_build_players_from_matches_contract():
     rows = detail["teams"]["PSG"]["Dembélé"]
     assert detail["columns"][:3] == ["date", "opp", "venue"]
     assert rows[0][:4] == ["2026-09-08", "Lens", "A", 30]          # más reciente primero
+    assert detail["columns"][9] == "fld" and rows[1][9] == 2
+    assert p["fld"] == 1.0 and p["seq"] == {"fls": [0, 1], "fld": [0, 2], "crdy": [1, 0], "min": [30, 90]}

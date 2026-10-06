@@ -4307,3 +4307,12 @@ a.live-mini:hover { border-color: rgba(var(--heat-green), .35); }
 @keyframes livePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.75); } }
 @keyframes liveFlash { 0% { background: rgba(var(--heat-gold), .35); } 100% { background: var(--grad-card); } }
 @media (prefers-reduced-motion: reduce) { .live-badge--live::before, .live-card--flash { animation: none; } }
+
+/* Bloque de jugadores (faltas / ataque) */
+.pblk-toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 10px; }
+.pblk-group { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.pblk-lbl { font: 700 .62rem var(--font-data); letter-spacing: 1px; text-transform: uppercase; color: var(--muted2); margin-right: 2px; }
+.pblk .ktoggle { padding: 6px 11px; }
+.pblk .ktoggle::before { display: none; }
+.pblk .ktable thead th { padding: 9px 8px; font-size: .6rem; }
+.pblk .ktable tbody td { padding: 8px; font-size: .8rem; }

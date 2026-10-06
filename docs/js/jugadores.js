@@ -17,6 +17,7 @@ const JUG_METRICS = {
   sot:  "SoT/p",
   crdy: "TA/p",
   fls:  "Faltas/p",
+  fld:  "F. rec./p",
   min:  "Min/p",
 };
 
@@ -110,7 +111,7 @@ function renderLeaderboard(box, leagueCode, metric) {
   const heat = {};
   // Calor contra titulares habituales (≥30 min/p), no contra suplentes.
   const regulars = rows.filter(p => (Number(p.min) || 0) >= 30);
-  ["gls", "ast", "sh", "sot", "min", "crdy", "fls"].forEach(col => { heat[col] = kdxRanker(regulars.map(p => p[col])); });
+  ["gls", "ast", "sh", "sot", "min", "crdy", "fls", "fld"].forEach(col => { heat[col] = kdxRanker(regulars.map(p => p[col])); });
   const leagueName = leagueCode === "all"
     ? "todas las ligas con datos"
     : (APP.leagues?.[leagueCode]?.name || leagueCode);
@@ -152,6 +153,7 @@ function renderLeaderboard(box, leagueCode, metric) {
             ${leaderColHeader("sh", jugColLabel("sh"), metric)}
             ${leaderColHeader("sot", jugColLabel("sot"), metric)}
             ${leaderColHeader("fls", jugColLabel("fls"), metric)}
+            ${leaderColHeader("fld", jugColLabel("fld"), metric)}
             ${leaderColHeader("min", jugColLabel("min"), metric)}
             ${leaderColHeader("crdy", jugColLabel("crdy"), metric)}
           </tr>
@@ -168,6 +170,7 @@ function renderLeaderboard(box, leagueCode, metric) {
             ${leaderCell(p, "sh", metric, jugDec(1), heat)}
             ${leaderCell(p, "sot", metric, jugDec(1), heat)}
             ${leaderCell(p, "fls", metric, jugDec(1), heat)}
+            ${leaderCell(p, "fld", metric, jugDec(1), heat)}
             ${leaderCell(p, "min", metric, 0, heat)}
             ${leaderCell(p, "crdy", metric, jugDec(2), heat)}
           </tr>`).join("")}
@@ -213,7 +216,7 @@ function jugValuesForMode(p, team, mode) {
     const mp = Number(p.mp) || 0;
     const tot = (k, avgKey) => p[k] != null ? p[k] : (p[avgKey] != null && mp ? Math.round(p[avgKey] * mp) : null);
     return { ...p, gls: tot("gls_tot", "gls"), ast: tot("ast_tot", "ast"), sh: tot("sh_tot", "sh"),
-      sot: tot("sot_tot", "sot"), fls: tot("fls_tot", "fls"), crdy: tot("crdy_tot", "crdy"),
+      sot: tot("sot_tot", "sot"), fls: tot("fls_tot", "fls"), fld: tot("fld_tot", "fld"), crdy: tot("crdy_tot", "crdy"),
       min: p.min_total != null ? p.min_total : (p.min != null && mp ? Math.round(p.min * mp) : null), _noPct: true };
   }
   if (mode === "l5") {
@@ -221,13 +224,13 @@ function jugValuesForMode(p, team, mode) {
     if (!rows.length) return null;
     const avg = k => rows.reduce((s, r) => s + (Number(r[k]) || 0), 0) / rows.length;
     return { ...p, mp: rows.length, gls: avg("gls"), ast: avg("ast"), sh: avg("sh"), sot: avg("sot"),
-      fls: avg("fls"), crdy: avg("crdy"), min: avg("min"), _noPct: true };
+      fls: avg("fls"), fld: avg("fld"), crdy: avg("crdy"), min: avg("min"), _noPct: true };
   }
   return p;
 }
 
 function jugColLabel(col) {
-  const base = { gls: "Goles", ast: "Asist", sh: "Disp", sot: "SoT", fls: "Faltas", min: "Min", crdy: "TA" }[col] || col;
+  const base = { gls: "Goles", ast: "Asist", sh: "Disp", sot: "SoT", fls: "F. com.", fld: "F. rec.", min: "Min", crdy: "TA" }[col] || col;
   return _jugMode === "tot" ? base : `${base}/p`;
 }
 
@@ -543,9 +546,9 @@ function buildPlayerDetail(team, player, detail) {
     </div>
     <div class="grid-4">
       ${miniCard("Min/p",        fmt(avg.min, 0), "var(--text)")}
-      ${miniCard("Faltas/p",     fmt(avg.fls, 1), "var(--orange)")}
+      ${miniCard("F. com./p",    fmt(avg.fls, 1), "var(--orange)")}
+      ${miniCard("F. rec./p",    fmt(avg.fld, 1), "var(--blue)")}
       ${miniCard("Tarj. Am./p",  fmt(avg.crdy, 2), "var(--yellow)")}
-      ${miniCard(hasMatchLog ? "Registros" : "Datos", hasMatchLog ? detail.length : "Prom. temporada", "var(--muted)")}
     </div>
   </div>
 
@@ -573,7 +576,8 @@ function buildPlayerDetail(team, player, detail) {
           <th>Min</th>
           <th>Disp</th>
           <th>SoT</th>
-          <th>Faltas</th>
+          <th title="Faltas cometidas">F. com.</th>
+          <th title="Faltas recibidas">F. rec.</th>
           <th>T. Am.</th>
         </tr>
       </thead>
@@ -588,6 +592,7 @@ function buildPlayerDetail(team, player, detail) {
           <td>${d.sh ?? "—"}</td>
           <td>${d.sot ?? "—"}</td>
           <td>${d.fls ?? "—"}</td>
+          <td>${d.fld ?? "—"}</td>
           <td>${d.crdy > 0 ? `<b style="color:var(--yellow)">${d.crdy}</b>` : d.crdy ?? "—"}</td>
         </tr>`).join("")}
       </tbody>
@@ -681,6 +686,7 @@ function aggregatePlayerStats(detail) {
     ast:  sum("ast")  / n,
     min:  sum("min")  / n,
     fls:  sum("fls")  / n,
+    fld:  sum("fld")  / n,
     crdy: sum("crdy") / n,
   };
 }
