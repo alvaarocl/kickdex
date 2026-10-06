@@ -63,12 +63,13 @@ jobs:
           REFEREE_LEAGUES: ${{ github.event.inputs.referee_leagues || 'SP1 SP2' }}
         run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES" --leagues $REFEREE_LEAGUES
 
-      - name: Update referee season aggregates + match logs (World Soccer Data)
-        # Incremental: solo descarga perfiles con partidos nuevos. Con presupuesto
-        # de tiempo; lo pendiente se completa en la siguiente ejecución.
+      - name: Update referee matches (ESPN)
+        # Árbitro, tarjetas y faltas por partido de las 11 ligas, incremental.
+        # World Soccer Data bloquea las IPs de GitHub (403/406), así que su
+        # histórico (DATOS/referees_wsd_matches.csv) ya no se actualiza en CI.
         continue-on-error: true
-        timeout-minutes: 10
-        run: python scripts/update_worldsoccerdata_referee_data.py --sleep 0.25 --timeout 45 --concurrency 2 --max-seconds 420
+        timeout-minutes: 8
+        run: python scripts/update_espn_referee_matches.py --max-seconds 360
 
       - name: Update match odds (The Odds API)
         continue-on-error: true
@@ -126,6 +127,7 @@ jobs:
           test ! -f DATOS/referees_matches.csv || git add DATOS/referees_matches.csv
           test ! -f DATOS/referees_season.csv || git add DATOS/referees_season.csv
           test ! -f DATOS/referees_wsd_matches.csv || git add DATOS/referees_wsd_matches.csv
+          test ! -f DATOS/referee_assignments.json || git add DATOS/referee_assignments.json
           test ! -f DATOS/suspensions_manual.csv || git add DATOS/suspensions_manual.csv
           git diff --staged --quiet || git commit -m "chore: update data $(date -u +%Y-%m-%d) [skip ci]"
           # El workflow de directo puede haber empujado mientras tanto.

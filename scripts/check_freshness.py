@@ -27,7 +27,7 @@ LIMITS_HOURS = {
     "standings.json": 48,
     "live_scores.json": 24,  # solo respaldo: el directo real va por ESPN desde el navegador
     "player_coverage.json (scrape)": 24 * 5,
-    "referees_season.csv": 24 * 4,
+    "referees_matches.csv (ESPN)": 24 * 4,
 }
 
 
@@ -52,7 +52,7 @@ def _json_ts(name: str, *path: str) -> datetime | None:
 
 def collect() -> dict[str, datetime | None]:
     referees = None
-    path = ROOT / "DATOS" / "referees_season.csv"
+    path = ROOT / "DATOS" / "referees_matches.csv"
     if path.exists():
         with path.open(encoding="utf-8") as fh:
             stamps = [_parse(r.get("updated_at")) for r in csv.DictReader(fh)]
@@ -63,7 +63,7 @@ def collect() -> dict[str, datetime | None]:
         "standings.json": _json_ts("standings.json", "updated_at"),
         "live_scores.json": _json_ts("live_scores.json", "updated_at"),
         "player_coverage.json (scrape)": _json_ts("player_coverage.json", "scraped_at"),
-        "referees_season.csv": referees,
+        "referees_matches.csv (ESPN)": referees,
     }
 
 

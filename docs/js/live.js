@@ -70,6 +70,7 @@ async function refreshLive() {
   if (_liveFetching) return;
   _liveFetching = true;
   try {
+    if (!APP.espnTeams) APP.espnTeams = await fetchJSON("espn_teams.json").catch(() => ({ leagues: {} }));
     // ?livedate=YYYYMMDD permite revisar un día concreto (pruebas).
     const date = new URLSearchParams(location.search).get("livedate") || todayStamp();
     const codes = Object.keys(ESPN_SLUGS);
@@ -151,11 +152,14 @@ function normalizeEspnEvent(ev, league) {
 
 // ESPN usa "Atlético Madrid"; el dataset, "Ath Madrid" (estilo football-data).
 // Se cruza contra el nombre canónico y el nombre visible de cada equipo de la liga.
+const LIVE_ALIASES = { "deportivo": "deportivo coruna", "fc cologne": "koln", "cologne": "koln" };
 const LIVE_NOISE = new Set(["fc", "cf", "afc", "sc", "cd", "ud", "sd", "rc", "rcd", "club", "de", "del", "la", "el",
   "the", "ac", "as", "ss", "us", "sv", "vfb", "vfl", "tsg", "1", "fk", "calcio", "city", "town"]);
 
 function liveTokens(s) {
-  return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+  let text = String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  text = LIVE_ALIASES[text] || text;
+  return text
     .replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(t => t && !LIVE_NOISE.has(t));
 }
 
@@ -172,6 +176,9 @@ function buildTeamIndex() {
 
 function matchTeamKey(league, team) {
   if (!team) return null;
+  // 1) Cruce exacto por id de ESPN (docs/data/espn_teams.json, regenerado a diario).
+  const exact = APP.espnTeams?.leagues?.[league]?.[String(team.id)];
+  if (exact) return exact;
   _liveTeamIndex = _liveTeamIndex || buildTeamIndex();
   const candidates = _liveTeamIndex[league] || [];
   const names = [team.displayName, team.shortDisplayName, team.name, team.location].filter(Boolean).map(liveTokens);

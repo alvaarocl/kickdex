@@ -787,8 +787,18 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     # Forma uniforme: FixtureDownload no trae árbitro; football-data.co.uk solo
     # lo asigna a partidos ya disputados. Fase 0.5: campos estructurales en null
     # en todo lo que no lo tenga (asignación previa imposible con estas fuentes).
+    # Árbitro asignado cuando ESPN ya lo publica (scripts/update_espn_referee_matches.py).
+    assigned = {}
+    try:
+        payload = json.loads((Path(DATA_DIR) / "referee_assignments.json").read_text(encoding="utf-8"))
+        assigned = {(a["league"], a["date"], a["home"], a["away"]): a["referee"] for a in payload.get("items", [])}
+    except (OSError, ValueError, KeyError):
+        pass
     for _bucket in (recent, upcoming, calendar):
         for _item in _bucket:
+            ref = assigned.get((_item.get("league"), _item.get("date"), _item.get("home"), _item.get("away")))
+            if ref:
+                _item["referee"] = ref
             _item.setdefault("referee", None)
             _item.setdefault("referee_yellows_per_match", None)
 
@@ -1103,8 +1113,9 @@ def _normalise_referee_frame(df, source: str = "csv"):
         out["_R"] = _num_col("red_cards")
         # Fuentes sin faltas/penaltis (World Soccer Data): NaN, no 0 — así las
         # medias salen None ("sin dato") en vez de un falso 0.00.
-        out["_F"] = _num_col("fouls") if "fouls" in out.columns else float("nan")
-        out["_P"] = _num_col("penalties") if "penalties" in out.columns else float("nan")
+        # Celda vacía = sin dato (ESPN no da penaltis) → NaN, no 0.
+        out["_F"] = pd.to_numeric(out["fouls"], errors="coerce") if "fouls" in out.columns else float("nan")
+        out["_P"] = pd.to_numeric(out["penalties"], errors="coerce") if "penalties" in out.columns else float("nan")
     else:
         for col in ["HY", "AY", "HR", "AR", "HF", "AF"]:
             if col not in out.columns:
@@ -1511,9 +1522,9 @@ def build_referees(df, df_current=None) -> list:
     for (div, key), grp in rdf.groupby(["Div", "_key"], sort=False):
         if not key:
             continue
-        overall = get_weighted_referee_form(grp)
+        overall = get_weighted_referee_form(grp, min_matches=1)  # la UI marca las muestras cortas
         if overall is None:
-            continue  # skip refs with < 3 matches total
+            continue
         overall["source"] = "api-football" if (grp.get("_source") == "api-football").any() else "football-data"
         # Nombre a mostrar: el más largo/completo de los que aparecen para
         # esta clave (normalmente el de football-data, con iniciales, pierde
