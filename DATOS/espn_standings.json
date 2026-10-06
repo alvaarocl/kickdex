@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-06T17:34:10Z",
+ "updated_at": "2026-10-06T17:41:13Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -19,6 +19,7 @@
      "points": 21,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/83.png",
      "zone_label": "Champions League"
     },
     {
@@ -34,6 +35,7 @@
      "points": 16,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/1068.png",
      "zone_label": "Champions League"
     },
     {
@@ -49,6 +51,7 @@
      "points": 16,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/244.png",
      "zone_label": "Champions League"
     },
     {
@@ -64,6 +67,7 @@
      "points": 15,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
      "zone_label": "Champions League"
     },
     {
@@ -79,6 +83,7 @@
      "points": 13,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/243.png",
      "zone_label": "Champions League"
     },
     {
@@ -94,6 +99,7 @@
      "points": 11,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/96.png",
      "zone_label": "Europa League"
     },
     {
@@ -109,6 +115,7 @@
      "points": 10,
      "form": null,
      "zone": "uecl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/90.png",
      "zone_label": "Conference League qualifying"
     },
     {
@@ -124,6 +131,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/89.png",
      "zone_label": null
     },
     {
@@ -139,6 +147,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/102.png",
      "zone_label": null
     },
     {
@@ -154,6 +163,7 @@
      "points": 8,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/93.png",
      "zone_label": "Europa League"
     },
     {
@@ -169,6 +179,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2922.png",
      "zone_label": null
     },
     {
@@ -184,6 +195,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/101.png",
      "zone_label": null
     },
     {
@@ -199,6 +211,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/97.png",
      "zone_label": null
     },
     {
@@ -214,6 +227,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/85.png",
      "zone_label": null
     },
     {
@@ -229,6 +243,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/88.png",
      "zone_label": null
     },
     {
@@ -244,6 +259,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/87.png",
      "zone_label": null
     },
     {
@@ -259,6 +275,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/1538.png",
      "zone_label": null
     },
     {
@@ -274,6 +291,7 @@
      "points": 5,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3751.png",
      "zone_label": "Relegation"
     },
     {
@@ -289,6 +307,7 @@
      "points": 4,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/94.png",
      "zone_label": "Relegation"
     },
     {
@@ -304,6 +323,7 @@
      "points": 3,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/99.png",
      "zone_label": "Relegation"
     }
    ]
@@ -326,6 +346,7 @@
      "points": 21,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3752.png",
      "zone_label": "Promotion"
     },
     {
@@ -341,6 +362,7 @@
      "points": 20,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4438.png",
      "zone_label": "Promotion"
     },
     {
@@ -356,6 +378,7 @@
      "points": 18,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/6832.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -371,6 +394,7 @@
      "points": 14,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/9812.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -386,6 +410,7 @@
      "points": 14,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/84.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -401,6 +426,7 @@
      "points": 14,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/12597.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -416,6 +442,7 @@
      "points": 13,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/11487.png",
      "zone_label": null
     },
     {
@@ -431,6 +458,7 @@
      "points": 13,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3788.png",
      "zone_label": null
     },
     {
@@ -446,6 +474,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3747.png",
      "zone_label": null
     },
     {
@@ -461,6 +490,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/92.png",
      "zone_label": null
     },
     {
@@ -476,6 +506,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/98.png",
      "zone_label": null
     },
     {
@@ -491,6 +522,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/245.png",
      "zone_label": null
     },
     {
@@ -506,6 +538,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/17534.png",
      "zone_label": null
     },
     {
@@ -521,6 +554,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/95.png",
      "zone_label": null
     },
     {
@@ -536,6 +570,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/8447.png",
      "zone_label": null
     },
     {
@@ -551,6 +586,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/20983.png",
      "zone_label": null
     },
     {
@@ -566,6 +602,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7320.png",
      "zone_label": null
     },
     {
@@ -581,6 +618,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/131858.png",
      "zone_label": null
     },
     {
@@ -596,6 +634,7 @@
      "points": 7,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3842.png",
      "zone_label": "Relegation"
     },
     {
@@ -611,6 +650,7 @@
      "points": 7,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/20179.png",
      "zone_label": "Relegation"
     },
     {
@@ -626,6 +666,7 @@
      "points": 5,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/5404.png",
      "zone_label": "Relegation"
     },
     {
@@ -641,6 +682,7 @@
      "points": 1,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2737.png",
      "zone_label": "Relegation"
     }
    ]
@@ -663,6 +705,7 @@
      "points": 15,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/382.png",
      "zone_label": "Champions League"
     },
     {
@@ -678,6 +721,7 @@
      "points": 12,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/359.png",
      "zone_label": "Champions League"
     },
     {
@@ -693,6 +737,7 @@
      "points": 10,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/331.png",
      "zone_label": "Champions League"
     },
     {
@@ -708,6 +753,7 @@
      "points": 9,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/337.png",
      "zone_label": "Champions League"
     },
     {
@@ -723,6 +769,7 @@
      "points": 9,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/357.png",
      "zone_label": "Europa League"
     },
     {
@@ -738,6 +785,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/364.png",
      "zone_label": null
     },
     {
@@ -753,6 +801,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/368.png",
      "zone_label": null
     },
     {
@@ -768,6 +817,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/306.png",
      "zone_label": null
     },
     {
@@ -783,6 +833,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/361.png",
      "zone_label": null
     },
     {
@@ -798,6 +849,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/363.png",
      "zone_label": null
     },
     {
@@ -813,6 +865,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/373.png",
      "zone_label": null
     },
     {
@@ -828,6 +881,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/360.png",
      "zone_label": null
     },
     {
@@ -843,6 +897,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/393.png",
      "zone_label": null
     },
     {
@@ -858,6 +913,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/366.png",
      "zone_label": null
     },
     {
@@ -873,6 +929,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/384.png",
      "zone_label": null
     },
     {
@@ -888,6 +945,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/362.png",
      "zone_label": null
     },
     {
@@ -903,6 +961,7 @@
      "points": 3,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/349.png",
      "zone_label": null
     },
     {
@@ -918,6 +977,7 @@
      "points": 3,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/388.png",
      "zone_label": "Relegation"
     },
     {
@@ -933,6 +993,7 @@
      "points": 2,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/370.png",
      "zone_label": "Relegation"
     },
     {
@@ -948,6 +1009,7 @@
      "points": 2,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/367.png",
      "zone_label": "Relegation"
     }
    ]
@@ -970,6 +1032,7 @@
      "points": 17,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/318.png",
      "zone_label": "Promotion"
     },
     {
@@ -985,6 +1048,7 @@
      "points": 15,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/371.png",
      "zone_label": "Promotion"
     },
     {
@@ -1000,6 +1064,7 @@
      "points": 15,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/369.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1015,6 +1080,7 @@
      "points": 14,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/380.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1030,6 +1096,7 @@
      "points": 14,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/383.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1045,6 +1112,7 @@
      "points": 13,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/334.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1060,6 +1128,7 @@
      "points": 13,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/336.png",
      "zone_label": "Promotion Playoffs"
     },
     {
@@ -1075,6 +1144,7 @@
      "points": 13,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/333.png",
      "zone_label": "Promotion Playoffs"
     },
     {
@@ -1090,6 +1160,7 @@
      "points": 12,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/372.png",
      "zone_label": null
     },
     {
@@ -1105,6 +1176,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/392.png",
      "zone_label": null
     },
     {
@@ -1120,6 +1192,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/391.png",
      "zone_label": null
     },
     {
@@ -1135,6 +1208,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/314.png",
      "zone_label": null
     },
     {
@@ -1150,6 +1224,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/376.png",
      "zone_label": null
     },
     {
@@ -1165,6 +1240,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/352.png",
      "zone_label": null
     },
     {
@@ -1180,6 +1256,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/358.png",
      "zone_label": null
     },
     {
@@ -1195,6 +1272,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/365.png",
      "zone_label": null
     },
     {
@@ -1210,6 +1288,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/381.png",
      "zone_label": null
     },
     {
@@ -1225,6 +1304,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/398.png",
      "zone_label": null
     },
     {
@@ -1240,6 +1320,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/385.png",
      "zone_label": null
     },
     {
@@ -1255,6 +1336,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/395.png",
      "zone_label": null
     },
     {
@@ -1270,6 +1352,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/347.png",
      "zone_label": null
     },
     {
@@ -1285,6 +1368,7 @@
      "points": 5,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/374.png",
      "zone_label": "Relegation"
     },
     {
@@ -1300,6 +1384,7 @@
      "points": 4,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/394.png",
      "zone_label": "Relegation"
     },
     {
@@ -1315,6 +1400,7 @@
      "points": 4,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/379.png",
      "zone_label": "Relegation"
     }
    ]
@@ -1337,6 +1423,7 @@
      "points": 13,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/104.png",
      "zone_label": "Champions League"
     },
     {
@@ -1352,6 +1439,7 @@
      "points": 13,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/110.png",
      "zone_label": "Champions League"
     },
     {
@@ -1367,6 +1455,7 @@
      "points": 13,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/112.png",
      "zone_label": "Champions League"
     },
     {
@@ -1382,6 +1471,7 @@
      "points": 12,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2925.png",
      "zone_label": "Champions League"
     },
     {
@@ -1397,6 +1487,7 @@
      "points": 11,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/103.png",
      "zone_label": "Europa League"
     },
     {
@@ -1412,6 +1503,7 @@
      "points": 10,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4057.png",
      "zone_label": "Europa League"
     },
     {
@@ -1427,6 +1519,7 @@
      "points": 10,
      "form": null,
      "zone": "uecl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/111.png",
      "zone_label": "Conference League qualifying"
     },
     {
@@ -1442,6 +1535,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2572.png",
      "zone_label": null
     },
     {
@@ -1457,6 +1551,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/114.png",
      "zone_label": null
     },
     {
@@ -1472,6 +1567,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3997.png",
      "zone_label": null
     },
     {
@@ -1487,6 +1583,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/105.png",
      "zone_label": null
     },
     {
@@ -1502,6 +1599,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/113.png",
      "zone_label": null
     },
     {
@@ -1517,6 +1615,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/118.png",
      "zone_label": null
     },
     {
@@ -1532,6 +1631,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/239.png",
      "zone_label": null
     },
     {
@@ -1547,6 +1647,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/115.png",
      "zone_label": null
     },
     {
@@ -1562,6 +1663,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4007.png",
      "zone_label": null
     },
     {
@@ -1577,6 +1679,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/109.png",
      "zone_label": null
     },
     {
@@ -1592,6 +1695,7 @@
      "points": 2,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/107.png",
      "zone_label": "Relegated"
     },
     {
@@ -1607,6 +1711,7 @@
      "points": 1,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3263.png",
      "zone_label": "Relegated"
     },
     {
@@ -1622,6 +1727,7 @@
      "points": 0,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/17530.png",
      "zone_label": "Relegated"
     }
    ]
@@ -1644,6 +1750,7 @@
      "points": 13,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2923.png",
      "zone_label": "Promotion"
     },
     {
@@ -1659,6 +1766,7 @@
      "points": 11,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/11139.png",
      "zone_label": "Promotion"
     },
     {
@@ -1674,6 +1782,7 @@
      "points": 11,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3991.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1689,6 +1798,7 @@
      "points": 10,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2573.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1704,6 +1814,7 @@
      "points": 10,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3346.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1719,6 +1830,7 @@
      "points": 7,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/119.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1734,6 +1846,7 @@
      "points": 7,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3337.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1749,6 +1862,7 @@
      "points": 7,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4055.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -1764,6 +1878,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4059.png",
      "zone_label": null
     },
     {
@@ -1779,6 +1894,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3956.png",
      "zone_label": null
     },
     {
@@ -1794,6 +1910,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3952.png",
      "zone_label": null
     },
     {
@@ -1809,6 +1926,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2574.png",
      "zone_label": null
     },
     {
@@ -1824,6 +1942,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3345.png",
      "zone_label": null
     },
     {
@@ -1839,6 +1958,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/11137.png",
      "zone_label": null
     },
     {
@@ -1854,6 +1974,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4050.png",
      "zone_label": null
     },
     {
@@ -1869,6 +1990,7 @@
      "points": 5,
      "form": null,
      "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/120.png",
      "zone_label": "Relegation playoff"
     },
     {
@@ -1884,6 +2006,7 @@
      "points": 4,
      "form": null,
      "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2734.png",
      "zone_label": "Relegation playoff"
     },
     {
@@ -1899,6 +2022,7 @@
      "points": 3,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3975.png",
      "zone_label": "Relegation"
     },
     {
@@ -1914,6 +2038,7 @@
      "points": 3,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3257.png",
      "zone_label": "Relegation"
     },
     {
@@ -1929,6 +2054,7 @@
      "points": 1,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3988.png",
      "zone_label": "Relegation"
     }
    ]
@@ -1951,6 +2077,7 @@
      "points": 12,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/124.png",
      "zone_label": "Champions League"
     },
     {
@@ -1966,6 +2093,7 @@
      "points": 10,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/132.png",
      "zone_label": "Champions League"
     },
     {
@@ -1981,6 +2109,7 @@
      "points": 10,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/126.png",
      "zone_label": "Champions League"
     },
     {
@@ -1996,6 +2125,7 @@
      "points": 7,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3841.png",
      "zone_label": "Champions League"
     },
     {
@@ -2011,6 +2141,7 @@
      "points": 7,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/131.png",
      "zone_label": "Europa League"
     },
     {
@@ -2026,6 +2157,7 @@
      "points": 7,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2950.png",
      "zone_label": "Europa League"
     },
     {
@@ -2041,6 +2173,7 @@
      "points": 7,
      "form": null,
      "zone": "uecl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/10388.png",
      "zone_label": "Conference League qualifying"
     },
     {
@@ -2056,6 +2189,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/137.png",
      "zone_label": null
     },
     {
@@ -2071,6 +2205,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/11420.png",
      "zone_label": null
     },
     {
@@ -2086,6 +2221,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/125.png",
      "zone_label": null
     },
     {
@@ -2101,6 +2237,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/133.png",
      "zone_label": null
     },
     {
@@ -2116,6 +2253,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3307.png",
      "zone_label": null
     },
     {
@@ -2131,6 +2269,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/122.png",
      "zone_label": null
     },
     {
@@ -2146,6 +2285,7 @@
      "points": 3,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7911.png",
      "zone_label": null
     },
     {
@@ -2161,6 +2301,7 @@
      "points": 3,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/134.png",
      "zone_label": null
     },
     {
@@ -2176,6 +2317,7 @@
      "points": 3,
      "form": null,
      "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/127.png",
      "zone_label": "Relegation playoff"
     },
     {
@@ -2191,6 +2333,7 @@
      "points": 1,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/598.png",
      "zone_label": "Relegation"
     },
     {
@@ -2206,6 +2349,7 @@
      "points": 0,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/268.png",
      "zone_label": "Relegation"
     }
    ]
@@ -2228,6 +2372,7 @@
      "points": 18,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/129.png",
      "zone_label": "Promotion"
     },
     {
@@ -2243,6 +2388,7 @@
      "points": 16,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/269.png",
      "zone_label": "Promotion"
     },
     {
@@ -2258,6 +2404,7 @@
      "points": 13,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/6418.png",
      "zone_label": "Promotion playoff"
     },
     {
@@ -2273,6 +2420,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/138.png",
      "zone_label": null
     },
     {
@@ -2288,6 +2436,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/130.png",
      "zone_label": null
     },
     {
@@ -2303,6 +2452,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/10382.png",
      "zone_label": null
     },
     {
@@ -2318,6 +2468,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/123.png",
      "zone_label": null
     },
     {
@@ -2333,6 +2484,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/270.png",
      "zone_label": null
     },
     {
@@ -2348,6 +2500,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/121.png",
      "zone_label": null
     },
     {
@@ -2363,6 +2516,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2428.png",
      "zone_label": null
     },
     {
@@ -2378,6 +2532,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7013.png",
      "zone_label": null
     },
     {
@@ -2393,6 +2548,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3070.png",
      "zone_label": null
     },
     {
@@ -2408,6 +2564,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2506.png",
      "zone_label": null
     },
     {
@@ -2423,6 +2580,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4471.png",
      "zone_label": null
     },
     {
@@ -2438,6 +2596,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3067.png",
      "zone_label": null
     },
     {
@@ -2453,6 +2612,7 @@
      "points": 4,
      "form": null,
      "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7884.png",
      "zone_label": "Relegation playoff"
     },
     {
@@ -2468,6 +2628,7 @@
      "points": 4,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7017.png",
      "zone_label": "Relegation"
     },
     {
@@ -2483,6 +2644,7 @@
      "points": 4,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3812.png",
      "zone_label": "Relegation"
     }
    ]
@@ -2505,6 +2667,7 @@
      "points": 13,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/174.png",
      "zone_label": "Champions League"
     },
     {
@@ -2520,6 +2683,7 @@
      "points": 11,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/167.png",
      "zone_label": "Champions League"
     },
     {
@@ -2535,6 +2699,7 @@
      "points": 11,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/6851.png",
      "zone_label": "Champions League"
     },
     {
@@ -2550,6 +2715,7 @@
      "points": 10,
      "form": null,
      "zone": "uclq",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/166.png",
      "zone_label": "Champions League qualifying"
     },
     {
@@ -2565,6 +2731,7 @@
      "points": 10,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/169.png",
      "zone_label": "Europa League"
     },
     {
@@ -2580,6 +2747,7 @@
      "points": 8,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/160.png",
      "zone_label": "Europa League"
     },
     {
@@ -2595,6 +2763,7 @@
      "points": 7,
      "form": null,
      "zone": "uecl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7868.png",
      "zone_label": "Conference League qualifying"
     },
     {
@@ -2610,6 +2779,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/180.png",
      "zone_label": null
     },
     {
@@ -2625,6 +2795,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2697.png",
      "zone_label": null
     },
     {
@@ -2640,6 +2811,7 @@
      "points": 6,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/172.png",
      "zone_label": null
     },
     {
@@ -2655,6 +2827,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/6997.png",
      "zone_label": null
     },
     {
@@ -2670,6 +2843,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/273.png",
      "zone_label": null
     },
     {
@@ -2685,6 +2859,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/179.png",
      "zone_label": null
     },
     {
@@ -2700,6 +2875,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2502.png",
      "zone_label": null
     },
     {
@@ -2715,6 +2891,7 @@
      "points": 4,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/175.png",
      "zone_label": null
     },
     {
@@ -2730,6 +2907,7 @@
      "points": 4,
      "form": null,
      "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/170.png",
      "zone_label": "Relegation playoff"
     },
     {
@@ -2745,6 +2923,7 @@
      "points": 3,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/176.png",
      "zone_label": "Relegation"
     },
     {
@@ -2760,6 +2939,7 @@
      "points": 2,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3236.png",
      "zone_label": "Relegation"
     }
    ]
@@ -2782,6 +2962,7 @@
      "points": 16,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/178.png",
      "zone_label": "Promotion"
     },
     {
@@ -2797,6 +2978,7 @@
      "points": 14,
      "form": null,
      "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/11884.png",
      "zone_label": "Promotion"
     },
     {
@@ -2812,6 +2994,7 @@
      "points": 13,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3243.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -2827,6 +3010,7 @@
      "points": 12,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/274.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -2842,6 +3026,7 @@
      "points": 10,
      "form": null,
      "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/177.png",
      "zone_label": "Promotion playoffs"
     },
     {
@@ -2857,6 +3042,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3267.png",
      "zone_label": null
     },
     {
@@ -2872,6 +3058,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/18066.png",
      "zone_label": null
     },
     {
@@ -2887,6 +3074,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/272.png",
      "zone_label": null
     },
     {
@@ -2902,6 +3090,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3170.png",
      "zone_label": null
     },
     {
@@ -2917,6 +3106,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/10678.png",
      "zone_label": null
     },
     {
@@ -2932,6 +3122,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/171.png",
      "zone_label": null
     },
     {
@@ -2947,6 +3138,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7732.png",
      "zone_label": null
     },
     {
@@ -2962,6 +3154,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/6994.png",
      "zone_label": null
     },
     {
@@ -2977,6 +3170,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7719.png",
      "zone_label": null
     },
     {
@@ -2992,6 +3186,7 @@
      "points": 7,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/165.png",
      "zone_label": null
     },
     {
@@ -3007,6 +3202,7 @@
      "points": 6,
      "form": null,
      "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3171.png",
      "zone_label": "Relegation playoffs"
     },
     {
@@ -3022,6 +3218,7 @@
      "points": 5,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7869.png",
      "zone_label": "Relegation"
     },
     {
@@ -3037,6 +3234,7 @@
      "points": 5,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3266.png",
      "zone_label": "Relegation"
     }
    ]
@@ -3059,6 +3257,7 @@
      "points": 19,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/140.png",
      "zone_label": "Champions League"
     },
     {
@@ -3074,6 +3273,7 @@
      "points": 17,
      "form": null,
      "zone": "ucl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/142.png",
      "zone_label": "Champions League"
     },
     {
@@ -3089,6 +3289,7 @@
      "points": 16,
      "form": null,
      "zone": "uclq",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/148.png",
      "zone_label": "Champions League qualifying"
     },
     {
@@ -3104,6 +3305,7 @@
      "points": 16,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/152.png",
      "zone_label": "Europa League qualifying"
     },
     {
@@ -3119,6 +3321,7 @@
      "points": 14,
      "form": null,
      "zone": "uecl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/139.png",
      "zone_label": "Conference League qualifying"
     },
     {
@@ -3134,6 +3337,7 @@
      "points": 13,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/143.png",
      "zone_label": null
     },
     {
@@ -3149,6 +3353,7 @@
      "points": 11,
      "form": null,
      "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2566.png",
      "zone_label": "Europa League"
     },
     {
@@ -3164,6 +3369,7 @@
      "points": 11,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/145.png",
      "zone_label": null
     },
     {
@@ -3179,6 +3385,7 @@
      "points": 10,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3706.png",
      "zone_label": null
     },
     {
@@ -3194,6 +3401,7 @@
      "points": 9,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/146.png",
      "zone_label": null
     },
     {
@@ -3209,6 +3417,7 @@
      "points": 8,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/147.png",
      "zone_label": null
     },
     {
@@ -3224,6 +3433,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/151.png",
      "zone_label": null
     },
     {
@@ -3239,6 +3449,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3735.png",
      "zone_label": null
     },
     {
@@ -3254,6 +3465,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3736.png",
      "zone_label": null
     },
     {
@@ -3269,6 +3481,7 @@
      "points": 5,
      "form": null,
      "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/153.png",
      "zone_label": null
     },
     {
@@ -3284,6 +3497,7 @@
      "points": 4,
      "form": null,
      "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2565.png",
      "zone_label": "Relegation playoffs"
     },
     {
@@ -3299,6 +3513,7 @@
      "points": 2,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2726.png",
      "zone_label": "Relegation"
     },
     {
@@ -3314,6 +3529,7 @@
      "points": 2,
      "form": null,
      "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/156.png",
      "zone_label": "Relegation"
     }
    ]
