@@ -322,13 +322,38 @@ def fetch_configured_sources(path: Path = SOURCES_JSON, timeout: int = 45) -> li
     return rows
 
 
+def calculated_items() -> list[dict] | None:
+    """Apercibidos/sancionados calculados con las tarjetas partido a partido (ESPN)."""
+    import csv
+    from datetime import date
+
+    from app.config import CURRENT_SEASON_START, DATA_DIR
+    from app.engine.discipline_calc import compute_discipline
+
+    path = Path(DATA_DIR) / "espn_player_matches.csv"
+    if not path.exists():
+        return None
+    with path.open(encoding="utf-8", newline="") as fh:
+        rows = [r for r in csv.DictReader(fh) if r.get("date", "") >= CURRENT_SEASON_START]
+    fixtures = read_json(OUTPUT_DIR / "fixtures.json", {})
+    upcoming = (fixtures.get("upcoming") or []) + (fixtures.get("calendar") or [])
+    seen, unique = set(), []
+    for f in upcoming:
+        k = (f.get("league"), f.get("date"), f.get("home"), f.get("away"))
+        if k not in seen and f.get("status") != "finished":
+            seen.add(k)
+            unique.append(f)
+    return compute_discipline(rows, unique, today=date.today().isoformat())
+
+
 def build_payload(fetch: bool = False, timeout: int = 45) -> dict:
     leagues = read_json(OUTPUT_DIR / "leagues.json", {})
     config = read_json(SOURCES_JSON, {"sources": []})
     rows = read_manual_rows()
     if fetch:
         rows.extend(fetch_configured_sources(timeout=timeout))
-    return build_suspensions_payload(rows, leagues, source_catalog=config.get("sources", []))
+    return build_suspensions_payload(rows, leagues, source_catalog=config.get("sources", []),
+                                     calculated=calculated_items())
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -341,7 +366,8 @@ def main(argv: list[str] | None = None) -> int:
     write_json(payload, "suspensions.json")
     print(
         "Suspensions feed: "
-        f"{payload['totals']['items']} rows, "
+        f"{payload['totals']['items']} rows ({payload['totals']['suspended']} sancionados, "
+        f"{payload['totals']['at_risk']} apercibidos, {payload.get('calculated', 0)} calculados), "
         f"{payload['totals']['official']} official, "
         f"{payload['totals']['verified']} verified"
     )

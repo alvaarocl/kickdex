@@ -244,6 +244,7 @@ function renderPreviaBlocks(fixture, probs) {
   const vA   = _blkVenueLabel(_matchAwayVenue);
 
   return `
+    ${buildApercibidosSection(fixture)}
     <section class="card match-section">
       <h2>Alertas</h2>
       ${buildBlockAlerts(home, away, ctx)}
@@ -286,7 +287,6 @@ function renderArbitroTab(fixture) {
   return `
     <div class="match-layout">
       <section class="match-main">
-        ${buildApercibidosSection(fixture)}
         ${buildLeagueRefereePool(fixture)}
         ${buildDisciplineSection(fixture)}
       </section>
@@ -306,52 +306,34 @@ function renderJugadoresTab(fixture) {
     </section>`;
 }
 
+// Bajas por sanción y apercibidos de los dos equipos (suspensions.json:
+// calculado con las tarjetas + oficial). Va arriba de la Previa: es lo primero
+// que hay que saber de un partido.
 function buildApercibidosSection(f) {
-  const home = officialSuspensionsForTeam(f.home);
-  const away = officialSuspensionsForTeam(f.away);
-  const total = home.length + away.length;
+  const home = disciplineForTeam(f.home);
+  const away = disciplineForTeam(f.away);
+  const total = home.suspended.length + home.at_risk.length + away.suspended.length + away.at_risk.length;
+  const link = `<a href="apercibidos.html?league=${encodeURIComponent(f.league || "")}">Ver todos los de la liga →</a>`;
   if (!total) {
-    return sectionCard("Apercibidos oficiales", `
-      <p class="muted">Sin apercibidos o sancionados oficiales publicados para estos equipos en el feed actual.</p>
-      <p class="match-note">Este bloque solo muestra jugadores confirmados por una fuente oficial o cargados como verificados. No usa el modelo de riesgo disciplinario.</p>
-    `);
+    return sectionCard("Sancionados y apercibidos", `
+      <p class="muted" style="margin:0;">Ningún jugador de estos equipos está sancionado ni a una amarilla de la sanción. ${link}</p>`);
   }
-
-  return sectionCard("Apercibidos oficiales del partido", `
-    <div class="match-form-grid">
-      ${apercibidosBlock(f.home, home)}
-      ${apercibidosBlock(f.away, away)}
-    </div>
-    <div class="apercibidos-note">
-      <strong>Fuente verificada.</strong> KICKDEX no inventa apercibidos: si una competicion no publica datos estructurados, el bloque queda vacio hasta validacion manual u oficial.
-      <a href="apercibidos.html?league=${encodeURIComponent(f.league || "")}">Ver feed completo</a>
-    </div>
-  `);
-}
-
-function officialSuspensionsForTeam(team) {
-  const block = state.suspensions?.by_team?.[team] || {};
-  return [...(block.suspended || []), ...(block.at_risk || [])].slice(0, 8);
-}
-
-function apercibidosBlock(team, items) {
-  const rows = items.map(item => `
-    <tr>
-      <td><a href="${playerHref(team, item.player)}"><span class="player-cell">${window.KDXEntities?.media("player", item.player, team) || ""}<b>${esc(item.player)}</b></span></a></td>
-      <td>${statusBadge(item)}</td>
-      <td>${cardCount(item)}</td>
-      <td>${sourceLink(item)}</td>
-    </tr>`).join("");
-  return `
-    <div class="match-team-form apercibidos-card">
-      <h3>${esc(teamDisplayName(team))}</h3>
-      <div class="table-wrap match-table">
-        <table>
-          <thead><tr><th>Jugador</th><th>Estado</th><th>Tarjetas</th><th>Fuente</th></tr></thead>
-          <tbody>${rows || `<tr><td colspan="4">Sin registros oficiales</td></tr>`}</tbody>
-        </table>
-      </div>
+  const team = (t, block) => `
+    <div class="disc-team">
+      <h3>${window.KDXEntities?.media("team", t) || ""}${esc(teamDisplayName(t))}</h3>
+      ${block.suspended.length ? `<p class="disc-h3 disc-h3--red">No juega por sanción</p>${discSuspendedTable(block.suspended, { hideTeam: true, playerHref })}` : ""}
+      ${block.at_risk.length ? `<p class="disc-h3 disc-h3--gold">A una amarilla de la sanción</p>${discRiskTable(block.at_risk, { hideTeam: true, playerHref })}` : ""}
+      ${!block.suspended.length && !block.at_risk.length ? `<p class="disc-empty">Sin sancionados ni apercibidos.</p>` : ""}
     </div>`;
+  const nSus = home.suspended.length + away.suspended.length;
+  return sectionCard(`Sancionados y apercibidos <small>${nSus} baja${nSus === 1 ? "" : "s"} por sanción</small>`, `
+    <div class="disc-teams">${team(f.home, home)}${team(f.away, away)}</div>
+    <p class="match-note">Calculado con la regla de acumulación de la competición a partir de las tarjetas registradas; los avisos oficiales tienen prioridad. Las rojas directas pueden sumar más partidos (decide el comité). ${link}</p>`);
+}
+
+function disciplineForTeam(team) {
+  const block = state.suspensions?.by_team?.[team] || {};
+  return { suspended: block.suspended || [], at_risk: block.at_risk || [] };
 }
 
 function statusBadge(item) {

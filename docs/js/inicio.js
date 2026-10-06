@@ -698,8 +698,23 @@ function buildFixtureCard(f, isResult) {
     refChip = '<span class="fx-dr-ref">⚖ ' + escHtml(f.referee) + escHtml(yellStr) + '</span>';
   }
 
-  var footerInner = (trendChip || refChip)
-    ? trendChip + refChip + '<a class="fx-dr-btn" href="' + matchHref + '" title="Ver ficha">→</a>'
+  // Sanciones y apercibidos (suspensions.json, se carga en segundo plano).
+  var discChip = "";
+  if (!isResult && APP.suspensions && APP.suspensions.by_team) {
+    var bt = APP.suspensions.by_team;
+    var names = function (team, key) { return ((bt[team] || {})[key] || []).map(function (i) { return i.player; }); };
+    var sus = names(f.home, "suspended").concat(names(f.away, "suspended"));
+    var risk = names(f.home, "at_risk").concat(names(f.away, "at_risk"));
+    if (sus.length || risk.length) {
+      discChip = '<a class="fx-dr-disc" href="' + matchHref + '" title="' +
+        escHtml((sus.length ? "Sancionados: " + sus.join(", ") + ". " : "") + (risk.length ? "Apercibidos: " + risk.join(", ") : "")) + '">' +
+        (sus.length ? '<b>🟥 ' + sus.length + ' baja' + (sus.length > 1 ? "s" : "") + '</b>' : "") +
+        (risk.length ? '<span>🟨 ' + risk.length + ' apercibido' + (risk.length > 1 ? "s" : "") + '</span>' : "") + '</a>';
+    }
+  }
+
+  var footerInner = (trendChip || refChip || discChip)
+    ? trendChip + discChip + refChip + '<a class="fx-dr-btn" href="' + matchHref + '" title="Ver ficha">→</a>'
     : '<a class="fx-dr-btn fx-dr-btn--alone" href="' + matchHref + '" title="Ver ficha">→</a>';
 
   return '<div class="fx-card fx-dr-card">' + hd +

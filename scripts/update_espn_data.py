@@ -58,6 +58,7 @@ STANDINGS_URL = "https://site.api.espn.com/apis/v2/sports/soccer/{slug}/standing
 PLAYER_FIELDNAMES = [
     "event_id", "date", "league", "team", "opponent", "venue", "player_id", "player", "position",
     "starter", "minutes", "gls", "ast", "sh", "sot", "fls", "fld", "crdy", "crdr", "og", "saves", "gc",
+    "red_type",  # "2y" = doble amarilla · "direct" = roja directa · "" = sin roja
 ]
 PLAYER_STATS = {  # columna -> stat de ESPN
     "gls": "totalGoals", "ast": "goalAssists", "sh": "totalShots", "sot": "shotsOnTarget",
@@ -272,6 +273,63 @@ def _minute(event: dict[str, Any]) -> int | None:
         return int(m.group(1)) if m else None
 
 
+def red_type(pid: str, reds: Any, booked: dict[str, int], sent_off: dict[str, int]) -> str:
+    try:
+        if not int(reds or 0):
+            return ""
+    except (TypeError, ValueError):
+        return ""
+    if pid in booked and pid in sent_off and booked[pid] <= sent_off[pid]:
+        return "2y"
+    return "direct"
+
+
+def _migrate_and_backfill_red_types(team_map: dict, teams: "TeamMatcher", workers: int = 8) -> int:
+    """Añade la columna red_type a un CSV antiguo y la rellena para los
+    partidos con expulsiones (re-pidiendo solo esos resúmenes)."""
+    if not PLAYERS_PATH.exists():
+        return 0
+    with PLAYERS_PATH.open(encoding="utf-8", newline="") as fh:
+        reader = csv.DictReader(fh)
+        header = reader.fieldnames or []
+        rows = list(reader)
+    pending = sorted({(r["league"], r["event_id"]) for r in rows
+                      if str(r.get("crdr") or "0") not in ("", "0") and not r.get("red_type")})
+    if "red_type" in header and not pending:
+        return 0
+
+    def fetch(item):
+        league, event_id = item
+        return item, _get(ESPN_SLUGS[league], "summary", {"event": event_id})
+
+    fixed: dict[tuple, str] = {}
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for (league, event_id), summary in ex.map(fetch, pending):
+            booked, sent_off = {}, {}
+            for k in (summary or {}).get("keyEvents") or []:
+                kind = str((k.get("type") or {}).get("text", "")).lower()
+                parts = [str(((p or {}).get("athlete") or {}).get("id") or "") for p in k.get("participants") or []]
+                minute = _minute(k)
+                if not parts or minute is None:
+                    continue
+                if kind == "red card":
+                    sent_off[parts[0]] = minute
+                elif kind == "yellow card":
+                    booked.setdefault(parts[0], minute)
+            for pid in sent_off:
+                fixed[(event_id, pid)] = red_type(pid, 1, booked, sent_off)
+    for r in rows:
+        if str(r.get("crdr") or "0") not in ("", "0") and not r.get("red_type"):
+            r["red_type"] = fixed.get((r["event_id"], r["player_id"]), "direct")
+        r.setdefault("red_type", "")
+    with PLAYERS_PATH.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=PLAYER_FIELDNAMES)
+        writer.writeheader()
+        for r in rows:
+            writer.writerow({k: r.get(k, "") for k in PLAYER_FIELDNAMES})
+    return len(pending)
+
+
 def player_rows(league: str, event: dict[str, Any], summary: dict[str, Any], id_to_key: dict[str, str],
                 teams: TeamMatcher) -> list[dict[str, Any]]:
     """Una fila por jugador que jugó. Minutos: titular 0→90, cambios y rojas
@@ -282,6 +340,7 @@ def player_rows(league: str, event: dict[str, Any], summary: dict[str, Any], id_
     sub_in: dict[str, int] = {}
     sub_out: dict[str, int] = {}
     sent_off: dict[str, int] = {}
+    booked: dict[str, int] = {}  # primera amarilla de cada jugador (para distinguir doble amarilla)
     for k in summary.get("keyEvents") or []:
         kind = str((k.get("type") or {}).get("text", "")).lower()
         minute = _minute(k)
@@ -294,6 +353,8 @@ def player_rows(league: str, event: dict[str, Any], summary: dict[str, Any], id_
             sub_out[parts[1]] = minute
         elif kind == "red card":
             sent_off[parts[0]] = minute
+        elif kind == "yellow card":
+            booked.setdefault(parts[0], minute)
 
     def team_key(team: dict[str, Any]) -> str:
         return id_to_key.get(str(team.get("id"))) or teams.match(league, team.get("displayName"), team.get("location")) \
@@ -332,6 +393,9 @@ def player_rows(league: str, event: dict[str, Any], summary: dict[str, Any], id_
                     row[col] = int(float(stats.get(stat))) if stats.get(stat) not in (None, "") else ""
                 except (TypeError, ValueError):
                     row[col] = ""
+            # ESPN no distingue en la estadística una roja por doble amarilla de una
+            # directa (en ambos casos amarillas=0, rojas=1); sí en los eventos.
+            row["red_type"] = red_type(pid, row.get("crdr"), booked, sent_off)
             rows.append(row)
     return rows
 
@@ -454,6 +518,9 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
     teams = TeamMatcher()
     team_map = write_team_map(teams, leagues)
     print(f"OK mapa ESPN→equipos: {sum(len(v) for v in team_map.values())} equipos")
+    migrated = _migrate_and_backfill_red_types(team_map, teams, workers)
+    if migrated:
+        print(f"OK tipo de roja rellenado en {migrated} partidos")
     standings = fetch_standings(leagues, team_map, teams)
     print(f"OK clasificaciones ESPN: {len(standings)} ligas")
     known, last_by_league = _existing(OUT_PATH)

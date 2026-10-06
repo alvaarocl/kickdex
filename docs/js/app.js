@@ -521,6 +521,11 @@ async function loadAllData() {
     populateAllSelects();
     initSegControls();
     initModules();
+    // Sanciones/apercibidos: no bloquean la carga; al llegar se repinta Inicio.
+    fetchJSON("suspensions.json").then(data => {
+      APP.suspensions = data;
+      if (typeof renderInicio === "function" && typeof INICIO_STATE !== "undefined") renderInicio(INICIO_STATE.league);
+    }).catch(() => {});
     initGlobalSearch();
     applyRouteParams();
 

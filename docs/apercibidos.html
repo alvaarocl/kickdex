@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apercibidos oficiales - KICKDEX</title>
-  <meta name="description" content="Feed de jugadores apercibidos y sancionados confirmados por fuentes oficiales o verificacion manual." />
+  <title>Apercibidos y sancionados - KICKDEX</title>
+  <meta name="description" content="Jugadores sancionados para su próximo partido y apercibidos a una amarilla, en las 11 ligas, con la regla de cada competición." />
   <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
-  <link rel="stylesheet" href="css/app.css?v=20261007b" />
+  <link rel="stylesheet" href="css/app.css?v=20261007d" />
 </head>
 <body>
   <header>
@@ -14,7 +14,7 @@
       <a class="logo lp-brand-mark" href="index.html" aria-label="Volver a KICKDEX">
         <div class="lp-brand-tile" aria-hidden="true">K</div>
         <div class="logo-text">kickdex<i class="edge-cursor"></i></div>
-        <span class="logo-page-label">official suspensions</span>
+        <span class="logo-page-label">suspensions</span>
       </a>
       <div class="header-actions">
         <a class="btn btn-secondary btn-sm" href="index.html">Terminal</a>
@@ -25,18 +25,18 @@
   <main class="container match-page">
     <section class="match-hero card">
       <div class="match-kicker">
-        <span>Jugadores</span>
-        <span>Tarjetas</span>
-        <span>Oficial/verificado</span>
+        <span>11 ligas</span>
+        <span>Tarjetas partido a partido</span>
+        <span>Regla de cada competición</span>
       </div>
       <div class="referee-hero-row player-hero-row">
         <div class="ref-avatar player-avatar">TA</div>
         <div>
-          <h1>Apercibidos oficiales</h1>
-          <p>Jugadores a una tarjeta de sancion o ya sancionados, solo cuando hay fuente oficial o verificacion manual.</p>
+          <h1>Apercibidos y sancionados</h1>
+          <p>Quién se pierde su próximo partido por sanción y quién está a una amarilla de perdérselo.</p>
         </div>
       </div>
-      <div class="match-edge-chip">Feed verificado <span>Sin estimaciones ni posibles</span></div>
+      <div class="match-edge-chip">Calculado con las tarjetas de cada partido <span>+ avisos oficiales cuando existen</span></div>
     </section>
 
     <div id="discipline-root">
@@ -50,13 +50,14 @@
   <footer>
     <div class="container">
       <div class="disclaimer">
-        <strong>KICKDEX</strong> &nbsp;-&nbsp; Feed de apercibidos oficiales/verificados. Si no hay fuente, no se inventa el dato.
+        <strong>KICKDEX</strong> &nbsp;-&nbsp; Apercibidos calculados con la regla de cada competición a partir de las tarjetas registradas. Confirma las rojas directas con el comité de competición.
       </div>
     </div>
   </footer>
 
   <script src="js/team_names.js?v=20260825a"></script>
   <script src="js/entities.js?v=20260826teamnames"></script>
-  <script src="js/apercibidos.js?v=20260828playerphotos"></script>
+  <script src="js/discipline_ui.js?v=20261007a"></script>
+  <script src="js/apercibidos.js?v=20261007d"></script>
 </body>
 </html>

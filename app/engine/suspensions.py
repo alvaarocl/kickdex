@@ -113,8 +113,53 @@ def normalise_suspension_rows(rows: Iterable[dict], leagues: dict | None = None)
     return clean
 
 
-def build_suspensions_payload(rows: Iterable[dict], leagues: dict | None = None, source_catalog: Iterable[dict] | None = None) -> dict:
+def _person_key(player: str, team: str) -> tuple[str, str]:
+    import unicodedata
+
+    def norm(text: str) -> str:
+        text = unicodedata.normalize("NFKD", str(text or ""))
+        return " ".join("".join(c for c in text if not unicodedata.combining(c)).lower().split())
+    return norm(player), norm(team)
+
+
+def merge_calculated(official: list[dict], calculated: list[dict], leagues: dict | None = None) -> list[dict]:
+    """Une el feed oficial/verificado con lo calculado a partir de las tarjetas.
+    - Oficial + calculado del mismo jugador: queda el oficial, enriquecido con
+      el recuento y los partidos que se pierde.
+    - Oficial "sancionado" de un jugador cuya sanción ya consta como cumplida
+      (artículos oficiales sin fecha, que se quedan desfasados): se descarta."""
+    calc_by_key: dict[tuple, dict] = {}
+    for item in calculated or []:
+        calc_by_key[_person_key(item["player"], item["team"])] = item
+    merged: list[dict] = []
+    used = set()
+    for item in official:
+        key = _person_key(item["player"], item["team"])
+        calc = calc_by_key.get(key)
+        if calc and calc["status"] == "served" and item["status"] == "suspended":
+            continue
+        if calc and calc["status"] in VALID_STATUSES:
+            used.add(key)
+            extra = {k: calc.get(k) for k in ("cards", "threshold", "misses", "next", "reason", "remaining",
+                                                "ban_matches", "rule", "confidence", "player_id", "trigger_date")
+                     if calc.get(k) is not None and item.get(k) in (None, "")}
+            item = {**item, **extra, "confirmed": calc["status"] == item["status"]}
+        merged.append(item)
+    for key, calc in calc_by_key.items():
+        if key in used or calc["status"] not in VALID_STATUSES:
+            continue
+        league = calc.get("league")
+        merged.append({**calc, "league_name": (leagues or {}).get(league, {}).get("name", league),
+                       "updated_at": utc_now_iso(), "source_url": None, "matchday": None, "notes": None})
+    merged.sort(key=lambda i: (i.get("league_name") or "", i["team"], 0 if i["status"] == "suspended" else 1, i["player"]))
+    return merged
+
+
+def build_suspensions_payload(rows: Iterable[dict], leagues: dict | None = None, source_catalog: Iterable[dict] | None = None,
+                              calculated: list[dict] | None = None) -> dict:
     items = normalise_suspension_rows(rows, leagues)
+    if calculated is not None:
+        items = merge_calculated(items, calculated, leagues)
     by_team: dict[str, dict[str, list[dict]]] = {}
     by_league: dict[str, dict] = {}
     sources = {}
@@ -162,11 +207,16 @@ def build_suspensions_payload(rows: Iterable[dict], leagues: dict | None = None,
     return {
         "updated_at": utc_now_iso(),
         "status": "ok" if items else "empty",
-        "source": "official_or_verified_suspension_feed",
+        "source": "calculated_plus_official" if calculated is not None else "official_or_verified_suspension_feed",
         "disclaimer": (
+            "Apercibidos y sancionados calculados con la regla de cada competición a partir de las tarjetas "
+            "registradas partido a partido, más los avisos oficiales/verificados cuando existen. Las rojas "
+            "directas pueden acarrear más partidos de los indicados: lo decide el comité de competición."
+            if calculated is not None else
             "Solo se muestran sanciones y apercibidos confirmados por una fuente oficial "
             "o cargados como verificados. KICKDEX no rellena esta lista con modelos de riesgo."
         ),
+        "calculated": sum(1 for item in items if item.get("source") == "calculated"),
         "totals": {
             "items": len(items),
             "at_risk": sum(1 for item in items if item["status"] == "at_risk"),
