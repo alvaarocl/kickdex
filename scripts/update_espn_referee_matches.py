@@ -45,6 +45,7 @@ ESPN_SLUGS = {
 OUT_PATH = Path(DATA_DIR) / "referees_matches.csv"
 ASSIGNMENTS_PATH = Path(DATA_DIR) / "referee_assignments.json"
 TEAM_MAP_PATH = ROOT / "docs" / "data" / "espn_teams.json"
+UPCOMING_PATH = Path(DATA_DIR) / "espn_upcoming.json"
 FIELDNAMES = [
     "fixture_id", "date", "league", "league_name", "referee", "home", "away",
     "home_score", "away_score", "yellow_cards", "red_cards", "fouls", "penalties",
@@ -239,7 +240,33 @@ def write_team_map(teams: TeamMatcher, leagues: list[str]) -> int:
     return sum(len(v) for v in out.values())
 
 
-def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_seconds: float | None = None) -> int:
+def fixture_item(code: str, ev: dict[str, Any], teams: TeamMatcher) -> dict[str, Any] | None:
+    """Partido programado → contrato de fixtures.json (fecha/hora en Madrid)."""
+    from zoneinfo import ZoneInfo
+
+    comp = (ev.get("competitions") or [{}])[0]
+    side = {c.get("homeAway"): c.get("team") or {} for c in comp.get("competitors", [])}
+    home, away = side.get("home"), side.get("away")
+    if not home or not away:
+        return None
+    kickoff = datetime.fromisoformat(ev["date"].replace("Z", "+00:00"))
+    local = kickoff.astimezone(ZoneInfo("Europe/Madrid"))
+    time_ok = comp.get("timeValid", True) and (kickoff.hour, kickoff.minute) != (0, 0)
+    return {
+        "league": code,
+        "league_name": LEAGUES.get(code, code),
+        "date": local.date().isoformat() if time_ok else kickoff.date().isoformat(),
+        "time": local.strftime("%H:%M") if time_ok else "",
+        "home": teams.match(code, home.get("displayName"), home.get("shortDisplayName"), home.get("location")) or home.get("displayName"),
+        "away": teams.match(code, away.get("displayName"), away.get("shortDisplayName"), away.get("location")) or away.get("displayName"),
+        "venue": (comp.get("venue") or {}).get("fullName", ""),
+        "status": "scheduled",
+        "source": "ESPN",
+    }
+
+
+def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_seconds: float | None = None,
+           fixture_days: int = 21) -> int:
     deadline = time.monotonic() + max_seconds if max_seconds else None
     teams = TeamMatcher()
     mapped = write_team_map(teams, leagues)
@@ -258,7 +285,8 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
         if last_by_league.get(code):
             start = max(season_start, date.fromisoformat(last_by_league[code]) - timedelta(days=3))
         day = start
-        while day <= today + timedelta(days=days_ahead):
+        # Hasta `fixture_days` vista: calendario de las ligas sin FixtureDownload.
+        while day <= today + timedelta(days=max(days_ahead, fixture_days)):
             jobs.append((code, slug, day))
             day += timedelta(days=1)
 
@@ -271,14 +299,23 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
     with ThreadPoolExecutor(max_workers=workers) as ex:
         boards = list(ex.map(scoreboard, jobs))
 
-    finished, upcoming = [], []
+    finished, upcoming, fixtures = [], [], []
     for (code, slug, day), events in boards:
         for ev in events:
             state = ((ev.get("status") or {}).get("type") or {}).get("state")
             if state == "post" and f"espn:{ev['id']}" not in known:
                 finished.append((code, slug, ev))
             elif state == "pre" and day >= today:
-                upcoming.append((code, slug, ev))
+                if day <= today + timedelta(days=days_ahead):
+                    upcoming.append((code, slug, ev))
+                item = fixture_item(code, ev, teams)
+                if item:
+                    fixtures.append(item)
+    if fixtures:
+        UPCOMING_PATH.write_text(json.dumps({
+            "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "items": sorted(fixtures, key=lambda f: (f["date"], f["time"], f["league"])),
+        }, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # 2) Resúmenes de partidos terminados nuevos + próximos (árbitro asignado).
     def summary(item):
@@ -318,7 +355,7 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
 
     unmatched = sorted({r[k] for r in rows for k in ("home", "away") if r[k] and not any(r[k] == key for key, _ in teams.by_league.get(r["league"], []))})
     print(f"OK ESPN árbitros: {len(jobs)} días-liga, {len(finished)} partidos nuevos, {len(rows)} con árbitro, "
-          f"{len(assignments)} asignaciones próximas")
+          f"{len(assignments)} asignaciones próximas, {len(fixtures)} partidos programados")
     if unmatched:
         print(f"   Equipos sin cruzar ({len(unmatched)}): {', '.join(unmatched[:15])}")
     return len(rows)
@@ -330,8 +367,9 @@ def main() -> None:
     parser.add_argument("--days-ahead", type=int, default=3)
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--max-seconds", type=float, default=None)
+    parser.add_argument("--fixture-days", type=int, default=21)
     args = parser.parse_args()
-    update(args.leagues, args.days_ahead, args.workers, args.max_seconds)
+    update(args.leagues, args.days_ahead, args.workers, args.max_seconds, args.fixture_days)
 
 
 if __name__ == "__main__":

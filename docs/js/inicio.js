@@ -223,6 +223,12 @@ function _buildRadarCard(title, value, desc, sub, icon, href) {
 
 // ── Day strip ─────────────────────────────────────────────────────────────
 
+// Fecha local YYYY-MM-DD (toISOString es UTC: de 00:00 a 02:00 en España
+// "Hoy" apuntaba al día anterior).
+function _localIso(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
 function buildDayStrip() {
   var today = new Date();
   var dayNames   = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
@@ -232,7 +238,7 @@ function buildDayStrip() {
   for (var i = -1; i <= 4; i++) {
     var d = new Date(today);
     d.setDate(today.getDate() + i);
-    var iso = d.toISOString().slice(0, 10);
+    var iso = _localIso(d);
     var label;
     if      (i === -1) label = "Ayer";
     else if (i ===  0) label = "Hoy";
@@ -256,16 +262,11 @@ function buildDayStrip() {
 function _initDayStrip(container) {
   container.querySelectorAll("[data-strip-date]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      var date = btn.dataset.stripDate;
-      INICIO_STATE.date    = date;
+      // Un día concreto muestra TODOS los partidos de ese día (jugados y por
+      // jugar) sin tocar la vista; "Todos" vuelve a la vista elegida. Antes se
+      // cambiaba la vista a "Temporada completa" en silencio y ahí se quedaba.
+      INICIO_STATE.date    = btn.dataset.stripDate;
       INICIO_STATE.visible = INICIO_PAGE_SIZE;
-      // When picking a specific day, switch to full view so both results
-      // and upcoming matches on that day are shown.
-      if (date !== "all" && INICIO_STATE.view === "upcoming") {
-        INICIO_STATE.view = "full";
-        var viewSel = document.getElementById("inicioCalendarView");
-        if (viewSel) viewSel.value = "full";
-      }
       renderInicio(INICIO_STATE.league);
     });
   });
@@ -274,6 +275,10 @@ function _initDayStrip(container) {
 // ── Init ──────────────────────────────────────────────────────────────────
 
 function initInicio() {
+  // El navegador puede restaurar el valor de los <select> al recargar; el
+  // estado manda (vista por defecto: Próximos).
+  var viewInit = document.getElementById("inicioCalendarView");
+  if (viewInit) viewInit.value = INICIO_STATE.view;
   [
     ["inicioCalendarView", "view"],
     ["inicioRoundFilter",  "round"],
@@ -302,7 +307,7 @@ function renderInicio(leagueFilter) {
 
   var league   = leagueFilter || "all";
   var fixtures = APP.fixtures || { recent: [], upcoming: [] };
-  var today    = new Date().toISOString().slice(0, 10);
+  var today    = _localIso(new Date());
 
   if (league !== INICIO_STATE.league) {
     INICIO_STATE.league  = league;
@@ -310,13 +315,19 @@ function renderInicio(leagueFilter) {
   }
 
   var selected = getCompleteCalendar(fixtures);
+  var byDay = INICIO_STATE.date !== "all";
 
-  if (INICIO_STATE.view === "upcoming") {
-    selected = selected.filter(function (f) { return !isFixtureResult(f) && f.date >= today; });
-  } else if (INICIO_STATE.view === "results") {
-    selected = selected.filter(isFixtureResult);
-  }
   if (league !== "all") selected = selected.filter(function (f) { return f.league === league; });
+  var leagueAll = selected;
+
+  // Con un día elegido en la tira, la vista no filtra (se ven jugados y por jugar).
+  if (!byDay) {
+    if (INICIO_STATE.view === "upcoming") {
+      selected = selected.filter(function (f) { return !isFixtureResult(f) && f.date >= today; });
+    } else if (INICIO_STATE.view === "results") {
+      selected = selected.filter(isFixtureResult);
+    }
+  }
 
   refreshCalendarOptions(selected);
 
@@ -334,7 +345,7 @@ function renderInicio(leagueFilter) {
   selected.sort(function (a, b) {
     var v = (String(a.date) + "T" + String(a.time || "00:00"))
       .localeCompare(String(b.date) + "T" + String(b.time || "00:00"));
-    return INICIO_STATE.view === "results" ? -v : v;
+    return INICIO_STATE.view === "results" && !byDay ? -v : v;
   });
 
   var total   = selected.length;
@@ -358,11 +369,13 @@ function renderInicio(leagueFilter) {
       ? completeLeagues.length + " leagues have a complete season calendar; the rest show available matches."
       : completeLeagues.length + " ligas tienen calendario completo; el resto muestra los partidos disponibles.";
   }
-  var viewLabel = INICIO_STATE.view === "full"
-    ? t("inicio_view_full")
-    : INICIO_STATE.view === "results"
-      ? t("inicio_view_results")
-      : t("inicio_view_upcoming");
+  var viewLabel = byDay
+    ? "Partidos del " + new Date(INICIO_STATE.date + "T12:00:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })
+    : INICIO_STATE.view === "full"
+      ? t("inicio_view_full")
+      : INICIO_STATE.view === "results"
+        ? t("inicio_view_results")
+        : t("inicio_view_upcoming");
 
   var html = "";
 
@@ -402,11 +415,32 @@ function renderInicio(leagueFilter) {
         '</button></div>';
     }
   } else {
+    // Vacío: ofrecer el siguiente paso útil en vez de obligar a probar filtros.
+    var nextUp = leagueAll.filter(function (f) { return !isFixtureResult(f) && f.date >= today; })
+      .sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); })[0];
+    var lastPlayed = leagueAll.filter(isFixtureResult)
+      .sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); })[0];
+    var actions = [];
+    if (byDay || INICIO_STATE.round !== "all" || INICIO_STATE.month !== "all") {
+      actions.push('<button class="btn btn-secondary btn-sm" type="button" data-inicio-action="clear">Quitar filtros</button>');
+    }
+    if (nextUp && (byDay || INICIO_STATE.view !== "upcoming")) {
+      actions.push('<button class="btn btn-secondary btn-sm" type="button" data-inicio-action="upcoming">Ver próximos (desde ' + escHtml(fxDateLabel(nextUp.date, "")) + ')</button>');
+    }
+    if (lastPlayed && INICIO_STATE.view !== "results") {
+      actions.push('<button class="btn btn-secondary btn-sm" type="button" data-inicio-action="results">Ver resultados</button>');
+    }
+    var reason = byDay
+      ? "No hay partidos ese día" + (league !== "all" ? " en esta liga" : "") + "."
+      : INICIO_STATE.view === "upcoming" && !nextUp
+        ? "Aún no hay próximos partidos publicados para esta liga."
+        : "No hay partidos para esta combinación de filtros.";
     html += '<div class="card" style="margin-bottom:20px;padding:28px 24px;text-align:center;">' +
       '<div style="font-size:2rem;margin-bottom:10px;">📅</div>' +
-      '<p style="color:var(--muted);font-size:.9rem;line-height:1.6;max-width:500px;margin:0 auto;">' +
-      'No hay partidos para esta combinación de filtros.' +
-      '</p></div>';
+      '<p style="color:var(--muted);font-size:.9rem;line-height:1.6;max-width:500px;margin:0 auto 14px;">' +
+      escHtml(reason) + '</p>' +
+      (actions.length ? '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' + actions.join("") + '</div>' : '') +
+      '</div>';
   }
 
   box.innerHTML = html;
@@ -414,6 +448,20 @@ function renderInicio(leagueFilter) {
   // Wire day strip
   var strip = box.querySelector(".day-strip");
   if (strip) _initDayStrip(strip);
+
+  box.querySelectorAll("[data-inicio-action]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var action = btn.dataset.inicioAction;
+      INICIO_STATE.date = "all";
+      INICIO_STATE.round = "all";
+      INICIO_STATE.month = "all";
+      INICIO_STATE.visible = INICIO_PAGE_SIZE;
+      if (action === "upcoming" || action === "results") INICIO_STATE.view = action;
+      var viewSel = document.getElementById("inicioCalendarView");
+      if (viewSel) viewSel.value = INICIO_STATE.view;
+      renderInicio(INICIO_STATE.league);
+    });
+  });
 
   // Load-more button
   var loadMore = document.getElementById("inicioLoadMore");
@@ -696,7 +744,7 @@ function buildMatchHref(f) {
 
 function fxDateLabel(dateStr, timeStr) {
   if (!dateStr) return "—";
-  var today    = new Date().toISOString().slice(0, 10);
+  var today    = _localIso(new Date());
   var diffDays = Math.round((new Date(dateStr) - new Date(today)) / 86400000);
 
   var label;

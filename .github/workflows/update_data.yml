@@ -128,6 +128,7 @@ jobs:
           test ! -f DATOS/referees_season.csv || git add DATOS/referees_season.csv
           test ! -f DATOS/referees_wsd_matches.csv || git add DATOS/referees_wsd_matches.csv
           test ! -f DATOS/referee_assignments.json || git add DATOS/referee_assignments.json
+          test ! -f DATOS/espn_upcoming.json || git add DATOS/espn_upcoming.json
           test ! -f DATOS/suspensions_manual.csv || git add DATOS/suspensions_manual.csv
           git diff --staged --quiet || git commit -m "chore: update data $(date -u +%Y-%m-%d) [skip ci]"
           # El workflow de directo puede haber empujado mientras tanto.

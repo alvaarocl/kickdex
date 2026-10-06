@@ -690,6 +690,49 @@ def _merge_fixture_lists(primary: list[dict], secondary: list[dict]) -> list[dic
     return list(merged.values())
 
 
+def _merge_espn_upcoming(upcoming: list[dict], calendar: list[dict], fd_status: dict, now) -> tuple[list, list]:
+    """Próximos partidos de ESPN (DATOS/espn_upcoming.json):
+    - ligas sin FixtureDownload (segundas divisiones): se añaden; antes
+      "Próximos" salía vacío para Segunda, Serie B, 2. Bundesliga y Ligue 2.
+    - resto: solo rellenan la hora cuando FixtureDownload la deja vacía."""
+    import pandas as pd
+    from app.config import DATA_DIR
+    try:
+        items = json.loads((Path(DATA_DIR) / "espn_upcoming.json").read_text(encoding="utf-8")).get("items", [])
+    except (OSError, ValueError):
+        return upcoming, calendar
+    covered = {code for code, info in ((fd_status or {}).get("leagues") or {}).items() if (info or {}).get("ok")}
+    today = pd.Timestamp(now).strftime("%Y-%m-%d")
+    items = [i for i in items if str(i.get("date", "")) >= today]
+    # FixtureDownload pone los partidos "hora por confirmar" en el viernes de la
+    # jornada; ESPN trae el día y la hora reales → se cruza por equipos (±4 días).
+    espn_by_teams: dict = {}
+    for i in items:
+        espn_by_teams.setdefault((i.get("league"), i.get("home"), i.get("away")), []).append(i)
+
+    def _espn_for(f):
+        cands = espn_by_teams.get((f.get("league"), f.get("home"), f.get("away")), [])
+        try:
+            fd = pd.Timestamp(f.get("date"))
+        except (TypeError, ValueError):
+            return None
+        near = [c for c in cands if abs((pd.Timestamp(c["date"]) - fd).days) <= 4]
+        return near[0] if near else None
+
+    for bucket in (upcoming, calendar):
+        for f in bucket:
+            if f.get("time") or f.get("status") == "finished":
+                continue
+            match = _espn_for(f)
+            if match and match.get("time"):
+                f["date"], f["time"] = match["date"], match["time"]
+
+    extra = [i for i in items if i.get("league") not in covered]
+    upcoming = _merge_fixture_lists(primary=upcoming, secondary=extra)
+    calendar = _merge_fixture_lists(primary=calendar, secondary=extra)
+    return upcoming, calendar
+
+
 def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     """
     Genera partidos recientes (últimos 7 días) y próximos (NaN FTHG).
@@ -783,6 +826,7 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     recent = _merge_fixture_lists(primary=recent, secondary=fd_recent)
     upcoming = _merge_fixture_lists(primary=fd_upcoming, secondary=upcoming)
     calendar = _merge_fixture_lists(primary=calendar, secondary=fd_calendar)
+    upcoming, calendar = _merge_espn_upcoming(upcoming, calendar, fd_status, now)
 
     # Forma uniforme: FixtureDownload no trae árbitro; football-data.co.uk solo
     # lo asigna a partidos ya disputados. Fase 0.5: campos estructurales en null
@@ -807,7 +851,7 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     calendar.sort(key=lambda x: (x["date"], x.get("time", ""), x.get("league", "")))
     return {
         "recent": recent[:80],
-        "upcoming": upcoming[:160],
+        "upcoming": upcoming[:300],  # 11 ligas con calendario ≈ 10-14 días
         "calendar": calendar,
         "meta": {
             "updated_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
