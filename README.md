@@ -17,6 +17,7 @@ Match-by-match data, refreshed automatically every day. **No login. No ads. No p
 [![Python](https://img.shields.io/badge/python-3.11-5BD6FF?style=flat-square&labelColor=05070D)](requirements.txt)
 [![Stack](https://img.shields.io/badge/stack-static%20%C2%B7%20GitHub%20Pages-F5B93C?style=flat-square&labelColor=05070D)](#architecture)
 [![Cost](https://img.shields.io/badge/cost-%E2%82%AC0-2EE6A6?style=flat-square&labelColor=05070D)](#data-sources)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-C8D4E8?style=flat-square&labelColor=05070D)](LICENSE)
 
 [**Open the app →**](https://kickdex.alvarocarpintero.com) &nbsp;·&nbsp; [Methodology](https://kickdex.alvarocarpintero.com/methodology.html) &nbsp;·&nbsp; [Coverage](https://kickdex.alvarocarpintero.com/coverage.html)
 
@@ -42,6 +43,7 @@ Match-by-match data, refreshed automatically every day. **No login. No ads. No p
 - [Repository layout](#repository-layout)
 - [Known limitations](#known-limitations)
 - [Responsible use & legal](#responsible-use--legal)
+- [License](#license)
 
 ---
 
@@ -289,6 +291,19 @@ KICKDEX would rather say "no data" than make it up:
 KICKDEX provides historical and statistical analysis **for informational purposes only**; it is not betting advice and does not guarantee outcomes. 18+ only. If gambling stops being fun, get help at [jugarbien.es](https://www.jugarbien.es) (Spain) or [begambleaware.org](https://www.begambleaware.org).
 
 [Legal notice](https://kickdex.alvarocarpintero.com/aviso-legal.html) · [Privacy](https://kickdex.alvarocarpintero.com/privacidad.html) · [Cookies](https://kickdex.alvarocarpintero.com/cookies.html) · [Terms](https://kickdex.alvarocarpintero.com/terminos.html)
+
+---
+
+## License
+
+Copyright © 2026 Álvaro Carpintero.
+
+The source code is licensed under the [**GNU Affero General Public License v3.0**](LICENSE). You may use, study, modify and share it; if you run a modified version as a public service (e.g. a website), you must make your full source code available to its users under the same license.
+
+Not covered by the license:
+
+- The **KICKDEX name, logo and brand assets** (`docs/brand/`) — all rights reserved.
+- **Third-party data, club crests and player photos**, which remain subject to their respective owners' terms (see [Data sources](#data-sources)).
 
 <div align="center">
 <br>
