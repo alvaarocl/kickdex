@@ -1406,7 +1406,7 @@ def _referee_is_active(last_match, today=None) -> bool:
     import pandas as pd
     if not last_match:
         return False
-    today = pd.Timestamp(today) if today is not None else pd.Timestamp.utcnow().tz_localize(None)
+    today = pd.Timestamp(today) if today is not None else pd.Timestamp.now("UTC").tz_localize(None)
     return (today - pd.Timestamp(last_match)).days <= REFEREE_ACTIVE_DAYS
 
 

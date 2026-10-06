@@ -42,6 +42,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Cache historical football-data CSVs
+        # Sin caché cada ejecución re-descargaba ~20 temporadas x 11 ligas
+        # (8,5 min). Las temporadas pasadas no cambian; la actual se fuerza
+        # igualmente en build_data. Solo patrones XX_/XXX_ para no pisar nunca
+        # los CSV de árbitros versionados en git.
+        uses: actions/cache@v4
+        with:
+          path: |
+            DATOS/??_*.csv
+            DATOS/???_*.csv
+          key: football-data-csv-${{ github.run_id }}
+          restore-keys: football-data-csv-
+
       - name: Update referee data
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY || secrets.API_FOOTBALL_KEY }}
