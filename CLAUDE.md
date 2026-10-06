@@ -15,6 +15,7 @@ Primary public product:
 - `docs/data/*.json`
 
 Data/product pipeline:
+- `scripts/update_espn_data.py` (players, referees, upcoming fixtures, standings, team map)
 - `scripts/build_data.py`
 - `app/data/*`
 - `app/engine/*`
@@ -26,12 +27,12 @@ Do not add new public backend dependencies unless explicitly approved. Static JS
 
 Do not overstate coverage.
 
-Current known limitations:
-- Calendar has broad future coverage through FixtureDownload for top leagues, but not every second division.
-- Player stats are season aggregates, not real match-by-match logs.
-- Player coverage is strong for SP1, E0, I1, D1, F1; weak or missing for SP2, E1, I2, D2, F2, N1.
-- Referee data is aggregate-heavy and source-dependent.
-- Legal pages exist, but real owner identity fields must be completed before a commercial launch.
+Current known limitations (updated 2026-10):
+- Calendar: FixtureDownload for 7 top leagues; ESPN fills the next 21 days for SP2, I2, D2, F2.
+- Player stats: match-by-match from ESPN for all 11 leagues. Minutes are ESTIMATED (line-ups, subs, red cards; no stoppage time).
+- Referees: match-by-match (ESPN for the current season in 11 leagues; football-data.co.uk + World Soccer Data history). World Soccer Data blocks GitHub Actions IPs, so its history only refreshes from a local run.
+- Live: the browser polls ESPN's public scoreboard (unofficial API, falls back to `live_scores.json`).
+- Standings: football-data.org (7 leagues) + ESPN (second divisions).
 
 Copy must remain honest:
 - Say "estimated edge", never "guaranteed edge".

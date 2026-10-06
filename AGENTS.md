@@ -2,9 +2,9 @@
 
 The shared operating guide for any coding agent working on KICKDEX (Claude Code, Codex, Cursor, Aider, etc.) lives in [`CLAUDE.md`](CLAUDE.md) — it is the **single source of truth** for product direction, brand voice, stack decisions, sprint plan, testing expectations, and legal guardrails. Read it before editing.
 
-The actionable, trackable backlog is in [`MVP_BACKLOG.md`](MVP_BACKLOG.md). Mark items in progress (`[~]`) when you start, completed (`[x]`) when you ship.
+Project notes, data contracts and the historical PRD/plans live in [`docs_proyecto/`](docs_proyecto/).
 
-If your tooling reads `AGENTS.md` by convention (Codex CLI, OpenHands, etc.), this file is just a pointer — everything you need is in the two files above.
+If your tooling reads `AGENTS.md` by convention (Codex CLI, OpenHands, etc.), this file is just a pointer — everything you need is in the files above.
 
 ## TL;DR
 

@@ -1298,6 +1298,13 @@ def _load_wsd_referee_matches():
     except Exception as e:
         print(f"  Warning: could not read {path}: {e}")
         return pd.DataFrame()
+    # World Soccer Data escribe "0 0" cuando no tiene las tarjetas de un partido
+    # (11% de sus filas frente al ~3% real; donde coincide con ESPN, ESPN da
+    # 2-4 amarillas). Se descartan: mejor sin dato que una media hundida.
+    if {"yellow_cards", "red_cards"} <= set(raw.columns):
+        y = pd.to_numeric(raw["yellow_cards"], errors="coerce").fillna(0)
+        r = pd.to_numeric(raw["red_cards"], errors="coerce").fillna(0)
+        raw = raw[(y + r) > 0]
     return _normalise_referee_frame(raw, "worldsoccerdata")
 
 

@@ -304,3 +304,19 @@ def test_compound_spanish_names_merge_into_one_referee(tmp_path, monkeypatch):
     assert refs[0]["name"] == "Miguel Angel Ortiz Arias"
     assert refs[0]["career_matches"] == 4
     assert refs[0]["season"]["matches"] == 1
+
+
+def test_worldsoccerdata_zero_card_rows_are_treated_as_missing(tmp_path, monkeypatch):
+    data_dir = tmp_path / "datos"
+    data_dir.mkdir()
+    (data_dir / "referees_wsd_matches.csv").write_text("\n".join([
+        "date,league,referee,home,away,home_score,away_score,yellow_cards,red_cards,season,source,updated_at",
+        "2026-05-10,SP1,Zero Ref,A,B,1,0,4,0,2025,worldsoccerdata,x",
+        "2026-05-03,SP1,Zero Ref,C,D,1,0,0,0,2025,worldsoccerdata,x",
+        "2026-04-26,SP1,Zero Ref,E,F,1,0,6,0,2025,worldsoccerdata,x",
+    ]), encoding="utf-8")
+    monkeypatch.setattr("app.config.DATA_DIR", str(data_dir))
+    empty = pd.DataFrame({"Date": pd.to_datetime([]), "Div": [], "Referee": [], "HomeTeam": [], "AwayTeam": []})
+    ref = {r["name"]: r for r in build_referees(empty, empty)}["Zero Ref"]
+    assert ref["career_matches"] == 2
+    assert ref["overall"]["yellows_per_match"] > 4
