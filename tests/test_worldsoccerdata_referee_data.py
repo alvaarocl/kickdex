@@ -229,3 +229,14 @@ def test_fetch_league_is_incremental(monkeypatch):
     # Totales desde el registro partido a partido de esta temporada (4+5 / 1+0).
     assert (new["yellow_cards"], new["red_cards"]) == (9, 1)
     assert len(matches) == 3
+
+
+def test_parse_match_log_from_direct_html():
+    html = """<html><body>
+    <h3>Matches 2026-2027</h3>
+    <table><tr><th>Date</th><th>Match</th><th>FT (HT)</th><th>BTTS</th><th>Cards</th></tr>
+    <tr><td>20 Sep 2026</td><td><a href="/m/1">Atletico Madrid vs Real Madrid</a></td><td>2-1 (0-0)</td><td>✓</td><td>4 1</td></tr>
+    </table></body></html>"""
+    assert _parse_match_log(html) == [{"date": "2026-09-20", "home": "Atletico Madrid", "away": "Real Madrid",
+                                       "home_score": 2, "away_score": 1, "yellow_cards": 4, "red_cards": 1,
+                                       "season": 2026}]
