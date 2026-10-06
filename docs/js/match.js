@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", initMatchPage);
 async function initMatchPage() {
   try {
     const [fixtures, leagues, teamStats, h2h, edges, trends, players, referees,
-           suspensions, discipline, teamAssets, playerAssets, modelConfig, alerts] = await Promise.all([
+           suspensions, discipline, teamAssets, playerAssets, modelConfig, alerts, competitions, playersCL] = await Promise.all([
       fetchJSON("fixtures.json"),
       fetchJSON("leagues.json").catch(() => ({})),
       fetchJSON("team_stats.json").catch(() => ({})),
@@ -57,10 +57,12 @@ async function initMatchPage() {
       fetchJSON("player_assets.json").catch(() => ({ players: {} })),
       fetchJSON("model_config.json").catch(() => null),
       fetchJSON("alerts.json").catch(() => ({ matches: {} })),
+      fetchJSON("competitions.json").catch(() => ({})),
+      fetchJSON("players_cl.json").catch(() => ({})),
     ]);
-    Object.assign(state, { fixtures, leagues, teamStats, h2h, edges, trends, players,
-                            referees, suspensions, discipline, teamAssets, playerAssets,
-                            modelConfig, alerts });
+    Object.assign(state, { fixtures, leagues: mergeCompetitions(leagues, competitions), teamStats, h2h, edges,
+                            trends, players, referees, suspensions, discipline, teamAssets, playerAssets,
+                            modelConfig, alerts, competitions, playersCL });
     window.KDXEntities?.configure(teamAssets, playerAssets);
     renderMatch();
   } catch (err) {
@@ -310,8 +312,8 @@ function renderJugadoresTab(fixture) {
 // calculado con las tarjetas + oficial). Va arriba de la Previa: es lo primero
 // que hay que saber de un partido.
 function buildApercibidosSection(f) {
-  const home = disciplineForTeam(f.home);
-  const away = disciplineForTeam(f.away);
+  const home = disciplineForTeam(f.home, f.league);
+  const away = disciplineForTeam(f.away, f.league);
   const total = home.suspended.length + home.at_risk.length + away.suspended.length + away.at_risk.length;
   const link = `<a href="apercibidos.html?league=${encodeURIComponent(f.league || "")}">Ver todos los de la liga →</a>`;
   if (!total) {
@@ -331,9 +333,10 @@ function buildApercibidosSection(f) {
     <p class="match-note">Calculado con la regla de acumulación de la competición a partir de las tarjetas registradas; los avisos oficiales tienen prioridad. Las rojas directas pueden sumar más partidos (decide el comité). ${link}</p>`);
 }
 
-function disciplineForTeam(team) {
+function disciplineForTeam(team, league) {
   const block = state.suspensions?.by_team?.[team] || {};
-  return { suspended: block.suspended || [], at_risk: block.at_risk || [] };
+  const sameComp = i => !i.league || !league || i.league === league;
+  return { suspended: (block.suspended || []).filter(sameComp), at_risk: (block.at_risk || []).filter(sameComp) };
 }
 
 function statusBadge(item) {

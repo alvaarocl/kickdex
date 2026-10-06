@@ -232,3 +232,17 @@ function teamShortLabel(name) {
   const distinctive = words.find(w => !TEAM_SHORT_LABEL_GENERIC_WORDS.has(w.toLowerCase()));
   return distinctive || words[words.length - 1] || display;
 }
+
+
+/**
+ * Competiciones europeas (competitions.json) añadidas AL FINAL del objeto de
+ * ligas: así los bucles "¿en qué liga juega este equipo?" siguen encontrando
+ * antes su liga doméstica, y filtros/etiquetas ven la Champions como una más.
+ */
+function mergeCompetitions(leagues, competitions) {
+  const out = { ...(leagues || {}) };
+  Object.entries(competitions || {}).forEach(([code, comp]) => {
+    if (!out[code]) out[code] = { ...comp, competition: true };
+  });
+  return out;
+}

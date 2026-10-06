@@ -46,7 +46,13 @@ BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}/{endpoint}"
 ESPN_SLUGS = {
     "SP1": "esp.1", "SP2": "esp.2", "E0": "eng.1", "E1": "eng.2", "I1": "ita.1", "I2": "ita.2",
     "D1": "ger.1", "D2": "ger.2", "F1": "fra.1", "F2": "fra.2", "N1": "ned.1",
+    "CL": "uefa.champions",
 }
+# Competiciones europeas: no tienen CSV de football-data ni entrada en
+# leagues.json; sus equipos se cruzan contra TODAS las ligas (umbral alto) y los
+# que no juegan en ninguna de las 11 ligas usan el nombre de ESPN como clave.
+CUP_COMPETITIONS = {"CL": {"name": "Champions League", "short": "UCL", "season_start_mmdd": "09-01"}}
+RESULTS_PATH = Path(DATA_DIR) / "espn_results.json"
 OUT_PATH = Path(DATA_DIR) / "referees_matches.csv"
 ASSIGNMENTS_PATH = Path(DATA_DIR) / "referee_assignments.json"
 TEAM_MAP_PATH = ROOT / "docs" / "data" / "espn_teams.json"
@@ -133,7 +139,9 @@ class TeamMatcher:
 
     def match(self, league: str, *names: str | None) -> str | None:
         best, best_score = None, 0.0
-        for key, variants in self.by_league.get(league, []):
+        cross = league not in self.by_league  # competición europea: buscar en todas
+        candidates = [c for lg in self.by_league.values() for c in lg] if cross else self.by_league.get(league, [])
+        for key, variants in candidates:
             for v in variants:
                 for n in (_tokens(x) for x in names if x):
                     if not v or not n:
@@ -146,7 +154,7 @@ class TeamMatcher:
                         score = max(inter, 0.9 * fuzzy) / max(len(v), len(n))
                     if score > best_score:
                         best, best_score = key, score
-        return best if best_score >= 0.5 else None
+        return best if best_score >= (0.8 if cross else 0.5) else None
 
 
 # ── Extracción ────────────────────────────────────────────────────────────
@@ -417,6 +425,8 @@ def write_team_map(teams: TeamMatcher, leagues: list[str]) -> int:
         for item in league_teams:
             t = item.get("team") or {}
             key = teams.match(code, t.get("displayName"), t.get("shortDisplayName"), t.get("name"), t.get("location"))
+            if not key and code in CUP_COMPETITIONS:
+                key = t.get("displayName")  # club fuera de las 11 ligas (Porto, Galatasaray…)
             if key and t.get("id"):
                 out.setdefault(code, {})[str(t["id"])] = key
     if out:
@@ -432,6 +442,12 @@ def zone_for(description: str | None) -> str:
     d = str(description or "").lower()
     if not d:
         return ""
+    if "round of 16" in d:
+        return "r16"
+    if "knockout" in d and "playoff" in d:
+        return "kopo"
+    if d == "eliminated":
+        return "out"
     if "relegation" in d:
         return "relpo" if "playoff" in d else "rel"
     if "promotion" in d:
@@ -472,6 +488,7 @@ def fetch_standings(leagues: list[str], team_map: dict[str, dict[str, str]], tea
                 "goals_for": num("pointsFor"), "goals_against": num("pointsAgainst"),
                 "goal_diff": num("pointDifferential"), "points": num("points"),
                 "form": None, "zone": zone_for((e.get("note") or {}).get("description")),
+                "logo": ((t.get("logos") or [{}])[0] or {}).get("href"),
                 "zone_label": (e.get("note") or {}).get("description"),
             })
         table.sort(key=lambda x: (x["position"] or 99))
@@ -481,8 +498,13 @@ def fetch_standings(leagues: list[str], team_map: dict[str, dict[str, str]], tea
             "source": "espn",
             "table": table,
         }
+    # Solo se sustituyen las ligas procesadas en esta ejecución.
+    try:
+        previous = json.loads(STANDINGS_PATH.read_text(encoding="utf-8")).get("leagues", {})
+    except (OSError, ValueError):
+        previous = {}
     STANDINGS_PATH.write_text(json.dumps({
-        "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "leagues": out,
+        "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "leagues": {**previous, **out},
     }, ensure_ascii=False, indent=1), encoding="utf-8")
     return out
 
@@ -501,7 +523,7 @@ def fixture_item(code: str, ev: dict[str, Any], teams: TeamMatcher) -> dict[str,
     time_ok = comp.get("timeValid", True) and (kickoff.hour, kickoff.minute) != (0, 0)
     return {
         "league": code,
-        "league_name": LEAGUES.get(code, code),
+        "league_name": LEAGUES.get(code) or CUP_COMPETITIONS.get(code, {}).get("name", code),
         "date": local.date().isoformat() if time_ok else kickoff.date().isoformat(),
         "time": local.strftime("%H:%M") if time_ok else "",
         "home": teams.match(code, home.get("displayName"), home.get("shortDisplayName"), home.get("location")) or home.get("displayName"),
@@ -539,6 +561,8 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
         if not slug:
             continue
         start = season_start
+        if code in CUP_COMPETITIONS:
+            start = max(start, date.fromisoformat(f"{season_start.year}-{CUP_COMPETITIONS[code]['season_start_mmdd']}"))
         if last_by_league.get(code):
             start = max(season_start, date.fromisoformat(last_by_league[code]) - timedelta(days=3))
         day = start
@@ -557,9 +581,20 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
         boards = list(ex.map(scoreboard, jobs))
 
     finished, upcoming, fixtures = [], [], []
+    try:
+        results = {tuple(k.split("|")): v for k, v in json.loads(RESULTS_PATH.read_text(encoding="utf-8")).get("items", {}).items()}
+    except (OSError, ValueError):
+        results = {}
     for (code, slug, day), events in boards:
         for ev in events:
             state = ((ev.get("status") or {}).get("type") or {}).get("state")
+            if state == "post" and code in CUP_COMPETITIONS:
+                item = fixture_item(code, ev, teams)
+                comp = (ev.get("competitions") or [{}])[0]
+                scores = {c.get("homeAway"): c.get("score") for c in comp.get("competitors", [])}
+                if item and scores.get("home") not in (None, "") and scores.get("away") not in (None, ""):
+                    item.update({"status": "finished", "home_score": int(scores["home"]), "away_score": int(scores["away"])})
+                    results[(code, item["date"], item["home"], item["away"])] = item
             if state == "post" and (f"espn:{ev['id']}" not in known or str(ev["id"]) not in known_players):
                 finished.append((code, slug, ev))
             elif state == "pre" and day >= today:
@@ -568,10 +603,20 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
                 item = fixture_item(code, ev, teams)
                 if item:
                     fixtures.append(item)
+    if results:
+        RESULTS_PATH.write_text(json.dumps({
+            "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "items": {"|".join(k): v for k, v in sorted(results.items())},
+        }, ensure_ascii=False, indent=1), encoding="utf-8")
     if fixtures:
+        try:
+            kept = [f for f in json.loads(UPCOMING_PATH.read_text(encoding="utf-8")).get("items", [])
+                    if f.get("league") not in set(leagues) and f.get("date", "") >= today.isoformat()]
+        except (OSError, ValueError):
+            kept = []
         UPCOMING_PATH.write_text(json.dumps({
             "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "items": sorted(fixtures, key=lambda f: (f["date"], f["time"], f["league"])),
+            "items": sorted(kept + fixtures, key=lambda f: (f["date"], f["time"], f["league"])),
         }, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # 2) Resúmenes de partidos terminados nuevos + próximos (árbitro asignado).
@@ -626,7 +671,9 @@ def update(leagues: list[str], days_ahead: int = 3, workers: int = 8, max_second
         "complete": not (deadline and time.monotonic() > deadline),
     }, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    unmatched = sorted({r[k] for r in rows for k in ("home", "away") if r[k] and not any(r[k] == key for key, _ in teams.by_league.get(r["league"], []))})
+    unmatched = sorted({r[k] for r in rows for k in ("home", "away")
+                        if r[k] and r["league"] not in CUP_COMPETITIONS
+                        and not any(r[k] == key for key, _ in teams.by_league.get(r["league"], []))})
     print(f"OK ESPN árbitros: {len(jobs)} días-liga, {len(finished)} partidos nuevos, {len(rows)} con árbitro, "
           f"{len(assignments)} asignaciones próximas, {len(fixtures)} partidos programados, "
           f"{len(prows)} filas de jugador")

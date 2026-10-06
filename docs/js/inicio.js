@@ -702,7 +702,11 @@ function buildFixtureCard(f, isResult) {
   var discChip = "";
   if (!isResult && APP.suspensions && APP.suspensions.by_team) {
     var bt = APP.suspensions.by_team;
-    var names = function (team, key) { return ((bt[team] || {})[key] || []).map(function (i) { return i.player; }); };
+    // Solo sanciones de la competición del partido (una de Champions no afecta a la liga).
+    var names = function (team, key) {
+      return ((bt[team] || {})[key] || []).filter(function (i) { return !i.league || i.league === f.league; })
+        .map(function (i) { return i.player; });
+    };
     var sus = names(f.home, "suspended").concat(names(f.away, "suspended"));
     var risk = names(f.home, "at_risk").concat(names(f.away, "at_risk"));
     if (sus.length || risk.length) {

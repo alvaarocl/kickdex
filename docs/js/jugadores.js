@@ -88,7 +88,7 @@ function renderLeaderboard(box, leagueCode, metric) {
 
   const all = [];
   teams.forEach(team => {
-    (APP.players[team] || []).forEach(p => {
+    (jugPlayers()[team] || []).forEach(p => {
       const v = jugValuesForMode(p, team, _jugMode);
       if (!v) return;
       if ((Number(v.min) || 0) < 1 && (Number(v[metric]) || 0) === 0) return; // descarta ruido
@@ -98,8 +98,9 @@ function renderLeaderboard(box, leagueCode, metric) {
   // Sin mínimo de muestra, un suplente con 1 partido y 1 gol (1.00/p) lideraba
   // el ranking por delante de Haaland. Mínimo adaptativo a la temporada.
   const maxMp = Math.max(0, ...all.map(p => Number(p.mp) || 0));
-  const minMp = _jugMode === "l5" ? 3
-    : maxMp ? Math.max(2, Math.min(5, Math.round(maxMp * 0.4))) : 0;
+  // Nunca por encima de lo que se ha jugado (Champions con 1 jornada: mínimo 1).
+  const minMp = Math.min(maxMp || 0, _jugMode === "l5" ? 3
+    : maxMp ? Math.max(2, Math.min(5, Math.round(maxMp * 0.4))) : 0);
   const rows = all.filter(p => !isTinyPlayerSample(p, minMp));
   const hiddenShort = all.length - rows.length;
 
@@ -210,6 +211,17 @@ function jugBackToRanking() {
   renderJugadores();
 }
 
+// Fuente de jugadores según el filtro: liga doméstica (players.json) o
+// competición europea (players_cl.json, solo lo jugado en ella).
+function jugIsCompetition() {
+  const code = document.getElementById("jugLeagueFilter")?.value;
+  return !!(code && APP.competitions?.[code]);
+}
+
+function jugPlayers() {
+  return jugIsCompetition() ? (APP.playersCL || {}) : (APP.players || {});
+}
+
 // Valores del jugador según el modo del ranking.
 function jugValuesForMode(p, team, mode) {
   if (mode === "tot") {
@@ -307,9 +319,10 @@ function populatePlayerSelect() {
   const sel  = document.getElementById("jug-player");
   while (sel.options.length > 1) sel.remove(1);
 
-  if (!team || !APP.playersDetail[team]) return;
-
-  const players = Object.keys(APP.playersDetail[team]).sort();
+  if (!team) return;
+  const players = (jugIsCompetition() || !APP.playersDetail?.[team])
+    ? (jugPlayers()[team] || []).map(p => p.player).sort()
+    : Object.keys(APP.playersDetail[team]).sort();
   players.forEach(p => {
     const opt = document.createElement("option");
     opt.value = p; opt.textContent = p;
@@ -428,7 +441,7 @@ function runJugadores() {
     }, 50);
   } else {
     // All players summary
-    const players = filterAndSortPlayers(APP.players[team] || []);
+    const players = filterAndSortPlayers(jugPlayers()[team] || []);
     if (!players || players.length === 0) {
       box.className = "state-box";
       box.innerHTML = `<div class="icon">·</div><p>Sin datos de jugadores para este equipo</p>`;
@@ -509,7 +522,7 @@ function buildPlayerRow(team, p) {
 }
 
 function drawTeamSparklines(team) {
-  const players = filterAndSortPlayers(APP.players[team] || []);
+  const players = filterAndSortPlayers(jugPlayers()[team] || []);
   if (!players) return;
 
   players.forEach(p => {

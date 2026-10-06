@@ -104,6 +104,7 @@ const CLASIF_ZONES = {
 const CLASIF_ZONE_LABELS = {
   ucl: "Champions League", uclq: "Previa de Champions", uel: "Europa League", uecl: "Conference League",
   promo: "Ascenso directo", po: "Playoff de ascenso", relpo: "Playoff de descenso", rel: "Descenso",
+  r16: "Octavos de final", kopo: "Playoff de eliminatorias", out: "Eliminado",
 };
 
 // Zona: primero la que trae el dato (ESPN, por fila); si no, la tabla fija.
@@ -137,7 +138,9 @@ function renderStandings() {
   const played = table.map(r => Math.max(1, Number(r.played) || 1));
   const rankGF = kdxRanker(table.map((r, i) => r.goals_for / played[i]));
   const rankGA = kdxRanker(table.map((r, i) => r.goals_against / played[i]));
-  const fixtureLists = [APP.fixtures?.calendar, APP.fixtures?.recent];
+  // Solo partidos de ESTA competición (si no, la forma de LaLiga mezclaría la Champions).
+  const fixtureLists = [APP.fixtures?.calendar, APP.fixtures?.recent]
+    .map(list => (list || []).filter(f => f.league === _clasifLeague));
 
   const zonesUsed = new Set();
   let prevZone = null;

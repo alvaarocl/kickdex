@@ -316,9 +316,11 @@ const LEAGUE_META = {
   F1:  { country: "Francia", tier: 1 },
   F2:  { country: "Francia", tier: 2 },
   N1:  { country: "Países Bajos", tier: 1 },
+  CL:  { country: "Europa", tier: "UEFA" },
 };
 
 const LEAGUE_COUNTRY_ORDER = [
+  "Europa",
   "España",
   "Inglaterra",
   "Italia",
@@ -470,7 +472,7 @@ async function loadAllData() {
 
   try {
     // Critical path: everything except H2H (4.4MB) which loads in background
-    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets, modelConfig, trends, alerts] = await Promise.all([
+    const [meta, teams, teamStats, players, playersDetail, playerCoverage, dataStatus, dataHealth, leagues, fixtures, referees, edges, teamAssets, playerAssets, modelConfig, trends, alerts, competitions, playersCL] = await Promise.all([
       fetchJSON("meta.json"),
       fetchJSON("teams.json"),
       fetchJSON("team_stats.json"),
@@ -494,6 +496,8 @@ async function loadAllData() {
       fetchJSON("trends.json").catch(() => ({ teams: {} })),
       // Smart alerts pre-generadas (smart_alerts.py) — Fase 2
       fetchJSON("alerts.json").catch(() => ({ matches: {} })),
+      fetchJSON("competitions.json").catch(() => ({})),
+      fetchJSON("players_cl.json").catch(() => ({})),
     ]);
 
     APP.meta           = meta;
@@ -509,7 +513,9 @@ async function loadAllData() {
     APP.playerCoverage = playerCoverage;
     APP.dataStatus     = dataStatus;
     APP.dataHealth     = dataHealth;
-    APP.leagues        = leagues;
+    APP.leagues        = mergeCompetitions(leagues, competitions);  // + Champions al final
+    APP.competitions   = competitions || {};
+    APP.playersCL      = playersCL || {};
     APP.fixtures       = fixtures;
     APP.referees       = referees;
     APP.edges          = edges;
@@ -568,6 +574,7 @@ function getTeamsByLeague(leagueCode) {
 function getPlayerLeagueCodes() {
   const byLeague = APP.playerCoverage?.by_league || {};
   const codes = Object.keys(byLeague).filter(code => (byLeague[code]?.player_rows || 0) > 0);
+  if (Object.keys(APP.playersCL || {}).length) codes.push(...Object.keys(APP.competitions || {}));
   if (codes.length) return sortLeagueCodes(codes);
 
   const playerTeams = new Set(Object.keys(APP.playersDetail || APP.players || {}));
@@ -578,6 +585,10 @@ function getPlayerLeagueCodes() {
 }
 
 function getPlayerTeamsByLeague(leagueCode) {
+  if (APP.competitions?.[leagueCode]) {
+    // Champions: estadísticas propias de la competición (players_cl.json).
+    return (APP.leagues?.[leagueCode]?.teams || []).filter(team => (APP.playersCL?.[team] || []).length);
+  }
   const playerTeams = new Set(Object.keys(APP.playersDetail || APP.players || {}));
   if (!leagueCode || leagueCode === "all") return Array.from(playerTeams).sort();
   const teams = APP.leagues?.[leagueCode]?.teams || [];

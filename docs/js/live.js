@@ -19,6 +19,7 @@ const ESPN_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/soccer/{s
 const ESPN_SLUGS = {
   SP1: "esp.1", SP2: "esp.2", E0: "eng.1", E1: "eng.2", I1: "ita.1", I2: "ita.2",
   D1: "ger.1", D2: "ger.2", F1: "fra.1", F2: "fra.2", N1: "ned.1",
+  CL: "uefa.champions",
 };
 const LIVE_MS = { live: 30000, today: 120000, idle: 600000 };
 

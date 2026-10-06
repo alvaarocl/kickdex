@@ -13,7 +13,7 @@ async function initDisciplinePage() {
   try {
     const [feed, leagues, teamAssets, playerAssets] = await Promise.all([
       fetchJSON("suspensions.json"),
-      fetchJSON("leagues.json").catch(() => ({})),
+      fetchJSON("leagues.json").catch(() => ({})).then(l => fetchJSON("competitions.json").catch(() => ({})).then(c => mergeCompetitions(l, c))),
       fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
       fetchJSON("player_assets.json").catch(() => ({ players: {} })),
     ]);

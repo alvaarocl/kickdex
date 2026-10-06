@@ -9,7 +9,7 @@
 
 ### The football intelligence terminal
 
-Fixtures, previews, team comparison, players, referees, standings and live scores for **11 European leagues**.<br>
+Fixtures, previews, team comparison, players, referees, suspensions, standings and live scores for **11 European leagues + the Champions League**.<br>
 Match-by-match data, refreshed automatically every day. **No login. No ads. No picks.**
 
 [![Web](https://img.shields.io/badge/web-kickdex.alvarocarpintero.com-2EE6A6?style=flat-square&labelColor=05070D)](https://kickdex.alvarocarpintero.com)
@@ -78,7 +78,8 @@ Fouls committed and suffered, yellow cards, shots and goals per player, with a *
 <td valign="top">
 
 **Referees**<br>
-Disciplinary profile of every active referee: yellows, reds and fouls per match compared with their league, their latest matches and the league ranking.
+Disciplinary profile of every active referee: yellows, reds and fouls per match compared with their league, their latest matches and the league ranking.<br><br>
+**Suspensions**: who misses the next match and who is one booking away, computed from match-by-match cards with each competition's accumulation rule (LaLiga, Premier League cut-offs, Serie A, Ligue 1's 3-in-10, UEFA…).
 
 </td>
 </tr>
@@ -124,6 +125,9 @@ Near real-time scores (< 1 min delay) with match minute, scorers and red cards. 
 | 🇩🇪 Bundesliga · 2. Bundesliga | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 🇫🇷 Ligue 1 · Ligue 2 | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 🇳🇱 Eredivisie | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 🇪🇺 UEFA Champions League | ✅ | ◐ ¹ | ✅ | ✅ | ✅ |
+
+<sub>¹ Team stats and the 1X2 model come from each club's domestic league, so they're available for the 21 Champions League clubs that play in the 11 covered leagues.</sub>
 
 **~93,000** historical matches since 2004/05 · **216 teams** · **~4,900 players** with match-by-match records · active referees in all 11 leagues. Live figures are on the [coverage page](https://kickdex.alvarocarpintero.com/coverage.html).
 
@@ -184,7 +188,7 @@ Everything refreshes itself — nothing to touch between seasons.
 |---|---|
 | [football-data.co.uk](https://www.football-data.co.uk) | Results, team stats and closing odds since 2004/05. |
 | [FixtureDownload](https://fixturedownload.com) | Full season fixtures for 7 leagues. |
-| ESPN (public scoreboard) | Per-match player and referee stats, upcoming fixtures for the second divisions, standings and live scores. Unofficial API. |
+| ESPN (public scoreboard) | Per-match player and referee stats, Champions League, upcoming fixtures for the second divisions, standings and live scores. Unofficial API. |
 | [football-data.org](https://www.football-data.org) | Standings and top scorers (free tier). |
 | [The Odds API](https://the-odds-api.com) | Market odds for edge estimates (top 5 leagues). |
 | World Soccer Data | Referee history from previous seasons. |
@@ -280,6 +284,7 @@ KICKDEX would rather say "no data" than make it up:
 - **Odds** are a reference, not an offer; the edge is an **estimate**.
 - **Live scores** rely on an unofficial public API; if it fails, the delayed snapshot is shown.
 - **Referee appointments** only appear before kick-off if the source publishes them.
+- **Suspensions are computed** from recorded cards and each competition's rule; official notices take precedence, and straight red cards may carry longer bans set by the disciplinary committee.
 - Some team stats don't exist for clubs promoted from tiers without data; they are shown as “—”.
 
 ---

@@ -169,7 +169,7 @@ def _merge_espn(standings_contract: dict[str, Any], scorers_contract: dict[str, 
             zone, label = zones.get(row.get("team"), (None, None))
             row["zone"], row["zone_label"] = zone or "", label
     espn_scorers = _espn_scorers(limit_scorers)
-    for code in LEAGUES:
+    for code in list(LEAGUES) + [c for c in espn if c not in LEAGUES]:  # + competiciones europeas
         if code not in scorers_contract["leagues"] and code in espn_scorers:
             scorers_contract["leagues"][code] = espn_scorers[code]
     for contract in (standings_contract, scorers_contract):

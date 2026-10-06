@@ -23,7 +23,10 @@ def _initials(value: str) -> str:
     return "".join(word[0] for word in words[:2]).upper() or "KD"
 
 
-def build_team_assets(leagues: dict[str, Any], existing: dict[str, Any] | None = None) -> dict[str, Any]:
+def build_team_assets(leagues: dict[str, Any], existing: dict[str, Any] | None = None,
+                      competitions: dict[str, Any] | None = None) -> dict[str, Any]:
+    """competitions: competitions.json (Champions…). Sus clubes que no juegan en
+    ninguna de las 11 ligas se añaden con el escudo de ESPN."""
     existing_teams = (existing or {}).get("teams") or {}
     teams: dict[str, Any] = {}
     for league, info in leagues.items():
@@ -38,6 +41,22 @@ def build_team_assets(leagues: dict[str, Any], existing: dict[str, Any] | None =
                 "crest": previous.get("crest"),
                 "crest_local": previous.get("crest_local"),
                 "source": previous.get("source"),
+                "source_updated_at": previous.get("source_updated_at"),
+            }
+    for code, comp in (competitions or {}).items():
+        for name in comp.get("teams") or []:
+            if name in teams:
+                continue
+            previous = existing_teams.get(name) or {}
+            teams[name] = {
+                "id": previous.get("id"),
+                "name": name,
+                "slug": _slug(name),
+                "initials": _initials(name),
+                "league": code,
+                "crest": previous.get("crest") or (comp.get("logos") or {}).get(name),
+                "crest_local": previous.get("crest_local"),
+                "source": previous.get("source") or "espn",
                 "source_updated_at": previous.get("source_updated_at"),
             }
     return {"version": 1, "updated_at": _now(), "teams": teams}

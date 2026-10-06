@@ -347,7 +347,10 @@ def calculated_items() -> list[dict] | None:
 
 
 def build_payload(fetch: bool = False, timeout: int = 45) -> dict:
-    leagues = read_json(OUTPUT_DIR / "leagues.json", {})
+    # + competiciones europeas (solo para nombres; la Champions tiene su propia regla).
+    leagues = {**read_json(OUTPUT_DIR / "leagues.json", {}),
+               **{code: {"name": c.get("name", code), "teams": []}
+                  for code, c in read_json(OUTPUT_DIR / "competitions.json", {}).items()}}
     config = read_json(SOURCES_JSON, {"sources": []})
     rows = read_manual_rows()
     if fetch:

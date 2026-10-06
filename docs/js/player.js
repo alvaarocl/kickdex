@@ -14,7 +14,7 @@ async function initPlayerPage() {
     const [players, details, leagues, coverage, teamAssets, playerAssets] = await Promise.all([
       fetchJSON("players.json"),
       fetchJSON("players_detail.json").catch(() => ({})),
-      fetchJSON("leagues.json").catch(() => ({})),
+      fetchJSON("leagues.json").catch(() => ({})).then(l => fetchJSON("competitions.json").catch(() => ({})).then(c => mergeCompetitions(l, c))),
       fetchJSON("player_coverage.json").catch(() => null),
       fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
       fetchJSON("player_assets.json").catch(() => ({ players: {} })),

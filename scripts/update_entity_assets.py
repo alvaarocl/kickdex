@@ -54,7 +54,7 @@ def api_get(path: str, key: str) -> list:
 def enrich(key: str, max_player_teams: int = 10, force: bool = False) -> tuple[int, int]:
     leagues = _read("leagues.json", {})
     players = _read("players.json", {})
-    team_manifest = build_team_assets(leagues, _read("team_assets.json", {}))
+    team_manifest = build_team_assets(leagues, _read("team_assets.json", {}), _read("competitions.json", {}))
     player_manifest = build_player_assets(players, _read("player_assets.json", {}))
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 

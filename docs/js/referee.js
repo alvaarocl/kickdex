@@ -18,7 +18,7 @@ async function initRefereePage() {
   try {
     const [referees, leagues, fixtures, teamAssets] = await Promise.all([
       fetchJSON("referees.json"),
-      fetchJSON("leagues.json").catch(() => ({})),
+      fetchJSON("leagues.json").catch(() => ({})).then(l => fetchJSON("competitions.json").catch(() => ({})).then(c => mergeCompetitions(l, c))),
       fetchJSON("fixtures.json").catch(() => ({ upcoming: [], recent: [] })),
       fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
     ]);

@@ -830,6 +830,39 @@ def _merge_espn_upcoming(upcoming: list[dict], calendar: list[dict], fd_status: 
     return upcoming, calendar
 
 
+CUP_COMPETITIONS = {"CL": {"name": "Champions League", "short": "UCL", "type": "uefa"}}
+
+
+def build_competitions() -> dict:
+    """competitions.json: competiciones europeas (fuera de leagues.json para que
+    cada club siga perteneciendo a su liga doméstica)."""
+    from app.config import DATA_DIR
+    try:
+        standings = json.loads((Path(DATA_DIR) / "espn_standings.json").read_text(encoding="utf-8")).get("leagues", {})
+    except (OSError, ValueError):
+        standings = {}
+    try:
+        team_map = json.loads((OUTPUT_DIR / "espn_teams.json").read_text(encoding="utf-8")).get("leagues", {})
+    except (OSError, ValueError):
+        team_map = {}
+    out = {}
+    for code, meta in CUP_COMPETITIONS.items():
+        table = (standings.get(code) or {}).get("table") or []
+        teams = [r["team"] for r in table] or sorted(set((team_map.get(code) or {}).values()))
+        if not teams:
+            continue
+        out[code] = {**meta, "teams": teams, "logos": {r["team"]: r.get("logo") for r in table if r.get("logo")}}
+    return out
+
+
+def _load_espn_results() -> list[dict]:
+    from app.config import DATA_DIR
+    try:
+        return list(json.loads((Path(DATA_DIR) / "espn_results.json").read_text(encoding="utf-8")).get("items", {}).values())
+    except (OSError, ValueError):
+        return []
+
+
 def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     """
     Genera partidos recientes (últimos 7 días) y próximos (NaN FTHG).
@@ -924,6 +957,12 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     upcoming = _merge_fixture_lists(primary=fd_upcoming, secondary=upcoming)
     calendar = _merge_fixture_lists(primary=calendar, secondary=fd_calendar)
     upcoming, calendar = _merge_espn_upcoming(upcoming, calendar, fd_status, now)
+    # Resultados de competiciones europeas (no hay CSV de football-data).
+    cup_results = [r for r in _load_espn_results() if r.get("league") in CUP_COMPETITIONS]
+    if cup_results:
+        calendar = _merge_fixture_lists(primary=cup_results, secondary=calendar)
+        recent = _merge_fixture_lists(primary=[r for r in cup_results if pd.Timestamp(r["date"]) >= cutoff],
+                                      secondary=recent)
 
     # Forma uniforme: FixtureDownload no trae árbitro; football-data.co.uk solo
     # lo asigna a partidos ya disputados. Fase 0.5: campos estructurales en null
@@ -1850,9 +1889,16 @@ def main():
         # Fuente principal: ESPN partido a partido (11 ligas, tiros a puerta y
         # faltas reales). Sustituye a Understat/FBref (sin SoT ni faltas, 5 ligas,
         # nombres de equipo sin normalizar).
+        cup_rows = espn_players[espn_players["league"].isin(list(CUP_COMPETITIONS))]
+        espn_players = espn_players[~espn_players["league"].isin(list(CUP_COMPETITIONS))]
         players_payload = add_player_percentiles(build_players_from_matches(espn_players), leagues)
         write_json(players_payload, "players.json")
         write_json(build_players_detail_from_matches(espn_players), "players_detail.json")
+        # Champions: estadísticas solo de esa competición, aparte (mismo contrato).
+        competitions = build_competitions()
+        write_json(competitions, "competitions.json")
+        if not cup_rows.empty:
+            write_json(add_player_percentiles(build_players_from_matches(cup_rows), competitions), "players_cl.json")
         coverage = build_player_coverage(espn_players, leagues)
         coverage["source"] = "espn"
         coverage["scraped_at"] = _espn_sync_time() or datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -1890,7 +1936,7 @@ def main():
         # TrendRule llegaba a disparar. Ver plan fixture-first, Fase 0.1.
         write_json(build_trends_payload(df, teams), "trends.json")
     write_json(
-        build_team_assets(leagues, _read_existing_json("team_assets.json")),
+        build_team_assets(leagues, _read_existing_json("team_assets.json"), _read_existing_json("competitions.json")),
         "team_assets.json",
     )
     write_json(

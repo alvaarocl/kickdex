@@ -42,8 +42,11 @@ function _pblkBind() {
 
 function _pblkInner(homeTeam, awayTeam) {
   const all = _blkPlayers();
-  const home = all[homeTeam] || [];
-  const away = all[awayTeam] || [];
+  // Clubes sin liga doméstica cubierta (Porto, Galatasaray…): sus partidos de Champions.
+  const cl = (typeof APP !== "undefined" && APP.playersCL) || (typeof state !== "undefined" && state.playersCL) || {};
+  const pick = t => ((all[t] || []).length ? all[t] : (cl[t] || []));
+  const home = pick(homeTeam);
+  const away = pick(awayTeam);
   if (!home.length && !away.length) {
     return `
       <div class="blk-empty">
