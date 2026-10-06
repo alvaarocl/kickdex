@@ -28,6 +28,7 @@ DATOS/*.csv
 !DATOS/referees_matches.csv
 !DATOS/referees_season.csv
 !DATOS/referees_wsd_matches.csv
+!DATOS/espn_player_matches.csv
 !DATOS/suspensions_manual.csv
 DATOS/players/*.csv
 DATOS/jugadores/*.csv

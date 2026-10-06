@@ -106,20 +106,86 @@ def _scorers_for_league(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+ESPN_STANDINGS_PATH = ROOT / "DATOS" / "espn_standings.json"
+ESPN_PLAYERS_PATH = ROOT / "DATOS" / "espn_player_matches.csv"
+
+
+def _espn_standings() -> dict[str, Any]:
+    try:
+        return json.loads(ESPN_STANDINGS_PATH.read_text(encoding="utf-8")).get("leagues", {})
+    except (OSError, ValueError):
+        return {}
+
+
+def _espn_scorers(limit: int = 20) -> dict[str, Any]:
+    """Goleadores por liga desde los registros partido a partido de ESPN."""
+    import csv
+    from app.config import CURRENT_SEASON_START
+
+    if not ESPN_PLAYERS_PATH.exists():
+        return {}
+    agg: dict[tuple, dict[str, Any]] = {}
+    seen: set[tuple] = set()
+    with ESPN_PLAYERS_PATH.open(encoding="utf-8", newline="") as fh:
+        for r in csv.DictReader(fh):
+            if r.get("date", "") < CURRENT_SEASON_START or (r["event_id"], r["player_id"]) in seen:
+                continue
+            seen.add((r["event_id"], r["player_id"]))
+            a = agg.setdefault((r["league"], r["player_id"]), {
+                "player": r["player"], "team": r["team"], "goals": 0, "assists": 0, "played_matches": 0, "_last": "",
+            })
+            a["goals"] += int(r.get("gls") or 0)
+            a["assists"] += int(r.get("ast") or 0)
+            a["played_matches"] += 1
+            if r["date"] >= a["_last"]:
+                a["_last"], a["team"], a["player"] = r["date"], r["team"], r["player"]
+    out: dict[str, Any] = {}
+    for (league, _pid), a in agg.items():
+        out.setdefault(league, []).append(a)
+    result = {}
+    for league, rows in out.items():
+        rows = sorted((r for r in rows if r["goals"] > 0), key=lambda r: (-r["goals"], -r["assists"], r["played_matches"]))[:limit]
+        result[league] = {"competition_name": None, "source": "espn", "scorers": [
+            {"rank": i + 1, "player": r["player"], "team": r["team"], "goals": r["goals"], "assists": r["assists"],
+             "penalties": None, "played_matches": r["played_matches"]}
+            for i, r in enumerate(rows)
+        ]}
+    return result
+
+
+def _merge_espn(standings_contract: dict[str, Any], scorers_contract: dict[str, Any], limit_scorers: int) -> None:
+    """ESPN cubre las ligas que football-data.org no da gratis (segundas
+    divisiones) y aporta la zona de cada posición a todas."""
+    from app.config import LEAGUES
+
+    espn = _espn_standings()
+    for code, league in espn.items():
+        current = standings_contract["leagues"].get(code)
+        if not current:
+            standings_contract["leagues"][code] = league
+            continue
+        zones = {row["team"]: (row.get("zone"), row.get("zone_label")) for row in league.get("table", [])}
+        for row in current.get("table", []):
+            zone, label = zones.get(row.get("team"), (None, None))
+            row["zone"], row["zone_label"] = zone or "", label
+    espn_scorers = _espn_scorers(limit_scorers)
+    for code in LEAGUES:
+        if code not in scorers_contract["leagues"] and code in espn_scorers:
+            scorers_contract["leagues"][code] = espn_scorers[code]
+    for contract in (standings_contract, scorers_contract):
+        contract["leagues_covered"] = sorted(contract["leagues"])
+
+
 def update_standings(leagues: list[str] | None = None, sleep_seconds: float = 6.5, limit_scorers: int = 20) -> None:
     key = os.getenv("FOOTBALL_DATA_API_KEY")
     leagues = leagues or list(FOOTBALL_DATA_ORG_COMPETITION_CODES.keys())
 
-    if not key:
-        note = "Clasificacion/goleadores desactivados: falta configurar FOOTBALL_DATA_API_KEY."
-        for path in (STANDINGS_PATH, SCORERS_PATH):
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(json.dumps(_empty_contract(False, note), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-        print("SKIP standings/scorers: FOOTBALL_DATA_API_KEY no configurada")
-        return
-
     standings_contract = _empty_contract(True, "Actualizado a diario, no en directo.")
     scorers_contract = _empty_contract(True, "Actualizado a diario, no en directo.")
+
+    if not key:
+        print("football-data.org sin FOOTBALL_DATA_API_KEY: solo ESPN")
+        leagues = []
 
     for i, code in enumerate(leagues):
         comp = FOOTBALL_DATA_ORG_COMPETITION_CODES.get(code)
@@ -144,6 +210,9 @@ def update_standings(leagues: list[str] | None = None, sleep_seconds: float = 6.
         if i < len(leagues) - 1:
             time.sleep(sleep_seconds)
 
+    _merge_espn(standings_contract, scorers_contract, limit_scorers)
+    if not standings_contract["leagues"]:
+        standings_contract["enabled"] = scorers_contract["enabled"] = False
     STANDINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
     STANDINGS_PATH.write_text(json.dumps(standings_contract, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     SCORERS_PATH.write_text(json.dumps(scorers_contract, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

@@ -43,8 +43,20 @@ def build_team_assets(leagues: dict[str, Any], existing: dict[str, Any] | None =
     return {"version": 1, "updated_at": _now(), "teams": teams}
 
 
+def _name_key(name: str) -> str:
+    import unicodedata
+    text = unicodedata.normalize("NFKD", str(name or ""))
+    return " ".join("".join(c for c in text if not unicodedata.combining(c)).lower().split())
+
+
 def build_player_assets(players: dict[str, Any], existing: dict[str, Any] | None = None) -> dict[str, Any]:
     existing_players = (existing or {}).get("players") or {}
+    # Respaldo por nombre (sin acentos) cuando cambia el equipo o su clave
+    # (traspasos, "Paris Saint Germain" -> "Paris SG"): solo si es inequívoco.
+    by_name: dict[str, list] = {}
+    for prev in existing_players.values():
+        if prev.get("photo") or prev.get("photo_local"):
+            by_name.setdefault(_name_key(prev.get("name")), []).append(prev)
     assets: dict[str, Any] = {}
     for team, rows in players.items():
         for row in rows if isinstance(rows, list) else []:
@@ -53,6 +65,10 @@ def build_player_assets(players: dict[str, Any], existing: dict[str, Any] | None
                 continue
             key = f"{team}::{name}"
             previous = existing_players.get(key) or {}
+            if not (previous.get("photo") or previous.get("photo_local")):
+                same = by_name.get(_name_key(name), [])
+                if len({(p.get("photo") or p.get("photo_local")) for p in same}) == 1:
+                    previous = {**same[0], **{k: v for k, v in previous.items() if v}}
             assets[key] = {
                 "id": previous.get("id"),
                 "name": name,

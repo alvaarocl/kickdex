@@ -102,11 +102,14 @@ const CLASIF_ZONES = {
   E1:  { promo: [1, 2], po: [3, 6], rel: [22, 24] },
 };
 const CLASIF_ZONE_LABELS = {
-  ucl: "Champions League", uel: "Europa League", uecl: "Conference League",
-  promo: "Ascenso directo", po: "Playoff", rel: "Descenso",
+  ucl: "Champions League", uclq: "Previa de Champions", uel: "Europa League", uecl: "Conference League",
+  promo: "Ascenso directo", po: "Playoff de ascenso", relpo: "Playoff de descenso", rel: "Descenso",
 };
 
-function clasifZone(code, pos, total) {
+// Zona: primero la que trae el dato (ESPN, por fila); si no, la tabla fija.
+function clasifZone(code, pos, total, row) {
+  if (row && typeof row.zone === "string" && CLASIF_ZONE_LABELS[row.zone]) return row.zone;
+  if (row && row.zone === "" && APP.standings?.leagues?.[code]?.table?.some(r => r.zone)) return "";
   const zones = CLASIF_ZONES[code] || { rel: [total - 2, total] };
   for (const [zone, [from, to]] of Object.entries(zones)) {
     if (pos >= from && pos <= to) return zone;
@@ -140,7 +143,7 @@ function renderStandings() {
   let prevZone = null;
   const rows = table.map((row, i) => {
     const pos = i + 1;
-    const zone = clasifZone(_clasifLeague, pos, total);
+    const zone = clasifZone(_clasifLeague, pos, total, row);
     if (zone) zonesUsed.add(zone);
     const cut = i > 0 && zone !== prevZone;
     prevZone = zone;
@@ -178,7 +181,7 @@ function renderStandings() {
       <tbody>${rows}</tbody>
     </table>
   </div>
-  <div class="klegend">${legend}<span class="muted">Zonas orientativas: pueden cambiar por copas o coeficientes UEFA.</span></div>`;
+  <div class="klegend">${legend}<span class="muted">Zonas según la fuente; pueden cambiar por copas o coeficientes UEFA.${league.source === "espn" ? " Clasificación: ESPN." : ""}</span></div>`;
   setTimeout(() => initAllTables(root), 50);
 }
 
@@ -271,6 +274,6 @@ function scorerRow(row, index = 0, maxGoals = 1, rankGpm = () => null) {
     <td class="num hide-sm">${row.assists ?? "—"}</td>
     <td class="num muted">${row.played_matches ?? "—"}</td>
     <td class="num ${kdxHeatClass(rankGpm(gpm), "good")}" data-sort="${gpm ?? -1}">${gpm == null ? "—" : gpm.toFixed(2)}</td>
-    <td class="num hide-sm muted">${row.penalties ?? 0}</td>
+    <td class="num hide-sm muted">${row.penalties ?? "—"}</td>
   </tr>`;
 }

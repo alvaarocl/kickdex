@@ -21,13 +21,13 @@ function buildBlockPlayers(homeTeam, awayTeam, ctx) {
     return `
       <div class="blk-empty">
         <p class="muted">Sin datos de jugadores para estos equipos.</p>
-        <p class="muted" style="font-size:.8rem;">La cobertura depende de FBref/soccerdata — no todas las ligas están incluidas.
+        <p class="muted" style="font-size:.8rem;">Este equipo aún no tiene partidos con estadísticas de jugador esta temporada.
         Consulta <a href="coverage.html" style="color:var(--brand)">cobertura de datos</a>.</p>
       </div>`;
   }
 
   return `
-    <p class="match-note">Promedios por partido de la temporada — los datos disponibles no incluyen estadísticas partido a partido.</p>
+    <p class="match-note">Medias por partido jugado esta temporada (datos partido a partido).</p>
     <div class="players-comparison">
       ${_playerTable(homeTeam, homePlayers)}
       ${_playerTable(awayTeam, awayPlayers)}

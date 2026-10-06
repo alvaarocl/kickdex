@@ -50,7 +50,7 @@ const I18N = {
     landing_f3_body: "Todos los enfrentamientos directos desde 2004 con resultados, goles y división.",
     landing_f4_title: "Player Scouting",
     landing_f4_body: "Stats individuales por temporada cuando la cobertura del feed lo permite. Consulta /coverage.",
-    landing_footer: "Uso educativo · Datos: football-data.co.uk + FBref",
+    landing_footer: "Uso educativo · Datos: football-data.co.uk + ESPN",
     disclaimer: "Esta herramienta es exclusivamente informativa. Las probabilidades son estimaciones matemáticas basadas en datos históricos.",
     home: "Local", draw: "Empate", away: "Visitante",
     player: "Jugador", shots: "Tiros", shots_on: "A Puerta",
@@ -103,7 +103,7 @@ const I18N = {
     how_s3_t: "Analiza el contexto real",
     how_s3_d: "Cruza probabilidades, forma reciente e histórico para detectar tendencias estadísticas relevantes.",
     trust_1: "Sin registro ni cuenta",
-    trust_2: "Datos de football-data.co.uk + FBref",
+    trust_2: "Datos de football-data.co.uk + ESPN",
     trust_3: "Uso exclusivamente educativo",
     trust_4: "Modelo matemático Poisson bivariante",
     final_h2: "Read the match before it's played.",
@@ -162,7 +162,7 @@ const I18N = {
     landing_f3_body: "Every head-to-head since 2004 with results, goals and division.",
     landing_f4_title: "Player Scouting",
     landing_f4_body: "Per-player season stats where feed coverage allows. See /coverage.",
-    landing_footer: "Educational use · Data: football-data.co.uk + FBref",
+    landing_footer: "Educational use · Data: football-data.co.uk + ESPN",
     disclaimer: "This tool is for informational purposes only. Probabilities are mathematical estimates based on historical data.",
     home: "Home", draw: "Draw", away: "Away",
     player: "Player", shots: "Shots", shots_on: "On Target",
@@ -215,7 +215,7 @@ const I18N = {
     how_s3_t: "Read the real context",
     how_s3_d: "Cross probabilities, recent form and history to detect relevant statistical trends.",
     trust_1: "No signup, no account",
-    trust_2: "Data from football-data.co.uk + FBref",
+    trust_2: "Data from football-data.co.uk + ESPN",
     trust_3: "For educational use only",
     trust_4: "Bivariate Poisson math model",
     final_h2: "Read the match before it's played.",
@@ -505,7 +505,7 @@ async function loadAllData() {
     APP.h2h            = {};
     APP.h2hReady       = false;
     APP.players        = players;
-    APP.playersDetail  = playersDetail;
+    APP.playersDetail  = expandPlayersDetail(playersDetail);
     APP.playerCoverage = playerCoverage;
     APP.dataStatus     = dataStatus;
     APP.dataHealth     = dataHealth;
@@ -785,6 +785,26 @@ function initModules() {
 }
 
 // ── Utilities ──────────────────────────────────────────────────────────────
+
+// players_detail.json compacto ({columns, teams: {equipo: {jugador: [[...]]}}})
+// → {equipo: {jugador: [{date, opp, venue, min, gls, ...}]}}. Acepta también el
+// formato antiguo (ya en objetos).
+function expandPlayersDetail(raw) {
+  if (!raw || !raw.columns || !raw.teams) return raw || {};
+  const cols = raw.columns;
+  const out = {};
+  Object.entries(raw.teams).forEach(([team, players]) => {
+    out[team] = {};
+    Object.entries(players).forEach(([player, rows]) => {
+      out[team][player] = rows.map(r => {
+        const o = { scope: "match" };
+        cols.forEach((c, i) => { o[c] = r[i]; });
+        return o;
+      });
+    });
+  });
+  return out;
+}
 
 function fmt(val, dec = 2) {
   if (val == null || isNaN(val)) return "—";

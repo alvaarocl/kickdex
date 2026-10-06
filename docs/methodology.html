@@ -11,7 +11,7 @@
   <meta property="og:description" content="Modelo Poisson, edges, fuentes y limitaciones de cobertura." />
   <meta property="og:image" content="og.png" />
   <link rel="icon" type="image/svg+xml" href="brand/kickdex-monogram.svg" />
-  <link rel="stylesheet" href="css/app.css?v=20261006a" />
+  <link rel="stylesheet" href="css/app.css?v=20261007a" />
   <style>
     .legal-page { max-width: 920px; margin: 0 auto; padding: 56px 20px 80px; }
     .legal-page h1 { margin-bottom: 12px; font-size: clamp(2rem, 4vw, 4rem); }
@@ -27,7 +27,7 @@
     <p>KICKDEX es una herramienta informativa. Sus probabilidades son estimaciones matematicas basadas en datos historicos y no son garantias, picks ni recomendaciones de apuesta.</p>
 
     <h2>Fuentes de datos</h2>
-    <p>Resultados históricos, calendario, plantillas y cuotas de cierre Bet365: football-data.co.uk (~92.000 partidos desde 2004/05). Calendario futuro: FixtureDownload. Estadísticas de jugadores: FBref / Understat, agregadas por temporada. Árbitros: football-data.co.uk (partido a partido en Premier y Championship) y World Soccer Data (agregado de temporada para el resto). Clasificación y goleadores: football-data.org. Escudos: repositorio público de SVG. Fotos de jugador: Wikidata / Wikimedia Commons.</p>
+    <p>Resultados históricos, calendario, plantillas y cuotas de cierre Bet365: football-data.co.uk (~92.000 partidos desde 2004/05). Calendario futuro: FixtureDownload. Estadísticas de jugadores, árbitros de la temporada, próximos partidos de las segundas divisiones y marcador en directo: marcador público de ESPN (partido a partido). Histórico arbitral: football-data.co.uk y World Soccer Data. Clasificación y goleadores: football-data.org (y ESPN en las ligas que football-data.org no cubre). Escudos: repositorio público de SVG. Fotos de jugador: Wikidata / Wikimedia Commons.</p>
 
     <h2>Probabilidades</h2>
     <p>El modelo usa forma reciente local/visitante ponderada por antigüedad (los partidos recientes pesan más, con decaimiento exponencial sobre todo el historial), goles a favor y en contra, over 2.5, BTTS e historial H2H cuando hay muestra suficiente. Con esos parámetros estima los goles esperados de cada equipo y construye una matriz de marcadores 8×8 con distribución de Poisson y ajuste Dixon-Coles (ρ = −0,12) para corregir la infravaloración de los marcadores bajos (0-0, 1-0, 0-1, 1-1). De esa matriz se derivan el 1X2, los marcadores exactos más probables y las líneas Over/Under de 0,5 a 4,5. El mismo modelo corre en Python (pipeline) y en JavaScript (navegador) para que no diverjan.</p>
@@ -45,8 +45,8 @@
     <p>El pipeline evita usar el propio partido para calcular la forma: cada edge se calcula con partidos anteriores a la fecha analizada. Tambien se excluyen muestras demasiado pequenas y outliers extremos para que la superficie publica no dependa de una lectura estadistica fragil.</p>
 
     <h2>Limitaciones de jugadores y árbitros</h2>
-    <p>Las estadísticas de jugador son <strong>promedios de toda la temporada</strong>, no partido a partido: la fuente gratuita disponible no da el desglose por encuentro, así que no hay ventana de "últimos 5/10" para jugadores. La cobertura es fuerte en La Liga, Premier League, Championship, Serie A, Bundesliga y Ligue 1, y nula en las segundas divisiones de España, Italia, Alemania y Francia.</p>
-    <p>Los perfiles arbitrales mezclan partido a partido (Premier, Championship) con agregado de temporada (resto). El dato de faltas por partido no existe para la mayoría de ligas y se oculta cuando falta. Las designaciones arbitrales previas a un partido no están en las fuentes actuales, así que la ficha solo muestra el árbitro una vez disputado el encuentro.</p>
+    <p>Las estadísticas de jugador se registran <strong>partido a partido</strong> en las 11 ligas (goles, asistencias, tiros, tiros a puerta, faltas, tarjetas). Los <strong>minutos son estimados</strong>: la fuente no los publica, se calculan con la alineación, los cambios y las expulsiones (sin contar el añadido). Un jugador traspasado aparece en cada equipo con lo que hizo en él.</p>
+    <p>Los perfiles arbitrales son partido a partido en las 11 ligas (tarjetas y faltas). Cada tarjeta mostrada cuenta una vez: una doble amarilla suma dos amarillas y una roja. La designación previa al partido solo aparece si la fuente la publica antes.</p>
 
     <h2>Aviso de riesgo</h2>
     <p>Todo en KICKDEX es información estadística, no un consejo de apuesta. Un modelo puede equivocarse y una frecuencia histórica no implica un resultado futuro. KICKDEX no gestiona apuestas, no enlaza casas de apuestas y no promete rentabilidad.</p>

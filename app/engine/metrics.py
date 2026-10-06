@@ -269,7 +269,15 @@ def get_weighted_form(
 
         gf = float(r["FTHG"] if is_home else r["FTAG"]) if pd.notna(r.get("FTHG")) else 0.0
         ga = float(r["FTAG"] if is_home else r["FTHG"]) if pd.notna(r.get("FTAG")) else 0.0
-        sot = float(r.get("HST" if is_home else "AST", 0) or 0)
+
+        def _stat(col: str) -> float | None:
+            # Celda vacía en el CSV (temporadas antiguas o ligas sin la
+            # columna) = sin dato. Antes un solo NaN envenenaba la media
+            # entera y el equipo salía con 0 tiros/córners/tarjetas/faltas.
+            v = r.get(col)
+            return None if v is None or pd.isna(v) else float(v)
+
+        sot = _stat("HST" if is_home else "AST")
 
         if gf > ga:
             result = "W"
@@ -283,12 +291,12 @@ def get_weighted_form(
             "in_current_season": match_date >= season_start,
             "goals": gf,
             "goals_against": ga,
-            "shots": float(r.get("HS" if is_home else "AS", 0) or 0),
+            "shots": _stat("HS" if is_home else "AS"),
             "shots_on": sot,
-            "corners": float(r.get("HC" if is_home else "AC", 0) or 0),
-            "cards": float(r.get("HY" if is_home else "AY", 0) or 0),
-            "fouls": float(r.get("HF" if is_home else "AF", 0) or 0),
-            "xg_proxy": round(sot * 0.35, 2),
+            "corners": _stat("HC" if is_home else "AC"),
+            "cards": _stat("HY" if is_home else "AY"),
+            "fouls": _stat("HF" if is_home else "AF"),
+            "xg_proxy": round(sot * 0.35, 2) if sot is not None else None,
             "win": 1.0 if result == "W" else 0.0,
             "draw": 1.0 if result == "D" else 0.0,
             "loss": 1.0 if result == "L" else 0.0,
@@ -312,8 +320,15 @@ def get_weighted_form(
     if total_weight <= 0:
         return None
 
-    def _wavg(key: str) -> float:
-        return round(sum(r["weight"] * r[key] for r in rows) / total_weight, 3)
+    def _wavg(key: str) -> float | None:
+        valid = [r for r in rows if r[key] is not None]
+        weight = sum(r["weight"] for r in valid)
+        if not valid or weight <= 0:
+            return None
+        return round(sum(r["weight"] * r[key] for r in valid) / weight, 3)
+
+    def _r2(value: float | None) -> float | None:
+        return None if value is None else round(value, 2)
 
     current_season_weight = sum(r["weight"] for r in rows if r["in_current_season"])
     current_season_matches = sum(1 for r in rows if r["in_current_season"])
@@ -328,14 +343,14 @@ def get_weighted_form(
         "draws": round(sum(r["draw"] for r in rows), 1),
         "losses": round(sum(r["loss"] for r in rows), 1),
         "win_rate": _wavg("win"),
-        "avg_goals": round(_wavg("goals"), 2),
-        "avg_goals_against": round(_wavg("goals_against"), 2),
-        "avg_shots": round(_wavg("shots"), 2),
-        "avg_shots_on": round(_wavg("shots_on"), 2),
-        "avg_corners": round(_wavg("corners"), 2),
-        "avg_cards": round(_wavg("cards"), 2),
-        "avg_fouls": round(_wavg("fouls"), 2),
-        "avg_xg_proxy": round(_wavg("xg_proxy"), 2),
+        "avg_goals": _r2(_wavg("goals")),
+        "avg_goals_against": _r2(_wavg("goals_against")),
+        "avg_shots": _r2(_wavg("shots")),
+        "avg_shots_on": _r2(_wavg("shots_on")),
+        "avg_corners": _r2(_wavg("corners")),
+        "avg_cards": _r2(_wavg("cards")),
+        "avg_fouls": _r2(_wavg("fouls")),
+        "avg_xg_proxy": _r2(_wavg("xg_proxy")),
         "over25_rate": _wavg("over25"),
         "btts_rate": _wavg("btts"),
         "clean_sheet_rate": _wavg("clean_sheet"),

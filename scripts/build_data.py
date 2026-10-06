@@ -564,6 +564,97 @@ def build_players(df_players) -> dict:
     return result
 
 
+# ── Jugadores desde ESPN (partido a partido, 11 ligas) ─────────────────────
+
+PLAYER_DETAIL_COLUMNS = ["date", "opp", "venue", "min", "gls", "ast", "sh", "sot", "fls", "crdy", "crdr", "starter"]
+PLAYER_DETAIL_MATCHES = 10
+
+
+def _espn_sync_time() -> str | None:
+    from app.config import DATA_DIR
+    try:
+        return json.loads((Path(DATA_DIR) / "espn_sync.json").read_text(encoding="utf-8")).get("updated_at")
+    except (OSError, ValueError):
+        return None
+
+
+def load_espn_player_matches():
+    """DATOS/espn_player_matches.csv (scripts/update_espn_data.py), solo temporada actual."""
+    import pandas as pd
+    from app.config import CURRENT_SEASON_START, DATA_DIR
+    path = Path(DATA_DIR) / "espn_player_matches.csv"
+    if not path.exists():
+        return pd.DataFrame()
+    df = pd.read_csv(path, low_memory=False, dtype={"event_id": str, "player_id": str})
+    if df.empty:
+        return df
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df[df["date"] >= pd.Timestamp(CURRENT_SEASON_START)]
+    df = df.drop_duplicates(subset=["event_id", "player_id"], keep="last")
+    for col in ["minutes", "gls", "ast", "sh", "sot", "fls", "fld", "crdy", "crdr", "og", "starter"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
+    return df
+
+
+def build_players_from_matches(df) -> dict:
+    """players.json: por equipo, una fila por jugador con medias por partido
+    jugado (contrato previo: gls, ast, sh, sot, min, fls, crdy) + partidos,
+    titularidades, minutos y totales. Un jugador traspasado aparece en cada
+    equipo con lo que hizo en él."""
+    if df is None or df.empty:
+        return {}
+    result = {}
+    for team, grp in df.groupby("team"):
+        players = []
+        for pid, pg in grp.groupby("player_id"):
+            mp = int(len(pg))
+            tot = {c: int(pg[c].sum()) for c in ["gls", "ast", "sh", "sot", "fls", "fld", "crdy", "crdr"]}
+            minutes = int(pg["minutes"].sum())
+            pos = pg["position"].dropna().astype(str)
+            players.append({
+                "player": str(pg.sort_values("date")["player"].iloc[-1]),
+                "player_id": str(pid),
+                "pos": pos.mode().iloc[0] if not pos.empty else "",
+                "mp": mp,
+                "starts": int(pg["starter"].sum()),
+                "min_total": minutes,
+                "last_match": pg["date"].max().strftime("%Y-%m-%d"),
+                # medias por partido jugado (mismo contrato que antes)
+                "min": _safe(minutes / mp),
+                "gls": _safe(tot["gls"] / mp), "ast": _safe(tot["ast"] / mp),
+                "sh": _safe(tot["sh"] / mp), "sot": _safe(tot["sot"] / mp),
+                "fls": _safe(tot["fls"] / mp), "crdy": _safe(tot["crdy"] / mp),
+                "crdr": _safe(tot["crdr"] / mp),
+                # totales de temporada
+                "gls_tot": tot["gls"], "ast_tot": tot["ast"], "sh_tot": tot["sh"], "sot_tot": tot["sot"],
+                "fls_tot": tot["fls"], "fld_tot": tot["fld"], "crdy_tot": tot["crdy"], "crdr_tot": tot["crdr"],
+            })
+        players.sort(key=lambda x: (-(x["min_total"] or 0), x["player"]))
+        result[str(team)] = players
+    return result
+
+
+def build_players_detail_from_matches(df) -> dict:
+    """players_detail.json compacto: {columns, teams: {equipo: {jugador: [[...], ...]}}}
+    con los últimos PLAYER_DETAIL_MATCHES partidos (más reciente primero). La
+    web lo expande a objetos (expandPlayersDetail en app.js / player.js)."""
+    if df is None or df.empty:
+        return {"columns": PLAYER_DETAIL_COLUMNS, "teams": {}}
+    teams: dict = {}
+    for (team, pid), pg in df.sort_values("date", ascending=False).groupby(["team", "player_id"], sort=False):
+        name = str(pg["player"].iloc[0])
+        rows = []
+        for _, r in pg.head(PLAYER_DETAIL_MATCHES).iterrows():
+            rows.append([
+                r["date"].strftime("%Y-%m-%d"), str(r.get("opponent") or ""), str(r.get("venue") or ""),
+                int(r["minutes"]), int(r["gls"]), int(r["ast"]), int(r["sh"]), int(r["sot"]),
+                int(r["fls"]), int(r["crdy"]), int(r["crdr"]), int(r["starter"]),
+            ])
+        teams.setdefault(str(team), {})[name] = rows
+    return {"columns": PLAYER_DETAIL_COLUMNS, "teams": teams}
+
+
 def add_player_percentiles(players_payload: dict, leagues: dict) -> dict:
     """Añade *_pct (percentil 0-100 vs la liga del jugador) a players.json.
 
@@ -572,7 +663,7 @@ def add_player_percentiles(players_payload: dict, leagues: dict) -> dict:
     delantero de 2ª con uno de 1ª no distorsione. Conecta la lógica de
     calculate_player_percentiles() de app/engine/metrics.py, que estaba muerta.
     """
-    metrics = ("gls", "ast", "sh", "sot")
+    metrics = ("gls", "ast", "sh", "sot", "fls", "crdy")
     team_to_league = {}
     for code, info in (leagues or {}).items():
         for team in info.get("teams", []):
@@ -831,7 +922,7 @@ def build_fixtures(df, leagues_json: dict | None = None) -> dict:
     # Forma uniforme: FixtureDownload no trae árbitro; football-data.co.uk solo
     # lo asigna a partidos ya disputados. Fase 0.5: campos estructurales en null
     # en todo lo que no lo tenga (asignación previa imposible con estas fuentes).
-    # Árbitro asignado cuando ESPN ya lo publica (scripts/update_espn_referee_matches.py).
+    # Árbitro asignado cuando ESPN ya lo publica (scripts/update_espn_data.py).
     assigned = {}
     try:
         payload = json.loads((Path(DATA_DIR) / "referee_assignments.json").read_text(encoding="utf-8"))
@@ -1741,11 +1832,24 @@ def main():
 
     # 6. Players + Leagues + Fixtures + Referees
     print("\n[6/7] players.json, players_detail.json, referees.json...")
-    players_payload = build_players(df_players)
-    players_payload = add_player_percentiles(players_payload, leagues)
-    write_player_json(players_payload, "players.json", current_season_teams(leagues))
-    write_player_json(build_players_detail(df_players), "players_detail.json", current_season_teams(leagues))
-    coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
+    espn_players = load_espn_player_matches()
+    if not espn_players.empty:
+        # Fuente principal: ESPN partido a partido (11 ligas, tiros a puerta y
+        # faltas reales). Sustituye a Understat/FBref (sin SoT ni faltas, 5 ligas,
+        # nombres de equipo sin normalizar).
+        players_payload = add_player_percentiles(build_players_from_matches(espn_players), leagues)
+        write_json(players_payload, "players.json")
+        write_json(build_players_detail_from_matches(espn_players), "players_detail.json")
+        coverage = build_player_coverage(espn_players, leagues)
+        coverage["source"] = "espn"
+        coverage["scraped_at"] = _espn_sync_time() or datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        coverage["matches"] = int(espn_players["event_id"].nunique())
+    else:
+        players_payload = build_players(df_players)
+        players_payload = add_player_percentiles(players_payload, leagues)
+        write_player_json(players_payload, "players.json", current_season_teams(leagues))
+        write_player_json(build_players_detail(df_players), "players_detail.json", current_season_teams(leagues))
+        coverage = build_player_coverage_from_json(leagues) if df_players.empty else build_player_coverage(df_players, leagues)
     write_json(coverage, "player_coverage.json")
     players_for_watch = _read_existing_json("players.json") or players_payload
     write_json(build_discipline_watch(players_for_watch, leagues), "discipline_watch.json")

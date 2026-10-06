@@ -19,7 +19,7 @@ async function initPlayerPage() {
       fetchJSON("team_assets.json").catch(() => ({ teams: {} })),
       fetchJSON("player_assets.json").catch(() => ({ players: {} })),
     ]);
-    Object.assign(PLAYER, { players, details, leagues, coverage, teamAssets, playerAssets });
+    Object.assign(PLAYER, { players, details: expandPlayersDetail(details), leagues, coverage, teamAssets, playerAssets });
     window.KDXEntities?.configure(teamAssets, playerAssets);
     renderPlayer();
   } catch (err) {
@@ -28,8 +28,28 @@ async function initPlayerPage() {
   }
 }
 
+// players_detail.json compacto ({columns, teams: {equipo: {jugador: [[...]]}}})
+// → {equipo: {jugador: [{date, opp, venue, min, gls, ...}]}}. Acepta también el
+// formato antiguo (ya en objetos).
+function expandPlayersDetail(raw) {
+  if (!raw || !raw.columns || !raw.teams) return raw || {};
+  const cols = raw.columns;
+  const out = {};
+  Object.entries(raw.teams).forEach(([team, players]) => {
+    out[team] = {};
+    Object.entries(players).forEach(([player, rows]) => {
+      out[team][player] = rows.map(r => {
+        const o = { scope: "match" };
+        cols.forEach((c, i) => { o[c] = r[i]; });
+        return o;
+      });
+    });
+  });
+  return out;
+}
+
 async function fetchJSON(file) {
-  const res = await fetch(`${DATA_BASE}${file}?v=20260823a`);
+  const res = await fetch(`${DATA_BASE}${file}?v=20261007a`);
   if (!res.ok) throw new Error(`HTTP ${res.status} loading ${file}`);
   return res.json();
 }
@@ -164,18 +184,19 @@ function buildDetailSection(matchLog, rawDetail) {
   if (!matchLog.length) {
     return sectionCard("Detalle partido a partido", `
       <div class="player-data-note">
-        <p>Esta fuente entrega el jugador como agregado de temporada. KICKDEX mantiene la ficha activa y muestra medias, P90 y ranking de equipo, pero no inventa ultimos 5/10 si no hay registros reales por fecha.</p>
+        <p>Este jugador todavía no tiene partidos registrados esta temporada; se muestran sus medias.</p>
         <p class="match-note">Registros brutos disponibles: ${(rawDetail || []).length || 1}.</p>
       </div>
     `);
   }
 
-  return sectionCard("Ultimos registros", `
+  return sectionCard("Últimos partidos", `
     <div class="table-wrap match-table">
       <table>
         <thead>
           <tr>
             <th>Fecha</th>
+            <th>Rival</th>
             <th>Min</th>
             <th>Goles</th>
             <th>Asist</th>
@@ -189,12 +210,13 @@ function buildDetailSection(matchLog, rawDetail) {
           ${matchLog.slice(0, 12).map(row => `
             <tr>
               <td class="muted">${esc(row.date || "-")}</td>
-              <td>${cell(row.min, 0)}</td>
+              <td>${row.opp ? `${row.venue === "H" ? "vs" : "en"} ${esc(typeof teamDisplayName === "function" ? teamDisplayName(row.opp) : row.opp)}` : "-"}</td>
+              <td>${cell(row.min, 0)}${row.starter === 0 ? ' <span class="muted">(s)</span>' : ""}</td>
               <td>${cell(row.gls, 0, "hot")}</td>
               <td>${cell(row.ast, 0, "blue")}</td>
-              <td>${cell(row.sh, 1)}</td>
-              <td>${cell(row.sot, 1)}</td>
-              <td>${cell(row.fls, 1)}</td>
+              <td>${cell(row.sh, 0)}</td>
+              <td>${cell(row.sot, 0)}</td>
+              <td>${cell(row.fls, 0)}</td>
               <td>${cell(row.crdy, 0, "warn")}</td>
             </tr>
           `).join("")}

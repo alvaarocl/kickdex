@@ -6,6 +6,7 @@
 
 let sparkCharts = {};
 let _jugMetric = "gls";
+let _jugMode = "avg";   // avg = media por partido · tot = totales de temporada · l5 = últimos 5 partidos
 let _jugInit = false;
 
 // Métricas del ranking (chips). label para cabecera de columna destacada.
@@ -87,14 +88,17 @@ function renderLeaderboard(box, leagueCode, metric) {
   const all = [];
   teams.forEach(team => {
     (APP.players[team] || []).forEach(p => {
-      if ((Number(p.min) || 0) < 1 && (Number(p[metric]) || 0) === 0) return; // descarta ruido
-      all.push({ ...p, _team: team });
+      const v = jugValuesForMode(p, team, _jugMode);
+      if (!v) return;
+      if ((Number(v.min) || 0) < 1 && (Number(v[metric]) || 0) === 0) return; // descarta ruido
+      all.push({ ...v, _team: team });
     });
   });
   // Sin mínimo de muestra, un suplente con 1 partido y 1 gol (1.00/p) lideraba
   // el ranking por delante de Haaland. Mínimo adaptativo a la temporada.
   const maxMp = Math.max(0, ...all.map(p => Number(p.mp) || 0));
-  const minMp = maxMp ? Math.max(2, Math.min(5, Math.round(maxMp * 0.4))) : 0;
+  const minMp = _jugMode === "l5" ? 3
+    : maxMp ? Math.max(2, Math.min(5, Math.round(maxMp * 0.4))) : 0;
   const rows = all.filter(p => !isTinyPlayerSample(p, minMp));
   const hiddenShort = all.length - rows.length;
 
@@ -115,18 +119,23 @@ function renderLeaderboard(box, leagueCode, metric) {
   if (!top.length) {
     box.className = "state-box";
     box.innerHTML = `<div class="icon">·</div><p>Sin datos de jugadores para ${escHtml(leagueName)}.</p>
-      <p class="muted" style="font-size:.82rem;">La cobertura depende de FBref/Understat — SP1, E0, I1, D1 y F1 tienen datos; las segundas divisiones no.</p>`;
+      <p class="muted" style="font-size:.82rem;">Prueba con otra liga o con la vista de temporada completa.</p>`;
     return;
   }
 
+  const modeText = { avg: "media por partido · temporada", tot: "totales de temporada", l5: "media de los últimos 5 partidos" }[_jugMode];
   box.className = "";
   box.innerHTML = `
+    <div class="ktoolbar" style="margin-bottom:10px;">
+      ${[["avg", "Por partido"], ["tot", "Totales"], ["l5", "Últimos 5"]].map(([m, label]) =>
+        `<button type="button" class="ktoggle jug-mode" data-mode="${m}" aria-pressed="${_jugMode === m}">${label}</button>`).join("")}
+    </div>
     <div class="section-title" style="margin-bottom:6px;">
       Ranking · ${escHtml(leagueName)}
-      <small>top ${top.length} por ${escHtml(metricLabel.replace('/p',' por partido'))} · promedio de temporada</small>
+      <small>top ${top.length} por ${escHtml(jugColLabel(metric).toLowerCase())} · ${modeText}</small>
     </div>
     <p class="muted" style="font-size:.78rem;margin-bottom:14px;">
-      Promedios por partido de toda la temporada. La fuente no da estadísticas partido a partido, así que no hay ventana de últimos 5/10.
+      Datos partido a partido de cada jugador (goles, tiros, tiros a puerta, faltas, tarjetas y minutos).
       ${hiddenShort ? `Se ocultan ${hiddenShort} jugadores con muestra mínima (${minMp ? `menos de ${minMp} partidos` : "1-2 partidos"}). ` : ""}Color: verde = top de la liga; en tarjetas y faltas, rojo = más.
       ${chartHintHtml()}
     </p>
@@ -138,13 +147,13 @@ function renderLeaderboard(box, leagueCode, metric) {
             <th>Jugador</th>
             <th class="hide-sm">Equipo</th>
             ${showMp ? '<th class="num" title="Partidos jugados">PJ</th>' : ""}
-            ${leaderColHeader("gls", "Goles/p", metric)}
-            ${leaderColHeader("ast", "Asist/p", metric)}
-            ${leaderColHeader("sh", "Disp/p", metric)}
-            ${leaderColHeader("sot", "SoT/p", metric)}
-            ${metric === "fls" ? '<th class="sorted">Faltas/p</th>' : ''}
-            ${leaderColHeader("min", "Min/p", metric)}
-            ${leaderColHeader("crdy", "TA/p", metric)}
+            ${leaderColHeader("gls", jugColLabel("gls"), metric)}
+            ${leaderColHeader("ast", jugColLabel("ast"), metric)}
+            ${leaderColHeader("sh", jugColLabel("sh"), metric)}
+            ${leaderColHeader("sot", jugColLabel("sot"), metric)}
+            ${leaderColHeader("fls", jugColLabel("fls"), metric)}
+            ${leaderColHeader("min", jugColLabel("min"), metric)}
+            ${leaderColHeader("crdy", jugColLabel("crdy"), metric)}
           </tr>
         </thead>
         <tbody>
@@ -154,17 +163,22 @@ function renderLeaderboard(box, leagueCode, metric) {
             <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, p._team) : ""}<span class="kent-name"><a href="${playerHref(p._team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a><small class="show-sm-only">${escHtml(teamDisplayName(p._team))}</small></span></span></td>
             <td class="muted hide-sm"><span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", p._team) : ""}${escHtml(teamDisplayName(p._team))}</span></td>
             ${showMp ? `<td class="num muted">${p.mp ?? "—"}</td>` : ""}
-            ${leaderCell(p, "gls", metric, 2, heat)}
-            ${leaderCell(p, "ast", metric, 2, heat)}
-            ${leaderCell(p, "sh", metric, 1, heat)}
-            ${leaderCell(p, "sot", metric, 1, heat)}
-            ${metric === "fls" ? leaderCell(p, "fls", metric, 1, heat) : ''}
+            ${leaderCell(p, "gls", metric, jugDec(2), heat)}
+            ${leaderCell(p, "ast", metric, jugDec(2), heat)}
+            ${leaderCell(p, "sh", metric, jugDec(1), heat)}
+            ${leaderCell(p, "sot", metric, jugDec(1), heat)}
+            ${leaderCell(p, "fls", metric, jugDec(1), heat)}
             ${leaderCell(p, "min", metric, 0, heat)}
-            ${leaderCell(p, "crdy", metric, 2, heat)}
+            ${leaderCell(p, "crdy", metric, jugDec(2), heat)}
           </tr>`).join("")}
         </tbody>
       </table>
     </div>`;
+
+  box.querySelectorAll(".jug-mode").forEach(btn => btn.addEventListener("click", () => {
+    _jugMode = btn.dataset.mode;
+    renderJugadores();
+  }));
 
   setTimeout(() => {
     initAllTables(box);
@@ -193,6 +207,34 @@ function jugBackToRanking() {
   renderJugadores();
 }
 
+// Valores del jugador según el modo del ranking.
+function jugValuesForMode(p, team, mode) {
+  if (mode === "tot") {
+    const mp = Number(p.mp) || 0;
+    const tot = (k, avgKey) => p[k] != null ? p[k] : (p[avgKey] != null && mp ? Math.round(p[avgKey] * mp) : null);
+    return { ...p, gls: tot("gls_tot", "gls"), ast: tot("ast_tot", "ast"), sh: tot("sh_tot", "sh"),
+      sot: tot("sot_tot", "sot"), fls: tot("fls_tot", "fls"), crdy: tot("crdy_tot", "crdy"),
+      min: p.min_total != null ? p.min_total : (p.min != null && mp ? Math.round(p.min * mp) : null), _noPct: true };
+  }
+  if (mode === "l5") {
+    const rows = (APP.playersDetail?.[team]?.[p.player] || []).filter(r => r.scope === "match").slice(0, 5);
+    if (!rows.length) return null;
+    const avg = k => rows.reduce((s, r) => s + (Number(r[k]) || 0), 0) / rows.length;
+    return { ...p, mp: rows.length, gls: avg("gls"), ast: avg("ast"), sh: avg("sh"), sot: avg("sot"),
+      fls: avg("fls"), crdy: avg("crdy"), min: avg("min"), _noPct: true };
+  }
+  return p;
+}
+
+function jugColLabel(col) {
+  const base = { gls: "Goles", ast: "Asist", sh: "Disp", sot: "SoT", fls: "Faltas", min: "Min", crdy: "TA" }[col] || col;
+  return _jugMode === "tot" ? base : `${base}/p`;
+}
+
+function jugDec(dec) {
+  return _jugMode === "tot" ? 0 : dec;
+}
+
 function leaderColHeader(col, label, activeMetric) {
   return `<th class="${col === activeMetric ? "sorted" : ""}">${label}</th>`;
 }
@@ -205,7 +247,7 @@ function leaderCell(p, col, activeMetric, dec, heat) {
   const tone = JUG_RISK_COLS.has(col) ? "risk" : "good";
   const cls = heat?.[col] && col !== "min" ? kdxHeatClass(heat[col](v), tone) : "";
   if (col === activeMetric) {
-    return `<td class="sorted ${cls}" data-sort="${v ?? -1}"><b>${disp}</b>${pctBadge(p[col + "_pct"])}</td>`;
+    return `<td class="sorted ${cls}" data-sort="${v ?? -1}"><b>${disp}</b>${p._noPct ? "" : pctBadge(p[col + "_pct"])}</td>`;
   }
   return `<td class="${cls}" data-sort="${v ?? -1}">${disp}</td>`;
 }
@@ -427,6 +469,8 @@ function buildTeamPlayersHTML(team, players) {
       <thead>
         <tr>
           <th>Jugador</th>
+          <th title="Partidos jugados (titular)">PJ</th>
+          <th title="Goles totales">Goles</th>
           <th title="Minutos por partido">Min/p</th>
           <th title="Disparos">Disp/p</th>
           <th title="Disparos a puerta">SoT/p</th>
@@ -448,6 +492,8 @@ function buildPlayerRow(team, p) {
   return `
   <tr>
     <td><span class="player-cell">${typeof entityMedia === "function" ? entityMedia("player", p.player, team) : ""}<b><a href="${playerHref(team, p.player)}" onclick="event.stopPropagation()">${escHtml(p.player)}</a></b></span></td>
+    <td class="muted" data-sort="${p.mp ?? 0}">${p.mp != null ? `${p.mp}${p.starts != null ? ` <small>(${p.starts})</small>` : ""}` : "—"}</td>
+    <td data-sort="${p.gls_tot ?? 0}">${p.gls_tot != null ? (p.gls_tot > 0 ? `<b style="color:var(--green)">${p.gls_tot}</b>` : 0) : "—"}</td>
     <td>${fmt(p.min, 0)}</td>
     <td>${fmt(p.sh, 1)}</td>
     <td>${fmt(p.sot, 1)}</td>
@@ -521,6 +567,7 @@ function buildPlayerDetail(team, player, detail) {
       <thead>
         <tr>
           <th>Fecha</th>
+          <th>Rival</th>
           <th>Goles</th>
           <th>Asist</th>
           <th>Min</th>
@@ -534,6 +581,7 @@ function buildPlayerDetail(team, player, detail) {
         ${detail.map(d => `
         <tr>
           <td class="muted">${d.date}</td>
+          <td>${d.opp ? `<span class="fx-team">${typeof entityMedia === "function" ? entityMedia("team", d.opp) : ""}<span class="muted">${d.venue === "H" ? "vs" : "en"}</span> ${escHtml(teamDisplayName(d.opp))}</span>` : "—"}</td>
           <td>${d.gls > 0 ? `<b style="color:var(--green)">${d.gls}</b>` : d.gls ?? "—"}</td>
           <td>${d.ast > 0 ? `<b style="color:var(--blue)">${d.ast}</b>` : d.ast ?? "—"}</td>
           <td>${d.min ?? "—"}</td>
@@ -547,7 +595,7 @@ function buildPlayerDetail(team, player, detail) {
   </div>` : `
   <div class="card player-data-note">
     <div class="section-title">${svgList} Promedios de temporada</div>
-    <p>La fuente disponible para este jugador es agregada por temporada, no partido a partido. Por eso no se muestran últimos 5/10 ni una tabla de registros individuales.</p>
+    <p>Este jugador aún no tiene partidos registrados esta temporada, así que solo se muestran sus medias.</p>
   </div>`}`;
 }
 

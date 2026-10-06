@@ -63,13 +63,13 @@ jobs:
           REFEREE_LEAGUES: ${{ github.event.inputs.referee_leagues || 'SP1 SP2' }}
         run: python scripts/update_referee_data.py --days-back "$REFEREE_DAYS_BACK" --max-fixtures "$REFEREE_MAX_FIXTURES" --leagues $REFEREE_LEAGUES
 
-      - name: Update referee matches (ESPN)
+      - name: Update ESPN data (árbitros, jugadores, próximos partidos)
         # Árbitro, tarjetas y faltas por partido de las 11 ligas, incremental.
         # World Soccer Data bloquea las IPs de GitHub (403/406), así que su
         # histórico (DATOS/referees_wsd_matches.csv) ya no se actualiza en CI.
         continue-on-error: true
         timeout-minutes: 8
-        run: python scripts/update_espn_referee_matches.py --max-seconds 360
+        run: python scripts/update_espn_data.py --max-seconds 360
 
       - name: Update match odds (The Odds API)
         continue-on-error: true
@@ -97,10 +97,9 @@ jobs:
       - name: Update official suspension feed
         run: python scripts/update_suspensions.py --fetch
 
-      - name: Update player data
-        continue-on-error: true
-        timeout-minutes: 12
-        run: python scripts/update_player_data.py --leagues SP1 E0 I1 D1 F1
+      # Jugadores: salen de ESPN partido a partido (update_espn_data.py) y los
+      # construye build_data.py. El scrape de Understat/FBref (update_player_data.py)
+      # se retiró: sin tiros a puerta ni faltas, 5 ligas y pisaba players.json.
 
       - name: Enrich team and player identity assets
         continue-on-error: true
@@ -110,7 +109,7 @@ jobs:
 
       - name: Check player coverage
         continue-on-error: true
-        run: python scripts/check_player_coverage.py --fail-under 0.8 --required-leagues SP1 E0 I1 D1 F1
+        run: python scripts/check_player_coverage.py --fail-under 0.8 --required-leagues SP1 SP2 E0 E1 I1 I2 D1 D2 F1 F2 N1
 
       - name: Check referee coverage
         continue-on-error: true
@@ -129,6 +128,9 @@ jobs:
           test ! -f DATOS/referees_wsd_matches.csv || git add DATOS/referees_wsd_matches.csv
           test ! -f DATOS/referee_assignments.json || git add DATOS/referee_assignments.json
           test ! -f DATOS/espn_upcoming.json || git add DATOS/espn_upcoming.json
+          test ! -f DATOS/espn_player_matches.csv || git add DATOS/espn_player_matches.csv
+          test ! -f DATOS/espn_sync.json || git add DATOS/espn_sync.json
+          test ! -f DATOS/espn_standings.json || git add DATOS/espn_standings.json
           test ! -f DATOS/suspensions_manual.csv || git add DATOS/suspensions_manual.csv
           git diff --staged --quiet || git commit -m "chore: update data $(date -u +%Y-%m-%d) [skip ci]"
           # El workflow de directo puede haber empujado mientras tanto.

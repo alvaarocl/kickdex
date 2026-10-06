@@ -171,3 +171,25 @@ def test_get_weighted_h2h_summary_weighted_rates_in_range():
     assert round(
         weighted["weighted_win_rate1"] + weighted["weighted_draw_rate"] + weighted["weighted_win_rate2"], 3
     ) == 1.0
+
+
+def test_weighted_form_ignores_missing_stat_cells_instead_of_zeroing():
+    # Un solo partido sin columna de tiros/córners (CSV antiguo) dejaba la
+    # media entera en NaN → 0 en la web. Ahora se excluye solo ese dato.
+    import math
+    import pandas as pd
+    from app.engine.metrics import get_weighted_form
+
+    df = pd.DataFrame({
+        "Date": pd.to_datetime(["2026-08-20", "2026-08-27", "2026-09-03"]),
+        "HomeTeam": ["A", "A", "A"], "AwayTeam": ["B", "C", "D"],
+        "FTHG": [1, 2, 0], "FTAG": [0, 1, 0],
+        "HS": [10, float("nan"), 14], "AS": [5, 6, 7],
+        "HST": [4, float("nan"), 6], "AST": [1, 2, 3],
+        "HC": [float("nan")] * 3, "AC": [1, 2, 3],
+        "HY": [1, 2, 3], "AY": [0, 0, 0], "HF": [10, 12, 14], "AF": [9, 9, 9],
+    })
+    form = get_weighted_form(df, "A", venue="Home")
+    assert 10 < form["avg_shots"] < 14 and not math.isnan(form["avg_shots"])
+    assert form["avg_corners"] is None          # sin ningún dato: "sin dato", no 0
+    assert form["avg_cards"] > 0

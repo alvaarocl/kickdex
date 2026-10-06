@@ -38,15 +38,21 @@ function buildBlockStatDuel(homeTeam, awayTeam, ctx) {
     </div>`;
 
   const rowsHtml = rows.map(r => {
-    const hv = r.hv != null ? r.hv : 0;
-    const av = r.av != null ? r.av : 0;
+    // null = la fuente no tiene ese dato para el equipo: "—", sin barra ni "ganador".
+    const hOk = r.hv != null && Number.isFinite(Number(r.hv));
+    const aOk = r.av != null && Number.isFinite(Number(r.av));
+    const hv = hOk ? Number(r.hv) : 0;
+    const av = aOk ? Number(r.av) : 0;
     const max = r.max || 1;
-    const hBar = Math.min(r.invert ? (max - hv) / max : hv / max, 1) * 100;
-    const aBar = Math.min(r.invert ? (max - av) / max : av / max, 1) * 100;
-    const hDisp = r.pct ? _blkPct(hv) : _blkFmt(hv, r.dec != null ? r.dec : 1);
-    const aDisp = r.pct ? _blkPct(av) : _blkFmt(av, r.dec != null ? r.dec : 1);
-    const hBetter = r.invert ? (hv < av) : (hv > av);
-    const aBetter = r.invert ? (av < hv) : (av > hv);
+    const bar = (ok, v) => ok ? Math.max(0, Math.min(r.invert ? (max - v) / max : v / max, 1)) * 100 : 0;
+    const hBar = bar(hOk, hv);
+    const aBar = bar(aOk, av);
+    const disp = (ok, v) => !ok ? "—" : r.pct ? _blkPct(v) : _blkFmt(v, r.dec != null ? r.dec : 1);
+    const hDisp = disp(hOk, hv);
+    const aDisp = disp(aOk, av);
+    const both = hOk && aOk;
+    const hBetter = both && (r.invert ? (hv < av) : (hv > av));
+    const aBetter = both && (r.invert ? (av < hv) : (av > hv));
     return `
       <div class="duel-row">
         <div class="duel-val-home${hBetter ? " leading" : ""}">${hDisp}</div>

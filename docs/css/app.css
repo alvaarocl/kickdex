@@ -4104,6 +4104,8 @@ tbody td b { font-family: var(--font-data); }
   --zone-promo: #2EE6A6;
   --zone-po:    #A78BFA;
   --zone-rel:   #FF5A6E;
+  --zone-uclq:  #9BE7FF;
+  --zone-relpo: #FF9F6E;
 }
 
 /* Tabla densa con cabecera fija */
@@ -4202,6 +4204,8 @@ tr[data-zone="uecl"]  { --zone-color: var(--zone-uecl); }
 tr[data-zone="promo"] { --zone-color: var(--zone-promo); }
 tr[data-zone="po"]    { --zone-color: var(--zone-po); }
 tr[data-zone="rel"]   { --zone-color: var(--zone-rel); }
+tr[data-zone="uclq"]  { --zone-color: var(--zone-uclq); }
+tr[data-zone="relpo"] { --zone-color: var(--zone-relpo); }
 .ktable tr[data-zone="rel"] { background: rgba(var(--heat-red), .07) !important; }
 .ktable tr[data-zone="rel"] td { color: #FFC2CA; }
 .ktable tr[data-zone="rel"] .krank { background: var(--red); color: #fff; }
