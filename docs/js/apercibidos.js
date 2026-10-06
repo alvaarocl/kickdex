@@ -41,16 +41,21 @@ function renderDisciplinePage() {
   const all = feed.items || [];
   const leagueCodes = Object.keys(feed.by_league || {});
   const order = Object.keys(DISC.leagues || {}).filter(c => leagueCodes.includes(c))
-    .concat(leagueCodes.filter(c => !(c in (DISC.leagues || {}))));
+    .concat(leagueCodes.filter(c => !(c in (DISC.leagues || {}))))
+    .sort((a, b) => (DISC.leagues?.[b]?.competition ? 1 : 0) - (DISC.leagues?.[a]?.competition ? 1 : 0));
   const rules = {};
   all.forEach(i => { if (i.rule && !rules[i.league]) rules[i.league] = { text: i.rule, confidence: i.confidence }; });
 
   root.innerHTML = `
     <div class="kstat-grid" id="disc-stats"></div>
     <div class="ktoolbar">
-      <select id="disc-league" class="ksearch" style="max-width:240px" aria-label="Liga">
-        <option value="all">Todas las ligas</option>
-        ${order.map(c => `<option value="${esc(c)}">${esc(DISC.leagues?.[c]?.name || feed.by_league?.[c]?.name || c)}</option>`).join("")}
+      <select id="disc-league" class="ksearch" style="max-width:260px" aria-label="Competición">
+        <option value="all">Todas las competiciones</option>
+        ${[["Competiciones europeas", order.filter(c => DISC.leagues?.[c]?.competition)],
+           ["Ligas nacionales", order.filter(c => !DISC.leagues?.[c]?.competition)]]
+          .filter(([, list]) => list.length)
+          .map(([label, list]) => `<optgroup label="${label}">${list.map(c =>
+            `<option value="${esc(c)}">${esc(DISC.leagues?.[c]?.name || feed.by_league?.[c]?.name || c)}</option>`).join("")}</optgroup>`).join("")}
       </select>
       <button type="button" class="ktoggle" data-status="all">Todos</button>
       <button type="button" class="ktoggle" data-status="suspended">Sancionados</button>

@@ -26,22 +26,7 @@ function initArbitros() {
 
   const sel = document.getElementById("arb-league-filter");
   if (sel) {
-    const prev = sel.value;
-    while (sel.options.length > 1) sel.remove(1);
-    const leaguesInData = typeof sortLeagueCodes === "function"
-      ? sortLeagueCodes((APP.referees || []).map(r => r.league))
-      : [...new Set((APP.referees || []).map(r => r.league))].sort();
-    leaguesInData.forEach(code => {
-      if (typeof appendLeagueOption === "function" && APP.leagues?.[code]) {
-        appendLeagueOption(sel, code);
-      } else {
-        const opt = document.createElement("option");
-        opt.value = code;
-        opt.textContent = APP.leagues?.[code]?.name || code;
-        sel.appendChild(opt);
-      }
-    });
-    if ([...sel.options].some(opt => opt.value === prev)) sel.value = prev;
+    fillCompetitionSelect(sel, [...new Set((APP.referees || []).map(r => r.league))]);
     sel.addEventListener("change", e => {
       _arbLeague = e.target.value;
       _arbShowAll = false;

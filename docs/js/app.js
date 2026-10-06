@@ -11,10 +11,10 @@ const I18N = {
     tab_inicio: "Inicio", tab_comparador: "Comparador", tab_h2h: "H2H",
     tab_jugadores: "Jugadores", tab_arbitros: "Árbitros", tab_live: "Directo", tab_clasificacion: "Clasificación",
     arb_title: "Árbitros", arb_subtitle: "Perfil disciplinario histórico. Identifica árbitros con tendencia a sacar más o menos tarjetas.",
-    league_all: "Todas", league_sp1: "La Liga", league_sp2: "Segunda",
+    league_all: "Todas las competiciones", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendario y Partidos",
     inicio_subtitle: "Forma, tendencias y datos clave de cada partido. Pulsa una fila para el análisis completo.",
-    inicio_filter: "Filtrar por liga",
+    inicio_filter: "Competición",
     inicio_view: "Vista",
     inicio_view_upcoming: "Próximos",
     inicio_view_full: "Temporada completa",
@@ -30,7 +30,7 @@ const I18N = {
     inicio_no_upcoming: "Aún no hay fixtures publicados para la próxima jornada. Football-data.co.uk los añade 2-3 días antes. Mientras, puedes analizar cualquier partido desde el Comparador.",
     inicio_analyze: "Analizar",
     loading: "Cargando partidos...",
-    cmp_league: "Liga", cmp_home: "Equipo Local", cmp_away: "Equipo Visitante",
+    cmp_league: "Competición", cmp_home: "Equipo Local", cmp_away: "Equipo Visitante",
     cmp_last: "Ventana", cmp_analyze: "Analizar",
     cmp_prompt: "1. Selecciona liga · 2. Selecciona dos equipos · 3. Pulsa Analizar",
     cmp_players_title: "Comparativa de Jugadores",
@@ -123,10 +123,10 @@ const I18N = {
     tab_inicio: "Home", tab_comparador: "Match Analysis", tab_h2h: "H2H",
     tab_jugadores: "Players", tab_arbitros: "Referees", tab_live: "Live", tab_clasificacion: "Standings",
     arb_title: "Referees", arb_subtitle: "Historical disciplinary profile. Identify referees with a tendency to show more or fewer cards.",
-    league_all: "All", league_sp1: "La Liga", league_sp2: "Segunda",
+    league_all: "All competitions", league_sp1: "La Liga", league_sp2: "Segunda",
     inicio_title: "Calendar & Matches",
     inicio_subtitle: "Form, trends and key data for every fixture. Tap a row for the full breakdown.",
-    inicio_filter: "Filter by league",
+    inicio_filter: "Competition",
     inicio_view: "View",
     inicio_view_upcoming: "Upcoming",
     inicio_view_full: "Full season",
@@ -142,7 +142,7 @@ const I18N = {
     inicio_no_upcoming: "No fixtures published for the next matchday yet. Football-data.co.uk adds them 2-3 days before kick-off. In the meantime, analyze any match in the Match Analysis tab.",
     inicio_analyze: "Analyze",
     loading: "Loading matches...",
-    cmp_league: "League", cmp_home: "Home Team", cmp_away: "Away Team",
+    cmp_league: "Competition", cmp_home: "Home Team", cmp_away: "Away Team",
     cmp_last: "Window", cmp_analyze: "Analyze",
     cmp_prompt: "1. Pick league · 2. Select two teams · 3. Click Analyze",
     cmp_players_title: "Player Comparison",
@@ -353,6 +353,7 @@ function sortLeagueCodes(codes) {
 
 function getLeagueLabel(code) {
   const name = APP.leagues?.[code]?.name || code;
+  if (APP.leagues?.[code]?.competition) return name;  // "Champions League", sin "Europa · UEFA"
   const meta = getLeagueMeta(code);
   if (!meta.country || meta.country === "Otras") return name;
   return `${meta.country} · ${meta.tier} · ${name}`;
@@ -368,6 +369,89 @@ function appendLeagueOption(sel, code) {
   if (ld.roster_status === "partial") opt.textContent += " · cobertura parcial";
   opt.title = meta.country === "Otras" ? `${code} · ${ld.name}` : `${code} · ${meta.country} · ${ld.name}`;
   sel.appendChild(opt);
+}
+
+// ── Selector de competición ────────────────────────────────────────────────
+// Agrupa en <optgroup>: competiciones europeas primero y luego ligas por país,
+// y añade una fila de chips para elegir de un clic (Champions destacada).
+const COMPETITION_SHORT = {
+  CL: "Champions", SP1: "LaLiga", SP2: "Segunda", E0: "Premier", E1: "Championship",
+  I1: "Serie A", I2: "Serie B", D1: "Bundesliga", D2: "2. Bundesliga", F1: "Ligue 1", F2: "Ligue 2",
+  N1: "Eredivisie",
+};
+const COUNTRY_FLAG = {
+  "Europa": "🇪🇺", "España": "🇪🇸", "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Italia": "🇮🇹",
+  "Alemania": "🇩🇪", "Francia": "🇫🇷", "Países Bajos": "🇳🇱",
+};
+
+function competitionShort(code) {
+  return COMPETITION_SHORT[code] || APP.leagues?.[code]?.name || code;
+}
+
+function fillCompetitionSelect(sel, codes, { keepFirst = true } = {}) {
+  if (!sel) return;
+  const prev = sel.value;
+  const first = keepFirst && sel.options.length ? sel.options[0].cloneNode(true) : null;
+  sel.innerHTML = "";
+  if (first) sel.appendChild(first);
+  const groups = new Map();
+  sortLeagueCodes(codes).forEach(code => {
+    const meta = getLeagueMeta(code);
+    const group = APP.leagues?.[code]?.competition ? "Competiciones europeas" : (meta.country || "Otras");
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group).push(code);
+  });
+  groups.forEach((list, group) => {
+    const og = document.createElement("optgroup");
+    const flag = COUNTRY_FLAG[group === "Competiciones europeas" ? "Europa" : group] || "";
+    og.label = `${flag} ${group}`.trim();
+    list.forEach(code => {
+      const ld = APP.leagues?.[code] || {};
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = (ld.name || code) + (ld.roster_status === "partial" ? " · cobertura parcial" : "");
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
+  });
+  if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+  mountCompetitionChips(sel, codes);
+}
+
+function mountCompetitionChips(sel, codes) {
+  const host = sel.closest(".controls") || sel.parentElement;
+  if (!host) return;
+  let bar = host.nextElementSibling?.classList?.contains("comp-chips") ? host.nextElementSibling : null;
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "comp-chips";
+    bar.setAttribute("role", "group");
+    bar.setAttribute("aria-label", "Elegir competición");
+    host.after(bar);
+    bar.addEventListener("click", e => {
+      const btn = e.target.closest("[data-comp]");
+      if (!btn) return;
+      sel.value = btn.dataset.comp;
+      sel.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    sel.addEventListener("change", () => syncCompetitionChips(sel, bar));
+  }
+  const allOpt = [...sel.options].find(o => o.value === "all");
+  const sorted = sortLeagueCodes(codes);
+  bar.innerHTML =
+    (allOpt ? `<button type="button" class="comp-chip" data-comp="all">Todas</button>` : "") +
+    sorted.map(code => {
+      const meta = getLeagueMeta(code);
+      const euro = !!APP.leagues?.[code]?.competition;
+      const flag = COUNTRY_FLAG[euro ? "Europa" : meta.country] || "";
+      return `<button type="button" class="comp-chip${euro ? " comp-chip--euro" : ""}" data-comp="${code}" title="${(APP.leagues?.[code]?.name || code).replace(/"/g, "&quot;")}">` +
+        `<span aria-hidden="true">${flag}</span>${competitionShort(code)}</button>`;
+    }).join("");
+  syncCompetitionChips(sel, bar);
+}
+
+function syncCompetitionChips(sel, bar) {
+  bar.querySelectorAll("[data-comp]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.comp === sel.value)));
 }
 
 // ── Data fetching ──────────────────────────────────────────────────────────
@@ -621,20 +705,13 @@ function initSegControls() {
   const populateLeagueSelect = (id) => {
     const sel = document.getElementById(id);
     if (!sel || sel.tagName !== "SELECT") return;
-    const prev = sel.value;
-    // Idempotent: keep only the first default option ("Todas"), remove the rest
-    while (sel.options.length > 1) sel.remove(1);
-    sortLeagueCodes(Object.keys(APP.leagues || {})).forEach(code => appendLeagueOption(sel, code));
-    if ([...sel.options].some(opt => opt.value === prev)) sel.value = prev;
+    fillCompetitionSelect(sel, Object.keys(APP.leagues || {}));
   };
 
   populateLeagueSelect("cmpLeagueFilter");
   const jugLeagueFilter = document.getElementById("jugLeagueFilter");
   if (jugLeagueFilter) {
-    const prev = jugLeagueFilter.value;
-    while (jugLeagueFilter.options.length > 1) jugLeagueFilter.remove(1);
-    getPlayerLeagueCodes().forEach(code => appendLeagueOption(jugLeagueFilter, code));
-    if ([...jugLeagueFilter.options].some(opt => opt.value === prev)) jugLeagueFilter.value = prev;
+    fillCompetitionSelect(jugLeagueFilter, getPlayerLeagueCodes());
     jugLeagueFilter.addEventListener("change", e => {
       populateSelect("jug-team", getPlayerTeamsByLeague(e.target.value));
       const playerSel = document.getElementById("jug-player");
@@ -656,15 +733,12 @@ function initSegControls() {
 
   const inicioFilter = document.getElementById("inicioLeagueFilter");
   if (inicioFilter) {
-    const prev = inicioFilter.value;
-    while (inicioFilter.options.length > 1) inicioFilter.remove(1);
     const fxLeagues = new Set([
       ...(APP.fixtures?.calendar || []).map(f => f.league),
       ...(APP.fixtures?.upcoming || []).map(f => f.league),
       ...(APP.fixtures?.recent   || []).map(f => f.league),
     ]);
-    sortLeagueCodes(Array.from(fxLeagues)).forEach(code => appendLeagueOption(inicioFilter, code));
-    if ([...inicioFilter.options].some(opt => opt.value === prev)) inicioFilter.value = prev;
+    fillCompetitionSelect(inicioFilter, Array.from(fxLeagues));
     inicioFilter.addEventListener("change", e => {
       if (typeof renderInicio === "function") renderInicio(e.target.value);
     });

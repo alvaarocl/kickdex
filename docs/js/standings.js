@@ -65,20 +65,11 @@ function populateClasifLeagueSelect() {
   const covered = Object.keys(APP.standings?.leagues || {});
   if (!covered.length) return;
   const prev = sel.value;
-  sel.innerHTML = "";
-  const ordered = typeof sortLeagueCodes === "function" ? sortLeagueCodes(covered) : covered.sort();
-  ordered.forEach(code => {
-    if (typeof appendLeagueOption === "function" && APP.leagues?.[code]) {
-      appendLeagueOption(sel, code);
-    } else {
-      const opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = APP.leagues?.[code]?.name || code;
-      sel.appendChild(opt);
-    }
-  });
-  _clasifLeague = ordered.includes(prev) ? prev : ordered[0];
+  const ordered = sortLeagueCodes(covered);
+  fillCompetitionSelect(sel, ordered, { keepFirst: false });
+  _clasifLeague = ordered.includes(prev) ? prev : (ordered.find(c => !APP.leagues?.[c]?.competition) || ordered[0]);
   sel.value = _clasifLeague;
+  mountCompetitionChips(sel, ordered);  // re-sincroniza el chip activo
 }
 
 function renderDisabledState(message) {

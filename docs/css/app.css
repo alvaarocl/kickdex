@@ -4348,3 +4348,15 @@ a.live-mini:hover { border-color: rgba(var(--heat-green), .35); }
 .fx-dr-disc b { color: #FF8A98; font-weight: 700; }
 .fx-dr-disc span { color: var(--gold); }
 .fx-dr-disc:hover { border-color: rgba(var(--heat-red), .6); }
+
+/* Chips de competición (bajo cada selector) */
+.comp-chips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 10px; margin: -6px 0 14px; scrollbar-width: thin; }
+.comp-chip { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 99px;
+  border: 1px solid var(--border2); background: var(--bg2); color: var(--muted); font: 600 .74rem var(--font-ui);
+  cursor: pointer; white-space: nowrap; transition: color .15s, border-color .15s, background .15s; }
+.comp-chip span { font-size: .85rem; line-height: 1; }
+.comp-chip:hover { color: var(--text); border-color: var(--border3); }
+.comp-chip[aria-pressed="true"] { color: var(--brand); border-color: rgba(var(--heat-green), .45); background: var(--brand-soft); }
+.comp-chip--euro { border-color: rgba(91, 214, 255, .35); color: var(--brand2); }
+.comp-chip--euro[aria-pressed="true"] { color: #05070D; background: linear-gradient(135deg, var(--brand2), #9BE7FF); border-color: transparent; }
+@media (prefers-reduced-motion: reduce) { .comp-chip { transition: none; } }
