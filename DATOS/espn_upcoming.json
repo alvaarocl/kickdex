@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-06T18:54:06Z",
+ "updated_at": "2026-10-07T13:13:15Z",
  "items": [
   {
    "league": "D2",
@@ -4222,6 +4222,94 @@
    "home": "Torino",
    "away": "Como",
    "venue": "Stadio Olimpico Grande Torino",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-10-28",
+   "time": "18:30",
+   "home": "Milan",
+   "away": "Bologna",
+   "venue": "San Siro",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-10-28",
+   "time": "18:30",
+   "home": "Parma",
+   "away": "Udinese",
+   "venue": "Ennio Tardini",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-10-28",
+   "time": "18:30",
+   "home": "Venezia",
+   "away": "Inter",
+   "venue": "Stadio Pier Luigi Penzo",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-10-28",
+   "time": "19:00",
+   "home": "Pisa",
+   "away": "Palermo",
+   "venue": "Arena Garibaldi - Stadio Romeo Anconetani",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-10-28",
+   "time": "20:00",
+   "home": "Carrarese",
+   "away": "Arezzo",
+   "venue": "Dei Marmi",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-10-28",
+   "time": "20:00",
+   "home": "Juve Stabia",
+   "away": "Verona",
+   "venue": "Romeo Menti di Castellammare",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-10-28",
+   "time": "20:45",
+   "home": "Genoa",
+   "away": "Juventus",
+   "venue": "Stadio Luigi Ferraris",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-10-28",
+   "time": "20:45",
+   "home": "Monza",
+   "away": "Napoli",
+   "venue": "U-Power Stadium",
    "status": "scheduled",
    "source": "ESPN"
   }
