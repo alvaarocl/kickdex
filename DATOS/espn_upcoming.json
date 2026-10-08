@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-07T19:19:32Z",
+ "updated_at": "2026-10-08T13:20:32Z",
  "items": [
   {
    "league": "D2",
@@ -4310,6 +4310,28 @@
    "home": "Monza",
    "away": "Napoli",
    "venue": "U-Power Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-10-29",
+   "time": "18:30",
+   "home": "Frosinone",
+   "away": "Lecce",
+   "venue": "Stadio Benito Stirpe",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-10-29",
+   "time": "20:45",
+   "home": "Fiorentina",
+   "away": "Atalanta",
+   "venue": "Stadio Artemio Franchi",
    "status": "scheduled",
    "source": "ESPN"
   }
