@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-09T13:07:54Z",
+ "updated_at": "2026-10-09T18:47:44Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -2356,7 +2356,7 @@
   },
   "D2": {
    "competition_name": "2026-2027 German 2. Bundesliga",
-   "matchday": 6,
+   "matchday": 7,
    "source": "espn",
    "table": [
     {
@@ -2394,14 +2394,14 @@
     {
      "position": 3,
      "team": "Heidenheim",
-     "played": 6,
+     "played": 7,
      "won": 4,
-     "draw": 1,
+     "draw": 2,
      "lost": 1,
      "goals_for": 14,
      "goals_against": 12,
      "goal_diff": 2,
-     "points": 13,
+     "points": 14,
      "form": null,
      "zone": "po",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/6418.png",
@@ -2409,6 +2409,22 @@
     },
     {
      "position": 4,
+     "team": "Kaiserslautern",
+     "played": 7,
+     "won": 3,
+     "draw": 3,
+     "lost": 1,
+     "goals_for": 6,
+     "goals_against": 4,
+     "goal_diff": 2,
+     "points": 12,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/130.png",
+     "zone_label": null
+    },
+    {
+     "position": 5,
      "team": "Wolfsburg",
      "played": 6,
      "won": 3,
@@ -2421,22 +2437,6 @@
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/138.png",
-     "zone_label": null
-    },
-    {
-     "position": 5,
-     "team": "Kaiserslautern",
-     "played": 6,
-     "won": 3,
-     "draw": 2,
-     "lost": 1,
-     "goals_for": 6,
-     "goals_against": 4,
-     "goal_diff": 2,
-     "points": 11,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/130.png",
      "zone_label": null
     },
     {
@@ -2473,6 +2473,22 @@
     },
     {
      "position": 8,
+     "team": "Braunschweig",
+     "played": 7,
+     "won": 2,
+     "draw": 1,
+     "lost": 4,
+     "goals_for": 13,
+     "goals_against": 13,
+     "goal_diff": 0,
+     "points": 7,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3067.png",
+     "zone_label": null
+    },
+    {
+     "position": 9,
      "team": "St Pauli",
      "played": 6,
      "won": 1,
@@ -2488,7 +2504,7 @@
      "zone_label": null
     },
     {
-     "position": 9,
+     "position": 10,
      "team": "Bochum",
      "played": 6,
      "won": 2,
@@ -2504,7 +2520,7 @@
      "zone_label": null
     },
     {
-     "position": 10,
+     "position": 11,
      "team": "Hannover",
      "played": 6,
      "won": 2,
@@ -2520,7 +2536,7 @@
      "zone_label": null
     },
     {
-     "position": 11,
+     "position": 12,
      "team": "Osnabruck",
      "played": 6,
      "won": 2,
@@ -2536,7 +2552,7 @@
      "zone_label": null
     },
     {
-     "position": 12,
+     "position": 13,
      "team": "Greuther Furth",
      "played": 6,
      "won": 1,
@@ -2552,7 +2568,7 @@
      "zone_label": null
     },
     {
-     "position": 13,
+     "position": 14,
      "team": "Bielefeld",
      "played": 6,
      "won": 1,
@@ -2568,7 +2584,7 @@
      "zone_label": null
     },
     {
-     "position": 14,
+     "position": 15,
      "team": "Karlsruhe",
      "played": 6,
      "won": 1,
@@ -2584,31 +2600,15 @@
      "zone_label": null
     },
     {
-     "position": 15,
-     "team": "Braunschweig",
-     "played": 6,
-     "won": 1,
-     "draw": 1,
-     "lost": 4,
-     "goals_for": 12,
-     "goals_against": 13,
-     "goal_diff": -1,
-     "points": 4,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3067.png",
-     "zone_label": null
-    },
-    {
      "position": 16,
      "team": "Holstein Kiel",
-     "played": 6,
+     "played": 7,
      "won": 0,
      "draw": 4,
-     "lost": 2,
+     "lost": 3,
      "goals_for": 7,
-     "goals_against": 10,
-     "goal_diff": -3,
+     "goals_against": 11,
+     "goal_diff": -4,
      "points": 4,
      "form": null,
      "zone": "relpo",
