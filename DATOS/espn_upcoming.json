@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-08T19:15:57Z",
+ "updated_at": "2026-10-09T13:08:03Z",
  "items": [
   {
    "league": "D2",
@@ -4332,6 +4332,138 @@
    "home": "Fiorentina",
    "away": "Atalanta",
    "venue": "Stadio Artemio Franchi",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-10-30",
+   "time": "18:30",
+   "home": "Bielefeld",
+   "away": "Braunschweig",
+   "venue": "SchücoArena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-10-30",
+   "time": "18:30",
+   "home": "Cottbus",
+   "away": "Bochum",
+   "venue": "Stadion Der Freundschaft",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-10-30",
+   "time": "19:00",
+   "home": "Le Havre",
+   "away": "PSG",
+   "venue": "Stade Océane",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-10-30",
+   "time": "20:00",
+   "home": "Grenoble",
+   "away": "Dijon",
+   "venue": "Stade des Alpes",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-10-30",
+   "time": "20:00",
+   "home": "Metz",
+   "away": "Pau FC",
+   "venue": "Stade Saint-Symphorien",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-10-30",
+   "time": "20:00",
+   "home": "Nantes",
+   "away": "Clermont",
+   "venue": "Stade de la Beaujoire",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-10-30",
+   "time": "20:00",
+   "home": "Rodez",
+   "away": "Dunkerque",
+   "venue": "Stade Paul-Lignon",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-10-30",
+   "time": "20:00",
+   "home": "Laval",
+   "away": "Boulogne",
+   "venue": "Stade Francis Le Basser",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D1",
+   "league_name": "Bundesliga",
+   "date": "2026-10-30",
+   "time": "20:30",
+   "home": "Elversberg",
+   "away": "Mainz",
+   "venue": "URSAPHARM-Arena an der Kaiserlinde",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-10-30",
+   "time": "21:00",
+   "home": "Sheffield United",
+   "away": "Wrexham",
+   "venue": "Bramall Lane",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-10-30",
+   "time": "21:00",
+   "home": "Villarreal",
+   "away": "Espanol",
+   "venue": "Estadio de la Cerámica",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-10-30",
+   "time": "21:05",
+   "home": "Lille",
+   "away": "Lens",
+   "venue": "Decathlon Arena - Stade Pierre-Mauroy",
    "status": "scheduled",
    "source": "ESPN"
   }
