@@ -1,72 +1,6 @@
 {
- "updated_at": "2026-10-11T18:03:15Z",
+ "updated_at": "2026-10-12T15:13:36Z",
  "items": [
-  {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-10-11",
-   "time": "20:45",
-   "home": "Troyes",
-   "away": "Marseille",
-   "venue": "Stade de l'Aube",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-11",
-   "time": "20:45",
-   "home": "Cagliari",
-   "away": "Juventus",
-   "venue": "Unipol Domus",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-10-11",
-   "time": "21:00",
-   "home": "Santander",
-   "away": "Valencia",
-   "venue": "El Sardineros",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-11",
-   "time": "21:00",
-   "home": "Cadiz",
-   "away": "Sp Gijon",
-   "venue": "Nuevo Mirandilla",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-12",
-   "time": "14:00",
-   "home": "Valladolid",
-   "away": "Albacete",
-   "venue": "Estadio José Zorrilla",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-12",
-   "time": "16:15",
-   "home": "Burgos",
-   "away": "Granada",
-   "venue": "Estadio Municipal de El Plantío",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "I1",
    "league_name": "Serie A",
@@ -4387,6 +4321,94 @@
    "home": "Tenerife",
    "away": "Andorra",
    "venue": "Estadio Heliodoro Rodríguez López",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-02",
+   "time": "16:15",
+   "home": "Oviedo",
+   "away": "Las Palmas",
+   "venue": "Estadio Carlos Tartiere",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-11-02",
+   "time": "18:30",
+   "home": "Sassuolo",
+   "away": "Fiorentina",
+   "venue": "Mapei Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-02",
+   "time": "18:30",
+   "home": "Valladolid",
+   "away": "Leganes",
+   "venue": "Estadio José Zorrilla",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-02",
+   "time": "20:45",
+   "home": "Red Star",
+   "away": "Nancy",
+   "venue": "Stade Bauer",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-11-02",
+   "time": "20:45",
+   "home": "Atalanta",
+   "away": "Parma",
+   "venue": "New Balance Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-11-02",
+   "time": "21:00",
+   "home": "Newcastle",
+   "away": "Everton",
+   "venue": "St. James' Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-11-02",
+   "time": "21:00",
+   "home": "Dep. A Coruna",
+   "away": "Osasuna",
+   "venue": "Riazor",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-02",
+   "time": "21:00",
+   "home": "Mallorca",
+   "away": "Cadiz",
+   "venue": "Estadi Mallorca Son Moix",
    "status": "scheduled",
    "source": "ESPN"
   }
