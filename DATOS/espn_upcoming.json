@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-12T21:43:29Z",
+ "updated_at": "2026-10-13T14:04:59Z",
  "items": [
   {
    "league": "CL",
@@ -4332,6 +4332,204 @@
    "home": "Mallorca",
    "away": "Cadiz",
    "venue": "Estadi Mallorca Son Moix",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "18:45",
+   "home": "Galatasaray",
+   "away": "Stuttgart",
+   "venue": "RAMS Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "18:45",
+   "home": "Shakhtar Donetsk",
+   "away": "Sporting CP",
+   "venue": "Stamford Bridge",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "20:45",
+   "home": "Blackburn",
+   "away": "Stoke",
+   "venue": "Ewood Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "20:45",
+   "home": "Charlton",
+   "away": "Bolton",
+   "venue": "The Valley",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "20:45",
+   "home": "Derby",
+   "away": "Norwich",
+   "venue": "Pride Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "20:45",
+   "home": "Portsmouth",
+   "away": "Swansea",
+   "venue": "Fratton Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "20:45",
+   "home": "Preston",
+   "away": "Sheffield United",
+   "venue": "Deepdale",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "20:45",
+   "home": "QPR",
+   "away": "Burnley",
+   "venue": "MATRADE Loftus Road",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "20:45",
+   "home": "Watford",
+   "away": "Lincoln",
+   "venue": "Vicarage Road",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Ath Madrid",
+   "away": "Bayern Munich",
+   "venue": "Riyadh Air Metropolitano",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Barcelona",
+   "away": "Aston Villa",
+   "venue": "Spotify Camp Nou",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Bodo/Glimt",
+   "away": "Lille",
+   "venue": "Aspmyra Stadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Feyenoord",
+   "away": "Inter",
+   "venue": "De Kuip",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "LASK Linz",
+   "away": "Slovan Bratislava",
+   "venue": "Raiffeisen Arena (Linz)",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Man United",
+   "away": "Roma",
+   "venue": "Old Trafford",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Villarreal",
+   "away": "PSG",
+   "venue": "Estadio de la Cerámica",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Birmingham",
+   "away": "Millwall",
+   "venue": "St. Andrew's Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "West Brom",
+   "away": "Southampton",
+   "venue": "The Hawthorns",
    "status": "scheduled",
    "source": "ESPN"
   }
