@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-13T14:04:59Z",
+ "updated_at": "2026-10-13T19:51:11Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -234,6 +234,32 @@
    "source": "ESPN",
    "home_score": 2,
    "away_score": 3
+  },
+  "CL|2026-10-13|Lens|Sporting CP": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "18:45",
+   "home": "Lens",
+   "away": "Sporting CP",
+   "venue": "Stade Bollaert-Delelis",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 2
+  },
+  "CL|2026-10-13|Sabah FK|Slavia Prague": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "18:45",
+   "home": "Sabah FK",
+   "away": "Slavia Prague",
+   "venue": "Baku Olympic Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 0
   }
  }
 }
