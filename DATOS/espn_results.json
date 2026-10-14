@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-13T19:51:11Z",
+ "updated_at": "2026-10-14T11:43:42Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -235,6 +235,58 @@
    "home_score": 2,
    "away_score": 3
   },
+  "CL|2026-10-13|Arsenal|Lille": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "21:00",
+   "home": "Arsenal",
+   "away": "Lille",
+   "venue": "Emirates Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 0
+  },
+  "CL|2026-10-13|Ath Madrid|Man United": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "21:00",
+   "home": "Ath Madrid",
+   "away": "Man United",
+   "venue": "Riyadh Air Metropolitano",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 0
+  },
+  "CL|2026-10-13|Galatasaray|Barcelona": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "21:00",
+   "home": "Galatasaray",
+   "away": "Barcelona",
+   "venue": "RAMS Park",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 4
+  },
+  "CL|2026-10-13|Inter|Club Brugge": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "21:00",
+   "home": "Inter",
+   "away": "Club Brugge",
+   "venue": "San Siro",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 4
+  },
   "CL|2026-10-13|Lens|Sporting CP": {
    "league": "CL",
    "league_name": "Champions League",
@@ -248,6 +300,19 @@
    "home_score": 0,
    "away_score": 2
   },
+  "CL|2026-10-13|RB Leipzig|PSV Eindhoven": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "21:00",
+   "home": "RB Leipzig",
+   "away": "PSV Eindhoven",
+   "venue": "Red Bull Arena",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 0
+  },
   "CL|2026-10-13|Sabah FK|Slavia Prague": {
    "league": "CL",
    "league_name": "Champions League",
@@ -260,6 +325,32 @@
    "source": "ESPN",
    "home_score": 2,
    "away_score": 0
+  },
+  "CL|2026-10-13|Viking FK|Bayern Munich": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "21:00",
+   "home": "Viking FK",
+   "away": "Bayern Munich",
+   "venue": "Viking Stadion",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 3
+  },
+  "CL|2026-10-13|Villarreal|Napoli": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-13",
+   "time": "21:00",
+   "home": "Villarreal",
+   "away": "Napoli",
+   "venue": "Estadio de la Cerámica",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 1
   }
  }
 }
