@@ -1,28 +1,6 @@
 {
- "updated_at": "2026-10-14T11:43:42Z",
+ "updated_at": "2026-10-14T17:59:15Z",
  "items": [
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "18:45",
-   "home": "Feyenoord",
-   "away": "Como",
-   "venue": "De Kuip",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "18:45",
-   "home": "LASK Linz",
-   "away": "Liverpool",
-   "venue": "Raiffeisen Arena (Linz)",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "E1",
    "league_name": "Championship",
