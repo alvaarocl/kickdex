@@ -1,127 +1,6 @@
 {
- "updated_at": "2026-10-14T17:59:15Z",
+ "updated_at": "2026-10-15T11:20:13Z",
  "items": [
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-10-14",
-   "time": "20:45",
-   "home": "Norwich",
-   "away": "Southampton",
-   "venue": "Carrow Road",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-10-14",
-   "time": "20:45",
-   "home": "Portsmouth",
-   "away": "Sheffield United",
-   "venue": "Fratton Park",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-10-14",
-   "time": "20:45",
-   "home": "QPR",
-   "away": "Derby",
-   "venue": "MATRADE Loftus Road",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Roma",
-   "away": "Real Madrid",
-   "venue": "Olimpico",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Aston Villa",
-   "away": "Fenerbahce",
-   "venue": "Villa Park",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Bodo/Glimt",
-   "away": "Dortmund",
-   "venue": "Aspmyra Stadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Man City",
-   "away": "PSG",
-   "venue": "Etihad Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Betis",
-   "away": "FC Porto",
-   "venue": "Estadio La Cartuja",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Shakhtar Donetsk",
-   "away": "AEK Athens",
-   "venue": "Stamford Bridge",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Slovan Bratislava",
-   "away": "Stuttgart",
-   "venue": "Národny Futbalovy Stadión",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-10-14",
-   "time": "21:00",
-   "home": "Lincoln",
-   "away": "West Ham",
-   "venue": "LNER Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "D2",
    "league_name": "2. Bundesliga",
@@ -1459,7 +1338,7 @@
    "date": "2026-10-21",
    "time": "21:00",
    "home": "Aston Villa",
-   "away": "Viking FK",
+   "away": "VIKING FK",
    "venue": "Villa Park",
    "status": "scheduled",
    "source": "ESPN"
@@ -4439,7 +4318,7 @@
    "league_name": "Champions League",
    "date": "2026-11-04",
    "time": "21:00",
-   "home": "Viking FK",
+   "home": "VIKING FK",
    "away": "Sabah FK",
    "venue": "Viking Stadion",
    "status": "scheduled",
