@@ -1,28 +1,6 @@
 {
- "updated_at": "2026-10-16T11:15:02Z",
+ "updated_at": "2026-10-16T17:22:53Z",
  "items": [
-  {
-   "league": "D2",
-   "league_name": "2. Bundesliga",
-   "date": "2026-10-16",
-   "time": "18:30",
-   "home": "Cottbus",
-   "away": "Nurnberg",
-   "venue": "Stadion Der Freundschaft",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "D2",
-   "league_name": "2. Bundesliga",
-   "date": "2026-10-16",
-   "time": "18:30",
-   "home": "Holstein Kiel",
-   "away": "Hertha",
-   "venue": "Holstein-Stadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "F2",
    "league_name": "Ligue 2",
