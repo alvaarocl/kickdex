@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-15T17:45:32Z",
+ "updated_at": "2026-10-16T11:15:02Z",
  "items": [
   {
    "league": "D2",
@@ -4332,6 +4332,182 @@
    "home": "Bristol City",
    "away": "Wolves",
    "venue": "Ashton Gate",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-11-06",
+   "time": "18:30",
+   "home": "Dresden",
+   "away": "Greuther Furth",
+   "venue": "Rudolf Harbig Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-11-06",
+   "time": "18:30",
+   "home": "Braunschweig",
+   "away": "Cottbus",
+   "venue": "Eintracht-Stadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-06",
+   "time": "20:00",
+   "home": "Nancy",
+   "away": "Sochaux",
+   "venue": "Stade Marcel-Picot",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-06",
+   "time": "20:00",
+   "home": "Boulogne",
+   "away": "Annecy",
+   "venue": "Stade de la Libération",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-06",
+   "time": "20:00",
+   "home": "Dijon",
+   "away": "Red Star",
+   "venue": "Stade Gaston-Gérard",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-06",
+   "time": "20:00",
+   "home": "Dunkerque",
+   "away": "Guingamp",
+   "venue": "Stade Marcel-Tribut",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-06",
+   "time": "20:00",
+   "home": "Grenoble",
+   "away": "Reims",
+   "venue": "Stade des Alpes",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "N1",
+   "league_name": "Eredivisie",
+   "date": "2026-11-06",
+   "time": "20:00",
+   "home": "Willem II",
+   "away": "Zwolle",
+   "venue": "Koning Willem II Stadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D1",
+   "league_name": "Bundesliga",
+   "date": "2026-11-06",
+   "time": "20:30",
+   "home": "Hamburg",
+   "away": "M'gladbach",
+   "venue": "Volksparkstadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-06",
+   "time": "20:30",
+   "home": "Ascoli",
+   "away": "Palermo",
+   "venue": "Stadio Cino e Lillo Del Duca",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-06",
+   "time": "20:30",
+   "home": "Castellon",
+   "away": "Eibar",
+   "venue": "Nou Estadi Castalia",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-11-06",
+   "time": "20:45",
+   "home": "Toulouse",
+   "away": "Strasbourg",
+   "venue": "Stadium Municipal de Toulouse",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-11-06",
+   "time": "20:45",
+   "home": "Venezia",
+   "away": "Udinese",
+   "venue": "Stadio Pier Luigi Penzo",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-11-06",
+   "time": "21:00",
+   "home": "Everton",
+   "away": "Coventry",
+   "venue": "Hill Dickinson Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-06",
+   "time": "21:00",
+   "home": "Derby",
+   "away": "Bolton",
+   "venue": "Pride Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-11-06",
+   "time": "21:00",
+   "home": "Sevilla",
+   "away": "Alaves",
+   "venue": "Ramón Sánchez Pizjuán Stadium",
    "status": "scheduled",
    "source": "ESPN"
   }
