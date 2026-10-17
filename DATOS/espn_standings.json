@@ -1,9 +1,9 @@
 {
- "updated_at": "2026-10-16T17:22:44Z",
+ "updated_at": "2026-10-17T10:33:32Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
-   "matchday": 8,
+   "matchday": 9,
    "source": "espn",
    "table": [
     {
@@ -121,14 +121,14 @@
     {
      "position": 8,
      "team": "Dep. A Coruna",
-     "played": 8,
+     "played": 9,
      "won": 2,
-     "draw": 4,
+     "draw": 5,
      "lost": 2,
-     "goals_for": 12,
-     "goals_against": 11,
+     "goals_for": 13,
+     "goals_against": 12,
      "goal_diff": 1,
-     "points": 10,
+     "points": 11,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/90.png",
@@ -265,14 +265,14 @@
     {
      "position": 17,
      "team": "Levante",
-     "played": 7,
+     "played": 8,
      "won": 1,
-     "draw": 3,
+     "draw": 4,
      "lost": 3,
-     "goals_for": 11,
-     "goals_against": 15,
+     "goals_for": 12,
+     "goals_against": 16,
      "goal_diff": -4,
-     "points": 6,
+     "points": 7,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/1538.png",
@@ -330,7 +330,7 @@
   },
   "SP2": {
    "competition_name": "2026-2027 Spanish LALIGA 2",
-   "matchday": 9,
+   "matchday": 10,
    "source": "espn",
    "table": [
     {
@@ -527,6 +527,22 @@
     },
     {
      "position": 13,
+     "team": "Cordoba",
+     "played": 10,
+     "won": 4,
+     "draw": 0,
+     "lost": 6,
+     "goals_for": 15,
+     "goals_against": 20,
+     "goal_diff": -5,
+     "points": 12,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/8447.png",
+     "zone_label": null
+    },
+    {
+     "position": 14,
      "team": "Celta B",
      "played": 9,
      "won": 3,
@@ -542,7 +558,7 @@
      "zone_label": null
     },
     {
-     "position": 14,
+     "position": 15,
      "team": "Eldense",
      "played": 9,
      "won": 3,
@@ -558,7 +574,7 @@
      "zone_label": null
     },
     {
-     "position": 15,
+     "position": 16,
      "team": "Las Palmas",
      "played": 9,
      "won": 3,
@@ -574,15 +590,15 @@
      "zone_label": null
     },
     {
-     "position": 16,
+     "position": 17,
      "team": "Leganes",
-     "played": 9,
+     "played": 10,
      "won": 3,
      "draw": 2,
-     "lost": 4,
+     "lost": 5,
      "goals_for": 6,
-     "goals_against": 14,
-     "goal_diff": -8,
+     "goals_against": 15,
+     "goal_diff": -9,
      "points": 11,
      "form": null,
      "zone": "",
@@ -590,7 +606,7 @@
      "zone_label": null
     },
     {
-     "position": 17,
+     "position": 18,
      "team": "Andorra",
      "played": 9,
      "won": 3,
@@ -603,22 +619,6 @@
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/20179.png",
-     "zone_label": null
-    },
-    {
-     "position": 18,
-     "team": "Cordoba",
-     "played": 9,
-     "won": 3,
-     "draw": 0,
-     "lost": 6,
-     "goals_for": 14,
-     "goals_against": 20,
-     "goal_diff": -6,
-     "points": 9,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/8447.png",
      "zone_label": null
     },
     {
@@ -1016,7 +1016,7 @@
   },
   "E1": {
    "competition_name": "2026-27 English League Championship",
-   "matchday": 10,
+   "matchday": 11,
    "source": "espn",
    "table": [
     {
@@ -1101,6 +1101,22 @@
     },
     {
      "position": 6,
+     "team": "Wolves",
+     "played": 10,
+     "won": 5,
+     "draw": 2,
+     "lost": 3,
+     "goals_for": 18,
+     "goals_against": 15,
+     "goal_diff": 3,
+     "points": 17,
+     "form": null,
+     "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/380.png",
+     "zone_label": "Promotion playoffs"
+    },
+    {
+     "position": 7,
      "team": "West Brom",
      "played": 10,
      "won": 5,
@@ -1113,10 +1129,10 @@
      "form": null,
      "zone": "po",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/383.png",
-     "zone_label": "Promotion playoffs"
+     "zone_label": "Promotion Playoffs"
     },
     {
-     "position": 7,
+     "position": 8,
      "team": "Southampton",
      "played": 10,
      "won": 6,
@@ -1132,7 +1148,7 @@
      "zone_label": "Promotion Playoffs"
     },
     {
-     "position": 8,
+     "position": 9,
      "team": "Stoke",
      "played": 10,
      "won": 5,
@@ -1143,12 +1159,12 @@
      "goal_diff": 1,
      "points": 16,
      "form": null,
-     "zone": "po",
+     "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/336.png",
-     "zone_label": "Promotion Playoffs"
+     "zone_label": null
     },
     {
-     "position": 9,
+     "position": 10,
      "team": "Blackburn",
      "played": 10,
      "won": 4,
@@ -1161,22 +1177,6 @@
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/365.png",
-     "zone_label": null
-    },
-    {
-     "position": 10,
-     "team": "Wolves",
-     "played": 9,
-     "won": 4,
-     "draw": 2,
-     "lost": 3,
-     "goals_for": 16,
-     "goals_against": 14,
-     "goal_diff": 2,
-     "points": 14,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/380.png",
      "zone_label": null
     },
     {
@@ -1342,13 +1342,13 @@
     {
      "position": 21,
      "team": "Burnley",
-     "played": 10,
+     "played": 11,
      "won": 1,
      "draw": 5,
-     "lost": 4,
-     "goals_for": 15,
-     "goals_against": 19,
-     "goal_diff": -4,
+     "lost": 5,
+     "goals_for": 16,
+     "goals_against": 21,
+     "goal_diff": -5,
      "points": 8,
      "form": null,
      "zone": "",
@@ -1407,7 +1407,7 @@
   },
   "I1": {
    "competition_name": "2026-2027 Italian Serie A",
-   "matchday": 6,
+   "matchday": 7,
    "source": "espn",
    "table": [
     {
@@ -1476,6 +1476,22 @@
     },
     {
      "position": 5,
+     "team": "Frosinone",
+     "played": 7,
+     "won": 4,
+     "draw": 1,
+     "lost": 2,
+     "goals_for": 13,
+     "goals_against": 9,
+     "goal_diff": 4,
+     "points": 13,
+     "form": null,
+     "zone": "uel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4057.png",
+     "zone_label": "Europa League"
+    },
+    {
+     "position": 6,
      "team": "Milan",
      "played": 6,
      "won": 3,
@@ -1491,7 +1507,7 @@
      "zone_label": "Europa League"
     },
     {
-     "position": 6,
+     "position": 7,
      "team": "Juventus",
      "played": 6,
      "won": 3,
@@ -1502,12 +1518,12 @@
      "goal_diff": 4,
      "points": 11,
      "form": null,
-     "zone": "uel",
+     "zone": "uecl",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/111.png",
-     "zone_label": "Europa League"
+     "zone_label": "Conference League qualifying"
     },
     {
-     "position": 7,
+     "position": 8,
      "team": "Como",
      "played": 6,
      "won": 3,
@@ -1518,12 +1534,12 @@
      "goal_diff": 3,
      "points": 11,
      "form": null,
-     "zone": "uecl",
+     "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2572.png",
-     "zone_label": "Conference League qualifying"
+     "zone_label": null
     },
     {
-     "position": 8,
+     "position": 9,
      "team": "Napoli",
      "played": 6,
      "won": 3,
@@ -1536,22 +1552,6 @@
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/114.png",
-     "zone_label": null
-    },
-    {
-     "position": 9,
-     "team": "Frosinone",
-     "played": 6,
-     "won": 3,
-     "draw": 1,
-     "lost": 2,
-     "goals_for": 9,
-     "goals_against": 7,
-     "goal_diff": 2,
-     "points": 10,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4057.png",
      "zone_label": null
     },
     {
@@ -1573,13 +1573,13 @@
     {
      "position": 11,
      "team": "Sassuolo",
-     "played": 6,
+     "played": 7,
      "won": 2,
      "draw": 2,
-     "lost": 2,
-     "goals_for": 10,
-     "goals_against": 10,
-     "goal_diff": 0,
+     "lost": 3,
+     "goals_for": 12,
+     "goals_against": 14,
+     "goal_diff": -2,
      "points": 8,
      "form": null,
      "zone": "",
@@ -1734,7 +1734,7 @@
   },
   "I2": {
    "competition_name": "2026-2027 Italian Serie B",
-   "matchday": 6,
+   "matchday": 7,
    "source": "espn",
    "table": [
     {
@@ -1868,14 +1868,14 @@
     {
      "position": 9,
      "team": "Verona",
-     "played": 6,
+     "played": 7,
      "won": 2,
-     "draw": 1,
+     "draw": 2,
      "lost": 3,
-     "goals_for": 12,
-     "goals_against": 10,
+     "goals_for": 14,
+     "goals_against": 12,
      "goal_diff": 2,
-     "points": 7,
+     "points": 8,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/119.png",
@@ -2028,14 +2028,14 @@
     {
      "position": 19,
      "team": "Catanzaro",
-     "played": 6,
+     "played": 7,
      "won": 1,
-     "draw": 0,
+     "draw": 1,
      "lost": 5,
-     "goals_for": 6,
-     "goals_against": 12,
+     "goals_for": 8,
+     "goals_against": 14,
      "goal_diff": -6,
-     "points": 3,
+     "points": 4,
      "form": null,
      "zone": "rel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3257.png",
@@ -2061,7 +2061,7 @@
   },
   "D1": {
    "competition_name": "2026-27 German Bundesliga",
-   "matchday": 5,
+   "matchday": 6,
    "source": "espn",
    "table": [
     {
@@ -2178,6 +2178,22 @@
     },
     {
      "position": 8,
+     "team": "Ein Frankfurt",
+     "played": 6,
+     "won": 2,
+     "draw": 2,
+     "lost": 2,
+     "goals_for": 10,
+     "goals_against": 16,
+     "goal_diff": -6,
+     "points": 8,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/125.png",
+     "zone_label": null
+    },
+    {
+     "position": 9,
      "team": "Mainz",
      "played": 5,
      "won": 2,
@@ -2193,7 +2209,7 @@
      "zone_label": null
     },
     {
-     "position": 9,
+     "position": 10,
      "team": "Elversberg",
      "played": 5,
      "won": 2,
@@ -2209,15 +2225,15 @@
      "zone_label": null
     },
     {
-     "position": 10,
+     "position": 11,
      "team": "FC Koln",
-     "played": 5,
+     "played": 6,
      "won": 2,
      "draw": 1,
-     "lost": 2,
+     "lost": 3,
      "goals_for": 8,
-     "goals_against": 10,
-     "goal_diff": -2,
+     "goals_against": 11,
+     "goal_diff": -3,
      "points": 7,
      "form": null,
      "zone": "",
@@ -2225,7 +2241,7 @@
      "zone_label": null
     },
     {
-     "position": 11,
+     "position": 12,
      "team": "Stuttgart",
      "played": 5,
      "won": 2,
@@ -2241,7 +2257,7 @@
      "zone_label": null
     },
     {
-     "position": 12,
+     "position": 13,
      "team": "Hamburg",
      "played": 5,
      "won": 2,
@@ -2257,7 +2273,7 @@
      "zone_label": null
     },
     {
-     "position": 13,
+     "position": 14,
      "team": "Schalke 04",
      "played": 5,
      "won": 1,
@@ -2270,22 +2286,6 @@
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/133.png",
-     "zone_label": null
-    },
-    {
-     "position": 14,
-     "team": "Ein Frankfurt",
-     "played": 5,
-     "won": 1,
-     "draw": 2,
-     "lost": 2,
-     "goals_for": 9,
-     "goals_against": 16,
-     "goal_diff": -7,
-     "points": 5,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/125.png",
      "zone_label": null
     },
     {
@@ -2356,20 +2356,20 @@
   },
   "D2": {
    "competition_name": "2026-2027 German 2. Bundesliga",
-   "matchday": 7,
+   "matchday": 8,
    "source": "espn",
    "table": [
     {
      "position": 1,
      "team": "Hertha",
-     "played": 7,
+     "played": 8,
      "won": 7,
-     "draw": 0,
+     "draw": 1,
      "lost": 0,
      "goals_for": 19,
      "goals_against": 8,
      "goal_diff": 11,
-     "points": 21,
+     "points": 22,
      "form": null,
      "zone": "promo",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/129.png",
@@ -2378,14 +2378,14 @@
     {
      "position": 2,
      "team": "Nurnberg",
-     "played": 7,
+     "played": 8,
      "won": 5,
-     "draw": 2,
+     "draw": 3,
      "lost": 0,
-     "goals_for": 20,
-     "goals_against": 10,
+     "goals_for": 21,
+     "goals_against": 11,
      "goal_diff": 10,
-     "points": 17,
+     "points": 18,
      "form": null,
      "zone": "promo",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/269.png",
@@ -2474,14 +2474,14 @@
     {
      "position": 8,
      "team": "Cottbus",
-     "played": 7,
+     "played": 8,
      "won": 2,
-     "draw": 2,
+     "draw": 3,
      "lost": 3,
-     "goals_for": 15,
-     "goals_against": 16,
+     "goals_for": 16,
+     "goals_against": 17,
      "goal_diff": -1,
-     "points": 8,
+     "points": 9,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/123.png",
@@ -2601,6 +2601,22 @@
     },
     {
      "position": 16,
+     "team": "Holstein Kiel",
+     "played": 8,
+     "won": 0,
+     "draw": 5,
+     "lost": 3,
+     "goals_for": 7,
+     "goals_against": 11,
+     "goal_diff": -4,
+     "points": 5,
+     "form": null,
+     "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7884.png",
+     "zone_label": "Relegation playoff"
+    },
+    {
+     "position": 17,
      "team": "Dresden",
      "played": 7,
      "won": 1,
@@ -2611,12 +2627,12 @@
      "goal_diff": -6,
      "points": 5,
      "form": null,
-     "zone": "relpo",
+     "zone": "rel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7017.png",
-     "zone_label": "Relegation playoff"
+     "zone_label": "Relegation"
     },
     {
-     "position": 17,
+     "position": 18,
      "team": "Karlsruhe",
      "played": 7,
      "won": 1,
@@ -2630,28 +2646,12 @@
      "zone": "rel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4471.png",
      "zone_label": "Relegation"
-    },
-    {
-     "position": 18,
-     "team": "Holstein Kiel",
-     "played": 7,
-     "won": 0,
-     "draw": 4,
-     "lost": 3,
-     "goals_for": 7,
-     "goals_against": 11,
-     "goal_diff": -4,
-     "points": 4,
-     "form": null,
-     "zone": "rel",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7884.png",
-     "zone_label": "Relegation"
     }
    ]
   },
   "F1": {
    "competition_name": "French Ligue 1 2026-27",
-   "matchday": 6,
+   "matchday": 7,
    "source": "espn",
    "table": [
     {
@@ -2752,6 +2752,22 @@
     },
     {
      "position": 7,
+     "team": "Toulouse",
+     "played": 7,
+     "won": 2,
+     "draw": 3,
+     "lost": 2,
+     "goals_for": 12,
+     "goals_against": 11,
+     "goal_diff": 1,
+     "points": 9,
+     "form": null,
+     "zone": "uecl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/179.png",
+     "zone_label": "Conference League qualifying"
+    },
+    {
+     "position": 8,
      "team": "Brest",
      "played": 6,
      "won": 2,
@@ -2762,12 +2778,12 @@
      "goal_diff": 3,
      "points": 8,
      "form": null,
-     "zone": "uecl",
+     "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/6997.png",
-     "zone_label": "Conference League qualifying"
+     "zone_label": null
     },
     {
-     "position": 8,
+     "position": 9,
      "team": "Lorient",
      "played": 6,
      "won": 2,
@@ -2783,7 +2799,7 @@
      "zone_label": null
     },
     {
-     "position": 9,
+     "position": 10,
      "team": "Nice",
      "played": 6,
      "won": 2,
@@ -2799,7 +2815,7 @@
      "zone_label": null
     },
     {
-     "position": 10,
+     "position": 11,
      "team": "Lens",
      "played": 6,
      "won": 2,
@@ -2815,7 +2831,7 @@
      "zone_label": null
     },
     {
-     "position": 11,
+     "position": 12,
      "team": "Strasbourg",
      "played": 6,
      "won": 2,
@@ -2831,7 +2847,7 @@
      "zone_label": null
     },
     {
-     "position": 12,
+     "position": 13,
      "team": "Angers",
      "played": 6,
      "won": 2,
@@ -2847,7 +2863,7 @@
      "zone_label": null
     },
     {
-     "position": 13,
+     "position": 14,
      "team": "Marseille",
      "played": 6,
      "won": 2,
@@ -2863,35 +2879,19 @@
      "zone_label": null
     },
     {
-     "position": 14,
+     "position": 15,
      "team": "Le Mans",
-     "played": 6,
+     "played": 7,
      "won": 1,
      "draw": 3,
-     "lost": 2,
+     "lost": 3,
      "goals_for": 10,
-     "goals_against": 12,
-     "goal_diff": -2,
+     "goals_against": 15,
+     "goal_diff": -5,
      "points": 6,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2697.png",
-     "zone_label": null
-    },
-    {
-     "position": 15,
-     "team": "Toulouse",
-     "played": 6,
-     "won": 1,
-     "draw": 3,
-     "lost": 2,
-     "goals_for": 9,
-     "goals_against": 11,
-     "goal_diff": -2,
-     "points": 6,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/179.png",
      "zone_label": null
     },
     {
@@ -2946,7 +2946,7 @@
   },
   "F2": {
    "competition_name": "2026/2027 French Ligue 2\r\n",
-   "matchday": 8,
+   "matchday": 9,
    "source": "espn",
    "table": [
     {
@@ -2967,6 +2967,22 @@
     },
     {
      "position": 2,
+     "team": "Reims",
+     "played": 9,
+     "won": 4,
+     "draw": 5,
+     "lost": 0,
+     "goals_for": 19,
+     "goals_against": 11,
+     "goal_diff": 8,
+     "points": 17,
+     "form": null,
+     "zone": "promo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3243.png",
+     "zone_label": "Promotion"
+    },
+    {
+     "position": 3,
      "team": "Red Star",
      "played": 8,
      "won": 5,
@@ -2977,12 +2993,28 @@
      "goal_diff": 3,
      "points": 17,
      "form": null,
-     "zone": "promo",
+     "zone": "po",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/11884.png",
-     "zone_label": "Promotion"
+     "zone_label": "Promotion playoffs"
     },
     {
-     "position": 3,
+     "position": 4,
+     "team": "Nancy",
+     "played": 9,
+     "won": 5,
+     "draw": 1,
+     "lost": 3,
+     "goals_for": 11,
+     "goals_against": 8,
+     "goal_diff": 3,
+     "points": 16,
+     "form": null,
+     "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3267.png",
+     "zone_label": "Promotion playoffs"
+    },
+    {
+     "position": 5,
      "team": "Montpellier",
      "played": 8,
      "won": 4,
@@ -2998,47 +3030,31 @@
      "zone_label": "Promotion playoffs"
     },
     {
-     "position": 4,
-     "team": "Reims",
-     "played": 8,
-     "won": 3,
-     "draw": 5,
-     "lost": 0,
-     "goals_for": 15,
+     "position": 6,
+     "team": "Pau FC",
+     "played": 9,
+     "won": 4,
+     "draw": 2,
+     "lost": 3,
+     "goals_for": 11,
      "goals_against": 9,
-     "goal_diff": 6,
+     "goal_diff": 2,
      "points": 14,
      "form": null,
-     "zone": "po",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3243.png",
-     "zone_label": "Promotion playoffs"
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/10678.png",
+     "zone_label": null
     },
     {
-     "position": 5,
-     "team": "Nancy",
-     "played": 8,
-     "won": 4,
-     "draw": 1,
-     "lost": 3,
-     "goals_for": 9,
-     "goals_against": 7,
-     "goal_diff": 2,
-     "points": 13,
-     "form": null,
-     "zone": "po",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3267.png",
-     "zone_label": "Promotion playoffs"
-    },
-    {
-     "position": 6,
+     "position": 7,
      "team": "Annecy",
-     "played": 8,
+     "played": 9,
      "won": 4,
      "draw": 1,
-     "lost": 3,
-     "goals_for": 10,
-     "goals_against": 9,
-     "goal_diff": 1,
+     "lost": 4,
+     "goals_for": 11,
+     "goals_against": 11,
+     "goal_diff": 0,
      "points": 13,
      "form": null,
      "zone": "",
@@ -3046,35 +3062,19 @@
      "zone_label": null
     },
     {
-     "position": 7,
+     "position": 8,
      "team": "Dijon",
-     "played": 8,
+     "played": 9,
      "won": 3,
      "draw": 3,
-     "lost": 2,
-     "goals_for": 14,
-     "goals_against": 12,
-     "goal_diff": 2,
+     "lost": 3,
+     "goals_for": 16,
+     "goals_against": 16,
+     "goal_diff": 0,
      "points": 12,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3170.png",
-     "zone_label": null
-    },
-    {
-     "position": 8,
-     "team": "Pau FC",
-     "played": 8,
-     "won": 3,
-     "draw": 2,
-     "lost": 3,
-     "goals_for": 9,
-     "goals_against": 8,
-     "goal_diff": 1,
-     "points": 11,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/10678.png",
      "zone_label": null
     },
     {
@@ -3111,18 +3111,18 @@
     },
     {
      "position": 11,
-     "team": "Guingamp",
-     "played": 8,
-     "won": 2,
-     "draw": 2,
-     "lost": 4,
-     "goals_for": 10,
-     "goals_against": 13,
-     "goal_diff": -3,
-     "points": 8,
+     "team": "Boulogne",
+     "played": 9,
+     "won": 1,
+     "draw": 6,
+     "lost": 2,
+     "goals_for": 6,
+     "goals_against": 6,
+     "goal_diff": 0,
+     "points": 9,
      "form": null,
      "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/171.png",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7869.png",
      "zone_label": null
     },
     {
@@ -3143,6 +3143,22 @@
     },
     {
      "position": 13,
+     "team": "Guingamp",
+     "played": 9,
+     "won": 2,
+     "draw": 2,
+     "lost": 5,
+     "goals_for": 11,
+     "goals_against": 15,
+     "goal_diff": -4,
+     "points": 8,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/171.png",
+     "zone_label": null
+    },
+    {
+     "position": 14,
      "team": "Nantes",
      "played": 8,
      "won": 2,
@@ -3158,15 +3174,15 @@
      "zone_label": null
     },
     {
-     "position": 14,
+     "position": 15,
      "team": "Grenoble",
-     "played": 8,
+     "played": 9,
      "won": 2,
      "draw": 2,
-     "lost": 4,
+     "lost": 5,
      "goals_for": 8,
-     "goals_against": 13,
-     "goal_diff": -5,
+     "goals_against": 15,
+     "goal_diff": -7,
      "points": 8,
      "form": null,
      "zone": "",
@@ -3174,7 +3190,23 @@
      "zone_label": null
     },
     {
-     "position": 15,
+     "position": 16,
+     "team": "Clermont",
+     "played": 9,
+     "won": 0,
+     "draw": 7,
+     "lost": 2,
+     "goals_for": 9,
+     "goals_against": 12,
+     "goal_diff": -3,
+     "points": 7,
+     "form": null,
+     "zone": "relpo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3171.png",
+     "zone_label": "Relegation playoffs"
+    },
+    {
+     "position": 17,
      "team": "Rodez",
      "played": 8,
      "won": 2,
@@ -3185,53 +3217,21 @@
      "goal_diff": -4,
      "points": 7,
      "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7719.png",
-     "zone_label": null
-    },
-    {
-     "position": 16,
-     "team": "Boulogne",
-     "played": 8,
-     "won": 0,
-     "draw": 6,
-     "lost": 2,
-     "goals_for": 4,
-     "goals_against": 6,
-     "goal_diff": -2,
-     "points": 6,
-     "form": null,
-     "zone": "relpo",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7869.png",
-     "zone_label": "Relegation playoffs"
-    },
-    {
-     "position": 17,
-     "team": "Clermont",
-     "played": 8,
-     "won": 0,
-     "draw": 6,
-     "lost": 2,
-     "goals_for": 6,
-     "goals_against": 9,
-     "goal_diff": -3,
-     "points": 6,
-     "form": null,
      "zone": "rel",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3171.png",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7719.png",
      "zone_label": "Relegation"
     },
     {
      "position": 18,
      "team": "Laval",
-     "played": 8,
+     "played": 9,
      "won": 1,
-     "draw": 2,
+     "draw": 3,
      "lost": 5,
-     "goals_for": 10,
-     "goals_against": 17,
+     "goals_for": 13,
+     "goals_against": 20,
      "goal_diff": -7,
-     "points": 5,
+     "points": 6,
      "form": null,
      "zone": "rel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3266.png",
@@ -3241,7 +3241,7 @@
   },
   "N1": {
    "competition_name": "2026-2027 Dutch Eredivisie",
-   "matchday": 8,
+   "matchday": 9,
    "source": "espn",
    "table": [
     {
@@ -3358,6 +3358,22 @@
     },
     {
      "position": 8,
+     "team": "Heerenveen",
+     "played": 9,
+     "won": 3,
+     "draw": 3,
+     "lost": 3,
+     "goals_for": 15,
+     "goals_against": 11,
+     "goal_diff": 4,
+     "points": 12,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/146.png",
+     "zone_label": null
+    },
+    {
+     "position": 9,
      "team": "Go Ahead Eagles",
      "played": 8,
      "won": 2,
@@ -3373,35 +3389,19 @@
      "zone_label": null
     },
     {
-     "position": 9,
+     "position": 10,
      "team": "Excelsior",
-     "played": 8,
+     "played": 9,
      "won": 3,
      "draw": 2,
-     "lost": 3,
+     "lost": 4,
      "goals_for": 16,
-     "goals_against": 14,
-     "goal_diff": 2,
+     "goals_against": 18,
+     "goal_diff": -2,
      "points": 11,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2566.png",
-     "zone_label": null
-    },
-    {
-     "position": 10,
-     "team": "Heerenveen",
-     "played": 8,
-     "won": 2,
-     "draw": 3,
-     "lost": 3,
-     "goals_for": 11,
-     "goals_against": 11,
-     "goal_diff": 0,
-     "points": 9,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/146.png",
      "zone_label": null
     },
     {
