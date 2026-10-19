@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-19T12:59:08Z",
+ "updated_at": "2026-10-19T19:18:23Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -1492,22 +1492,6 @@
     },
     {
      "position": 6,
-     "team": "Cagliari",
-     "played": 6,
-     "won": 4,
-     "draw": 1,
-     "lost": 1,
-     "goals_for": 6,
-     "goals_against": 3,
-     "goal_diff": 3,
-     "points": 13,
-     "form": null,
-     "zone": "uel",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2925.png",
-     "zone_label": "Europa League"
-    },
-    {
-     "position": 7,
      "team": "Frosinone",
      "played": 7,
      "won": 4,
@@ -1518,8 +1502,24 @@
      "goal_diff": 4,
      "points": 13,
      "form": null,
-     "zone": "uecl",
+     "zone": "uel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4057.png",
+     "zone_label": "Europa League"
+    },
+    {
+     "position": 7,
+     "team": "Cagliari",
+     "played": 7,
+     "won": 4,
+     "draw": 1,
+     "lost": 2,
+     "goals_for": 6,
+     "goals_against": 7,
+     "goal_diff": -1,
+     "points": 13,
+     "form": null,
+     "zone": "uecl",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2925.png",
      "zone_label": "Conference League qualifying"
     },
     {
@@ -1620,6 +1620,22 @@
     },
     {
      "position": 14,
+     "team": "Monza",
+     "played": 7,
+     "won": 2,
+     "draw": 1,
+     "lost": 4,
+     "goals_for": 13,
+     "goals_against": 15,
+     "goal_diff": -2,
+     "points": 7,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4007.png",
+     "zone_label": null
+    },
+    {
+     "position": 15,
      "team": "Bologna",
      "played": 7,
      "won": 1,
@@ -1632,22 +1648,6 @@
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/107.png",
-     "zone_label": null
-    },
-    {
-     "position": 15,
-     "team": "Monza",
-     "played": 6,
-     "won": 1,
-     "draw": 1,
-     "lost": 4,
-     "goals_for": 9,
-     "goals_against": 15,
-     "goal_diff": -6,
-     "points": 4,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4007.png",
      "zone_label": null
     },
     {
