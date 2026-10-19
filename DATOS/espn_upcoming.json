@@ -1,116 +1,6 @@
 {
- "updated_at": "2026-10-18T16:30:33Z",
+ "updated_at": "2026-10-19T12:59:17Z",
  "items": [
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-10-18",
-   "time": "18:30",
-   "home": "Malaga",
-   "away": "Sociedad",
-   "venue": "La Rosaleda",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-18",
-   "time": "18:30",
-   "home": "Girona",
-   "away": "Andorra",
-   "venue": "Estadi Montilivi",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-18",
-   "time": "18:30",
-   "home": "Valladolid",
-   "away": "Eldense",
-   "venue": "Estadio José Zorrilla",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-18",
-   "time": "19:30",
-   "home": "Sampdoria",
-   "away": "Arezzo",
-   "venue": "Stadio Luigi Ferraris",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "N1",
-   "league_name": "Eredivisie",
-   "date": "2026-10-18",
-   "time": "20:00",
-   "home": "Twente",
-   "away": "Utrecht",
-   "venue": "De Grolsch Veste",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "N1",
-   "league_name": "Eredivisie",
-   "date": "2026-10-18",
-   "time": "20:00",
-   "home": "Nijmegen",
-   "away": "For Sittard",
-   "venue": "Goffertstadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-10-18",
-   "time": "20:45",
-   "home": "Lyon",
-   "away": "Nice",
-   "venue": "Groupama Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-18",
-   "time": "20:45",
-   "home": "Juventus",
-   "away": "Lazio",
-   "venue": "Allianz Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-10-18",
-   "time": "21:00",
-   "home": "Real Madrid",
-   "away": "Sevilla",
-   "venue": "Santiago Bernabéu",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-18",
-   "time": "21:00",
-   "home": "Burgos",
-   "away": "Sabadell",
-   "venue": "Estadio Municipal de El Plantío",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "I1",
    "league_name": "Serie A",
@@ -326,7 +216,7 @@
    "date": "2026-10-21",
    "time": "21:00",
    "home": "Aston Villa",
-   "away": "VIKING FK",
+   "away": "Viking FK",
    "venue": "Villa Park",
    "status": "scheduled",
    "source": "ESPN"
@@ -3306,7 +3196,7 @@
    "league_name": "Champions League",
    "date": "2026-11-04",
    "time": "21:00",
-   "home": "VIKING FK",
+   "home": "Viking FK",
    "away": "Sabah FK",
    "venue": "Viking Stadion",
    "status": "scheduled",
@@ -4497,6 +4387,17 @@
    "home": "Ath Madrid",
    "away": "Barcelona",
    "venue": "Riyadh Air Metropolitano",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-09",
+   "time": "20:30",
+   "home": "Sabadell",
+   "away": "Sociedad B",
+   "venue": "Estadi Municipal de la Nova Creu Alta",
    "status": "scheduled",
    "source": "ESPN"
   }
