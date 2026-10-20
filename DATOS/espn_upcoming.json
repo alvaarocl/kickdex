@@ -1,28 +1,6 @@
 {
- "updated_at": "2026-10-20T11:27:13Z",
+ "updated_at": "2026-10-20T17:57:59Z",
  "items": [
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "18:45",
-   "home": "Fenerbahce",
-   "away": "Slavia Prague",
-   "venue": "Şükrü Saracoğlu Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "18:45",
-   "home": "Sabah FK",
-   "away": "Dortmund",
-   "venue": "Baku Olympic Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "E1",
    "league_name": "Championship",
