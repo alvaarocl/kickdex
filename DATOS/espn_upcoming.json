@@ -1,28 +1,6 @@
 {
- "updated_at": "2026-10-21T11:40:26Z",
+ "updated_at": "2026-10-21T18:00:48Z",
  "items": [
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-21",
-   "time": "18:45",
-   "home": "Como",
-   "away": "Man United",
-   "venue": "Giuseppe Sinigaglia",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-21",
-   "time": "18:45",
-   "home": "Lille",
-   "away": "Galatasaray",
-   "venue": "Decathlon Arena - Stade Pierre-Mauroy",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "SP1",
    "league_name": "La Liga",
