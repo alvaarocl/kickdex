@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T17:57:59Z",
+ "updated_at": "2026-10-21T11:40:26Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -494,6 +494,123 @@
    "source": "ESPN",
    "home_score": 0,
    "away_score": 3
+  },
+  "CL|2026-10-20|FC Porto|PSV Eindhoven": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "21:00",
+   "home": "FC Porto",
+   "away": "PSV Eindhoven",
+   "venue": "Estádio do Dragão",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 1
+  },
+  "CL|2026-10-20|Fenerbahce|Slavia Prague": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "18:45",
+   "home": "Fenerbahce",
+   "away": "Slavia Prague",
+   "venue": "Şükrü Saracoğlu Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 2
+  },
+  "CL|2026-10-20|Liverpool|Villarreal": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "21:00",
+   "home": "Liverpool",
+   "away": "Villarreal",
+   "venue": "Anfield",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 3
+  },
+  "CL|2026-10-20|Man City|AEK Athens": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "21:00",
+   "home": "Man City",
+   "away": "AEK Athens",
+   "venue": "Etihad Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 5,
+   "away_score": 1
+  },
+  "CL|2026-10-20|Napoli|Bodo/Glimt": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "21:00",
+   "home": "Napoli",
+   "away": "Bodo/Glimt",
+   "venue": "Stadio Diego Armando Maradona",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 3
+  },
+  "CL|2026-10-20|PSG|Barcelona": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "21:00",
+   "home": "PSG",
+   "away": "Barcelona",
+   "venue": "Parc des Princes",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 2
+  },
+  "CL|2026-10-20|Roma|Slovan Bratislava": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "21:00",
+   "home": "Roma",
+   "away": "Slovan Bratislava",
+   "venue": "Olimpico",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 0
+  },
+  "CL|2026-10-20|Sabah FK|Dortmund": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "18:45",
+   "home": "Sabah FK",
+   "away": "Dortmund",
+   "venue": "Baku Olympic Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 2
+  },
+  "CL|2026-10-20|Stuttgart|Ath Madrid": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-20",
+   "time": "21:00",
+   "home": "Stuttgart",
+   "away": "Ath Madrid",
+   "venue": "MHPArena",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 1
   }
  }
 }

@@ -1,94 +1,6 @@
 {
- "updated_at": "2026-10-20T17:57:59Z",
+ "updated_at": "2026-10-21T11:40:26Z",
  "items": [
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-10-20",
-   "time": "20:45",
-   "home": "Wolves",
-   "away": "Portsmouth",
-   "venue": "Molineux Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "21:00",
-   "home": "Roma",
-   "away": "Slovan Bratislava",
-   "venue": "Olimpico",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "21:00",
-   "home": "FC Porto",
-   "away": "PSV Eindhoven",
-   "venue": "Estádio do Dragão",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "21:00",
-   "home": "Liverpool",
-   "away": "Villarreal",
-   "venue": "Anfield",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "21:00",
-   "home": "Man City",
-   "away": "AEK Athens",
-   "venue": "Etihad Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "21:00",
-   "home": "Napoli",
-   "away": "Bodo/Glimt",
-   "venue": "Stadio Diego Armando Maradona",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "21:00",
-   "home": "PSG",
-   "away": "Barcelona",
-   "venue": "Parc des Princes",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-10-20",
-   "time": "21:00",
-   "home": "Stuttgart",
-   "away": "Ath Madrid",
-   "venue": "MHPArena",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "CL",
    "league_name": "Champions League",
@@ -464,17 +376,6 @@
    "source": "ESPN"
   },
   {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-24",
-   "time": "14:00",
-   "home": "Montpellier",
-   "away": "Red Star",
-   "venue": "Stade de la Mosson",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
    "league": "SP1",
    "league_name": "La Liga",
    "date": "2026-10-24",
@@ -768,17 +669,6 @@
    "home": "Utrecht",
    "away": "Zwolle",
    "venue": "Stadion Galgenwaard",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-10-24",
-   "time": "17:15",
-   "home": "Toulouse",
-   "away": "Troyes",
-   "venue": "Stadium Municipal de Toulouse",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -1245,6 +1135,17 @@
    "source": "ESPN"
   },
   {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-10-25",
+   "time": "17:15",
+   "home": "Toulouse",
+   "away": "Troyes",
+   "venue": "Stadium Municipal de Toulouse",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "I2",
    "league_name": "Serie B",
    "date": "2026-10-25",
@@ -1373,6 +1274,17 @@
    "home": "Boulogne",
    "away": "Reims",
    "venue": "Stade de la Libération",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-10-26",
+   "time": "20:45",
+   "home": "Montpellier",
+   "away": "Red Star",
+   "venue": "Stade de la Mosson",
    "status": "scheduled",
    "source": "ESPN"
   },
