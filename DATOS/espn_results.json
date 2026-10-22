@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-21T18:00:48Z",
+ "updated_at": "2026-10-22T11:42:32Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -611,6 +611,123 @@
    "source": "ESPN",
    "home_score": 1,
    "away_score": 1
+  },
+  "CL|2026-10-21|Aston Villa|Viking FK": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "21:00",
+   "home": "Aston Villa",
+   "away": "Viking FK",
+   "venue": "Villa Park",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 1
+  },
+  "CL|2026-10-21|Bayern Munich|Arsenal": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "21:00",
+   "home": "Bayern Munich",
+   "away": "Arsenal",
+   "venue": "Allianz Arena",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 2
+  },
+  "CL|2026-10-21|Betis|Feyenoord": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "21:00",
+   "home": "Betis",
+   "away": "Feyenoord",
+   "venue": "Estadio La Cartuja",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 0
+  },
+  "CL|2026-10-21|Club Brugge|Lens": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "21:00",
+   "home": "Club Brugge",
+   "away": "Lens",
+   "venue": "Jan Breydel Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 0
+  },
+  "CL|2026-10-21|Como|Man United": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "18:45",
+   "home": "Como",
+   "away": "Man United",
+   "venue": "Giuseppe Sinigaglia",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 1
+  },
+  "CL|2026-10-21|Inter|Shakhtar Donetsk": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "21:00",
+   "home": "Inter",
+   "away": "Shakhtar Donetsk",
+   "venue": "San Siro",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 0
+  },
+  "CL|2026-10-21|Lille|Galatasaray": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "18:45",
+   "home": "Lille",
+   "away": "Galatasaray",
+   "venue": "Decathlon Arena - Stade Pierre-Mauroy",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 4
+  },
+  "CL|2026-10-21|Real Madrid|RB Leipzig": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "21:00",
+   "home": "Real Madrid",
+   "away": "RB Leipzig",
+   "venue": "Santiago Bernabéu",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 1
+  },
+  "CL|2026-10-21|Sporting CP|LASK Linz": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-10-21",
+   "time": "21:00",
+   "home": "Sporting CP",
+   "away": "LASK Linz",
+   "venue": "Estádio José Alvalade",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 3
   }
  }
 }
