@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-22T11:42:32Z",
+ "updated_at": "2026-10-22T17:57:57Z",
  "items": [
   {
    "league": "D2",
@@ -662,17 +662,6 @@
    "source": "ESPN"
   },
   {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-24",
-   "time": "20:00",
-   "home": "St Etienne",
-   "away": "Nantes",
-   "venue": "Stade Geoffroy Guichard",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
    "league": "D2",
    "league_name": "2. Bundesliga",
    "date": "2026-10-24",
@@ -691,6 +680,17 @@
    "home": "Lens",
    "away": "Paris FC",
    "venue": "Stade Bollaert-Delelis",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-10-24",
+   "time": "20:45",
+   "home": "St Etienne",
+   "away": "Nantes",
+   "venue": "Stade Geoffroy Guichard",
    "status": "scheduled",
    "source": "ESPN"
   },
