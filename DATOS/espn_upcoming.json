@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-22T17:57:57Z",
+ "updated_at": "2026-10-23T11:30:52Z",
  "items": [
   {
    "league": "D2",
@@ -4112,6 +4112,17 @@
    "home": "Sabadell",
    "away": "Sociedad B",
    "venue": "Estadi Municipal de la Nova Creu Alta",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-13",
+   "time": "20:30",
+   "home": "Leganes",
+   "away": "Burgos",
+   "venue": "Estadio Municipal de Butarque",
    "status": "scheduled",
    "source": "ESPN"
   }
