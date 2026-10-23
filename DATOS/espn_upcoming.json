@@ -1,28 +1,6 @@
 {
- "updated_at": "2026-10-23T11:30:52Z",
+ "updated_at": "2026-10-23T17:52:08Z",
  "items": [
-  {
-   "league": "D2",
-   "league_name": "2. Bundesliga",
-   "date": "2026-10-23",
-   "time": "18:30",
-   "home": "Darmstadt",
-   "away": "St Pauli",
-   "venue": "Merck-Stadion am Böllenfalltor",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "D2",
-   "league_name": "2. Bundesliga",
-   "date": "2026-10-23",
-   "time": "18:30",
-   "home": "Bochum",
-   "away": "Wolfsburg",
-   "venue": "Vonovia Ruhrstadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "F2",
    "league_name": "Ligue 2",
@@ -1113,17 +1091,6 @@
    "source": "ESPN"
   },
   {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-10-25",
-   "time": "20:45",
-   "home": "PSG",
-   "away": "Lyon",
-   "venue": "Parc des Princes",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
    "league": "I1",
    "league_name": "Serie A",
    "date": "2026-10-25",
@@ -1142,6 +1109,17 @@
    "home": "Barcelona",
    "away": "Real Madrid",
    "venue": "Spotify Camp Nou",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-10-26",
+   "time": "20:30",
+   "home": "PSG",
+   "away": "Lyon",
+   "venue": "Parc des Princes",
    "status": "scheduled",
    "source": "ESPN"
   },
