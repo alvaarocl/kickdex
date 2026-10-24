@@ -1,160 +1,6 @@
 {
- "updated_at": "2026-10-23T17:52:08Z",
+ "updated_at": "2026-10-24T10:50:51Z",
  "items": [
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-23",
-   "time": "20:00",
-   "home": "Nancy",
-   "away": "Laval",
-   "venue": "Stade Marcel-Picot",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-23",
-   "time": "20:00",
-   "home": "Clermont",
-   "away": "Guingamp",
-   "venue": "Stade Gabriel-Montpied",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-23",
-   "time": "20:00",
-   "home": "Dunkerque",
-   "away": "Metz",
-   "venue": "Stade Marcel-Tribut",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-23",
-   "time": "20:00",
-   "home": "Pau FC",
-   "away": "Grenoble",
-   "venue": "Nouste Camp",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-23",
-   "time": "20:00",
-   "home": "Sochaux",
-   "away": "Annecy",
-   "venue": "Stade Bonal",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "N1",
-   "league_name": "Eredivisie",
-   "date": "2026-10-23",
-   "time": "20:00",
-   "home": "Go Ahead Eagles",
-   "away": "Telstar",
-   "venue": "De Adelaarshorst",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "D1",
-   "league_name": "Bundesliga",
-   "date": "2026-10-23",
-   "time": "20:30",
-   "home": "Stuttgart",
-   "away": "M'gladbach",
-   "venue": "MHPArena",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-23",
-   "time": "20:30",
-   "home": "Empoli",
-   "away": "Vicenza",
-   "venue": "Stadio Carlo Castellani - Computer Gross Arena",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-23",
-   "time": "20:30",
-   "home": "Granada",
-   "away": "Valladolid",
-   "venue": "Nuevo Estadio de Los Cármenes",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-10-23",
-   "time": "20:45",
-   "home": "Brest",
-   "away": "Nice",
-   "venue": "Stade Francis-Le Blé",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-23",
-   "time": "20:45",
-   "home": "Torino",
-   "away": "Monza",
-   "venue": "Stadio Olimpico Grande Torino",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E0",
-   "league_name": "Premier League",
-   "date": "2026-10-23",
-   "time": "21:00",
-   "home": "Ipswich",
-   "away": "Nott'm Forest",
-   "venue": "Portman Road",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-10-23",
-   "time": "21:00",
-   "home": "Bolton",
-   "away": "Middlesbrough",
-   "venue": "Toughsheet Community Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-10-23",
-   "time": "21:00",
-   "home": "Alaves",
-   "away": "Malaga",
-   "venue": "Mendizorrotza",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "D2",
    "league_name": "2. Bundesliga",
@@ -4101,6 +3947,61 @@
    "home": "Leganes",
    "away": "Burgos",
    "venue": "Estadio Municipal de Butarque",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-14",
+   "time": "14:00",
+   "home": "Valladolid",
+   "away": "Castellon",
+   "venue": "Estadio José Zorrilla",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-14",
+   "time": "16:15",
+   "home": "Sociedad B",
+   "away": "Sp Gijon",
+   "venue": "Instalaciones de Zubieta",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-14",
+   "time": "18:30",
+   "home": "Almeria",
+   "away": "Andorra",
+   "venue": "Power Horse Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-14",
+   "time": "18:30",
+   "home": "Mallorca",
+   "away": "Cordoba",
+   "venue": "Estadi Mallorca Son Moix",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-14",
+   "time": "21:00",
+   "home": "Oviedo",
+   "away": "Girona",
+   "venue": "Estadio Carlos Tartiere",
    "status": "scheduled",
    "source": "ESPN"
   }
