@@ -1,105 +1,6 @@
 {
- "updated_at": "2026-10-24T16:34:08Z",
+ "updated_at": "2026-10-25T11:16:32Z",
  "items": [
-  {
-   "league": "N1",
-   "league_name": "Eredivisie",
-   "date": "2026-10-24",
-   "time": "18:45",
-   "home": "Willem II",
-   "away": "Cambuur",
-   "venue": "Koning Willem II Stadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-24",
-   "time": "19:30",
-   "home": "Arezzo",
-   "away": "Benevento",
-   "venue": "Stadio Città di Arezzo",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "D2",
-   "league_name": "2. Bundesliga",
-   "date": "2026-10-24",
-   "time": "20:30",
-   "home": "Nurnberg",
-   "away": "Kaiserslautern",
-   "venue": "Max-Morlock-Stadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-10-24",
-   "time": "20:45",
-   "home": "Lens",
-   "away": "Paris FC",
-   "venue": "Stade Bollaert-Delelis",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-24",
-   "time": "20:45",
-   "home": "St Etienne",
-   "away": "Nantes",
-   "venue": "Stade Geoffroy Guichard",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-24",
-   "time": "20:45",
-   "home": "Lazio",
-   "away": "Parma",
-   "venue": "Olimpico",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "N1",
-   "league_name": "Eredivisie",
-   "date": "2026-10-24",
-   "time": "21:00",
-   "home": "Den Haag",
-   "away": "Heerenveen",
-   "venue": "ADO Den Haag Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-10-24",
-   "time": "21:00",
-   "home": "Ath Madrid",
-   "away": "Dep. A Coruna",
-   "venue": "Riyadh Air Metropolitano",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-24",
-   "time": "21:00",
-   "home": "Almeria",
-   "away": "Oviedo",
-   "venue": "Power Horse Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "N1",
    "league_name": "Eredivisie",
@@ -3540,6 +3441,50 @@
    "home": "Oviedo",
    "away": "Girona",
    "venue": "Estadio Carlos Tartiere",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-15",
+   "time": "14:00",
+   "home": "Tenerife",
+   "away": "Ceuta",
+   "venue": "Estadio Heliodoro Rodríguez López",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-15",
+   "time": "16:15",
+   "home": "Granada",
+   "away": "Las Palmas",
+   "venue": "Nuevo Estadio de Los Cármenes",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-15",
+   "time": "18:30",
+   "home": "Eibar",
+   "away": "Cadiz",
+   "venue": "Ipurua",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-15",
+   "time": "18:30",
+   "home": "Eldense",
+   "away": "Sabadell",
+   "venue": "Estadio Municipal Nuevo Pepico Amat",
    "status": "scheduled",
    "source": "ESPN"
   }
