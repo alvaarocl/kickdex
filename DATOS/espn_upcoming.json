@@ -1,72 +1,6 @@
 {
- "updated_at": "2026-10-25T17:02:55Z",
+ "updated_at": "2026-10-26T12:51:16Z",
  "items": [
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-25",
-   "time": "18:00",
-   "home": "Lecce",
-   "away": "Juventus",
-   "venue": "Via Del Mare",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-10-25",
-   "time": "18:30",
-   "home": "Sociedad",
-   "away": "Levante",
-   "venue": "Reale Arena",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-10-25",
-   "time": "18:30",
-   "home": "Castellon",
-   "away": "Sp Gijon",
-   "venue": "Nou Estadi Castalia",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "N1",
-   "league_name": "Eredivisie",
-   "date": "2026-10-25",
-   "time": "20:00",
-   "home": "AZ Alkmaar",
-   "away": "Twente",
-   "venue": "AFAS Stadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-25",
-   "time": "20:45",
-   "home": "Udinese",
-   "away": "Milan",
-   "venue": "Stadio Friuli",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-10-25",
-   "time": "21:00",
-   "home": "Barcelona",
-   "away": "Real Madrid",
-   "venue": "Spotify Camp Nou",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "F1",
    "league_name": "Ligue 1",
@@ -3155,6 +3089,17 @@
    "home": "Eldense",
    "away": "Sabadell",
    "venue": "Estadio Municipal Nuevo Pepico Amat",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-16",
+   "time": "20:30",
+   "home": "Albacete",
+   "away": "Celta B",
+   "venue": "Carlos Belmonte",
    "status": "scheduled",
    "source": "ESPN"
   }
