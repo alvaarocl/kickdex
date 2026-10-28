@@ -1,50 +1,6 @@
 {
- "updated_at": "2026-10-28T12:42:28Z",
+ "updated_at": "2026-10-28T18:49:21Z",
  "items": [
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-28",
-   "time": "18:30",
-   "home": "Milan",
-   "away": "Bologna",
-   "venue": "San Siro",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-28",
-   "time": "18:30",
-   "home": "Parma",
-   "away": "Udinese",
-   "venue": "Ennio Tardini",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-28",
-   "time": "18:30",
-   "home": "Venezia",
-   "away": "Inter",
-   "venue": "Stadio Pier Luigi Penzo",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-28",
-   "time": "19:00",
-   "home": "Pisa",
-   "away": "Palermo",
-   "venue": "Arena Garibaldi - Stadio Romeo Anconetani",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "I2",
    "league_name": "Serie B",
@@ -360,7 +316,7 @@
    "time": "14:00",
    "home": "Sociedad B",
    "away": "Girona",
-   "venue": "Instalaciones de Zubieta",
+   "venue": "Estadio Zubieta XXI",
    "status": "scheduled",
    "source": "ESPN"
   },
