@@ -1,94 +1,6 @@
 {
- "updated_at": "2026-10-27T18:41:03Z",
+ "updated_at": "2026-10-28T12:42:28Z",
  "items": [
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-27",
-   "time": "20:00",
-   "home": "Ascoli",
-   "away": "Sampdoria",
-   "venue": "Stadio Cino e Lillo Del Duca",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-27",
-   "time": "20:00",
-   "home": "Cesena",
-   "away": "Empoli",
-   "venue": "Estadio Dino Manuzzi",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-27",
-   "time": "20:00",
-   "home": "Mantova",
-   "away": "Cremonese",
-   "venue": "Stadio Danilo Martelli",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-27",
-   "time": "20:00",
-   "home": "Padova",
-   "away": "Sudtirol",
-   "venue": "Euganeo",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-27",
-   "time": "20:00",
-   "home": "Vicenza",
-   "away": "Modena",
-   "venue": "Romeo Menti di Vicenza",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I2",
-   "league_name": "Serie B",
-   "date": "2026-10-27",
-   "time": "20:00",
-   "home": "Virtus Entella",
-   "away": "Avellino",
-   "venue": "Comunale Aldo Gastaldi",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-27",
-   "time": "20:45",
-   "home": "Roma",
-   "away": "Cagliari",
-   "venue": "Olimpico",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-27",
-   "time": "20:45",
-   "home": "Torino",
-   "away": "Como",
-   "venue": "Stadio Olimpico Grande Torino",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "I1",
    "league_name": "Serie A",
@@ -427,17 +339,6 @@
    "home": "Annecy",
    "away": "Montpellier",
    "venue": "Parc des Sports",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-10-31",
-   "time": "14:00",
-   "home": "Reims",
-   "away": "Sochaux",
-   "venue": "Stade Auguste Delaune",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -1340,6 +1241,17 @@
    "home": "Red Star",
    "away": "Nancy",
    "venue": "Stade Bauer",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-02",
+   "time": "20:45",
+   "home": "Reims",
+   "away": "Sochaux",
+   "venue": "Stade Auguste Delaune",
    "status": "scheduled",
    "source": "ESPN"
   },
