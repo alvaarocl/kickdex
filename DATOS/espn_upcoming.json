@@ -1,17 +1,6 @@
 {
- "updated_at": "2026-10-29T18:56:50Z",
+ "updated_at": "2026-10-30T12:44:06Z",
  "items": [
-  {
-   "league": "I1",
-   "league_name": "Serie A",
-   "date": "2026-10-29",
-   "time": "20:45",
-   "home": "Fiorentina",
-   "away": "Atalanta",
-   "venue": "Stadio Artemio Franchi",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "D2",
    "league_name": "2. Bundesliga",
@@ -2836,6 +2825,138 @@
    "home": "Albacete",
    "away": "Celta B",
    "venue": "Carlos Belmonte",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-11-20",
+   "time": "18:30",
+   "home": "Bielefeld",
+   "away": "Magdeburg",
+   "venue": "SchücoArena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-11-20",
+   "time": "18:30",
+   "home": "Darmstadt",
+   "away": "Heidenheim",
+   "venue": "Merck-Stadion am Böllenfalltor",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-20",
+   "time": "20:00",
+   "home": "Annecy",
+   "away": "Clermont",
+   "venue": "Parc des Sports",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-20",
+   "time": "20:00",
+   "home": "Nancy",
+   "away": "Dijon",
+   "venue": "Stade Marcel-Picot",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-20",
+   "time": "20:00",
+   "home": "Guingamp",
+   "away": "Rodez",
+   "venue": "Stade Municipal de Roudourou",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-20",
+   "time": "20:00",
+   "home": "Metz",
+   "away": "Boulogne",
+   "venue": "Stade Saint-Symphorien",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-20",
+   "time": "20:00",
+   "home": "Red Star",
+   "away": "Pau FC",
+   "venue": "Stade Bauer",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D1",
+   "league_name": "Bundesliga",
+   "date": "2026-11-20",
+   "time": "20:30",
+   "home": "Bayern Munich",
+   "away": "FC Koln",
+   "venue": "Allianz Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-20",
+   "time": "20:30",
+   "home": "Verona",
+   "away": "Cesena",
+   "venue": "Stadio Marcantonio Bentegodi",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-20",
+   "time": "20:30",
+   "home": "Andorra",
+   "away": "Leganes",
+   "venue": "Estadi de la FAF d'Encamp",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-11-20",
+   "time": "20:45",
+   "home": "Troyes",
+   "away": "Le Havre",
+   "venue": "Stade de l'Aube",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-11-20",
+   "time": "21:00",
+   "home": "Athletic Club",
+   "away": "Espanol",
+   "venue": "San Mamés",
    "status": "scheduled",
    "source": "ESPN"
   }
