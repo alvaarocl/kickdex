@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-02T22:18:23Z",
+ "updated_at": "2026-11-03T14:02:27Z",
  "items": [
   {
    "league": "CL",
@@ -2825,6 +2825,259 @@
    "home": "Levante",
    "away": "Elche",
    "venue": "Estadi Ciutat de València",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "18:45",
+   "home": "Bodo/Glimt",
+   "away": "LASK Linz",
+   "venue": "Aspmyra Stadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "18:45",
+   "home": "Galatasaray",
+   "away": "Aston Villa",
+   "venue": "RAMS Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-24",
+   "time": "19:00",
+   "home": "Juve Stabia",
+   "away": "Catanzaro",
+   "venue": "Romeo Menti di Castellammare",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-24",
+   "time": "20:00",
+   "home": "Benevento",
+   "away": "Empoli",
+   "venue": "Stadio Ciro Vigorito",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-24",
+   "time": "20:00",
+   "home": "Cesena",
+   "away": "Ascoli",
+   "venue": "Estadio Dino Manuzzi",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-24",
+   "time": "20:00",
+   "home": "Palermo",
+   "away": "Sudtirol",
+   "venue": "Stadio Renzo Barbera",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-24",
+   "time": "20:00",
+   "home": "Vicenza",
+   "away": "Carrarese",
+   "venue": "Romeo Menti di Vicenza",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-11-24",
+   "time": "20:00",
+   "home": "Virtus Entella",
+   "away": "Verona",
+   "venue": "Comunale Aldo Gastaldi",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "20:45",
+   "home": "Bristol City",
+   "away": "Wrexham",
+   "venue": "Ashton Gate",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "20:45",
+   "home": "Cardiff",
+   "away": "Preston",
+   "venue": "Cardiff City Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "20:45",
+   "home": "Charlton",
+   "away": "Lincoln",
+   "venue": "The Valley",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "20:45",
+   "home": "Middlesbrough",
+   "away": "Swansea",
+   "venue": "Riverside Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "20:45",
+   "home": "Norwich",
+   "away": "QPR",
+   "venue": "Carrow Road",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "20:45",
+   "home": "Portsmouth",
+   "away": "West Ham",
+   "venue": "Fratton Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "20:45",
+   "home": "Sheffield United",
+   "away": "Southampton",
+   "venue": "Bramall Lane",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Arsenal",
+   "away": "Dortmund",
+   "venue": "Emirates Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Como",
+   "away": "AEK Athens",
+   "venue": "Giuseppe Sinigaglia",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Feyenoord",
+   "away": "FC Porto",
+   "venue": "De Kuip",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Man City",
+   "away": "Napoli",
+   "venue": "Etihad Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "RB Leipzig",
+   "away": "Lens",
+   "venue": "Red Bull Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Real Madrid",
+   "away": "PSV Eindhoven",
+   "venue": "Santiago Bernabéu",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Slovan Bratislava",
+   "away": "Betis",
+   "venue": "Národny Futbalovy Stadión",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Wolves",
+   "away": "Derby",
+   "venue": "Molineux Stadium",
    "status": "scheduled",
    "source": "ESPN"
   }
