@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-03T14:02:13Z",
+ "updated_at": "2026-11-03T20:04:18Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -3536,7 +3536,7 @@
   },
   "CL": {
    "competition_name": "League Phase",
-   "matchday": 3,
+   "matchday": 4,
    "source": "espn",
    "table": [
     {
@@ -3605,6 +3605,22 @@
     },
     {
      "position": 5,
+     "team": "Sporting CP",
+     "played": 4,
+     "won": 3,
+     "draw": 0,
+     "lost": 1,
+     "goals_for": 8,
+     "goals_against": 4,
+     "goal_diff": 4,
+     "points": 9,
+     "form": null,
+     "zone": "r16",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2250.png",
+     "zone_label": "Qualifies for round of 16"
+    },
+    {
+     "position": 6,
      "team": "Betis",
      "played": 3,
      "won": 3,
@@ -3617,22 +3633,6 @@
      "form": null,
      "zone": "r16",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/244.png",
-     "zone_label": "Qualifies for round of 16"
-    },
-    {
-     "position": 6,
-     "team": "Stuttgart",
-     "played": 3,
-     "won": 2,
-     "draw": 1,
-     "lost": 0,
-     "goals_for": 7,
-     "goals_against": 2,
-     "goal_diff": 5,
-     "points": 7,
-     "form": null,
-     "zone": "r16",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/134.png",
      "zone_label": "Qualifies for round of 16"
     },
     {
@@ -3653,6 +3653,22 @@
     },
     {
      "position": 8,
+     "team": "Stuttgart",
+     "played": 4,
+     "won": 2,
+     "draw": 1,
+     "lost": 1,
+     "goals_for": 7,
+     "goals_against": 4,
+     "goal_diff": 3,
+     "points": 7,
+     "form": null,
+     "zone": "r16",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/134.png",
+     "zone_label": "Qualifies for round of 16"
+    },
+    {
+     "position": 9,
      "team": "Barcelona",
      "played": 3,
      "won": 2,
@@ -3663,12 +3679,12 @@
      "goal_diff": 5,
      "points": 6,
      "form": null,
-     "zone": "r16",
+     "zone": "kopo",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/83.png",
-     "zone_label": "Qualifies for round of 16"
+     "zone_label": "Knockout phase playoffs - seeded"
     },
     {
-     "position": 9,
+     "position": 10,
      "team": "Como",
      "played": 3,
      "won": 2,
@@ -3684,7 +3700,7 @@
      "zone_label": "Knockout phase playoffs - seeded"
     },
     {
-     "position": 10,
+     "position": 11,
      "team": "Man City",
      "played": 3,
      "won": 2,
@@ -3700,7 +3716,7 @@
      "zone_label": "Knockout phase playoffs - seeded"
     },
     {
-     "position": 11,
+     "position": 12,
      "team": "Club Brugge",
      "played": 3,
      "won": 2,
@@ -3713,22 +3729,6 @@
      "form": null,
      "zone": "kopo",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/570.png",
-     "zone_label": "Knockout phase playoffs - seeded"
-    },
-    {
-     "position": 12,
-     "team": "Sporting CP",
-     "played": 3,
-     "won": 2,
-     "draw": 0,
-     "lost": 1,
-     "goals_for": 7,
-     "goals_against": 4,
-     "goal_diff": 3,
-     "points": 6,
-     "form": null,
-     "zone": "kopo",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2250.png",
      "zone_label": "Knockout phase playoffs - seeded"
     },
     {
@@ -3749,6 +3749,22 @@
     },
     {
      "position": 14,
+     "team": "Galatasaray",
+     "played": 4,
+     "won": 2,
+     "draw": 0,
+     "lost": 2,
+     "goals_for": 8,
+     "goals_against": 9,
+     "goal_diff": -1,
+     "points": 6,
+     "form": null,
+     "zone": "kopo",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/432.png",
+     "zone_label": "Knockout phase playoffs - seeded"
+    },
+    {
+     "position": 15,
      "team": "Bayern Munich",
      "played": 3,
      "won": 1,
@@ -3764,7 +3780,7 @@
      "zone_label": "Knockout phase playoffs - seeded"
     },
     {
-     "position": 15,
+     "position": 16,
      "team": "Roma",
      "played": 3,
      "won": 1,
@@ -3780,7 +3796,7 @@
      "zone_label": "Knockout phase playoffs - seeded"
     },
     {
-     "position": 16,
+     "position": 17,
      "team": "Ath Madrid",
      "played": 3,
      "won": 1,
@@ -3793,18 +3809,18 @@
      "form": null,
      "zone": "kopo",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/1068.png",
-     "zone_label": "Knockout phase playoffs - seeded"
+     "zone_label": "Knockout phase playoffs - unseeded"
     },
     {
-     "position": 17,
+     "position": 18,
      "team": "Shakhtar Donetsk",
-     "played": 3,
+     "played": 4,
      "won": 1,
      "draw": 1,
-     "lost": 1,
+     "lost": 2,
      "goals_for": 4,
-     "goals_against": 3,
-     "goal_diff": 1,
+     "goals_against": 4,
+     "goal_diff": 0,
      "points": 4,
      "form": null,
      "zone": "kopo",
@@ -3812,7 +3828,7 @@
      "zone_label": "Knockout phase playoffs - unseeded"
     },
     {
-     "position": 18,
+     "position": 19,
      "team": "PSV Eindhoven",
      "played": 3,
      "won": 1,
@@ -3828,7 +3844,7 @@
      "zone_label": "Knockout phase playoffs - unseeded"
     },
     {
-     "position": 19,
+     "position": 20,
      "team": "Villarreal",
      "played": 3,
      "won": 1,
@@ -3844,7 +3860,7 @@
      "zone_label": "Knockout phase playoffs - unseeded"
     },
     {
-     "position": 20,
+     "position": 21,
      "team": "Inter",
      "played": 3,
      "won": 1,
@@ -3860,7 +3876,7 @@
      "zone_label": "Knockout phase playoffs - unseeded"
     },
     {
-     "position": 21,
+     "position": 22,
      "team": "Man United",
      "played": 3,
      "won": 1,
@@ -3876,7 +3892,7 @@
      "zone_label": "Knockout phase playoffs - unseeded"
     },
     {
-     "position": 22,
+     "position": 23,
      "team": "Napoli",
      "played": 3,
      "won": 1,
@@ -3889,22 +3905,6 @@
      "form": null,
      "zone": "kopo",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/114.png",
-     "zone_label": "Knockout phase playoffs - unseeded"
-    },
-    {
-     "position": 23,
-     "team": "Galatasaray",
-     "played": 3,
-     "won": 1,
-     "draw": 0,
-     "lost": 2,
-     "goals_for": 6,
-     "goals_against": 9,
-     "goal_diff": -3,
-     "points": 3,
-     "form": null,
-     "zone": "kopo",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/432.png",
      "zone_label": "Knockout phase playoffs - unseeded"
     },
     {
