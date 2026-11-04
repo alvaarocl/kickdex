@@ -1,138 +1,6 @@
 {
- "updated_at": "2026-11-04T14:22:32Z",
+ "updated_at": "2026-11-04T20:25:03Z",
  "items": [
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "18:45",
-   "home": "AEK Athens",
-   "away": "Real Madrid",
-   "venue": "OPAP Arena",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "18:45",
-   "home": "Fenerbahce",
-   "away": "Liverpool",
-   "venue": "Şükrü Saracoğlu Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-11-04",
-   "time": "20:45",
-   "home": "Cardiff",
-   "away": "West Ham",
-   "venue": "Cardiff City Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-11-04",
-   "time": "20:45",
-   "home": "Wrexham",
-   "away": "Middlesbrough",
-   "venue": "STōK Cae Ras",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "Dortmund",
-   "away": "Betis",
-   "venue": "Signal Iduna Park",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "FC Porto",
-   "away": "Napoli",
-   "venue": "Estádio do Dragão",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "Lens",
-   "away": "Como",
-   "venue": "Stade Bollaert-Delelis",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "PSV Eindhoven",
-   "away": "Club Brugge",
-   "venue": "Philips Stadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "RB Leipzig",
-   "away": "Man City",
-   "venue": "Red Bull Arena",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "Slavia Prague",
-   "away": "Arsenal",
-   "venue": "Fortuna Arena",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "CL",
-   "league_name": "Champions League",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "Viking FK",
-   "away": "Sabah FK",
-   "venue": "Viking Stadion",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "E1",
-   "league_name": "Championship",
-   "date": "2026-11-04",
-   "time": "21:00",
-   "home": "Bristol City",
-   "away": "Wolves",
-   "venue": "Ashton Gate",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "D2",
    "league_name": "2. Bundesliga",
@@ -684,17 +552,6 @@
    "source": "ESPN"
   },
   {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-11-07",
-   "time": "17:15",
-   "home": "Auxerre",
-   "away": "Paris FC",
-   "venue": "Stade de l'Abbé-Deschamps",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
    "league": "I2",
    "league_name": "Serie B",
    "date": "2026-11-07",
@@ -783,6 +640,17 @@
    "source": "ESPN"
   },
   {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-11-07",
+   "time": "19:00",
+   "home": "Auxerre",
+   "away": "Paris FC",
+   "venue": "Stade de l'Abbé-Deschamps",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "I2",
    "league_name": "Serie B",
    "date": "2026-11-07",
@@ -827,17 +695,6 @@
    "source": "ESPN"
   },
   {
-   "league": "F1",
-   "league_name": "Ligue 1",
-   "date": "2026-11-07",
-   "time": "20:45",
-   "home": "PSG",
-   "away": "Troyes",
-   "venue": "Parc des Princes",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
    "league": "I1",
    "league_name": "Serie A",
    "date": "2026-11-07",
@@ -871,13 +728,13 @@
    "source": "ESPN"
   },
   {
-   "league": "SP2",
-   "league_name": "Segunda División",
+   "league": "F1",
+   "league_name": "Ligue 1",
    "date": "2026-11-07",
-   "time": "21:00",
-   "home": "Granada",
-   "away": "Tenerife",
-   "venue": "Nuevo Estadio de Los Cármenes",
+   "time": "21:05",
+   "home": "PSG",
+   "away": "Troyes",
+   "venue": "Parc des Princes",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -944,17 +801,6 @@
    "home": "Elche",
    "away": "Betis",
    "venue": "Estadio Martínez Valero",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-08",
-   "time": "14:00",
-   "home": "Andorra",
-   "away": "Mallorca",
-   "venue": "Estadi de la FAF d'Encamp",
    "status": "scheduled",
    "source": "ESPN"
   },
