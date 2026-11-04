@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-03T20:04:35Z",
+ "updated_at": "2026-11-04T14:22:32Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -729,6 +729,58 @@
    "home_score": 2,
    "away_score": 3
   },
+  "CL|2026-11-03|Ath Madrid|Bayern Munich": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Ath Madrid",
+   "away": "Bayern Munich",
+   "venue": "Riyadh Air Metropolitano",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 2
+  },
+  "CL|2026-11-03|Barcelona|Aston Villa": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Barcelona",
+   "away": "Aston Villa",
+   "venue": "Spotify Camp Nou",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 0
+  },
+  "CL|2026-11-03|Bodo/Glimt|Lille": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Bodo/Glimt",
+   "away": "Lille",
+   "venue": "Aspmyra Stadion",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 0
+  },
+  "CL|2026-11-03|Feyenoord|Inter": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Feyenoord",
+   "away": "Inter",
+   "venue": "De Kuip",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 3
+  },
   "CL|2026-11-03|Galatasaray|Stuttgart": {
    "league": "CL",
    "league_name": "Champions League",
@@ -742,6 +794,32 @@
    "home_score": 2,
    "away_score": 0
   },
+  "CL|2026-11-03|LASK Linz|Slovan Bratislava": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "LASK Linz",
+   "away": "Slovan Bratislava",
+   "venue": "Raiffeisen Arena (Linz)",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 0
+  },
+  "CL|2026-11-03|Man United|Roma": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Man United",
+   "away": "Roma",
+   "venue": "Old Trafford",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 2
+  },
   "CL|2026-11-03|Shakhtar Donetsk|Sporting CP": {
    "league": "CL",
    "league_name": "Champions League",
@@ -754,6 +832,19 @@
    "source": "ESPN",
    "home_score": 0,
    "away_score": 1
+  },
+  "CL|2026-11-03|Villarreal|PSG": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-03",
+   "time": "21:00",
+   "home": "Villarreal",
+   "away": "PSG",
+   "venue": "Estadio de la Cerámica",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 6
   }
  }
 }
