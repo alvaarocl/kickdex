@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-04T20:25:03Z",
+ "updated_at": "2026-11-05T20:38:57Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -859,6 +859,32 @@
    "home_score": 2,
    "away_score": 3
   },
+  "CL|2026-11-04|Dortmund|Betis": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-04",
+   "time": "21:00",
+   "home": "Dortmund",
+   "away": "Betis",
+   "venue": "Signal Iduna Park",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 1
+  },
+  "CL|2026-11-04|FC Porto|Napoli": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-04",
+   "time": "21:00",
+   "home": "FC Porto",
+   "away": "Napoli",
+   "venue": "Estádio do Dragão",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 1
+  },
   "CL|2026-11-04|Fenerbahce|Liverpool": {
    "league": "CL",
    "league_name": "Champions League",
@@ -871,6 +897,71 @@
    "source": "ESPN",
    "home_score": 3,
    "away_score": 2
+  },
+  "CL|2026-11-04|Lens|Como": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-04",
+   "time": "21:00",
+   "home": "Lens",
+   "away": "Como",
+   "venue": "Stade Bollaert-Delelis",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 9
+  },
+  "CL|2026-11-04|PSV Eindhoven|Club Brugge": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-04",
+   "time": "21:00",
+   "home": "PSV Eindhoven",
+   "away": "Club Brugge",
+   "venue": "Philips Stadion",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 2
+  },
+  "CL|2026-11-04|RB Leipzig|Man City": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-04",
+   "time": "21:00",
+   "home": "RB Leipzig",
+   "away": "Man City",
+   "venue": "Red Bull Arena",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 3
+  },
+  "CL|2026-11-04|Slavia Prague|Arsenal": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-04",
+   "time": "21:00",
+   "home": "Slavia Prague",
+   "away": "Arsenal",
+   "venue": "Fortuna Arena",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 2
+  },
+  "CL|2026-11-04|Viking FK|Sabah FK": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-04",
+   "time": "21:00",
+   "home": "Viking FK",
+   "away": "Sabah FK",
+   "venue": "Viking Stadion",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 4,
+   "away_score": 1
   }
  }
 }
