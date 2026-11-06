@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-06T14:09:25Z",
+ "updated_at": "2026-11-06T19:56:38Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -2356,7 +2356,7 @@
   },
   "D2": {
    "competition_name": "2026-2027 German 2. Bundesliga",
-   "matchday": 10,
+   "matchday": 11,
    "source": "espn",
    "table": [
     {
@@ -2490,13 +2490,13 @@
     {
      "position": 9,
      "team": "Greuther Furth",
-     "played": 10,
+     "played": 11,
      "won": 3,
      "draw": 3,
-     "lost": 4,
+     "lost": 5,
      "goals_for": 13,
-     "goals_against": 16,
-     "goal_diff": -3,
+     "goals_against": 19,
+     "goal_diff": -6,
      "points": 12,
      "form": null,
      "zone": "",
@@ -2505,6 +2505,38 @@
     },
     {
      "position": 10,
+     "team": "Cottbus",
+     "played": 11,
+     "won": 2,
+     "draw": 5,
+     "lost": 4,
+     "goals_for": 18,
+     "goals_against": 20,
+     "goal_diff": -2,
+     "points": 11,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/123.png",
+     "zone_label": null
+    },
+    {
+     "position": 11,
+     "team": "Braunschweig",
+     "played": 11,
+     "won": 3,
+     "draw": 2,
+     "lost": 6,
+     "goals_for": 16,
+     "goals_against": 18,
+     "goal_diff": -2,
+     "points": 11,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3067.png",
+     "zone_label": null
+    },
+    {
+     "position": 12,
      "team": "Osnabruck",
      "played": 10,
      "won": 3,
@@ -2520,7 +2552,7 @@
      "zone_label": null
     },
     {
-     "position": 11,
+     "position": 13,
      "team": "Bochum",
      "played": 10,
      "won": 3,
@@ -2536,7 +2568,23 @@
      "zone_label": null
     },
     {
-     "position": 12,
+     "position": 14,
+     "team": "Dresden",
+     "played": 11,
+     "won": 3,
+     "draw": 2,
+     "lost": 6,
+     "goals_for": 15,
+     "goals_against": 20,
+     "goal_diff": -5,
+     "points": 11,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7017.png",
+     "zone_label": null
+    },
+    {
+     "position": 15,
      "team": "Hannover",
      "played": 10,
      "won": 3,
@@ -2552,7 +2600,7 @@
      "zone_label": null
     },
     {
-     "position": 13,
+     "position": 16,
      "team": "Karlsruhe",
      "played": 10,
      "won": 3,
@@ -2563,44 +2611,12 @@
      "goal_diff": -8,
      "points": 11,
      "form": null,
-     "zone": "",
+     "zone": "relpo",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/4471.png",
-     "zone_label": null
+     "zone_label": "Relegation playoff"
     },
     {
-     "position": 14,
-     "team": "Cottbus",
-     "played": 10,
-     "won": 2,
-     "draw": 4,
-     "lost": 4,
-     "goals_for": 18,
-     "goals_against": 20,
-     "goal_diff": -2,
-     "points": 10,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/123.png",
-     "zone_label": null
-    },
-    {
-     "position": 15,
-     "team": "Braunschweig",
-     "played": 10,
-     "won": 3,
-     "draw": 1,
-     "lost": 6,
-     "goals_for": 16,
-     "goals_against": 18,
-     "goal_diff": -2,
-     "points": 10,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3067.png",
-     "zone_label": null
-    },
-    {
-     "position": 16,
+     "position": 17,
      "team": "Darmstadt",
      "played": 10,
      "won": 2,
@@ -2611,12 +2627,12 @@
      "goal_diff": -10,
      "points": 9,
      "form": null,
-     "zone": "relpo",
+     "zone": "rel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3812.png",
-     "zone_label": "Relegation playoff"
+     "zone_label": "Relegation"
     },
     {
-     "position": 17,
+     "position": 18,
      "team": "Holstein Kiel",
      "played": 10,
      "won": 1,
@@ -2629,22 +2645,6 @@
      "form": null,
      "zone": "rel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7884.png",
-     "zone_label": "Relegation"
-    },
-    {
-     "position": 18,
-     "team": "Dresden",
-     "played": 10,
-     "won": 2,
-     "draw": 2,
-     "lost": 6,
-     "goals_for": 12,
-     "goals_against": 20,
-     "goal_diff": -8,
-     "points": 8,
-     "form": null,
-     "zone": "rel",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/7017.png",
      "zone_label": "Relegation"
     }
    ]
