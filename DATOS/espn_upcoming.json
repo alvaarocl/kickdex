@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-05T20:38:57Z",
+ "updated_at": "2026-11-06T14:09:47Z",
  "items": [
   {
    "league": "D2",
@@ -2913,6 +2913,94 @@
    "home": "Stoke",
    "away": "Millwall",
    "venue": "bet365 Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-11-27",
+   "time": "18:30",
+   "home": "Heidenheim",
+   "away": "Nurnberg",
+   "venue": "Voith-Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-11-27",
+   "time": "18:30",
+   "home": "Bochum",
+   "away": "Darmstadt",
+   "venue": "Vonovia Ruhrstadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "N1",
+   "league_name": "Eredivisie",
+   "date": "2026-11-27",
+   "time": "20:00",
+   "home": "Groningen",
+   "away": "Willem II",
+   "venue": "Euroborg",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D1",
+   "league_name": "Bundesliga",
+   "date": "2026-11-27",
+   "time": "20:30",
+   "home": "Werder Bremen",
+   "away": "M'gladbach",
+   "venue": "Weserstadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-11-27",
+   "time": "20:45",
+   "home": "Brest",
+   "away": "Paris FC",
+   "venue": "Stade Francis-Le Blé",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-11-27",
+   "time": "20:45",
+   "home": "Venezia",
+   "away": "Bologna",
+   "venue": "Stadio Pier Luigi Penzo",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-11-27",
+   "time": "21:00",
+   "home": "Nott'm Forest",
+   "away": "Chelsea",
+   "venue": "The City Ground",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-11-27",
+   "time": "21:00",
+   "home": "Southampton",
+   "away": "Middlesbrough",
+   "venue": "St. Mary's Stadium",
    "status": "scheduled",
    "source": "ESPN"
   }
