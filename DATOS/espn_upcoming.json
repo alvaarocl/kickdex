@@ -1,28 +1,6 @@
 {
- "updated_at": "2026-11-09T16:04:07Z",
+ "updated_at": "2026-11-09T22:58:42Z",
  "items": [
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-09",
-   "time": "20:30",
-   "home": "Sabadell",
-   "away": "Sociedad B",
-   "venue": "Estadi Municipal de la Nova Creu Alta",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-09",
-   "time": "20:30",
-   "home": "Las Palmas",
-   "away": "Eldense",
-   "venue": "Estadio Gran Canaria",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "SP2",
    "league_name": "Segunda División",
