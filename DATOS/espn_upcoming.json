@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-09T22:58:42Z",
+ "updated_at": "2026-11-10T14:46:47Z",
  "items": [
   {
    "league": "SP2",
@@ -2836,6 +2836,17 @@
    "home": "Espanol",
    "away": "Getafe",
    "venue": "RCDE Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-01",
+   "time": "21:00",
+   "home": "Coventry",
+   "away": "Ipswich",
+   "venue": "Coventry Building Society Arena",
    "status": "scheduled",
    "source": "ESPN"
   }
