@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-11T14:07:19Z",
+ "updated_at": "2026-11-11T20:10:36Z",
  "items": [
   {
    "league": "SP2",
@@ -30,7 +30,7 @@
    "time": "16:15",
    "home": "Sociedad B",
    "away": "Sp Gijon",
-   "venue": "Instalaciones de Zubieta",
+   "venue": "Estadio Zubieta XXI",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -668,7 +668,7 @@
    "time": "16:15",
    "home": "Sociedad B",
    "away": "Cadiz",
-   "venue": "Instalaciones de Zubieta",
+   "venue": "Estadio Zubieta XXI",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -2378,28 +2378,6 @@
    "source": "ESPN"
   },
   {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Mallorca",
-   "away": "Castellon",
-   "venue": "Estadi Mallorca Son Moix",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Oviedo",
-   "away": "Celta B",
-   "venue": "Estadio Carlos Tartiere",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-11-29",
@@ -2631,6 +2609,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-29",
+   "time": "16:15",
+   "home": "Mallorca",
+   "away": "Castellon",
+   "venue": "Estadi Mallorca Son Moix",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-11-29",
@@ -2814,6 +2803,17 @@
    "home": "Catanzaro",
    "away": "Avellino",
    "venue": "Stadio Nicola Ceravolo",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-30",
+   "time": "20:30",
+   "home": "Oviedo",
+   "away": "Celta B",
+   "venue": "Estadio Carlos Tartiere",
    "status": "scheduled",
    "source": "ESPN"
   },
