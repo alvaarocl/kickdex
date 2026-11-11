@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-10T20:27:23Z",
+ "updated_at": "2026-11-11T14:07:19Z",
  "items": [
   {
    "league": "SP2",
@@ -1795,6 +1795,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-27",
+   "time": "20:30",
+   "home": "Leganes",
+   "away": "Sabadell",
+   "venue": "Estadio Municipal de Butarque",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "F1",
    "league_name": "Ligue 1",
    "date": "2026-11-27",
@@ -1923,6 +1934,17 @@
    "home": "Betis",
    "away": "Vallecano",
    "venue": "Estadio La Cartuja",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-28",
+   "time": "14:00",
+   "home": "Las Palmas",
+   "away": "Andorra",
+   "venue": "Estadio Gran Canaria",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -2125,6 +2147,28 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-28",
+   "time": "16:15",
+   "home": "Albacete",
+   "away": "Tenerife",
+   "venue": "Carlos Belmonte",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-28",
+   "time": "16:15",
+   "home": "Eldense",
+   "away": "Girona",
+   "venue": "Estadio Municipal Nuevo Pepico Amat",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-11-28",
@@ -2198,6 +2242,17 @@
    "home": "Elche",
    "away": "Ath Madrid",
    "venue": "Estadio Martínez Valero",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-28",
+   "time": "18:30",
+   "home": "Eibar",
+   "away": "Burgos",
+   "venue": "Ipurua",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -2314,88 +2369,11 @@
   {
    "league": "SP2",
    "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Albacete",
-   "away": "Tenerife",
-   "venue": "Carlos Belmonte",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Almeria",
-   "away": "Sp Gijon",
-   "venue": "Power Horse Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Cadiz",
-   "away": "Cordoba",
-   "venue": "Nuevo Mirandilla",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Eibar",
-   "away": "Burgos",
-   "venue": "Ipurua",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Eldense",
-   "away": "Girona",
-   "venue": "Estadio Municipal Nuevo Pepico Amat",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Granada",
-   "away": "Ceuta",
-   "venue": "Nuevo Estadio de Los Cármenes",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Las Palmas",
-   "away": "Andorra",
-   "venue": "Estadio Gran Canaria",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Leganes",
-   "away": "Sabadell",
-   "venue": "Estadio Municipal de Butarque",
+   "date": "2026-11-28",
+   "time": "21:00",
+   "home": "Valladolid",
+   "away": "Sociedad B",
+   "venue": "Estadio José Zorrilla",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -2418,17 +2396,6 @@
    "home": "Oviedo",
    "away": "Celta B",
    "venue": "Estadio Carlos Tartiere",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-29",
-   "time": "",
-   "home": "Valladolid",
-   "away": "Sociedad B",
-   "venue": "Estadio José Zorrilla",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -2517,6 +2484,17 @@
    "home": "Valencia",
    "away": "Osasuna",
    "venue": "Mestalla Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-29",
+   "time": "14:00",
+   "home": "Granada",
+   "away": "Ceuta",
+   "venue": "Nuevo Estadio de Los Cármenes",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -2730,6 +2708,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-29",
+   "time": "18:30",
+   "home": "Cadiz",
+   "away": "Cordoba",
+   "venue": "Nuevo Mirandilla",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "D1",
    "league_name": "Bundesliga",
    "date": "2026-11-29",
@@ -2796,6 +2785,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-11-29",
+   "time": "21:00",
+   "home": "Almeria",
+   "away": "Sp Gijon",
+   "venue": "Power Horse Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "I1",
    "league_name": "Serie A",
    "date": "2026-11-30",
@@ -2847,6 +2847,116 @@
    "home": "Coventry",
    "away": "Ipswich",
    "venue": "Coventry Building Society Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-02",
+   "time": "19:00",
+   "home": "Sociedad",
+   "away": "Real Madrid",
+   "venue": "Reale Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "20:30",
+   "home": "Chelsea",
+   "away": "Crystal Palace",
+   "venue": "Stamford Bridge",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "20:30",
+   "home": "Hull",
+   "away": "Nott'm Forest",
+   "venue": "The MKM Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "20:30",
+   "home": "Liverpool",
+   "away": "Sunderland",
+   "venue": "Anfield",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "20:30",
+   "home": "Man City",
+   "away": "Leeds",
+   "venue": "Etihad Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "21:15",
+   "home": "Bournemouth",
+   "away": "Brighton",
+   "venue": "Vitality Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "21:15",
+   "home": "Aston Villa",
+   "away": "Everton",
+   "venue": "Villa Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "21:15",
+   "home": "Brentford",
+   "away": "Arsenal",
+   "venue": "Gtech Community Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-02",
+   "time": "21:15",
+   "home": "Newcastle",
+   "away": "Man United",
+   "venue": "St. James' Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-02",
+   "time": "21:30",
+   "home": "Barcelona",
+   "away": "Ath Madrid",
+   "venue": "Spotify Camp Nou",
    "status": "scheduled",
    "source": "ESPN"
   }
