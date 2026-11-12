@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-12T15:03:33Z",
+ "updated_at": "2026-11-12T20:47:06Z",
  "items": [
   {
    "league": "SP2",
@@ -30,7 +30,7 @@
    "time": "16:15",
    "home": "Sociedad B",
    "away": "Sp Gijon",
-   "venue": "Estadio Zubieta XXI",
+   "venue": "Instalaciones de Zubieta",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -668,7 +668,7 @@
    "time": "16:15",
    "home": "Sociedad B",
    "away": "Cadiz",
-   "venue": "Estadio Zubieta XXI",
+   "venue": "Instalaciones de Zubieta",
    "status": "scheduled",
    "source": "ESPN"
   },
