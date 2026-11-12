@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-11T20:10:36Z",
+ "updated_at": "2026-11-12T15:03:33Z",
  "items": [
   {
    "league": "SP2",
@@ -2957,6 +2957,17 @@
    "home": "Barcelona",
    "away": "Ath Madrid",
    "venue": "Spotify Camp Nou",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E0",
+   "league_name": "Premier League",
+   "date": "2026-12-03",
+   "time": "21:00",
+   "home": "Tottenham",
+   "away": "Fulham",
+   "venue": "Tottenham Hotspur Stadium",
    "status": "scheduled",
    "source": "ESPN"
   }
