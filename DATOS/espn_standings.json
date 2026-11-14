@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-13T20:28:22Z",
+ "updated_at": "2026-11-14T13:24:49Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -330,7 +330,7 @@
   },
   "SP2": {
    "competition_name": "2026-2027 Spanish LALIGA 2",
-   "matchday": 13,
+   "matchday": 14,
    "source": "espn",
    "table": [
     {
@@ -368,13 +368,13 @@
     {
      "position": 3,
      "team": "Burgos",
-     "played": 13,
+     "played": 14,
      "won": 7,
      "draw": 3,
-     "lost": 3,
-     "goals_for": 19,
-     "goals_against": 14,
-     "goal_diff": 5,
+     "lost": 4,
+     "goals_for": 20,
+     "goals_against": 17,
+     "goal_diff": 3,
      "points": 24,
      "form": null,
      "zone": "po",
@@ -559,6 +559,22 @@
     },
     {
      "position": 15,
+     "team": "Leganes",
+     "played": 14,
+     "won": 4,
+     "draw": 3,
+     "lost": 7,
+     "goals_for": 14,
+     "goals_against": 24,
+     "goal_diff": -10,
+     "points": 15,
+     "form": null,
+     "zone": "",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/17534.png",
+     "zone_label": null
+    },
+    {
+     "position": 16,
      "team": "Eldense",
      "played": 13,
      "won": 4,
@@ -574,7 +590,7 @@
      "zone_label": null
     },
     {
-     "position": 16,
+     "position": 17,
      "team": "Celta B",
      "played": 13,
      "won": 3,
@@ -590,7 +606,7 @@
      "zone_label": null
     },
     {
-     "position": 17,
+     "position": 18,
      "team": "Sociedad B",
      "played": 13,
      "won": 3,
@@ -603,22 +619,6 @@
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/20983.png",
-     "zone_label": null
-    },
-    {
-     "position": 18,
-     "team": "Leganes",
-     "played": 13,
-     "won": 3,
-     "draw": 3,
-     "lost": 7,
-     "goals_for": 11,
-     "goals_against": 23,
-     "goal_diff": -12,
-     "points": 12,
-     "form": null,
-     "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/17534.png",
      "zone_label": null
     },
     {
