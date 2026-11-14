@@ -1,39 +1,6 @@
 {
- "updated_at": "2026-11-14T13:25:04Z",
+ "updated_at": "2026-11-14T18:43:59Z",
  "items": [
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-14",
-   "time": "16:15",
-   "home": "Sociedad B",
-   "away": "Sp Gijon",
-   "venue": "Instalaciones de Zubieta",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-14",
-   "time": "18:30",
-   "home": "Almeria",
-   "away": "Andorra",
-   "venue": "Power Horse Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-14",
-   "time": "18:30",
-   "home": "Mallorca",
-   "away": "Cordoba",
-   "venue": "Estadi Mallorca Son Moix",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "SP2",
    "league_name": "Segunda División",
