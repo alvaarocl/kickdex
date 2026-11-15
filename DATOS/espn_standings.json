@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-15T13:51:24Z",
+ "updated_at": "2026-11-15T19:21:14Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -367,6 +367,22 @@
     },
     {
      "position": 3,
+     "team": "Granada",
+     "played": 13,
+     "won": 8,
+     "draw": 2,
+     "lost": 3,
+     "goals_for": 21,
+     "goals_against": 14,
+     "goal_diff": 7,
+     "points": 26,
+     "form": null,
+     "zone": "po",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3747.png",
+     "zone_label": "Promotion playoffs"
+    },
+    {
+     "position": 4,
      "team": "Girona",
      "played": 14,
      "won": 7,
@@ -382,7 +398,7 @@
      "zone_label": "Promotion playoffs"
     },
     {
-     "position": 4,
+     "position": 5,
      "team": "Burgos",
      "played": 14,
      "won": 7,
@@ -398,7 +414,7 @@
      "zone_label": "Promotion playoffs"
     },
     {
-     "position": 5,
+     "position": 6,
      "team": "Mallorca",
      "played": 13,
      "won": 6,
@@ -414,7 +430,7 @@
      "zone_label": "Promotion playoffs"
     },
     {
-     "position": 6,
+     "position": 7,
      "team": "Eibar",
      "played": 12,
      "won": 7,
@@ -425,24 +441,8 @@
      "goal_diff": 7,
      "points": 23,
      "form": null,
-     "zone": "po",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3752.png",
-     "zone_label": "Promotion playoffs"
-    },
-    {
-     "position": 7,
-     "team": "Granada",
-     "played": 12,
-     "won": 7,
-     "draw": 2,
-     "lost": 3,
-     "goals_for": 20,
-     "goals_against": 14,
-     "goal_diff": 6,
-     "points": 23,
-     "form": null,
      "zone": "",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3747.png",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/3752.png",
      "zone_label": null
     },
     {
@@ -496,13 +496,13 @@
     {
      "position": 11,
      "team": "Las Palmas",
-     "played": 13,
+     "played": 14,
      "won": 6,
      "draw": 2,
-     "lost": 5,
+     "lost": 6,
      "goals_for": 19,
-     "goals_against": 21,
-     "goal_diff": -2,
+     "goals_against": 22,
+     "goal_diff": -3,
      "points": 20,
      "form": null,
      "zone": "",
@@ -544,14 +544,14 @@
     {
      "position": 14,
      "team": "Tenerife",
-     "played": 12,
-     "won": 3,
+     "played": 13,
+     "won": 4,
      "draw": 6,
      "lost": 3,
-     "goals_for": 15,
+     "goals_for": 17,
      "goals_against": 17,
-     "goal_diff": -2,
-     "points": 15,
+     "goal_diff": 0,
+     "points": 18,
      "form": null,
      "zone": "",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/245.png",
@@ -672,13 +672,13 @@
     {
      "position": 22,
      "team": "Ceuta",
-     "played": 13,
+     "played": 14,
      "won": 1,
      "draw": 2,
-     "lost": 10,
+     "lost": 11,
      "goals_for": 10,
-     "goals_against": 30,
-     "goal_diff": -20,
+     "goals_against": 32,
+     "goal_diff": -22,
      "points": 5,
      "form": null,
      "zone": "rel",

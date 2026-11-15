@@ -1,39 +1,6 @@
 {
- "updated_at": "2026-11-15T13:51:46Z",
+ "updated_at": "2026-11-15T19:21:30Z",
  "items": [
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-15",
-   "time": "16:15",
-   "home": "Granada",
-   "away": "Las Palmas",
-   "venue": "Nuevo Estadio de Los Cármenes",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-15",
-   "time": "18:30",
-   "home": "Eibar",
-   "away": "Cadiz",
-   "venue": "Ipurua",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-15",
-   "time": "18:30",
-   "home": "Eldense",
-   "away": "Sabadell",
-   "venue": "Estadio Municipal Nuevo Pepico Amat",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "SP2",
    "league_name": "Segunda División",
@@ -3038,6 +3005,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-04",
+   "time": "21:00",
+   "home": "Alaves",
+   "away": "Espanol",
+   "venue": "Mendizorrotza",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "D2",
    "league_name": "2. Bundesliga",
    "date": "2026-12-05",
@@ -3144,6 +3122,17 @@
    "home": "Montpellier",
    "away": "Nantes",
    "venue": "Stade de la Mosson",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-05",
+   "time": "14:00",
+   "home": "Santander",
+   "away": "Dep. A Coruna",
+   "venue": "El Sardineros",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -3357,6 +3346,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-05",
+   "time": "16:15",
+   "home": "Vallecano",
+   "away": "Levante",
+   "venue": "Estadio de Vallecas",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-12-05",
@@ -3419,6 +3419,17 @@
    "home": "Nott'm Forest",
    "away": "Brighton",
    "venue": "The City Ground",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-05",
+   "time": "18:30",
+   "home": "Villarreal",
+   "away": "Sociedad",
+   "venue": "Estadio de la Cerámica",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -3557,110 +3568,11 @@
   {
    "league": "SP1",
    "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Alaves",
-   "away": "Espanol",
-   "venue": "Mendizorrotza",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Athletic Club",
-   "away": "Real Madrid",
-   "venue": "San Mamés",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Ath Madrid",
-   "away": "Betis",
-   "venue": "Riyadh Air Metropolitano",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
+   "date": "2026-12-05",
+   "time": "21:00",
    "home": "Barcelona",
    "away": "Celta",
    "venue": "Spotify Camp Nou",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Getafe",
-   "away": "Valencia",
-   "venue": "Estadio Coliseum",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Osasuna",
-   "away": "Elche",
-   "venue": "El Sadar",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Santander",
-   "away": "Dep. A Coruna",
-   "venue": "El Sardineros",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Vallecano",
-   "away": "Levante",
-   "venue": "Estadio de Vallecas",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Sevilla",
-   "away": "Malaga",
-   "venue": "Ramón Sánchez Pizjuán Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP1",
-   "league_name": "La Liga",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Villarreal",
-   "away": "Sociedad",
-   "venue": "Estadio de la Cerámica",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -3852,6 +3764,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-06",
+   "time": "14:00",
+   "home": "Osasuna",
+   "away": "Elche",
+   "venue": "El Sadar",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-12-06",
@@ -3951,6 +3874,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-06",
+   "time": "16:15",
+   "home": "Athletic Club",
+   "away": "Real Madrid",
+   "venue": "San Mamés",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-12-06",
@@ -4017,6 +3951,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-06",
+   "time": "18:30",
+   "home": "Getafe",
+   "away": "Valencia",
+   "venue": "Estadio Coliseum",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "I2",
    "league_name": "Serie B",
    "date": "2026-12-06",
@@ -4046,6 +3991,17 @@
    "home": "Milan",
    "away": "Parma",
    "venue": "San Siro",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-06",
+   "time": "21:00",
+   "home": "Ath Madrid",
+   "away": "Betis",
+   "venue": "Riyadh Air Metropolitano",
    "status": "scheduled",
    "source": "ESPN"
   }
