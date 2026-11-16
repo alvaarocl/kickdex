@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-16T15:34:52Z",
+ "updated_at": "2026-11-16T22:51:58Z",
  "leagues": {
   "SP1": {
    "competition_name": "2026-27 LALIGA",
@@ -592,13 +592,13 @@
     {
      "position": 17,
      "team": "Celta B",
-     "played": 13,
+     "played": 14,
      "won": 3,
      "draw": 4,
-     "lost": 6,
+     "lost": 7,
      "goals_for": 19,
-     "goals_against": 25,
-     "goal_diff": -6,
+     "goals_against": 26,
+     "goal_diff": -7,
      "points": 13,
      "form": null,
      "zone": "",
@@ -623,6 +623,22 @@
     },
     {
      "position": 19,
+     "team": "Albacete",
+     "played": 14,
+     "won": 4,
+     "draw": 1,
+     "lost": 9,
+     "goals_for": 14,
+     "goals_against": 24,
+     "goal_diff": -10,
+     "points": 13,
+     "form": null,
+     "zone": "rel",
+     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2737.png",
+     "zone_label": "Relegation"
+    },
+    {
+     "position": 20,
      "team": "Cadiz",
      "played": 14,
      "won": 2,
@@ -638,7 +654,7 @@
      "zone_label": "Relegation"
     },
     {
-     "position": 20,
+     "position": 21,
      "team": "Andorra",
      "played": 13,
      "won": 3,
@@ -651,22 +667,6 @@
      "form": null,
      "zone": "rel",
      "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/20179.png",
-     "zone_label": "Relegation"
-    },
-    {
-     "position": 21,
-     "team": "Albacete",
-     "played": 13,
-     "won": 3,
-     "draw": 1,
-     "lost": 9,
-     "goals_for": 13,
-     "goals_against": 24,
-     "goal_diff": -11,
-     "points": 10,
-     "form": null,
-     "zone": "rel",
-     "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/2737.png",
      "zone_label": "Relegation"
     },
     {

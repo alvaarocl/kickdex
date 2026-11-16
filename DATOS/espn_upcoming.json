@@ -1,17 +1,6 @@
 {
- "updated_at": "2026-11-16T15:35:16Z",
+ "updated_at": "2026-11-16T22:52:12Z",
  "items": [
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-11-16",
-   "time": "20:30",
-   "home": "Albacete",
-   "away": "Celta B",
-   "venue": "Carlos Belmonte",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
   {
    "league": "D2",
    "league_name": "2. Bundesliga",
