@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-17T21:44:59Z",
+ "updated_at": "2026-11-18T15:31:53Z",
  "items": [
   {
    "league": "D2",
@@ -207,17 +207,6 @@
    "home": "Southampton",
    "away": "Derby",
    "venue": "St. Mary's Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "F2",
-   "league_name": "Ligue 2",
-   "date": "2026-11-21",
-   "time": "14:00",
-   "home": "Nantes",
-   "away": "Grenoble",
-   "venue": "Stade de la Beaujoire",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -1142,6 +1131,17 @@
    "home": "Ceuta",
    "away": "Almeria",
    "venue": "Estadio Alfonso Murube",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-11-23",
+   "time": "20:45",
+   "home": "Nantes",
+   "away": "Grenoble",
+   "venue": "Stade de la Beaujoire",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -4277,6 +4277,237 @@
    "home": "West Ham",
    "away": "Middlesbrough",
    "venue": "London Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "18:45",
+   "home": "Betis",
+   "away": "Como",
+   "venue": "Estadio La Cartuja",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "18:45",
+   "home": "Slovan Bratislava",
+   "away": "Shakhtar Donetsk",
+   "venue": "Národny Futbalovy Stadión",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-12-09",
+   "time": "19:00",
+   "home": "Verona",
+   "away": "Avellino",
+   "venue": "Stadio Marcantonio Bentegodi",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-12-09",
+   "time": "20:00",
+   "home": "Arezzo",
+   "away": "Cesena",
+   "venue": "Stadio Città di Arezzo",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-12-09",
+   "time": "20:00",
+   "home": "Catanzaro",
+   "away": "Virtus Entella",
+   "venue": "Stadio Nicola Ceravolo",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-12-09",
+   "time": "20:00",
+   "home": "Empoli",
+   "away": "Sudtirol",
+   "venue": "Stadio Carlo Castellani - Computer Gross Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-12-09",
+   "time": "20:00",
+   "home": "Palermo",
+   "away": "Cremonese",
+   "venue": "Stadio Renzo Barbera",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-12-09",
+   "time": "20:45",
+   "home": "Derby",
+   "away": "Bristol City",
+   "venue": "Pride Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-12-09",
+   "time": "20:45",
+   "home": "Lincoln",
+   "away": "Stoke",
+   "venue": "LNER Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-12-09",
+   "time": "20:45",
+   "home": "Preston",
+   "away": "Portsmouth",
+   "venue": "Deepdale",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Arsenal",
+   "away": "Real Madrid",
+   "venue": "Emirates Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Dortmund",
+   "away": "Inter",
+   "venue": "Signal Iduna Park",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "LASK Linz",
+   "away": "Fenerbahce",
+   "venue": "Raiffeisen Arena (Linz)",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Lens",
+   "away": "Bodo/Glimt",
+   "venue": "Stade Bollaert-Delelis",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Liverpool",
+   "away": "FC Porto",
+   "venue": "Anfield",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "PSV Eindhoven",
+   "away": "Ath Madrid",
+   "venue": "Philips Stadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Stuttgart",
+   "away": "Lille",
+   "venue": "MHPArena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Southampton",
+   "away": "Burnley",
+   "venue": "St. Mary's Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Castellon",
+   "away": "Eibar",
+   "venue": "Nou Estadi Castalia",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Andorra",
+   "away": "Mallorca",
+   "venue": "Estadi de la FAF d'Encamp",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-09",
+   "time": "21:00",
+   "home": "Granada",
+   "away": "Tenerife",
+   "venue": "Nuevo Estadio de Los Cármenes",
    "status": "scheduled",
    "source": "ESPN"
   }
