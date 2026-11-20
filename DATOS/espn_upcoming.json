@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-19T21:28:12Z",
+ "updated_at": "2026-11-20T15:20:17Z",
  "items": [
   {
    "league": "D2",
@@ -3126,6 +3126,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-05",
+   "time": "14:00",
+   "home": "Sociedad B",
+   "away": "Leganes",
+   "venue": "Instalaciones de Zubieta",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "I1",
    "league_name": "Serie A",
    "date": "2026-12-05",
@@ -3434,6 +3445,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-05",
+   "time": "18:30",
+   "home": "Andorra",
+   "away": "Oviedo",
+   "venue": "Estadi de la FAF d'Encamp",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-12-05",
@@ -3584,28 +3606,6 @@
    "home": "Tenerife",
    "away": "Eldense",
    "venue": "Estadio Heliodoro Rodríguez López",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Andorra",
-   "away": "Oviedo",
-   "venue": "Estadi de la FAF d'Encamp",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-06",
-   "time": "",
-   "home": "Sociedad B",
-   "away": "Leganes",
-   "venue": "Instalaciones de Zubieta",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -4508,6 +4508,127 @@
    "home": "Granada",
    "away": "Tenerife",
    "venue": "Nuevo Estadio de Los Cármenes",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-12-11",
+   "time": "18:30",
+   "home": "Magdeburg",
+   "away": "Nurnberg",
+   "venue": "MDCC-Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-12-11",
+   "time": "18:30",
+   "home": "Bielefeld",
+   "away": "Kaiserslautern",
+   "venue": "SchücoArena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-12-11",
+   "time": "20:00",
+   "home": "Nancy",
+   "away": "Clermont",
+   "venue": "Stade Marcel-Picot",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-12-11",
+   "time": "20:00",
+   "home": "Boulogne",
+   "away": "Rodez",
+   "venue": "Stade de la Libération",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-12-11",
+   "time": "20:00",
+   "home": "Guingamp",
+   "away": "Dijon",
+   "venue": "Stade Municipal de Roudourou",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-12-11",
+   "time": "20:00",
+   "home": "Nantes",
+   "away": "Annecy",
+   "venue": "Stade de la Beaujoire",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F2",
+   "league_name": "Ligue 2",
+   "date": "2026-12-11",
+   "time": "20:00",
+   "home": "Laval",
+   "away": "Dunkerque",
+   "venue": "Stade Francis Le Basser",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D1",
+   "league_name": "Bundesliga",
+   "date": "2026-12-11",
+   "time": "20:30",
+   "home": "Hamburg",
+   "away": "Schalke 04",
+   "venue": "Volksparkstadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "F1",
+   "league_name": "Ligue 1",
+   "date": "2026-12-11",
+   "time": "20:45",
+   "home": "Auxerre",
+   "away": "Toulouse",
+   "venue": "Stade de l'Abbé-Deschamps",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-12-11",
+   "time": "20:45",
+   "home": "Udinese",
+   "away": "Frosinone",
+   "venue": "Stadio Friuli",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-12-11",
+   "time": "21:00",
+   "home": "Bolton",
+   "away": "Wrexham",
+   "venue": "Toughsheet Community Stadium",
    "status": "scheduled",
    "source": "ESPN"
   }
