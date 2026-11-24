@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-24T17:33:05Z",
+ "updated_at": "2026-11-24T23:00:09Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -962,6 +962,123 @@
    "source": "ESPN",
    "home_score": 4,
    "away_score": 1
+  },
+  "CL|2026-11-24|Arsenal|Dortmund": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Arsenal",
+   "away": "Dortmund",
+   "venue": "Emirates Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 1
+  },
+  "CL|2026-11-24|Bodo/Glimt|LASK Linz": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "18:45",
+   "home": "Bodo/Glimt",
+   "away": "LASK Linz",
+   "venue": "Aspmyra Stadion",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 0
+  },
+  "CL|2026-11-24|Como|AEK Athens": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Como",
+   "away": "AEK Athens",
+   "venue": "Giuseppe Sinigaglia",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 0
+  },
+  "CL|2026-11-24|Feyenoord|FC Porto": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Feyenoord",
+   "away": "FC Porto",
+   "venue": "De Kuip",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 1
+  },
+  "CL|2026-11-24|Galatasaray|Aston Villa": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "18:45",
+   "home": "Galatasaray",
+   "away": "Aston Villa",
+   "venue": "RAMS Park",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 0
+  },
+  "CL|2026-11-24|Man City|Napoli": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Man City",
+   "away": "Napoli",
+   "venue": "Etihad Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 2
+  },
+  "CL|2026-11-24|RB Leipzig|Lens": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "RB Leipzig",
+   "away": "Lens",
+   "venue": "Red Bull Arena",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 3,
+   "away_score": 1
+  },
+  "CL|2026-11-24|Real Madrid|PSV Eindhoven": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Real Madrid",
+   "away": "PSV Eindhoven",
+   "venue": "Santiago Bernabéu",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 5,
+   "away_score": 1
+  },
+  "CL|2026-11-24|Slovan Bratislava|Betis": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-24",
+   "time": "21:00",
+   "home": "Slovan Bratislava",
+   "away": "Betis",
+   "venue": "Národny Futbalovy Stadión",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 2
   }
  }
 }
