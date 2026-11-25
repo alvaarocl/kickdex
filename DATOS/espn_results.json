@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-25T17:05:42Z",
+ "updated_at": "2026-11-25T22:28:45Z",
  "items": {
   "CL|2026-09-08|AEK Athens|LASK Linz": {
    "league": "CL",
@@ -1078,6 +1078,123 @@
    "status": "finished",
    "source": "ESPN",
    "home_score": 0,
+   "away_score": 2
+  },
+  "CL|2026-11-25|Ath Madrid|Viking FK": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "21:00",
+   "home": "Ath Madrid",
+   "away": "Viking FK",
+   "venue": "Riyadh Air Metropolitano",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 0
+  },
+  "CL|2026-11-25|Club Brugge|Liverpool": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "21:00",
+   "home": "Club Brugge",
+   "away": "Liverpool",
+   "venue": "Jan Breydel Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 3
+  },
+  "CL|2026-11-25|Inter|Stuttgart": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "21:00",
+   "home": "Inter",
+   "away": "Stuttgart",
+   "venue": "San Siro",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 0
+  },
+  "CL|2026-11-25|Lille|Bayern Munich": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "21:00",
+   "home": "Lille",
+   "away": "Bayern Munich",
+   "venue": "Decathlon Arena - Stade Pierre-Mauroy",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 1
+  },
+  "CL|2026-11-25|PSG|Roma": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "21:00",
+   "home": "PSG",
+   "away": "Roma",
+   "venue": "Parc des Princes",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
+   "away_score": 2
+  },
+  "CL|2026-11-25|Sabah FK|Barcelona": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "18:45",
+   "home": "Sabah FK",
+   "away": "Barcelona",
+   "venue": "Baku Olympic Stadium",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 1,
+   "away_score": 4
+  },
+  "CL|2026-11-25|Shakhtar Donetsk|Fenerbahce": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "21:00",
+   "home": "Shakhtar Donetsk",
+   "away": "Fenerbahce",
+   "venue": "Stamford Bridge",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 1
+  },
+  "CL|2026-11-25|Slavia Prague|Villarreal": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "18:45",
+   "home": "Slavia Prague",
+   "away": "Villarreal",
+   "venue": "Fortuna Arena",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 0,
+   "away_score": 1
+  },
+  "CL|2026-11-25|Sporting CP|Man United": {
+   "league": "CL",
+   "league_name": "Champions League",
+   "date": "2026-11-25",
+   "time": "21:00",
+   "home": "Sporting CP",
+   "away": "Man United",
+   "venue": "Estádio José Alvalade",
+   "status": "finished",
+   "source": "ESPN",
+   "home_score": 2,
    "away_score": 2
   }
  }
