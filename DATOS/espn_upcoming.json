@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-24T23:00:09Z",
+ "updated_at": "2026-11-25T17:05:42Z",
  "items": [
   {
    "league": "CL",
@@ -2917,6 +2917,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP1",
+   "league_name": "La Liga",
+   "date": "2026-12-09",
+   "time": "20:00",
+   "home": "Vallecano",
+   "away": "Athletic Club",
+   "venue": "Estadio de Vallecas",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "E1",
    "league_name": "Championship",
    "date": "2026-12-09",
@@ -3159,6 +3170,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-11",
+   "time": "20:30",
+   "home": "Almeria",
+   "away": "Albacete",
+   "venue": "Power Horse Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "F1",
    "league_name": "Ligue 1",
    "date": "2026-12-11",
@@ -3298,6 +3320,17 @@
    "home": "Levante",
    "away": "Alaves",
    "venue": "Estadi Ciutat de València",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-12",
+   "time": "14:00",
+   "home": "Leganes",
+   "away": "Ceuta",
+   "venue": "Estadio Municipal de Butarque",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -3511,6 +3544,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-12",
+   "time": "16:15",
+   "home": "Cadiz",
+   "away": "Sabadell",
+   "venue": "Nuevo Mirandilla",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-12-12",
@@ -3584,6 +3628,17 @@
    "home": "Malaga",
    "away": "Barcelona",
    "venue": "La Rosaleda",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-12",
+   "time": "18:30",
+   "home": "Oviedo",
+   "away": "Sociedad B",
+   "venue": "Estadio Carlos Tartiere",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -3711,121 +3766,11 @@
   {
    "league": "SP2",
    "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Almeria",
-   "away": "Albacete",
-   "venue": "Power Horse Stadium",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Cadiz",
-   "away": "Sabadell",
-   "venue": "Nuevo Mirandilla",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Cordoba",
-   "away": "Castellon",
-   "venue": "Estadio Municipal Nuevo El Arcángel",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Eibar",
-   "away": "Sp Gijon",
-   "venue": "Ipurua",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Eldense",
-   "away": "Andorra",
-   "venue": "Estadio Municipal Nuevo Pepico Amat",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Granada",
-   "away": "Girona",
-   "venue": "Nuevo Estadio de Los Cármenes",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
+   "date": "2026-12-12",
+   "time": "21:00",
    "home": "Las Palmas",
    "away": "Celta B",
    "venue": "Estadio Gran Canaria",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Leganes",
-   "away": "Ceuta",
-   "venue": "Estadio Municipal de Butarque",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Mallorca",
-   "away": "Burgos",
-   "venue": "Estadi Mallorca Son Moix",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Oviedo",
-   "away": "Sociedad B",
-   "venue": "Estadio Carlos Tartiere",
-   "status": "scheduled",
-   "source": "ESPN"
-  },
-  {
-   "league": "SP2",
-   "league_name": "Segunda División",
-   "date": "2026-12-13",
-   "time": "",
-   "home": "Valladolid",
-   "away": "Tenerife",
-   "venue": "Estadio José Zorrilla",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -3892,6 +3837,17 @@
    "home": "Ath Madrid",
    "away": "Valencia",
    "venue": "Riyadh Air Metropolitano",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-13",
+   "time": "14:00",
+   "home": "Eibar",
+   "away": "Sp Gijon",
+   "venue": "Ipurua",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -4039,6 +3995,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-13",
+   "time": "16:15",
+   "home": "Granada",
+   "away": "Girona",
+   "venue": "Nuevo Estadio de Los Cármenes",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "N1",
    "league_name": "Eredivisie",
    "date": "2026-12-13",
@@ -4112,6 +4079,28 @@
    "home": "Sociedad",
    "away": "Getafe",
    "venue": "Reale Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-13",
+   "time": "18:30",
+   "home": "Cordoba",
+   "away": "Castellon",
+   "venue": "Estadio Municipal Nuevo El Arcángel",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-13",
+   "time": "18:30",
+   "home": "Mallorca",
+   "away": "Burgos",
+   "venue": "Estadi Mallorca Son Moix",
    "status": "scheduled",
    "source": "ESPN"
   },
@@ -4193,6 +4182,17 @@
    "source": "ESPN"
   },
   {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-13",
+   "time": "21:00",
+   "home": "Valladolid",
+   "away": "Tenerife",
+   "venue": "Estadio José Zorrilla",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
    "league": "I1",
    "league_name": "Serie A",
    "date": "2026-12-14",
@@ -4200,6 +4200,17 @@
    "home": "Atalanta",
    "away": "Genoa",
    "venue": "New Balance Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "SP2",
+   "league_name": "Segunda División",
+   "date": "2026-12-14",
+   "time": "20:30",
+   "home": "Eldense",
+   "away": "Andorra",
+   "venue": "Estadio Municipal Nuevo Pepico Amat",
    "status": "scheduled",
    "source": "ESPN"
   },
