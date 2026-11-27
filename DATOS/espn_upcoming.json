@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-26T22:17:34Z",
+ "updated_at": "2026-11-27T16:31:55Z",
  "items": [
   {
    "league": "D2",
@@ -4068,6 +4068,94 @@
    "home": "Espanol",
    "away": "Celta",
    "venue": "RCDE Stadium",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-12-18",
+   "time": "18:30",
+   "home": "Nurnberg",
+   "away": "Osnabruck",
+   "venue": "Max-Morlock-Stadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D2",
+   "league_name": "2. Bundesliga",
+   "date": "2026-12-18",
+   "time": "18:30",
+   "home": "Cottbus",
+   "away": "Holstein Kiel",
+   "venue": "Stadion Der Freundschaft",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-12-18",
+   "time": "18:30",
+   "home": "Frosinone",
+   "away": "Lazio",
+   "venue": "Stadio Benito Stirpe",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "N1",
+   "league_name": "Eredivisie",
+   "date": "2026-12-18",
+   "time": "20:00",
+   "home": "Telstar",
+   "away": "Willem II",
+   "venue": "711 Stadion",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "D1",
+   "league_name": "Bundesliga",
+   "date": "2026-12-18",
+   "time": "20:30",
+   "home": "Bayern Munich",
+   "away": "Werder Bremen",
+   "venue": "Allianz Arena",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I2",
+   "league_name": "Serie B",
+   "date": "2026-12-18",
+   "time": "20:30",
+   "home": "Verona",
+   "away": "Cremonese",
+   "venue": "Stadio Marcantonio Bentegodi",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "I1",
+   "league_name": "Serie A",
+   "date": "2026-12-18",
+   "time": "20:45",
+   "home": "Lecce",
+   "away": "Inter",
+   "venue": "Via Del Mare",
+   "status": "scheduled",
+   "source": "ESPN"
+  },
+  {
+   "league": "E1",
+   "league_name": "Championship",
+   "date": "2026-12-18",
+   "time": "21:00",
+   "home": "West Brom",
+   "away": "Sheffield United",
+   "venue": "The Hawthorns",
    "status": "scheduled",
    "source": "ESPN"
   }
